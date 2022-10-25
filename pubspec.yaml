@@ -9,11 +9,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  material_color_utilities: ^0.2.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  google_fonts: ^3.0.1
   flutter_lints: ^2.0.0
+  test: ^1.21.6
+
+dependency_overrides:
+  material_color_utilities: ^0.2.0
 
 flutter:
   uses-material-design: true
