@@ -48,12 +48,12 @@ class MeteringTopBar extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ReadingContainer(
-                        values: [
-                          const ReadingValue(
+                        values: const [
+                          ReadingValue(
                             label: 'Fastest',
                             value: 'f/5.6 - 1/2000',
                           ),
-                          const ReadingValue(
+                          ReadingValue(
                             label: 'Slowest',
                             value: 'f/45 - 1/30',
                           ),
@@ -65,7 +65,7 @@ class MeteringTopBar extends StatelessWidget {
                       width: columnWidth,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
-                        child: AspectRatio(
+                        child: const AspectRatio(
                           aspectRatio: 3 / 4,
                           child: ColoredBox(color: Colors.black),
                         ),
