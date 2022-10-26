@@ -13,10 +13,21 @@ abstract class PhotographyValue<T> {
   T get value;
 }
 
-extension PhotographyValues<T> on List<PhotographyValue<T>> {
-  List<PhotographyValue<T>> fullStops() => where((e) => e.stopType == Stop.full).toList();
+extension PhotographyValues<T extends PhotographyValue> on List<T> {
+  List<T> whereStopType(Stop stopType) {
+    switch (stopType) {
+      case Stop.full:
+        return where((e) => e.stopType == Stop.full).toList();
+      case Stop.half:
+        return where((e) => e.stopType == Stop.full || e.stopType == Stop.half).toList();
+      case Stop.third:
+        return where((e) => e.stopType == Stop.full || e.stopType == Stop.third).toList();
+    }
+  }
 
-  List<PhotographyValue<T>> halfStops() => where((e) => e.stopType == Stop.full || e.stopType == Stop.half).toList();
+  List<T> fullStops() => whereStopType(Stop.full);
 
-  List<PhotographyValue<T>> thirdStops() => where((e) => e.stopType == Stop.full || e.stopType == Stop.third).toList();
+  List<T> halfStops() => whereStopType(Stop.half);
+
+  List<T> thirdStops() => whereStopType(Stop.third);
 }

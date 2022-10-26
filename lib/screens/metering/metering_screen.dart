@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/models/photography_value.dart';
 
+import 'components/exposure_pairs_list/exposure_pairs_list.dart';
 import 'components/topbar/topbar.dart';
 
 class MeteringScreen extends StatelessWidget {
@@ -7,17 +9,23 @@ class MeteringScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const ev = 0.3;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Column(
-        children: const [
-          MeteringTopBar(
+        children: [
+          const MeteringTopBar(
             lux: 283,
-            ev: 2.3,
+            ev: ev,
             iso: 6400,
             nd: 0,
           ),
-          Spacer()
+          Expanded(
+            child: ExposurePairsList(
+              ev: ev,
+              stopType: Stop.third,
+            ),
+          ),
         ],
       ),
     );
