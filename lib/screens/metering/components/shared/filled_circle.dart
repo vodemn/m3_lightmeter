@@ -18,7 +18,10 @@ class FilledCircle extends StatelessWidget {
       borderRadius: BorderRadius.circular(size / 2),
       child: SizedBox.fromSize(
         size: Size.square(size),
-        child: ColoredBox(color: color),
+        child: ColoredBox(
+          color: color,
+          child: child,
+        ),
       ),
     );
   }
