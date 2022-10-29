@@ -4,7 +4,7 @@ class ApertureValue extends PhotographyValue<double> {
   const ApertureValue(super.rawValue, super.stopType);
 
   @override
-  double get value => 1 / rawValue;
+  double get value => rawValue;
 
   @override
   String toString() {
