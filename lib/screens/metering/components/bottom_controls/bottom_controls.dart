@@ -18,27 +18,33 @@ class MeteringBottomControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.surface,
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.all(Dimens.paddingM),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              MeteringBottomControlsSideButton(
-                onPressed: onSourceChanged,
-                icon: Icons.flip_camera_android,
-              ),
-              MeteringMeasureButton(
-                onTap: onMeasure,
-              ),
-              MeteringBottomControlsSideButton(
-                onPressed: onSettings,
-                icon: Icons.settings,
-              ),
-            ],
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(Dimens.borderRadiusL),
+        topRight: Radius.circular(Dimens.borderRadiusL),
+      ),
+      child: ColoredBox(
+        color: Theme.of(context).colorScheme.surface,
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                MeteringBottomControlsSideButton(
+                  onPressed: onSourceChanged,
+                  icon: Icons.flip_camera_android,
+                ),
+                MeteringMeasureButton(
+                  onTap: onMeasure,
+                ),
+                MeteringBottomControlsSideButton(
+                  onPressed: onSettings,
+                  icon: Icons.settings,
+                ),
+              ],
+            ),
           ),
         ),
       ),
