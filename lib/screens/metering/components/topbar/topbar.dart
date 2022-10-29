@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/models/exposure_pair.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/metering/components/topbar/components/reading_container.dart';
-import 'package:lightmeter/screens/metering/components/topbar/topbar_shape.dart';
-import 'package:lightmeter/utils/text_line_height.dart';
+
+import 'components/reading_container.dart';
 
 class MeteringTopBar extends StatelessWidget {
   static const _columnsCount = 3;
 
+  final ExposurePair? fastest;
+  final ExposurePair? slowest;
   final double ev;
   final int iso;
   final double nd;
 
   const MeteringTopBar({
+    required this.fastest,
+    required this.slowest,
     required this.ev,
     required this.iso,
     required this.nd,
@@ -43,14 +47,18 @@ class MeteringTopBar extends StatelessWidget {
                       SizedBox(
                         height: columnWidth / 3 * 4,
                         child: ReadingContainer(
-                          values: const [
+                          values: [
                             ReadingValue(
                               label: 'Fastest',
-                              value: 'f/5.6 - 1/2000',
+                              value: fastest != null
+                                  ? '${fastest!.aperture.toString()} - ${fastest!.shutterSpeed.toString()}'
+                                  : 'N/A',
                             ),
                             ReadingValue(
                               label: 'Slowest',
-                              value: 'f/45 - 1/30',
+                              value: fastest != null
+                                  ? '${slowest!.aperture.toString()} - ${slowest!.shutterSpeed.toString()}'
+                                  : 'N/A',
                             ),
                           ],
                         ),
@@ -63,7 +71,7 @@ class MeteringTopBar extends StatelessWidget {
                             child: ReadingContainer.singleValue(
                               value: ReadingValue(
                                 label: 'EV',
-                                value: ev.toString(),
+                                value: ev.toStringAsFixed(1),
                               ),
                             ),
                           ),
