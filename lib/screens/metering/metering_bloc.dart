@@ -78,6 +78,9 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     int itemsCount = min(_apertureValues.length + shutterSpeedOffset, _shutterSpeedValues.length + apertureOffset) -
         max(apertureOffset, shutterSpeedOffset);
 
+    if (itemsCount < 0) {
+      return List.empty(growable: false);
+    }
     return List.generate(
       itemsCount,
       (index) => ExposurePair(
