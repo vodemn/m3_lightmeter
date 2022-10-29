@@ -29,7 +29,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     add(const MeasureEvent());
   }
 
-  /// https://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
+  /// https://www.scantips.com/lights/exposurecalc.html
   void _onMeasure(_, Emitter emit) {
     double log2(double x) => log(x) / log(2);
 
