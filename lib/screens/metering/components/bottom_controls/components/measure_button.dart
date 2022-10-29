@@ -17,7 +17,7 @@ class MeteringMeasureButton extends StatefulWidget {
 }
 
 class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
-  bool _isPressed = true;
+  bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
