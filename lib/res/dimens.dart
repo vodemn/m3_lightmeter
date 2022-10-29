@@ -10,4 +10,8 @@ class Dimens {
   static const double grid24 = 24;
 
   static const double paddingM = 16;
+
+  static const Duration durationS = Duration(milliseconds: 100);
+  static const Duration durationM = Duration(milliseconds: 200);
+  static const Duration durationL = Duration(milliseconds: 300);
 }
