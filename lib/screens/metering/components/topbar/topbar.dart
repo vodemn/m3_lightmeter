@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/models/exposure_pair.dart';
 import 'package:lightmeter/res/dimens.dart';
 
@@ -49,13 +50,13 @@ class MeteringTopBar extends StatelessWidget {
                         child: ReadingContainer(
                           values: [
                             ReadingValue(
-                              label: 'Fastest',
+                              label: S.of(context).fastestExposurePair,
                               value: fastest != null
                                   ? '${fastest!.aperture.toString()} - ${fastest!.shutterSpeed.toString()}'
                                   : 'N/A',
                             ),
                             ReadingValue(
-                              label: 'Slowest',
+                              label: S.of(context).slowestExposurePair,
                               value: fastest != null
                                   ? '${slowest!.aperture.toString()} - ${slowest!.shutterSpeed.toString()}'
                                   : 'N/A',
