@@ -32,22 +32,22 @@ class ExposurePaitListItem<T extends PhotographyValue> extends StatelessWidget {
 
   TextStyle labelTextStyle(BuildContext context) {
     switch (value.stopType) {
-      case Stop.full:
+      case StopType.full:
         return Theme.of(context).textTheme.bodyLarge!;
-      case Stop.half:
+      case StopType.half:
         return Theme.of(context).textTheme.bodyMedium!;
-      case Stop.third:
+      case StopType.third:
         return Theme.of(context).textTheme.bodySmall!;
     }
   }
 
   double tickLength() {
     switch (value.stopType) {
-      case Stop.full:
+      case StopType.full:
         return Dimens.grid24;
-      case Stop.half:
+      case StopType.half:
         return Dimens.grid16;
-      case Stop.third:
+      case StopType.third:
         return Dimens.grid8;
     }
   }

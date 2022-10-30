@@ -2,11 +2,11 @@ part 'aperture_value.dart';
 part 'iso_value.dart';
 part 'shutter_speed_value.dart';
 
-enum Stop { full, half, third }
+enum StopType { full, half, third }
 
 abstract class PhotographyValue<T> {
   final T rawValue;
-  final Stop stopType;
+  final StopType stopType;
 
   const PhotographyValue(this.rawValue, this.stopType);
 
@@ -14,20 +14,20 @@ abstract class PhotographyValue<T> {
 }
 
 extension PhotographyValues<T extends PhotographyValue> on List<T> {
-  List<T> whereStopType(Stop stopType) {
+  List<T> whereStopType(StopType stopType) {
     switch (stopType) {
-      case Stop.full:
-        return where((e) => e.stopType == Stop.full).toList();
-      case Stop.half:
-        return where((e) => e.stopType == Stop.full || e.stopType == Stop.half).toList();
-      case Stop.third:
-        return where((e) => e.stopType == Stop.full || e.stopType == Stop.third).toList();
+      case StopType.full:
+        return where((e) => e.stopType == StopType.full).toList();
+      case StopType.half:
+        return where((e) => e.stopType == StopType.full || e.stopType == StopType.half).toList();
+      case StopType.third:
+        return where((e) => e.stopType == StopType.full || e.stopType == StopType.third).toList();
     }
   }
 
-  List<T> fullStops() => whereStopType(Stop.full);
+  List<T> fullStops() => whereStopType(StopType.full);
 
-  List<T> halfStops() => whereStopType(Stop.half);
+  List<T> halfStops() => whereStopType(StopType.half);
 
-  List<T> thirdStops() => whereStopType(Stop.third);
+  List<T> thirdStops() => whereStopType(StopType.third);
 }

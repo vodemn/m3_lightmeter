@@ -8,7 +8,7 @@ import 'metering_event.dart';
 import 'metering_state.dart';
 
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
-  final Stop stopType;
+  final StopType stopType;
   late final _apertureValues = apertureValues.whereStopType(stopType);
   late final _shutterSpeedValues = shutterSpeedValues.whereStopType(stopType);
   late final _isoValues = isoValues.whereStopType(stopType);
@@ -53,17 +53,17 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   List<ExposurePair> _buildExposureValues(double ev) {
     late final int evSteps;
     switch (stopType) {
-      case Stop.full:
+      case StopType.full:
         evSteps = ev.floor();
         break;
-      case Stop.half:
+      case StopType.half:
         evSteps = (ev / 0.5).floor();
         break;
-      case Stop.third:
+      case StopType.third:
         evSteps = (ev / 0.3).floor();
         break;
     }
-    final evOffset = _shutterSpeedValues.indexOf(const ShutterSpeedValue(1, false, Stop.full)) - evSteps;
+    final evOffset = _shutterSpeedValues.indexOf(const ShutterSpeedValue(1, false, StopType.full)) - evSteps;
 
     late final int apertureOffset;
     late final int shutterSpeedOffset;
