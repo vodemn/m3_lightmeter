@@ -7,7 +7,6 @@ import 'models/photography_value.dart';
 import 'res/theme.dart';
 import 'screens/metering/metering_bloc.dart';
 import 'screens/metering/metering_screen.dart';
-import 'screens/settings/settings_screen.dart';
 import 'utils/stop_type_provider.dart';
 
 void main() {
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: S.delegate.supportedLocales,
-          home: const SettingsScreen(),
+          home: const MeteringScreen(),
         ),
       ),
     );

@@ -16,7 +16,7 @@ class SettingsScreen extends StatelessWidget {
         slivers: <Widget>[
           SliverAppBar(
             pinned: true,
-            leading: null,
+            automaticallyImplyLeading: false,
             expandedHeight: 160.0,
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: false,
@@ -28,12 +28,19 @@ class SettingsScreen extends StatelessWidget {
             ),
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: Navigator.of(context).pop,
                 icon: const Icon(Icons.close),
               ),
             ],
           ),
-          SliverList(delegate: SliverChildListDelegate([CaffeineListTile(), HapticsListTile()])),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                const CaffeineListTile(),
+                const HapticsListTile(),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/metering_event.dart';
+import 'package:lightmeter/screens/settings/settings_screen.dart';
 
 import 'components/bottom_controls/bottom_controls.dart';
 import 'components/exposure_pairs_list/exposure_pairs_list.dart';
@@ -45,7 +46,7 @@ class MeteringScreen extends StatelessWidget {
               MeteringBottomControls(
                 onSourceChanged: () {},
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
-                onSettings: () {},
+                onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
               ),
             ],
           );
