@@ -22,7 +22,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "caffeine": MessageLookupByLibrary.simpleMessage("Caffeine"),
         "fastestExposurePair": MessageLookupByLibrary.simpleMessage("Fastest"),
+        "haptics": MessageLookupByLibrary.simpleMessage("Haptics"),
+        "keepsScreenOn":
+            MessageLookupByLibrary.simpleMessage("Keeps screen on"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "slowestExposurePair": MessageLookupByLibrary.simpleMessage("Slowest")
       };

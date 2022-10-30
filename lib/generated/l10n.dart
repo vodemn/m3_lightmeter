@@ -79,6 +79,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Caffeine`
+  String get caffeine {
+    return Intl.message(
+      'Caffeine',
+      name: 'caffeine',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keeps screen on`
+  String get keepsScreenOn {
+    return Intl.message(
+      'Keeps screen on',
+      name: 'keepsScreenOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Haptics`
+  String get haptics {
+    return Intl.message(
+      'Haptics',
+      name: 'haptics',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

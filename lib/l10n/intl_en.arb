@@ -2,5 +2,8 @@
     "@@locale": "en",
     "fastestExposurePair": "Fastest",
     "slowestExposurePair": "Slowest",
-    "settings": "Settings"
+    "settings": "Settings",
+    "caffeine": "Caffeine",
+    "keepsScreenOn": "Keeps screen on",
+    "haptics": "Haptics"
 }
