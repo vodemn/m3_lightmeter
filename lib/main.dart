@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lightmeter/screens/settings/settings_page_route_builder.dart';
@@ -31,6 +32,13 @@ class _ApplicationState extends State<Application> with TickerProviderStateMixin
   @override
   void initState() {
     super.initState();
+    final mySystemTheme = SystemUiOverlayStyle.light.copyWith(
+      statusBarColor: lightColorScheme.surface,
+      statusBarBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: lightColorScheme.surface,
+    );
+    SystemChrome.setSystemUIOverlayStyle(mySystemTheme);
     // 0 - collapsed
     // 1 - expanded
     _animationController = AnimationController(
