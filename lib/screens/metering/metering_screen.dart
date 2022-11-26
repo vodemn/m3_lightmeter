@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/settings/settings_page_route_builder.dart';
 
 import 'components/animated_surface/animated_surface.dart';
 import 'components/bottom_controls/bottom_controls.dart';
@@ -11,18 +12,18 @@ import 'metering_event.dart';
 import 'metering_state.dart';
 
 class MeteringScreen extends StatefulWidget {
-  const MeteringScreen({super.key});
+  final AnimationController animationController;
+
+  const MeteringScreen({required this.animationController, super.key});
 
   @override
   State<MeteringScreen> createState() => _MeteringScreenState();
 }
 
-class _MeteringScreenState extends State<MeteringScreen> with TickerProviderStateMixin {
+class _MeteringScreenState extends State<MeteringScreen> {
   final _topBarKey = GlobalKey(debugLabel: 'TopBarKey');
   final _middleAreaKey = GlobalKey(debugLabel: 'MiddleAreaKey');
   final _bottomBarKey = GlobalKey(debugLabel: 'BottomBarKey');
-
-  late final AnimationController _animationController;
 
   bool _secondBuild = false;
   late double _topBarHeight;
@@ -32,13 +33,6 @@ class _MeteringScreenState extends State<MeteringScreen> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    // 0 - collapsed
-    // 1 - expanded
-    _animationController = AnimationController(
-      value: 0,
-      duration: Dimens.durationL,
-      vsync: this,
-    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _topBarHeight = _getHeight(_topBarKey);
       _middleAreaHeight = _getHeight(_middleAreaKey);
@@ -85,7 +79,7 @@ class _MeteringScreenState extends State<MeteringScreen> with TickerProviderStat
                   top: 0,
                   right: 0,
                   child: MeteringScreenAnimatedSurface.top(
-                    controller: _animationController,
+                    controller: widget.animationController,
                     areaHeight: _topBarHeight,
                     overflowSize: _middleAreaHeight / 2,
                     child: _topBar(state),
@@ -97,7 +91,7 @@ class _MeteringScreenState extends State<MeteringScreen> with TickerProviderStat
                   right: 0,
                   bottom: 0,
                   child: MeteringScreenAnimatedSurface.bottom(
-                    controller: _animationController,
+                    controller: widget.animationController,
                     areaHeight: _bottomBarHeight,
                     overflowSize: _middleAreaHeight / 2,
                     child: _bottomBar(),
@@ -127,22 +121,10 @@ class _MeteringScreenState extends State<MeteringScreen> with TickerProviderStat
       onSourceChanged: () {},
       onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
       onSettings: () {
-        // Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
-        _toggleAnimation();
+        Navigator.push(context, SettingsPageRouteBuilder());
       },
     );
   }
 
   double _getHeight(GlobalKey key) => key.currentContext!.size!.height;
-
-  void _toggleAnimation() {
-    if (_animationController.isAnimating) {
-      return;
-    }
-    if (_animationController.status != AnimationStatus.dismissed) {
-      _animationController.reverse();
-    } else if (_animationController.status != AnimationStatus.completed) {
-      _animationController.forward();
-    }
-  }
 }
