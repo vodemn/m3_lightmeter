@@ -6,8 +6,8 @@ class SettingsPageRouteBuilder extends PageRouteBuilder<void> {
   SettingsPageRouteBuilder()
       : super(
           transitionDuration:
-              Dimens.durationM + Dimens.durationS, // wait for `MeteringScreenAnimatedSurface`s to expand
-          reverseTransitionDuration: Dimens.durationS,
+              Dimens.durationM + Dimens.durationM, // wait for `MeteringScreenAnimatedSurface`s to expand
+          reverseTransitionDuration: Dimens.durationM,
           pageBuilder: (context, animation, secondaryAnimation) => const SettingsScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             final didPop = !(animation.value != 0.0 && secondaryAnimation.value == 0.0);
@@ -21,7 +21,7 @@ class SettingsPageRouteBuilder extends PageRouteBuilder<void> {
               );
             } else {
               interval = Interval(
-                Dimens.durationM.inMilliseconds / (Dimens.durationM + Dimens.durationS).inMilliseconds,
+                Dimens.durationM.inMilliseconds / (Dimens.durationM + Dimens.durationM).inMilliseconds,
                 1.0,
                 curve: Curves.linear,
               );

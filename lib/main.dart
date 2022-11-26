@@ -78,7 +78,7 @@ class _ApplicationState extends State<Application> with TickerProviderStateMixin
   }
 
   void _onSettingsPop() {
-    Future.delayed(Dimens.durationSM).then((_) {
+    Future.delayed(Dimens.durationM).then((_) {
       if (!_animationController.isAnimating && _animationController.status != AnimationStatus.dismissed) {
         _animationController.reverse();
       }
