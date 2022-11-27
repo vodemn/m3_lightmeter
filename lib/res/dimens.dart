@@ -8,8 +8,10 @@ class Dimens {
   static const double grid8 = 8;
   static const double grid16 = 16;
   static const double grid24 = 24;
+  static const double grid168 = 168;
 
   static const double paddingM = 16;
+  static const double paddingL = 24;
 
   static const Duration durationS = Duration(milliseconds: 100);
   static const Duration durationSM = Duration(milliseconds: 150);

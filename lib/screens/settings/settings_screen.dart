@@ -17,7 +17,7 @@ class SettingsScreen extends StatelessWidget {
           SliverAppBar(
             pinned: true,
             automaticallyImplyLeading: false,
-            expandedHeight: 160.0,
+            expandedHeight: Dimens.grid168,
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: false,
               titlePadding: const EdgeInsets.all(Dimens.paddingM),

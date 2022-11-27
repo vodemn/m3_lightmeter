@@ -50,6 +50,36 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Permission needed`
+  String get permissionNeeded {
+    return Intl.message(
+      'Permission needed',
+      name: 'permissionNeeded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To use Lightmeter, turn on Camera permissions.`
+  String get permissionNeededMessage {
+    return Intl.message(
+      'To use Lightmeter, turn on Camera permissions.',
+      name: 'permissionNeededMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open settings`
+  String get openSettings {
+    return Intl.message(
+      'Open settings',
+      name: 'openSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Fastest`
   String get fastestExposurePair {
     return Intl.message(

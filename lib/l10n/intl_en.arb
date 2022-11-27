@@ -1,5 +1,8 @@
 {
     "@@locale": "en",
+    "permissionNeeded": "Permission needed",
+    "permissionNeededMessage": "To use Lightmeter, turn on Camera permissions.",
+    "openSettings": "Open settings",
     "fastestExposurePair": "Fastest",
     "slowestExposurePair": "Slowest",
     "settings": "Settings",

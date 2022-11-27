@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/screens/settings/settings_page_route_builder.dart';
+import 'package:provider/provider.dart';
 
 import 'generated/l10n.dart';
 import 'models/photography_value.dart';
 import 'res/dimens.dart';
 import 'res/theme.dart';
 import 'screens/metering/metering_bloc.dart';
-import 'screens/metering/metering_screen.dart';
+import 'screens/permissions_check/flow_permissions_check.dart';
 import 'utils/stop_type_provider.dart';
 
 void main() {
@@ -57,23 +59,27 @@ class _ApplicationState extends State<Application> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return StopTypeProvider(
-      child: BlocProvider(
-        create: (context) => MeteringBloc(context.read<StopType>()),
-        child: MaterialApp(
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: lightColorScheme,
+    return Provider(
+      create: (context) => PermissionsService(),
+      child: StopTypeProvider(
+        child: BlocProvider(
+          create: (context) => MeteringBloc(context.read<StopType>()),
+          child: MaterialApp(
+            theme: ThemeData(
+              useMaterial3: true,
+              colorScheme: lightColorScheme,
+            ),
+            navigatorObservers: [_settingsRouteObserver],
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            home: const PermissionsCheckFlow(),
+            //home: MeteringScreen(animationController: _animationController),
           ),
-          navigatorObservers: [_settingsRouteObserver],
-          localizationsDelegates: const [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          home: MeteringScreen(animationController: _animationController),
         ),
       ),
     );

@@ -27,6 +27,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "haptics": MessageLookupByLibrary.simpleMessage("Haptics"),
         "keepsScreenOn":
             MessageLookupByLibrary.simpleMessage("Keeps screen on"),
+        "openSettings": MessageLookupByLibrary.simpleMessage("Open settings"),
+        "permissionNeeded":
+            MessageLookupByLibrary.simpleMessage("Permission needed"),
+        "permissionNeededMessage": MessageLookupByLibrary.simpleMessage(
+            "To use Lightmeter, turn on Camera permissions."),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "slowestExposurePair": MessageLookupByLibrary.simpleMessage("Slowest")
       };
