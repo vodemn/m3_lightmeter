@@ -21,7 +21,7 @@ class PermissionsCheckScreen extends StatelessWidget {
             child: BlocConsumer<PermissionsCheckBloc, PermissionsCheckState>(
               listener: (context, state) {
                 if (state is PermissionsGrantedState) {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => SettingsScreen()));
+                  Navigator.of(context).pushReplacementNamed("metering");
                 }
               },
               builder: (context, state) {
