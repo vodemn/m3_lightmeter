@@ -79,7 +79,7 @@ class _ApplicationState extends State<Application> with TickerProviderStateMixin
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: S.delegate.supportedLocales,
-            home: const PermissionsCheckFlow(),
+            home: MeteringScreen(animationController: _animationController),
             routes: {
               "metering": (context) => MeteringScreen(animationController: _animationController),
               "settings": (context) => const SettingsScreen(),

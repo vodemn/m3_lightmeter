@@ -3,6 +3,7 @@
 class Dimens {
   static const double borderRadiusM = 16;
   static const double borderRadiusL = 24;
+  static const double borderRadiusXL = 32;
 
   static const double grid4 = 4;
   static const double grid8 = 8;
@@ -16,5 +17,6 @@ class Dimens {
   static const Duration durationS = Duration(milliseconds: 100);
   static const Duration durationSM = Duration(milliseconds: 150);
   static const Duration durationM = Duration(milliseconds: 200);
+  static const Duration durationML = Duration(milliseconds: 250);
   static const Duration durationL = Duration(milliseconds: 300);
 }

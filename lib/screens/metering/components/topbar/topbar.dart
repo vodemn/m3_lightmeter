@@ -79,10 +79,14 @@ class MeteringTopBar extends StatelessWidget {
                           const _InnerPadding(),
                           SizedBox(
                             width: columnWidth,
-                            child: ReadingContainer.singleValue(
-                              value: ReadingValue(
-                                label: 'ISO',
-                                value: iso.toString(),
+                            child: MediaQuery(
+                              data: MediaQuery.of(context),
+                              child: ReadingContainerWithDialog(
+                                value: ReadingValue(
+                                  label: 'ISO',
+                                  value: iso.toString(),
+                                ),
+                                dialogBuilder: (context) => SizedBox(),
                               ),
                             ),
                           ),
@@ -105,10 +109,14 @@ class MeteringTopBar extends StatelessWidget {
                         ),
                       ),
                       const _InnerPadding(),
-                      ReadingContainer.singleValue(
-                        value: ReadingValue(
-                          label: 'ND',
-                          value: nd.toString(),
+                      MediaQuery(
+                        data: MediaQuery.of(context),
+                        child: ReadingContainerWithDialog(
+                          value: ReadingValue(
+                            label: 'ND',
+                            value: nd.toString(),
+                          ),
+                          dialogBuilder: (context) => SizedBox(),
                         ),
                       ),
                     ],
