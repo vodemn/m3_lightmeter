@@ -16,8 +16,8 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   MeteringBloc(this.stopType)
       : super(
-          const MeteringState(
-            iso: 100,
+          MeteringState(
+            iso: isoValues.where((element) => element.value == 100).first,
             ev: 21.3,
             evCompensation: 0.0,
             nd: 0.0,
@@ -38,7 +38,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     final iso = _isoValues[_random.nextInt(_isoValues.thirdStops().length)];
 
     final evAtSystemIso = log2(pow(aperture.value, 2).toDouble()) - log2(shutterSpeed.value);
-    final ev = evAtSystemIso - log2(iso.value / state.iso);
+    final ev = evAtSystemIso - log2(iso.value / state.iso.value);
     final exposurePairs = _buildExposureValues(ev);
 
     emit(MeteringState(

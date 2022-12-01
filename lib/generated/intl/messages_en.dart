@@ -23,8 +23,10 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "caffeine": MessageLookupByLibrary.simpleMessage("Caffeine"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "fastestExposurePair": MessageLookupByLibrary.simpleMessage("Fastest"),
         "haptics": MessageLookupByLibrary.simpleMessage("Haptics"),
+        "iso": MessageLookupByLibrary.simpleMessage("ISO"),
         "keepsScreenOn":
             MessageLookupByLibrary.simpleMessage("Keeps screen on"),
         "openSettings": MessageLookupByLibrary.simpleMessage("Open settings"),
@@ -32,6 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Permission needed"),
         "permissionNeededMessage": MessageLookupByLibrary.simpleMessage(
             "To use Lightmeter, turn on Camera permissions."),
+        "select": MessageLookupByLibrary.simpleMessage("Select"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "slowestExposurePair": MessageLookupByLibrary.simpleMessage("Slowest")
       };

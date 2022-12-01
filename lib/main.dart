@@ -13,7 +13,6 @@ import 'res/dimens.dart';
 import 'res/theme.dart';
 import 'screens/metering/metering_bloc.dart';
 import 'screens/metering/metering_screen.dart';
-import 'screens/permissions_check/flow_permissions_check.dart';
 import 'utils/stop_type_provider.dart';
 
 void main() {

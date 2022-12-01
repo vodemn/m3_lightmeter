@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/models/exposure_pair.dart';
+import 'package:lightmeter/models/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
 
+import 'components/shared/animated_dialog.dart';
+import 'components/dialog_picker.dart';
 import 'components/reading_container.dart';
+import 'models/reading_value.dart';
 
 class MeteringTopBar extends StatelessWidget {
   static const _columnsCount = 3;
+  final _isoDialogKey = GlobalKey<AnimatedDialogState>();
 
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final double ev;
-  final int iso;
+  final IsoValue iso;
   final double nd;
 
-  const MeteringTopBar({
+  MeteringTopBar({
     required this.fastest,
     required this.slowest,
     required this.ev,
@@ -38,91 +43,109 @@ class MeteringTopBar extends StatelessWidget {
           padding: const EdgeInsets.all(Dimens.paddingM),
           child: SafeArea(
             bottom: false,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(
-                        height: columnWidth / 3 * 4,
-                        child: ReadingContainer(
-                          values: [
-                            ReadingValue(
-                              label: S.of(context).fastestExposurePair,
-                              value: fastest != null
-                                  ? '${fastest!.aperture.toString()} - ${fastest!.shutterSpeed.toString()}'
-                                  : 'N/A',
+            child: MediaQuery(
+              data: MediaQuery.of(context),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          height: columnWidth / 3 * 4,
+                          child: ReadingContainer(
+                            values: [
+                              ReadingValue(
+                                label: S.of(context).fastestExposurePair,
+                                value: fastest != null
+                                    ? '${fastest!.aperture.toString()} - ${fastest!.shutterSpeed.toString()}'
+                                    : 'N/A',
+                              ),
+                              ReadingValue(
+                                label: S.of(context).slowestExposurePair,
+                                value: fastest != null
+                                    ? '${slowest!.aperture.toString()} - ${slowest!.shutterSpeed.toString()}'
+                                    : 'N/A',
+                              ),
+                            ],
+                          ),
+                        ),
+                        const _InnerPadding(),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: columnWidth,
+                              child: ReadingContainer.singleValue(
+                                value: ReadingValue(
+                                  label: 'EV',
+                                  value: ev.toStringAsFixed(1),
+                                ),
+                              ),
                             ),
-                            ReadingValue(
-                              label: S.of(context).slowestExposurePair,
-                              value: fastest != null
-                                  ? '${slowest!.aperture.toString()} - ${slowest!.shutterSpeed.toString()}'
-                                  : 'N/A',
+                            const _InnerPadding(),
+                            SizedBox(
+                              width: columnWidth,
+                              child: AnimatedDialog(
+                                key: _isoDialogKey,
+                                closedChild: ReadingContainer.singleValue(
+                                  value: ReadingValue(
+                                    label: S.of(context).iso,
+                                    value: iso.value.toString(),
+                                  ),
+                                ),
+                                openedChild: MeteringScreenDialogPicker(
+                                  title: S.of(context).iso,
+                                  initialValue: iso,
+                                  values: isoValues,
+                                  itemTitleBuilder: (context, value) => Text(
+                                    value.value.toString(),
+                                    style: value.stopType == StopType.full
+                                        ? Theme.of(context).textTheme.bodyLarge
+                                        : Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                  onCancel: () {
+                                    _isoDialogKey.currentState?.close();
+                                  },
+                                  onSelect: (value) {
+                                    _isoDialogKey.currentState?.close();
+                                  },
+                                ),
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                      const _InnerPadding(),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: columnWidth,
-                            child: ReadingContainer.singleValue(
-                              value: ReadingValue(
-                                label: 'EV',
-                                value: ev.toStringAsFixed(1),
-                              ),
-                            ),
-                          ),
-                          const _InnerPadding(),
-                          SizedBox(
-                            width: columnWidth,
-                            child: MediaQuery(
-                              data: MediaQuery.of(context),
-                              child: ReadingContainerWithDialog(
-                                value: ReadingValue(
-                                  label: 'ISO',
-                                  value: iso.toString(),
-                                ),
-                                dialogBuilder: (context) => SizedBox(),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                const _InnerPadding(),
-                SizedBox(
-                  width: columnWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
-                        child: const AspectRatio(
-                          aspectRatio: 3 / 4,
-                          child: ColoredBox(color: Colors.black),
+                  const _InnerPadding(),
+                  SizedBox(
+                    width: columnWidth,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        AnimatedDialog(
+                          openedSize: Size(
+                            MediaQuery.of(context).size.width - Dimens.paddingM * 2,
+                            (MediaQuery.of(context).size.width - Dimens.paddingM * 2) / 3 * 4,
+                          ),
+                          child: const AspectRatio(
+                            aspectRatio: 3 / 4,
+                            child: ColoredBox(color: Colors.black),
+                          ),
                         ),
-                      ),
-                      const _InnerPadding(),
-                      MediaQuery(
-                        data: MediaQuery.of(context),
-                        child: ReadingContainerWithDialog(
+                        const _InnerPadding(),
+                        ReadingContainer.singleValue(
                           value: ReadingValue(
                             label: 'ND',
                             value: nd.toString(),
                           ),
-                          dialogBuilder: (context) => SizedBox(),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
