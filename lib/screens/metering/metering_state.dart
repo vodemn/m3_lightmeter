@@ -1,11 +1,12 @@
 import 'package:lightmeter/models/exposure_pair.dart';
-import 'package:lightmeter/models/photography_value.dart';
+import 'package:lightmeter/models/iso_value.dart';
+import 'package:lightmeter/models/nd_value.dart';
 
 class MeteringState {
   final double ev;
   final double evCompensation;
   final IsoValue iso;
-  final double nd;
+  final NdValue nd;
   final List<ExposurePair> exposurePairs;
 
   const MeteringState({

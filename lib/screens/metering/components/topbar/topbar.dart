@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/models/exposure_pair.dart';
+import 'package:lightmeter/models/iso_value.dart';
+import 'package:lightmeter/models/nd_value.dart';
 import 'package:lightmeter/models/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
 
@@ -12,13 +14,15 @@ import 'models/reading_value.dart';
 class MeteringTopBar extends StatelessWidget {
   static const _columnsCount = 3;
   final _isoDialogKey = GlobalKey<AnimatedDialogState>();
+  final _ndDialogKey = GlobalKey<AnimatedDialogState>();
 
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final double ev;
   final IsoValue iso;
-  final double nd;
+  final NdValue nd;
   final ValueChanged<IsoValue> onIsoChanged;
+  final ValueChanged<NdValue> onNdChanged;
 
   MeteringTopBar({
     required this.fastest,
@@ -27,6 +31,7 @@ class MeteringTopBar extends StatelessWidget {
     required this.iso,
     required this.nd,
     required this.onIsoChanged,
+    required this.onNdChanged,
     super.key,
   });
 
@@ -137,10 +142,28 @@ class MeteringTopBar extends StatelessWidget {
                           ),
                         ),
                         const _InnerPadding(),
-                        ReadingContainer.singleValue(
-                          value: ReadingValue(
-                            label: 'ND',
-                            value: nd.toString(),
+                        AnimatedDialog(
+                          key: _ndDialogKey,
+                          closedChild: ReadingContainer.singleValue(
+                            value: ReadingValue(
+                              label: S.of(context).nd,
+                              value: nd.value.toString(),
+                            ),
+                          ),
+                          openedChild: MeteringScreenDialogPicker(
+                            title: S.of(context).nd,
+                            initialValue: nd,
+                            values: ndValues,
+                            itemTitleBuilder: (context, value) => Text(
+                              value.value == 0 ? S.of(context).none : value.value.toString(),
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            onCancel: () {
+                              _ndDialogKey.currentState?.close();
+                            },
+                            onSelect: (value) {
+                              _ndDialogKey.currentState?.close().then((_) => onNdChanged(value));
+                            },
                           ),
                         ),
                       ],

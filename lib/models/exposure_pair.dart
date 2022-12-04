@@ -1,4 +1,5 @@
-import 'photography_value.dart';
+import 'aperture_value.dart';
+import 'shutter_speed_value.dart';
 
 class ExposurePair {
   final ApertureValue aperture;

@@ -1,10 +1,7 @@
-part of 'photography_value.dart';
+import 'photography_value.dart';
 
-class ApertureValue extends PhotographyValue<double> {
+class ApertureValue extends PhotographyStopValue<double> {
   const ApertureValue(super.rawValue, super.stopType);
-
-  @override
-  double get value => rawValue;
 
   @override
   String toString() {

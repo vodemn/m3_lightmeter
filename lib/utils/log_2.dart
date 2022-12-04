@@ -1,3 +1,3 @@
 import 'dart:math';
 
-double log2(double x) => log(x) / log(2);
+double log2(num x) => log(x) / log(2);

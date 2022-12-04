@@ -29,6 +29,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "iso": MessageLookupByLibrary.simpleMessage("ISO"),
         "keepsScreenOn":
             MessageLookupByLibrary.simpleMessage("Keeps screen on"),
+        "nd": MessageLookupByLibrary.simpleMessage("ND"),
+        "none": MessageLookupByLibrary.simpleMessage("None"),
         "openSettings": MessageLookupByLibrary.simpleMessage("Open settings"),
         "permissionNeeded":
             MessageLookupByLibrary.simpleMessage("Permission needed"),

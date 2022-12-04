@@ -113,6 +113,7 @@ class _MeteringScreenState extends State<MeteringScreen> {
       iso: state.iso,
       nd: state.nd,
       onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
+      onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
     );
   }
 

@@ -1,19 +1,20 @@
-part 'aperture_value.dart';
-part 'iso_value.dart';
-part 'shutter_speed_value.dart';
-
 enum StopType { full, half, third }
 
 abstract class PhotographyValue<T> {
   final T rawValue;
-  final StopType stopType;
 
-  const PhotographyValue(this.rawValue, this.stopType);
+  const PhotographyValue(this.rawValue);
 
-  T get value;
+  T get value => rawValue;
 }
 
-extension PhotographyValues<T extends PhotographyValue> on List<T> {
+abstract class PhotographyStopValue<T> extends PhotographyValue<T> {
+  final StopType stopType;
+
+  const PhotographyStopValue(super.rawValue, this.stopType);
+}
+
+extension PhotographyStopValues<T extends PhotographyStopValue> on List<T> {
   List<T> whereStopType(StopType stopType) {
     switch (stopType) {
       case StopType.full:

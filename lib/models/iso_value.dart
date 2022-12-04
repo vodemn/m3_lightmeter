@@ -1,10 +1,7 @@
-part of 'photography_value.dart';
+import 'photography_value.dart';
 
-class IsoValue extends PhotographyValue<int> {
+class IsoValue extends PhotographyStopValue<int> {
   const IsoValue(super.rawValue, super.stopType);
-
-  @override
-  int get value => rawValue;
 
   @override
   String toString() => value.toString();

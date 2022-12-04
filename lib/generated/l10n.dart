@@ -110,6 +110,26 @@ class S {
     );
   }
 
+  /// `ND`
+  String get nd {
+    return Intl.message(
+      'ND',
+      name: 'nd',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `None`
+  String get none {
+    return Intl.message(
+      'None',
+      name: 'none',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Cancel`
   String get cancel {
     return Intl.message(

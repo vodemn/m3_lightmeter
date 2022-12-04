@@ -6,6 +6,8 @@
     "fastestExposurePair": "Fastest",
     "slowestExposurePair": "Slowest",
     "iso": "ISO",
+    "nd": "ND",
+    "none": "None",
     "cancel": "Cancel",
     "select": "Select",
     "settings": "Settings",

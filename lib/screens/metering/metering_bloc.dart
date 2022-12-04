@@ -1,8 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/models/aperture_value.dart';
 import 'package:lightmeter/models/exposure_pair.dart';
+import 'package:lightmeter/models/iso_value.dart';
+import 'package:lightmeter/models/nd_value.dart';
 import 'package:lightmeter/models/photography_value.dart';
+import 'package:lightmeter/models/shutter_speed_value.dart';
 import 'package:lightmeter/utils/log_2.dart';
 
 import 'metering_event.dart';
@@ -21,11 +25,12 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
             iso: isoValues.where((element) => element.value == 100).first,
             ev: 21.3,
             evCompensation: 0.0,
-            nd: 0.0,
+            nd: ndValues.first,
             exposurePairs: [],
           ),
         ) {
     on<IsoChangedEvent>(_onIsoChanged);
+    on<NdChangedEvent>(_onNdChanged);
     on<MeasureEvent>(_onMeasure);
 
     add(const MeasureEvent());
@@ -42,10 +47,19 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     ));
   }
 
+  void _onNdChanged(NdChangedEvent event, Emitter emit) {
+    final ev = state.ev - event.ndValue.stopReduction + state.nd.stopReduction;
+    emit(MeteringState(
+      iso: state.iso,
+      ev: ev,
+      evCompensation: state.evCompensation,
+      nd: event.ndValue,
+      exposurePairs: _buildExposureValues(ev),
+    ));
+  }
+
   /// https://www.scantips.com/lights/exposurecalc.html
   void _onMeasure(_, Emitter emit) {
-    double log2(double x) => log(x) / log(2);
-
     final aperture = _apertureValues[_random.nextInt(_apertureValues.length)];
     final shutterSpeed = _shutterSpeedValues[_random.nextInt(_shutterSpeedValues.thirdStops().length)];
     final iso = _isoValues[_random.nextInt(_isoValues.thirdStops().length)];

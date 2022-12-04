@@ -1,6 +1,6 @@
-part of 'photography_value.dart';
+import 'photography_value.dart';
 
-class ShutterSpeedValue extends PhotographyValue<double> {
+class ShutterSpeedValue extends PhotographyStopValue<double> {
   final bool isFraction;
 
   const ShutterSpeedValue(super.rawValue, this.isFraction, super.stopType);

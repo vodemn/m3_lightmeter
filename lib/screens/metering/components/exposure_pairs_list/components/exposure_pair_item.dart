@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/models/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-class ExposurePaitListItem<T extends PhotographyValue> extends StatelessWidget {
+class ExposurePaitListItem<T extends PhotographyStopValue> extends StatelessWidget {
   final T value;
   final bool tickOnTheLeft;
 
