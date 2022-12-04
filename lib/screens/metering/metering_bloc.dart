@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/models/exposure_pair.dart';
 import 'package:lightmeter/models/photography_value.dart';
+import 'package:lightmeter/utils/log_2.dart';
 
 import 'metering_event.dart';
 import 'metering_state.dart';
@@ -24,9 +25,21 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
             exposurePairs: [],
           ),
         ) {
+    on<IsoChangedEvent>(_onIsoChanged);
     on<MeasureEvent>(_onMeasure);
 
     add(const MeasureEvent());
+  }
+
+  void _onIsoChanged(IsoChangedEvent event, Emitter emit) {
+    final ev = state.ev + log2(event.isoValue.value / state.iso.value);
+    emit(MeteringState(
+      iso: event.isoValue,
+      ev: ev,
+      evCompensation: state.evCompensation,
+      nd: state.nd,
+      exposurePairs: _buildExposureValues(ev),
+    ));
   }
 
   /// https://www.scantips.com/lights/exposurecalc.html
@@ -39,14 +52,13 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
     final evAtSystemIso = log2(pow(aperture.value, 2).toDouble()) - log2(shutterSpeed.value);
     final ev = evAtSystemIso - log2(iso.value / state.iso.value);
-    final exposurePairs = _buildExposureValues(ev);
 
     emit(MeteringState(
       iso: state.iso,
       ev: ev,
       evCompensation: state.evCompensation,
       nd: state.nd,
-      exposurePairs: exposurePairs,
+      exposurePairs: _buildExposureValues(ev),
     ));
   }
 

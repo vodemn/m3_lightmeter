@@ -18,6 +18,7 @@ class MeteringTopBar extends StatelessWidget {
   final double ev;
   final IsoValue iso;
   final double nd;
+  final ValueChanged<IsoValue> onIsoChanged;
 
   MeteringTopBar({
     required this.fastest,
@@ -25,6 +26,7 @@ class MeteringTopBar extends StatelessWidget {
     required this.ev,
     required this.iso,
     required this.nd,
+    required this.onIsoChanged,
     super.key,
   });
 
@@ -108,7 +110,7 @@ class MeteringTopBar extends StatelessWidget {
                                     _isoDialogKey.currentState?.close();
                                   },
                                   onSelect: (value) {
-                                    _isoDialogKey.currentState?.close();
+                                    _isoDialogKey.currentState?.close().then((_) => onIsoChanged(value));
                                   },
                                 ),
                               ),
