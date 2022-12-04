@@ -64,7 +64,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     final shutterSpeed = _shutterSpeedValues[_random.nextInt(_shutterSpeedValues.thirdStops().length)];
     final iso = _isoValues[_random.nextInt(_isoValues.thirdStops().length)];
 
-    final evAtSystemIso = log2(pow(aperture.value, 2).toDouble()) - log2(shutterSpeed.value);
+    final evAtSystemIso = log2(pow(aperture.value, 2).toDouble() / shutterSpeed.value);
     final ev = evAtSystemIso - log2(iso.value / state.iso.value);
 
     emit(MeteringState(

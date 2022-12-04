@@ -25,11 +25,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "caffeine": MessageLookupByLibrary.simpleMessage("Caffeine"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "fastestExposurePair": MessageLookupByLibrary.simpleMessage("Fastest"),
+        "filmSpeed": MessageLookupByLibrary.simpleMessage("Film speed"),
         "haptics": MessageLookupByLibrary.simpleMessage("Haptics"),
         "iso": MessageLookupByLibrary.simpleMessage("ISO"),
         "keepsScreenOn":
             MessageLookupByLibrary.simpleMessage("Keeps screen on"),
         "nd": MessageLookupByLibrary.simpleMessage("ND"),
+        "ndFilterFactor": MessageLookupByLibrary.simpleMessage(
+            "Neutral density filter factor"),
         "none": MessageLookupByLibrary.simpleMessage("None"),
         "openSettings": MessageLookupByLibrary.simpleMessage("Open settings"),
         "permissionNeeded":

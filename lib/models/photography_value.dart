@@ -1,14 +1,31 @@
+import 'dart:math';
+
+import 'package:lightmeter/utils/log_2.dart';
+
 enum StopType { full, half, third }
 
-abstract class PhotographyValue<T> {
+abstract class PhotographyValue<T extends num> {
   final T rawValue;
 
   const PhotographyValue(this.rawValue);
 
   T get value => rawValue;
+
+  /// EV difference between `this` and `other`
+  double evDifference(PhotographyValue other) => log2(max(1, other.value) / max(1, value));
+
+  String toStringDifference(PhotographyValue other) {
+    final ev = log2(max(1, other.value) / max(1, value));
+    final buffer = StringBuffer();
+    if (ev > 0) {
+      buffer.write('+');
+    }
+    buffer.write(ev.toStringAsFixed(1));
+    return buffer.toString();
+  }
 }
 
-abstract class PhotographyStopValue<T> extends PhotographyValue<T> {
+abstract class PhotographyStopValue<T extends num> extends PhotographyValue<T> {
   final StopType stopType;
 
   const PhotographyStopValue(super.rawValue, this.stopType);

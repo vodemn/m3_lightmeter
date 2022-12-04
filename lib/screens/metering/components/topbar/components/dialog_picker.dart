@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/models/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-class MeteringScreenDialogPicker<T> extends StatefulWidget {
+typedef DialogPickerItemBuilder<T extends PhotographyValue> = Widget Function(BuildContext, T);
+typedef DialogPickerEvDifferenceBuilder<T extends PhotographyValue> = String Function(T selected, T other);
+
+class MeteringScreenDialogPicker<T extends PhotographyValue> extends StatefulWidget {
   final String title;
+  final String subtitle;
   final T initialValue;
   final List<T> values;
-  final Widget Function(BuildContext context, T value) itemTitleBuilder;
+  final DialogPickerItemBuilder<T> itemTitleBuilder;
+  final DialogPickerEvDifferenceBuilder<T> evDifferenceBuilder;
   final VoidCallback onCancel;
   final ValueChanged onSelect;
 
   const MeteringScreenDialogPicker({
     required this.title,
+    required this.subtitle,
     required this.initialValue,
     required this.values,
     required this.itemTitleBuilder,
+    required this.evDifferenceBuilder,
     required this.onCancel,
     required this.onSelect,
     super.key,
@@ -24,34 +32,67 @@ class MeteringScreenDialogPicker<T> extends StatefulWidget {
   State<MeteringScreenDialogPicker<T>> createState() => _MeteringScreenDialogPickerState<T>();
 }
 
-class _MeteringScreenDialogPickerState<T> extends State<MeteringScreenDialogPicker<T>> {
+class _MeteringScreenDialogPickerState<T extends PhotographyValue> extends State<MeteringScreenDialogPicker<T>> {
   late T _selectedValue = widget.initialValue;
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(Dimens.grid56 * widget.values.indexOf(_selectedValue));
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            Dimens.paddingL,
-            Dimens.paddingL,
-            Dimens.paddingL,
-            Dimens.paddingM,
+        ColoredBox(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  Dimens.paddingL,
+                  Dimens.paddingL,
+                  Dimens.paddingL,
+                  Dimens.paddingM,
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      widget.title,
+                      style: Theme.of(context).textTheme.headlineSmall!,
+                    ),
+                    const SizedBox(height: Dimens.grid16),
+                    Text(
+                      widget.subtitle,
+                      style: Theme.of(context).textTheme.bodyMedium!,
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                height: 0,
+              ),
+            ],
           ),
-          child: Text(
-            widget.title,
-            style: Theme.of(context).textTheme.headlineSmall!,
-          ),
-        ),
-        Divider(
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
-          height: 0,
         ),
         Expanded(
           child: ListView.builder(
+            controller: _scrollController,
             padding: EdgeInsets.zero,
             itemCount: widget.values.length,
+            itemExtent: Dimens.grid56,
             itemBuilder: (context, index) => RadioListTile(
               value: widget.values[index],
               groupValue: _selectedValue,
@@ -59,6 +100,9 @@ class _MeteringScreenDialogPickerState<T> extends State<MeteringScreenDialogPick
                 style: Theme.of(context).textTheme.bodyLarge!,
                 child: widget.itemTitleBuilder(context, widget.values[index]),
               ),
+              secondary: widget.values[index].value != _selectedValue.value
+                  ? Text('${widget.evDifferenceBuilder.call(_selectedValue, widget.values[index])} EV')
+                  : null,
               onChanged: (value) {
                 if (value != null) {
                   setState(() {
@@ -69,25 +113,32 @@ class _MeteringScreenDialogPickerState<T> extends State<MeteringScreenDialogPick
             ),
           ),
         ),
-        Divider(
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
-          height: 0,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(Dimens.paddingL),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.max,
+        ColoredBox(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          child: Column(
             children: [
-              const Spacer(),
-              TextButton(
-                onPressed: widget.onCancel,
-                child: Text(S.of(context).cancel),
+              Divider(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                height: 0,
               ),
-              const SizedBox(width: Dimens.grid16),
-              TextButton(
-                onPressed: () => widget.onSelect(_selectedValue),
-                child: Text(S.of(context).select),
+              Padding(
+                padding: const EdgeInsets.all(Dimens.paddingL),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const Spacer(),
+                    TextButton(
+                      onPressed: widget.onCancel,
+                      child: Text(S.of(context).cancel),
+                    ),
+                    const SizedBox(width: Dimens.grid16),
+                    TextButton(
+                      onPressed: () => widget.onSelect(_selectedValue),
+                      child: Text(S.of(context).select),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

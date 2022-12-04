@@ -13,8 +13,6 @@ import 'models/reading_value.dart';
 
 class MeteringTopBar extends StatelessWidget {
   static const _columnsCount = 3;
-  final _isoDialogKey = GlobalKey<AnimatedDialogState>();
-  final _ndDialogKey = GlobalKey<AnimatedDialogState>();
 
   final ExposurePair? fastest;
   final ExposurePair? slowest;
@@ -24,7 +22,7 @@ class MeteringTopBar extends StatelessWidget {
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
 
-  MeteringTopBar({
+  const MeteringTopBar({
     required this.fastest,
     required this.slowest,
     required this.ev,
@@ -94,16 +92,13 @@ class MeteringTopBar extends StatelessWidget {
                             SizedBox(
                               width: columnWidth,
                               child: _AnimatedDialogPicker(
-                                key: _isoDialogKey,
                                 title: S.of(context).iso,
+                                subtitle: S.of(context).filmSpeed,
                                 selectedValue: iso,
                                 values: isoValues,
-                                itemTitleBuilder: (context, value) => Text(
-                                  value.value.toString(),
-                                  style: value.stopType == StopType.full
-                                      ? null // use default
-                                      : Theme.of(context).textTheme.bodySmall,
-                                ),
+                                itemTitleBuilder: (_, value) => Text(value.value.toString()),
+                                // using ascending order, because increase in film speed rises EV
+                                evDifferenceBuilder: (selected, other) => selected.toStringDifference(other),
                                 onChanged: onIsoChanged,
                               ),
                             ),
@@ -130,13 +125,15 @@ class MeteringTopBar extends StatelessWidget {
                         ),
                         const _InnerPadding(),
                         _AnimatedDialogPicker(
-                          key: _ndDialogKey,
                           title: S.of(context).nd,
+                          subtitle: S.of(context).ndFilterFactor,
                           selectedValue: nd,
                           values: ndValues,
-                          itemTitleBuilder: (context, value) => Text(
+                          itemTitleBuilder: (_, value) => Text(
                             value.value == 0 ? S.of(context).none : value.value.toString(),
                           ),
+                          // using descending order, because ND filter darkens image & lowers EV
+                          evDifferenceBuilder: (selected, other) => other.toStringDifference(selected),
                           onChanged: onNdChanged,
                         ),
                       ],
@@ -156,33 +153,50 @@ class _InnerPadding extends SizedBox {
   const _InnerPadding() : super(height: Dimens.grid16, width: Dimens.grid16);
 }
 
-class _AnimatedDialogPicker<T extends PhotographyValue> extends AnimatedDialog {
+class _AnimatedDialogPicker<T extends PhotographyValue> extends StatelessWidget {
+  final _key = GlobalKey<AnimatedDialogState>();
+  final String title;
+  final String subtitle;
+  final T selectedValue;
+  final List<T> values;
+  final DialogPickerItemBuilder<T> itemTitleBuilder;
+  final DialogPickerEvDifferenceBuilder<T> evDifferenceBuilder;
+  final ValueChanged<T> onChanged;
+
   _AnimatedDialogPicker({
-    required GlobalKey<AnimatedDialogState> key,
-    required String title,
-    required T selectedValue,
-    required List<T> values,
-    required Widget Function(BuildContext, T) itemTitleBuilder,
-    required ValueChanged<T> onChanged,
-  }) : super(
-          key: key,
-          closedChild: ReadingContainer.singleValue(
-            value: ReadingValue(
-              label: title,
-              value: selectedValue.value.toString(),
-            ),
-          ),
-          openedChild: MeteringScreenDialogPicker(
-            title: title,
-            initialValue: selectedValue,
-            values: values,
-            itemTitleBuilder: itemTitleBuilder,
-            onCancel: () {
-              key.currentState?.close();
-            },
-            onSelect: (value) {
-              key.currentState?.close().then((_) => onChanged(value));
-            },
-          ),
-        );
+    required this.title,
+    required this.subtitle,
+    required this.selectedValue,
+    required this.values,
+    required this.itemTitleBuilder,
+    required this.evDifferenceBuilder,
+    required this.onChanged,
+  }) : super();
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedDialog(
+      key: _key,
+      closedChild: ReadingContainer.singleValue(
+        value: ReadingValue(
+          label: title,
+          value: selectedValue.value.toString(),
+        ),
+      ),
+      openedChild: MeteringScreenDialogPicker<T>(
+        title: title,
+        subtitle: subtitle,
+        initialValue: selectedValue,
+        values: values,
+        itemTitleBuilder: itemTitleBuilder,
+        evDifferenceBuilder: evDifferenceBuilder,
+        onCancel: () {
+          _key.currentState?.close();
+        },
+        onSelect: (value) {
+          _key.currentState?.close().then((_) => onChanged(value));
+        },
+      ),
+    );
+  }
 }

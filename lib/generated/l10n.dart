@@ -110,11 +110,31 @@ class S {
     );
   }
 
+  /// `Film speed`
+  String get filmSpeed {
+    return Intl.message(
+      'Film speed',
+      name: 'filmSpeed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `ND`
   String get nd {
     return Intl.message(
       'ND',
       name: 'nd',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Neutral density filter factor`
+  String get ndFilterFactor {
+    return Intl.message(
+      'Neutral density filter factor',
+      name: 'ndFilterFactor',
       desc: '',
       args: [],
     );
