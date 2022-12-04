@@ -55,7 +55,10 @@ class _MeteringScreenDialogPickerState<T> extends State<MeteringScreenDialogPick
             itemBuilder: (context, index) => RadioListTile(
               value: widget.values[index],
               groupValue: _selectedValue,
-              title: widget.itemTitleBuilder(context, widget.values[index]),
+              title: DefaultTextStyle(
+                style: Theme.of(context).textTheme.bodyLarge!,
+                child: widget.itemTitleBuilder(context, widget.values[index]),
+              ),
               onChanged: (value) {
                 if (value != null) {
                   setState(() {

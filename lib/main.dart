@@ -36,10 +36,11 @@ class _ApplicationState extends State<Application> with TickerProviderStateMixin
   void initState() {
     super.initState();
     final mySystemTheme = SystemUiOverlayStyle.light.copyWith(
-      statusBarColor: lightColorScheme.surface,
+      statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,
       statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: lightColorScheme.surface,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
     );
     SystemChrome.setSystemUIOverlayStyle(mySystemTheme);
     // 0 - collapsed

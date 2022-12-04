@@ -93,31 +93,18 @@ class MeteringTopBar extends StatelessWidget {
                             const _InnerPadding(),
                             SizedBox(
                               width: columnWidth,
-                              child: AnimatedDialog(
+                              child: _AnimatedDialogPicker(
                                 key: _isoDialogKey,
-                                closedChild: ReadingContainer.singleValue(
-                                  value: ReadingValue(
-                                    label: S.of(context).iso,
-                                    value: iso.value.toString(),
-                                  ),
+                                title: S.of(context).iso,
+                                selectedValue: iso,
+                                values: isoValues,
+                                itemTitleBuilder: (context, value) => Text(
+                                  value.value.toString(),
+                                  style: value.stopType == StopType.full
+                                      ? null // use default
+                                      : Theme.of(context).textTheme.bodySmall,
                                 ),
-                                openedChild: MeteringScreenDialogPicker(
-                                  title: S.of(context).iso,
-                                  initialValue: iso,
-                                  values: isoValues,
-                                  itemTitleBuilder: (context, value) => Text(
-                                    value.value.toString(),
-                                    style: value.stopType == StopType.full
-                                        ? Theme.of(context).textTheme.bodyLarge
-                                        : Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  onCancel: () {
-                                    _isoDialogKey.currentState?.close();
-                                  },
-                                  onSelect: (value) {
-                                    _isoDialogKey.currentState?.close().then((_) => onIsoChanged(value));
-                                  },
-                                ),
+                                onChanged: onIsoChanged,
                               ),
                             ),
                           ],
@@ -142,29 +129,15 @@ class MeteringTopBar extends StatelessWidget {
                           ),
                         ),
                         const _InnerPadding(),
-                        AnimatedDialog(
+                        _AnimatedDialogPicker(
                           key: _ndDialogKey,
-                          closedChild: ReadingContainer.singleValue(
-                            value: ReadingValue(
-                              label: S.of(context).nd,
-                              value: nd.value.toString(),
-                            ),
+                          title: S.of(context).nd,
+                          selectedValue: nd,
+                          values: ndValues,
+                          itemTitleBuilder: (context, value) => Text(
+                            value.value == 0 ? S.of(context).none : value.value.toString(),
                           ),
-                          openedChild: MeteringScreenDialogPicker(
-                            title: S.of(context).nd,
-                            initialValue: nd,
-                            values: ndValues,
-                            itemTitleBuilder: (context, value) => Text(
-                              value.value == 0 ? S.of(context).none : value.value.toString(),
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                            onCancel: () {
-                              _ndDialogKey.currentState?.close();
-                            },
-                            onSelect: (value) {
-                              _ndDialogKey.currentState?.close().then((_) => onNdChanged(value));
-                            },
-                          ),
+                          onChanged: onNdChanged,
                         ),
                       ],
                     ),
@@ -181,4 +154,35 @@ class MeteringTopBar extends StatelessWidget {
 
 class _InnerPadding extends SizedBox {
   const _InnerPadding() : super(height: Dimens.grid16, width: Dimens.grid16);
+}
+
+class _AnimatedDialogPicker<T extends PhotographyValue> extends AnimatedDialog {
+  _AnimatedDialogPicker({
+    required GlobalKey<AnimatedDialogState> key,
+    required String title,
+    required T selectedValue,
+    required List<T> values,
+    required Widget Function(BuildContext, T) itemTitleBuilder,
+    required ValueChanged<T> onChanged,
+  }) : super(
+          key: key,
+          closedChild: ReadingContainer.singleValue(
+            value: ReadingValue(
+              label: title,
+              value: selectedValue.value.toString(),
+            ),
+          ),
+          openedChild: MeteringScreenDialogPicker(
+            title: title,
+            initialValue: selectedValue,
+            values: values,
+            itemTitleBuilder: itemTitleBuilder,
+            onCancel: () {
+              key.currentState?.close();
+            },
+            onSelect: (value) {
+              key.currentState?.close().then((_) => onChanged(value));
+            },
+          ),
+        );
 }
