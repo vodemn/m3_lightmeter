@@ -51,7 +51,7 @@ class _ReadingValueBuilder extends StatelessWidget {
           reading.label,
           style: textTheme.labelMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimaryContainer),
         ),
-        const SizedBox(height: Dimens.grid4),
+        const SizedBox(height: Dimens.grid8),
         Text(
           reading.value,
           style: textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimaryContainer),

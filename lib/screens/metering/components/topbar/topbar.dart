@@ -12,8 +12,6 @@ import 'components/reading_container.dart';
 import 'models/reading_value.dart';
 
 class MeteringTopBar extends StatelessWidget {
-  static const _columnsCount = 3;
-
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final double ev;
@@ -35,8 +33,6 @@ class MeteringTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final columnWidth =
-        (MediaQuery.of(context).size.width - Dimens.paddingM * 2 - Dimens.grid16 * (_columnsCount - 1)) / 3;
     return ClipRRect(
       borderRadius: const BorderRadius.only(
         bottomLeft: Radius.circular(Dimens.borderRadiusL),
@@ -50,96 +46,88 @@ class MeteringTopBar extends StatelessWidget {
             bottom: false,
             child: MediaQuery(
               data: MediaQuery.of(context),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(
-                          height: columnWidth / 3 * 4,
-                          child: ReadingContainer(
-                            values: [
-                              ReadingValue(
-                                label: S.of(context).fastestExposurePair,
-                                value: fastest != null
-                                    ? '${fastest!.aperture.toString()} - ${fastest!.shutterSpeed.toString()}'
-                                    : 'N/A',
-                              ),
-                              ReadingValue(
-                                label: S.of(context).slowestExposurePair,
-                                value: fastest != null
-                                    ? '${slowest!.aperture.toString()} - ${slowest!.shutterSpeed.toString()}'
-                                    : 'N/A',
-                              ),
-                            ],
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            child: ReadingContainer(
+                              values: [
+                                ReadingValue(
+                                  label: S.of(context).fastestExposurePair,
+                                  value: fastest != null
+                                      ? '${fastest!.aperture.toString()} - ${fastest!.shutterSpeed.toString()}'
+                                      : 'N/A',
+                                ),
+                                ReadingValue(
+                                  label: S.of(context).slowestExposurePair,
+                                  value: fastest != null
+                                      ? '${slowest!.aperture.toString()} - ${slowest!.shutterSpeed.toString()}'
+                                      : 'N/A',
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const _InnerPadding(),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: columnWidth,
-                              child: ReadingContainer.singleValue(
-                                value: ReadingValue(
-                                  label: 'EV',
-                                  value: ev.toStringAsFixed(1),
+                          const _InnerPadding(),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _AnimatedDialogPicker(
+                                  title: S.of(context).iso,
+                                  subtitle: S.of(context).filmSpeed,
+                                  selectedValue: iso,
+                                  values: isoValues,
+                                  itemTitleBuilder: (_, value) => Text(value.value.toString()),
+                                  // using ascending order, because increase in film speed rises EV
+                                  evDifferenceBuilder: (selected, other) => selected.toStringDifference(other),
+                                  onChanged: onIsoChanged,
                                 ),
                               ),
-                            ),
-                            const _InnerPadding(),
-                            SizedBox(
-                              width: columnWidth,
-                              child: _AnimatedDialogPicker(
-                                title: S.of(context).iso,
-                                subtitle: S.of(context).filmSpeed,
-                                selectedValue: iso,
-                                values: isoValues,
-                                itemTitleBuilder: (_, value) => Text(value.value.toString()),
-                                // using ascending order, because increase in film speed rises EV
-                                evDifferenceBuilder: (selected, other) => selected.toStringDifference(other),
-                                onChanged: onIsoChanged,
+                              const _InnerPadding(),
+                              Expanded(
+                                child: _AnimatedDialogPicker(
+                                  title: S.of(context).nd,
+                                  subtitle: S.of(context).ndFilterFactor,
+                                  selectedValue: nd,
+                                  values: ndValues,
+                                  itemTitleBuilder: (_, value) => Text(
+                                    value.value == 0 ? S.of(context).none : value.value.toString(),
+                                  ),
+                                  // using descending order, because ND filter darkens image & lowers EV
+                                  evDifferenceBuilder: (selected, other) => other.toStringDifference(selected),
+                                  onChanged: onNdChanged,
+                                ),
                               ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    const _InnerPadding(),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          AnimatedDialog(
+                            openedSize: Size(
+                              MediaQuery.of(context).size.width - Dimens.paddingM * 2,
+                              (MediaQuery.of(context).size.width - Dimens.paddingM * 2) / 3 * 4,
                             ),
-                          ],
-                        )
-                      ],
+                            child: const AspectRatio(
+                              aspectRatio: 3 / 4,
+                              child: ColoredBox(color: Colors.black),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const _InnerPadding(),
-                  SizedBox(
-                    width: columnWidth,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        AnimatedDialog(
-                          openedSize: Size(
-                            MediaQuery.of(context).size.width - Dimens.paddingM * 2,
-                            (MediaQuery.of(context).size.width - Dimens.paddingM * 2) / 3 * 4,
-                          ),
-                          child: const AspectRatio(
-                            aspectRatio: 3 / 4,
-                            child: ColoredBox(color: Colors.black),
-                          ),
-                        ),
-                        const _InnerPadding(),
-                        _AnimatedDialogPicker(
-                          title: S.of(context).nd,
-                          subtitle: S.of(context).ndFilterFactor,
-                          selectedValue: nd,
-                          values: ndValues,
-                          itemTitleBuilder: (_, value) => Text(
-                            value.value == 0 ? S.of(context).none : value.value.toString(),
-                          ),
-                          // using descending order, because ND filter darkens image & lowers EV
-                          evDifferenceBuilder: (selected, other) => other.toStringDifference(selected),
-                          onChanged: onNdChanged,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -150,7 +138,7 @@ class MeteringTopBar extends StatelessWidget {
 }
 
 class _InnerPadding extends SizedBox {
-  const _InnerPadding() : super(height: Dimens.grid16, width: Dimens.grid16);
+  const _InnerPadding() : super(height: Dimens.grid8, width: Dimens.grid8);
 }
 
 class _AnimatedDialogPicker<T extends PhotographyValue> extends StatelessWidget {
