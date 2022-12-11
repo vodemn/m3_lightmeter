@@ -4,6 +4,7 @@ import 'package:lightmeter/res/dimens.dart';
 
 import 'components/caffeine_tile.dart';
 import 'components/haptics_tile.dart';
+import 'components/fractional_stops/list_tile_fractional_stops.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -36,6 +37,7 @@ class SettingsScreen extends StatelessWidget {
           SliverList(
             delegate: SliverChildListDelegate(
               [
+                const FractionalStopsListTile(),
                 const CaffeineListTile(),
                 const HapticsListTile(),
               ],

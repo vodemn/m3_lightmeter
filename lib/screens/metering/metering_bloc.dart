@@ -13,11 +13,11 @@ import 'metering_event.dart';
 import 'metering_state.dart';
 
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
-  final StopType stopType;
-  late final _apertureValues = apertureValues.whereStopType(stopType);
-  late final _shutterSpeedValues = shutterSpeedValues.whereStopType(stopType);
-  late final _isoValues = isoValues.whereStopType(stopType);
+  List<ApertureValue> get _apertureValues => apertureValues.whereStopType(stopType);
+  List<ShutterSpeedValue> get _shutterSpeedValues => shutterSpeedValues.whereStopType(stopType);
   final _random = Random();
+
+  StopType stopType;
 
   MeteringBloc(this.stopType)
       : super(
@@ -29,11 +29,23 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
             exposurePairs: [],
           ),
         ) {
+    on<StopTypeChangedEvent>(_onStopTypeChanged);
     on<IsoChangedEvent>(_onIsoChanged);
     on<NdChangedEvent>(_onNdChanged);
     on<MeasureEvent>(_onMeasure);
 
     add(const MeasureEvent());
+  }
+
+  void _onStopTypeChanged(StopTypeChangedEvent event, Emitter emit) {
+    stopType = event.stopType;
+    emit(MeteringState(
+      iso: state.iso,
+      ev: state.ev,
+      evCompensation: state.evCompensation,
+      nd: state.nd,
+      exposurePairs: _buildExposureValues(state.ev),
+    ));
   }
 
   void _onIsoChanged(IsoChangedEvent event, Emitter emit) {
@@ -62,7 +74,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   void _onMeasure(_, Emitter emit) {
     final aperture = _apertureValues[_random.nextInt(_apertureValues.length)];
     final shutterSpeed = _shutterSpeedValues[_random.nextInt(_shutterSpeedValues.thirdStops().length)];
-    final iso = _isoValues[_random.nextInt(_isoValues.thirdStops().length)];
+    final iso = isoValues[_random.nextInt(isoValues.thirdStops().length)];
 
     final evAtSystemIso = log2(pow(aperture.value, 2).toDouble() / shutterSpeed.value);
     final ev = evAtSystemIso - log2(iso.value / state.iso.value);

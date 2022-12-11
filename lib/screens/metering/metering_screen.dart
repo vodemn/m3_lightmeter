@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/models/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/settings_page_route_builder.dart';
 
@@ -41,6 +42,12 @@ class _MeteringScreenState extends State<MeteringScreen> {
         _secondBuild = true;
       });
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.read<MeteringBloc>().add(StopTypeChangedEvent(context.watch<StopType>()));
   }
 
   @override
