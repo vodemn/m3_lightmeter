@@ -28,7 +28,7 @@ class MeteringBottomControls extends StatelessWidget {
         child: SafeArea(
           top: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
+            padding: const EdgeInsets.symmetric(vertical: Dimens.paddingL),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

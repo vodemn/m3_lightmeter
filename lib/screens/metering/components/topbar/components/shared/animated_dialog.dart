@@ -22,7 +22,6 @@ class AnimatedDialog extends StatefulWidget {
 
 class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProviderStateMixin {
   final GlobalKey _key = GlobalKey();
-  final LayerLink _layerLink = LayerLink();
 
   late final Size _closedSize;
   late final Offset _closedOffset;
@@ -36,7 +35,8 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
   late final Animation<double> _borderRadiusAnimation;
   late final Animation<double> _closedOpacityAnimation;
   late final Animation<double> _openedOpacityAnimation;
-  OverlayEntry? _overlayEntry;
+
+  bool _isDialogShown = false;
 
   @override
   void initState() {
@@ -88,8 +88,8 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         begin: _closedSize,
         end: widget.openedSize ??
             Size(
-              mediaQuery.size.width - mediaQuery.padding.horizontal - Dimens.paddingM * 4,
-              mediaQuery.size.height - mediaQuery.padding.vertical - Dimens.paddingM * 4,
+              mediaQuery.size.width - mediaQuery.padding.horizontal - Dimens.paddingM * 2,
+              mediaQuery.size.height - mediaQuery.padding.vertical - Dimens.paddingM * 2,
             ),
       );
       _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
@@ -120,16 +120,13 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
     return InkWell(
       key: _key,
       onTap: _openDialog,
-      child: CompositedTransformTarget(
-        link: _layerLink,
-        child: Opacity(
-          opacity: _overlayEntry != null ? 0 : 1,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
-            child: ColoredBox(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: widget.child ?? widget.closedChild,
-            ),
+      child: Opacity(
+        opacity: _isDialogShown ? 0 : 1,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
+          child: ColoredBox(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: widget.child ?? widget.closedChild,
           ),
         ),
       ),
@@ -137,12 +134,14 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
   }
 
   void _openDialog() {
-    setState(() {
-      _overlayEntry = OverlayEntry(
-        builder: (context) => CompositedTransformFollower(
-          offset: Offset(-_closedOffset.dx, -_closedOffset.dy),
-          link: _layerLink,
-          showWhenUnlinked: false,
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        barrierColor: Colors.transparent,
+        opaque: false,
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+        pageBuilder: (_, __, ___) => WillPopScope(
+          onWillPop: () => _animateReverse().then((value) => true),
           child: _AnimatedOverlay(
             controller: _animationController,
             barrierColorAnimation: _barrierColorAnimation,
@@ -164,20 +163,27 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
             child: widget.child,
           ),
         ),
-      );
+      ),
+    );
+    _animateForward();
+  }
+
+  void _animateForward() {
+    setState(() {
+      _isDialogShown = true;
     });
-    Overlay.of(context)?.insert(_overlayEntry!);
     _animationController.forward();
   }
 
-  Future<void> close() async {
+  Future<void> _animateReverse() async {
     _animationController.reverse();
     await Future.delayed(_animationController.reverseDuration! * timeDilation);
-    _overlayEntry?.remove();
     setState(() {
-      _overlayEntry = null;
+      _isDialogShown = false;
     });
   }
+
+  Future<void> close() => _animateReverse().then((_) => Navigator.of(context).pop());
 }
 
 class _AnimatedOverlay extends StatelessWidget {
