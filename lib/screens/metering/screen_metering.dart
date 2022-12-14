@@ -7,9 +7,9 @@ import 'package:lightmeter/screens/settings/settings_screen.dart';
 import 'components/bottom_controls/bottom_controls.dart';
 import 'components/exposure_pairs_list/exposure_pairs_list.dart';
 import 'components/topbar/topbar.dart';
-import 'metering_bloc.dart';
-import 'metering_event.dart';
-import 'metering_state.dart';
+import 'bloc_metering.dart';
+import 'event_metering.dart';
+import 'state_metering.dart';
 
 class MeteringScreen extends StatefulWidget {
   const MeteringScreen({super.key});

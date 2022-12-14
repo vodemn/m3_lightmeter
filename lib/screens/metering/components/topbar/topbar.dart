@@ -6,6 +6,7 @@ import 'package:lightmeter/models/nd_value.dart';
 import 'package:lightmeter/models/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
 
+import 'components/camera_preview.dart';
 import 'components/shared/animated_dialog.dart';
 import 'components/dialog_picker.dart';
 import 'components/reading_container.dart';
@@ -74,6 +75,13 @@ class MeteringTopBar extends StatelessWidget {
                             ),
                           ),
                           const _InnerPadding(),
+                          ReadingContainer.singleValue(
+                            value: ReadingValue(
+                              label: 'EV',
+                              value: ev.toString(),
+                            ),
+                          ),
+                          const _InnerPadding(),
                           Row(
                             children: [
                               Expanded(
@@ -111,18 +119,8 @@ class MeteringTopBar extends StatelessWidget {
                     const _InnerPadding(),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          AnimatedDialog(
-                            openedSize: Size(
-                              MediaQuery.of(context).size.width - Dimens.paddingM * 2,
-                              (MediaQuery.of(context).size.width - Dimens.paddingM * 2) / 3 * 4,
-                            ),
-                            child: const AspectRatio(
-                              aspectRatio: 3 / 4,
-                              child: ColoredBox(color: Colors.black),
-                            ),
-                          ),
+                          const CameraView(),
                         ],
                       ),
                     ),

@@ -27,3 +27,9 @@ class NdChangedEvent extends MeteringEvent {
 class MeasureEvent extends MeteringEvent {
   const MeasureEvent();
 }
+
+class MeasuredEvent extends MeteringEvent {
+  final double ev100;
+
+  const MeasuredEvent(this.ev100);
+}
