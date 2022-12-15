@@ -3,12 +3,20 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/topbar/models/reading_value.dart';
 
 class ReadingContainer extends StatelessWidget {
-  final List<_ReadingValueBuilder> _items;
+  late final List<Widget> _items;
 
   ReadingContainer({
     required List<ReadingValue> values,
     super.key,
-  }) : _items = values.map((e) => _ReadingValueBuilder(e)).toList();
+  }) {
+    _items = [];
+    for (int i = 0; i < values.length; i++) {
+      if (i > 0) {
+        _items.add(const SizedBox(height: Dimens.grid8));
+      }
+      _items.add(_ReadingValueBuilder(values[i]));
+    }
+  }
 
   ReadingContainer.singleValue({
     required ReadingValue value,
@@ -25,7 +33,7 @@ class ReadingContainer extends StatelessWidget {
           padding: const EdgeInsets.all(Dimens.paddingM),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: _items,
           ),

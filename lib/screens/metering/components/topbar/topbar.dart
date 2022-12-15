@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/data/ev_source/camera/bloc_camera.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/models/exposure_pair.dart';
 import 'package:lightmeter/models/iso_value.dart';
@@ -47,85 +49,88 @@ class MeteringTopBar extends StatelessWidget {
             bottom: false,
             child: MediaQuery(
               data: MediaQuery.of(context),
-              child: IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            child: ReadingContainer(
-                              values: [
-                                ReadingValue(
-                                  label: S.of(context).fastestExposurePair,
-                                  value: fastest != null
-                                      ? '${fastest!.aperture.toString()} - ${fastest!.shutterSpeed.toString()}'
-                                      : 'N/A',
-                                ),
-                                ReadingValue(
-                                  label: S.of(context).slowestExposurePair,
-                                  value: fastest != null
-                                      ? '${slowest!.aperture.toString()} - ${slowest!.shutterSpeed.toString()}'
-                                      : 'N/A',
-                                ),
-                              ],
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ReadingContainer(
+                          values: [
+                            ReadingValue(
+                              label: S.of(context).fastestExposurePair,
+                              value: fastest != null
+                                  ? '${fastest!.aperture.toString()} - ${fastest!.shutterSpeed.toString()}'
+                                  : 'N/A',
                             ),
-                          ),
-                          const _InnerPadding(),
-                          ReadingContainer.singleValue(
-                            value: ReadingValue(
-                              label: 'EV',
-                              value: ev.toString(),
+                            ReadingValue(
+                              label: S.of(context).slowestExposurePair,
+                              value: fastest != null
+                                  ? '${slowest!.aperture.toString()} - ${slowest!.shutterSpeed.toString()}'
+                                  : 'N/A',
                             ),
+                          ],
+                        ),
+                        /*
+                        const _InnerPadding(),
+                        ReadingContainer.singleValue(
+                          value: ReadingValue(
+                            label: 'EV',
+                            value: ev.toStringAsFixed(1),
                           ),
-                          const _InnerPadding(),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _AnimatedDialogPicker(
-                                  title: S.of(context).iso,
-                                  subtitle: S.of(context).filmSpeed,
-                                  selectedValue: iso,
-                                  values: isoValues,
-                                  itemTitleBuilder: (_, value) => Text(value.value.toString()),
-                                  // using ascending order, because increase in film speed rises EV
-                                  evDifferenceBuilder: (selected, other) => selected.toStringDifference(other),
-                                  onChanged: onIsoChanged,
-                                ),
+                        ),
+                        */
+                        const _InnerPadding(),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _AnimatedDialogPicker(
+                                title: S.of(context).iso,
+                                subtitle: S.of(context).filmSpeed,
+                                selectedValue: iso,
+                                values: isoValues,
+                                itemTitleBuilder: (_, value) => Text(value.value.toString()),
+                                // using ascending order, because increase in film speed rises EV
+                                evDifferenceBuilder: (selected, other) => selected.toStringDifference(other),
+                                onChanged: onIsoChanged,
                               ),
-                              const _InnerPadding(),
-                              Expanded(
-                                child: _AnimatedDialogPicker(
-                                  title: S.of(context).nd,
-                                  subtitle: S.of(context).ndFilterFactor,
-                                  selectedValue: nd,
-                                  values: ndValues,
-                                  itemTitleBuilder: (_, value) => Text(
-                                    value.value == 0 ? S.of(context).none : value.value.toString(),
-                                  ),
-                                  // using descending order, because ND filter darkens image & lowers EV
-                                  evDifferenceBuilder: (selected, other) => other.toStringDifference(selected),
-                                  onChanged: onNdChanged,
+                            ),
+                            const _InnerPadding(),
+                            Expanded(
+                              child: _AnimatedDialogPicker(
+                                title: S.of(context).nd,
+                                subtitle: S.of(context).ndFilterFactor,
+                                selectedValue: nd,
+                                values: ndValues,
+                                itemTitleBuilder: (_, value) => Text(
+                                  value.value == 0 ? S.of(context).none : value.value.toString(),
                                 ),
+                                // using descending order, because ND filter darkens image & lowers EV
+                                evDifferenceBuilder: (selected, other) => other.toStringDifference(selected),
+                                onChanged: onNdChanged,
                               ),
-                            ],
-                          )
-                        ],
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  const _InnerPadding(),
+                  Expanded(
+                    child: AnimatedDialog(
+                      openedSize: Size(
+                        MediaQuery.of(context).size.width - Dimens.paddingM * 2,
+                        (MediaQuery.of(context).size.width - Dimens.paddingM * 2) / 3 * 4,
+                      ),
+                      child: BlocProvider.value(
+                        value: context.read<CameraBloc>(),
+                        child: const CameraView(),
                       ),
                     ),
-                    const _InnerPadding(),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          const CameraView(),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

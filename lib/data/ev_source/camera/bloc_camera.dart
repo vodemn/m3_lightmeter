@@ -67,6 +67,11 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       await _cameraController!.initialize();
       await _cameraController!.setFlashMode(FlashMode.off);
       emit(CameraReadyState(_cameraController!));
+      _takePhoto().then((ev100) {
+        if (ev100 != null) {
+          _communicationBloc.add(communication_event.MeasuredEvent(ev100));
+        }
+      });
     } catch (e) {
       emit(const CameraErrorState());
     }
