@@ -63,13 +63,13 @@ class MeteringTopBar extends StatelessWidget {
                               label: S.of(context).fastestExposurePair,
                               value: fastest != null
                                   ? '${fastest!.aperture.toString()} - ${fastest!.shutterSpeed.toString()}'
-                                  : 'N/A',
+                                  : '-',
                             ),
                             ReadingValue(
                               label: S.of(context).slowestExposurePair,
                               value: fastest != null
                                   ? '${slowest!.aperture.toString()} - ${slowest!.shutterSpeed.toString()}'
-                                  : 'N/A',
+                                  : '-',
                             ),
                           ],
                         ),

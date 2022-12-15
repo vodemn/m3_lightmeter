@@ -22,7 +22,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   List<ApertureValue> get _apertureValues => apertureValues.whereStopType(stopType);
   List<ShutterSpeedValue> get _shutterSpeedValues => shutterSpeedValues.whereStopType(stopType);
-  final _random = Random();
 
   StopType stopType;
 
@@ -30,7 +29,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       : super(
           MeteringState(
             iso: isoValues.where((element) => element.value == 100).first,
-            ev: 21.3,
+            ev: 0.0,
             evCompensation: 0.0,
             nd: ndValues.first,
             exposurePairs: [],
@@ -60,16 +59,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     if (communicationState is communication_states.MeasuredState) {
       add(MeasuredEvent(communicationState.ev100));
     }
-  }
-
-  /// https://www.scantips.com/lights/exposurecalc.html
-  Future<double> measureEv() async {
-    final aperture = _apertureValues[_random.nextInt(_apertureValues.length)];
-    final shutterSpeed = _shutterSpeedValues[_random.nextInt(_shutterSpeedValues.thirdStops().length)];
-    final iso = isoValues[_random.nextInt(isoValues.thirdStops().length)];
-
-    final evAtSystemIso = log2(pow(aperture.value, 2).toDouble() / shutterSpeed.value);
-    return evAtSystemIso - log2(iso.value / state.iso.value);
   }
 
   void _onStopTypeChanged(StopTypeChangedEvent event, Emitter emit) {

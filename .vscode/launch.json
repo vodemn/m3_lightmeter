@@ -12,6 +12,17 @@
                 "--flavor",
                 "dev",
             ],
+            "program": "${workspaceFolder}/lib/main.dart",
+        },
+        {
+            "name": "dev (mock)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "dev",
+            ],
+            "program": "${workspaceFolder}/lib/main_mock.dart",
         },
         {
             "name": "prod",
@@ -21,6 +32,7 @@
                 "--flavor",
                 "prod",
             ],
+            "program": "${workspaceFolder}/lib/main.dart",
         },
     ],
 }

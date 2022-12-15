@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:exif/exif.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/data/ev_source/ev_source_bloc.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_event;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
@@ -14,21 +15,20 @@ import 'package:lightmeter/utils/log_2.dart';
 import 'event_camera.dart';
 import 'state_camera.dart';
 
-class CameraBloc extends Bloc<CameraEvent, CameraState> {
-  final MeteringCommunicationBloc _communicationBloc;
-  late final StreamSubscription<communication_states.MeteringCommunicationState> _communicationSubscription;
-
+class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
   late final _WidgetsBindingObserver _observer;
   CameraController? _cameraController;
   CameraController? get cameraController => _cameraController;
 
-  CameraBloc(this._communicationBloc) : super(const CameraInitState()) {
-    _communicationSubscription = _communicationBloc.stream.listen(_onCommunicationState);
-
+  CameraBloc(MeteringCommunicationBloc communicationBloc)
+      : super(
+          communicationBloc,
+          const CameraInitState(),
+        ) {
     _observer = _WidgetsBindingObserver(_appLifecycleStateObserver);
     WidgetsBinding.instance.addObserver(_observer);
 
-    on<InitializeEvent>(_onInitialized);
+    on<InitializeEvent>(_onInitialize);
 
     add(const InitializeEvent());
   }
@@ -37,21 +37,21 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   Future<void> close() async {
     WidgetsBinding.instance.removeObserver(_observer);
     _cameraController?.dispose();
-    await _communicationSubscription.cancel();
     super.close();
   }
 
-  void _onCommunicationState(communication_states.MeteringCommunicationState communicationState) {
+  @override
+  void onCommunicationState(communication_states.SourceState communicationState) {
     if (communicationState is communication_states.MeasureState) {
       _takePhoto().then((ev100) {
         if (ev100 != null) {
-          _communicationBloc.add(communication_event.MeasuredEvent(ev100));
+          communicationBloc.add(communication_event.MeasuredEvent(ev100));
         }
       });
     }
   }
 
-  Future<void> _onInitialized(_, Emitter emit) async {
+  Future<void> _onInitialize(_, Emitter emit) async {
     emit(const CameraLoadingState());
     try {
       final cameras = await availableCameras();
@@ -69,7 +69,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       emit(CameraReadyState(_cameraController!));
       _takePhoto().then((ev100) {
         if (ev100 != null) {
-          _communicationBloc.add(communication_event.MeasuredEvent(ev100));
+          communicationBloc.add(communication_event.MeasuredEvent(ev100));
         }
       });
     } catch (e) {
