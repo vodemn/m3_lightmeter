@@ -23,7 +23,9 @@ dependencies:
 
 dev_dependencies:
   google_fonts: ^3.0.1
+  flutter_launcher_icons: 0.11.0
   flutter_lints: ^2.0.0
+  flutter_native_splash: 2.2.16
   test: ^1.21.6
 
 dependency_overrides:
@@ -62,6 +64,15 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_icons:
+  image_path_android: "assets/launcher_icon_circle.png"
+  android: "launcher_icon"
+  adaptive_icon_background: "#fafafa"
+  image_path_ios: "assets/launcher_icon_square.png"
+  ios: true
+  remove_alpha_ios: true
+  min_sdk_android: 21 # android min sdk min:16, default 21
 
 flutter_intl:
   enabled: true
