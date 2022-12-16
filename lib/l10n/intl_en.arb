@@ -19,5 +19,10 @@
     "thirdStops": "1/3",
     "caffeine": "Caffeine",
     "keepsScreenOn": "Keeps screen on",
-    "haptics": "Haptics"
+    "haptics": "Haptics",
+    "theme": "Theme",
+    "chooseTheme": "Choose theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystemDefault": "System default"
 }

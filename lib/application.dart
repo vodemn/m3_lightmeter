@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lightmeter/data/ev_source/ev_source_type.dart';
+import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/screens/settings/settings_screen.dart';
 import 'package:provider/provider.dart';
@@ -52,27 +53,27 @@ class _ApplicationState extends State<Application> {
             child: Provider(
               create: (context) => PermissionsService(),
               child: StopTypeProvider(
-                child: MaterialApp(
-                  theme: ThemeData(
-                    useMaterial3: true,
-                    colorScheme: lightColorScheme,
+                child: ThemeProvider(
+                  initialPrimaryColor: const Color(0xFF2196f3),
+                  builder: (context, child) => MaterialApp(
+                    theme: context.watch<ThemeData>(),
+                    localizationsDelegates: const [
+                      S.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: S.delegate.supportedLocales,
+                    builder: (context, child) => MediaQuery(
+                      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                      child: child!,
+                    ),
+                    home: const MeteringFlow(),
+                    routes: {
+                      "metering": (context) => const MeteringFlow(),
+                      "settings": (context) => const SettingsScreen(),
+                    },
                   ),
-                  localizationsDelegates: const [
-                    S.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: S.delegate.supportedLocales,
-                  builder: (context, child) => MediaQuery(
-                    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                    child: child!,
-                  ),
-                  home: const MeteringFlow(),
-                  routes: {
-                    "metering": (context) => const MeteringFlow(),
-                    "settings": (context) => const SettingsScreen(),
-                  },
                 ),
               ),
             ),
