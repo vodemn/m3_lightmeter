@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
-import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/theme.dart';
-import 'package:lightmeter/utils/stop_type_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'shared/dialog_picker.dart';

@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/data/models/photography_value.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/utils/stop_type_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'dialog_fractional_stops.dart';
+import 'shared/dialog_picker.dart';
 
-class FractionalStopsListTile extends StatefulWidget {
-  const FractionalStopsListTile({super.key});
+class StopTypeListTile extends StatelessWidget {
+  const StopTypeListTile({super.key});
 
-  @override
-  State<FractionalStopsListTile> createState() => _FractionalStopsListTileState();
-}
-
-class _FractionalStopsListTileState extends State<FractionalStopsListTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      leading: const Icon(Icons.straighten),
       title: Text(S.of(context).fractionalStops),
-      trailing: Text(selectedType),
+      trailing: Text(_typeToString(context, context.watch<StopType>())),
       onTap: () {
-        showDialog(
+        showDialog<StopType>(
           context: context,
-          builder: (_) => FractionalStopsDialog(selectedType: context.read<StopType>()),
+          builder: (_) => DialogPicker<StopType>(
+            title: S.of(context).showFractionalStops,
+            selectedValue: context.read<StopType>(),
+            values: StopType.values,
+            titleAdapter: _typeToString,
+          ),
         ).then((value) {
           if (value != null) {
             StopTypeProvider.of(context).set(value);
@@ -32,8 +33,8 @@ class _FractionalStopsListTileState extends State<FractionalStopsListTile> {
     );
   }
 
-  String get selectedType {
-    switch (context.watch<StopType>()) {
+  String _typeToString(BuildContext context, StopType stopType) {
+    switch (stopType) {
       case StopType.full:
         return S.of(context).none;
       case StopType.half:

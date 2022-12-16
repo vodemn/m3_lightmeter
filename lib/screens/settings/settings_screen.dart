@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-import 'components/caffeine_tile.dart';
-import 'components/haptics_tile.dart';
-import 'components/fractional_stops/list_tile_fractional_stops.dart';
+import 'components/fractional_stops_tile.dart';
 import 'components/theme_type_tile.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -38,9 +36,9 @@ class SettingsScreen extends StatelessWidget {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                const FractionalStopsListTile(),
-                const CaffeineListTile(),
-                const HapticsListTile(),
+                const StopTypeListTile(),
+                // const CaffeineListTile(),
+                // const HapticsListTile(),
                 const ThemeTypeListTile(),
               ],
             ),

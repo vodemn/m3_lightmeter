@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lightmeter/data/ev_source/ev_source_type.dart';
-import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/screens/settings/settings_screen.dart';
 import 'package:provider/provider.dart';
