@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/models/photography_value.dart';
+import 'package:lightmeter/data/models/photography_value.dart';
 import 'package:lightmeter/utils/stop_type_provider.dart';
 import 'package:provider/provider.dart';
 

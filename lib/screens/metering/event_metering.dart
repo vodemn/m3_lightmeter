@@ -1,6 +1,6 @@
-import 'package:lightmeter/models/iso_value.dart';
-import 'package:lightmeter/models/nd_value.dart';
-import 'package:lightmeter/models/photography_value.dart';
+import 'package:lightmeter/data/models/iso_value.dart';
+import 'package:lightmeter/data/models/nd_value.dart';
+import 'package:lightmeter/data/models/photography_value.dart';
 
 abstract class MeteringEvent {
   const MeteringEvent();

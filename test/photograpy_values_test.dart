@@ -1,7 +1,7 @@
-import 'package:lightmeter/models/aperture_value.dart';
-import 'package:lightmeter/models/iso_value.dart';
-import 'package:lightmeter/models/photography_value.dart';
-import 'package:lightmeter/models/shutter_speed_value.dart';
+import 'package:lightmeter/data/models/aperture_value.dart';
+import 'package:lightmeter/data/models/iso_value.dart';
+import 'package:lightmeter/data/models/photography_value.dart';
+import 'package:lightmeter/data/models/shutter_speed_value.dart';
 import 'package:test/test.dart';
 
 void main() {

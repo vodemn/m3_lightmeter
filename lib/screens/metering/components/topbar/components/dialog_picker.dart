@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/models/photography_value.dart';
+import 'package:lightmeter/data/models/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 typedef DialogPickerItemBuilder<T extends PhotographyValue> = Widget Function(BuildContext, T);

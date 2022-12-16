@@ -2,12 +2,11 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/models/aperture_value.dart';
-import 'package:lightmeter/models/exposure_pair.dart';
-import 'package:lightmeter/models/iso_value.dart';
-import 'package:lightmeter/models/nd_value.dart';
-import 'package:lightmeter/models/photography_value.dart';
-import 'package:lightmeter/models/shutter_speed_value.dart';
+import 'package:lightmeter/data/models/aperture_value.dart';
+import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/data/models/photography_value.dart';
+import 'package:lightmeter/data/models/shutter_speed_value.dart';
+import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
 import 'package:lightmeter/utils/log_2.dart';
@@ -18,6 +17,7 @@ import 'state_metering.dart';
 
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   final MeteringCommunicationBloc _communicationBloc;
+  final UserPreferencesService _userPreferencesService;
   late final StreamSubscription<communication_states.ScreenState> _communicationSubscription;
 
   List<ApertureValue> get _apertureValues => apertureValues.whereStopType(stopType);
@@ -25,13 +25,16 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   StopType stopType;
 
-  MeteringBloc(this._communicationBloc, this.stopType)
-      : super(
+  MeteringBloc(
+    this._communicationBloc,
+    this._userPreferencesService,
+    this.stopType,
+  ) : super(
           MeteringState(
-            iso: isoValues.where((element) => element.value == 100).first,
+            iso: _userPreferencesService.iso,
             ev: 0.0,
             evCompensation: 0.0,
-            nd: ndValues.first,
+            nd: _userPreferencesService.ndFilter,
             exposurePairs: [],
           ),
         ) {
@@ -73,6 +76,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   }
 
   void _onIsoChanged(IsoChangedEvent event, Emitter emit) {
+    _userPreferencesService.iso = event.isoValue;
     final ev = state.ev + log2(event.isoValue.value / state.iso.value);
     emit(MeteringState(
       iso: event.isoValue,
@@ -84,6 +88,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   }
 
   void _onNdChanged(NdChangedEvent event, Emitter emit) {
+    _userPreferencesService.ndFilter = event.ndValue;
     final ev = state.ev - event.ndValue.stopReduction + state.nd.stopReduction;
     emit(MeteringState(
       iso: state.iso,

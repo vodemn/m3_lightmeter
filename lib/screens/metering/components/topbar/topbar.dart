@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/ev_source/camera/bloc_camera.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/models/exposure_pair.dart';
-import 'package:lightmeter/models/iso_value.dart';
-import 'package:lightmeter/models/nd_value.dart';
-import 'package:lightmeter/models/photography_value.dart';
+import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/data/models/iso_value.dart';
+import 'package:lightmeter/data/models/nd_value.dart';
+import 'package:lightmeter/data/models/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 import 'components/camera_preview.dart';
