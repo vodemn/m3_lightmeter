@@ -23,6 +23,7 @@ class ExposurePaitListItem<T extends PhotographyStopValue> extends StatelessWidg
           width: tickLength(),
         ),
       ),
+      if (value.stopType != StopType.full) const SizedBox(width: Dimens.grid8),
     ];
     return Row(
       mainAxisAlignment: tickOnTheLeft ? MainAxisAlignment.start : MainAxisAlignment.end,

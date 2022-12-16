@@ -16,39 +16,56 @@ class ExposurePairsList extends StatelessWidget {
         Positioned.fill(
           child: ListView.builder(
             key: ValueKey(exposurePairs.hashCode),
+            padding: const EdgeInsets.all(Dimens.paddingL),
             itemCount: exposurePairs.length,
-            itemBuilder: (_, index) => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            itemBuilder: (_, index) => Stack(
+              alignment: Alignment.center,
               children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: ExposurePaitListItem(
-                      exposurePairs[index].aperture,
-                      tickOnTheLeft: false,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: ExposurePaitListItem(
+                          exposurePairs[index].aperture,
+                          tickOnTheLeft: false,
+                        ),
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: ExposurePaitListItem(
+                          exposurePairs[index].shutterSpeed,
+                          tickOnTheLeft: true,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: Dimens.grid16),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: ExposurePaitListItem(
-                      exposurePairs[index].shutterSpeed,
-                      tickOnTheLeft: true,
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => Align(
+                      alignment: index == 0
+                          ? Alignment.bottomCenter
+                          : (index == exposurePairs.length - 1 ? Alignment.topCenter : Alignment.center),
+                      child: SizedBox(
+                        height: index == 0 || index == exposurePairs.length - 1
+                            ? constraints.maxHeight / 2
+                            : constraints.maxHeight,
+                        child: ColoredBox(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          child: const SizedBox(width: 1),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-        ),
-        Positioned(
-          top: 0,
-          bottom: 0,
-          child: ColoredBox(
-            color: Theme.of(context).colorScheme.onBackground,
-            child: const SizedBox(width: 1),
           ),
         ),
       ],
