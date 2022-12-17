@@ -24,5 +24,16 @@
     "chooseTheme": "Choose theme",
     "themeLight": "Light",
     "themeDark": "Dark",
-    "themeSystemDefault": "System default"
+    "themeSystemDefault": "System default",
+    "version": "Version: {version} ({buildNumber})",
+    "@version": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            },
+            "buildNumber": {
+                "type": "String"
+            }
+        }
+    }
 }
