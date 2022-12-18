@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/data/models/photography_value.dart';
+import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-class ExposurePaitListItem<T extends PhotographyStopValue> extends StatelessWidget {
+class ExposurePairsListItem<T extends PhotographyStopValue> extends StatelessWidget {
   final T value;
   final bool tickOnTheLeft;
 
-  const ExposurePaitListItem(this.value, {required this.tickOnTheLeft, super.key});
+  const ExposurePairsListItem(this.value, {required this.tickOnTheLeft, super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:lightmeter/data/ev_source/ev_source_type.dart';
-import 'package:lightmeter/data/permissions_service.dart';
-import 'package:lightmeter/screens/settings/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'data/models/ev_source_type.dart';
+import 'data/permissions_service.dart';
 import 'data/shared_prefs_service.dart';
 import 'generated/l10n.dart';
 import 'res/theme.dart';
 import 'screens/metering/flow_metering.dart';
+import 'screens/settings/screen_settings.dart';
 import 'utils/stop_type_provider.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();

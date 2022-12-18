@@ -1,6 +1,6 @@
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/iso_value.dart';
-import 'package:lightmeter/data/models/nd_value.dart';
+import 'package:lightmeter/data/models/photography_values/iso_value.dart';
+import 'package:lightmeter/data/models/photography_values/nd_value.dart';
 
 class MeteringState {
   final double ev;

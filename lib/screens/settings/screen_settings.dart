@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-import 'components/fractional_stops_tile.dart';
-import 'components/theme_type_tile.dart';
-import 'components/version_label.dart';
+import 'components/widget_list_tile_fractional_stops.dart';
+import 'components/widget_list_tile_theme_type.dart';
+import 'components/widget_label_version.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

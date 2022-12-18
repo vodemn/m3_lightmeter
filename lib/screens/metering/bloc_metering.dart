@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/data/models/aperture_value.dart';
+import 'package:lightmeter/data/models/photography_values/aperture_value.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/photography_value.dart';
-import 'package:lightmeter/data/models/shutter_speed_value.dart';
+import 'package:lightmeter/data/models/photography_values/photography_value.dart';
+import 'package:lightmeter/data/models/photography_values/shutter_speed_value.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;

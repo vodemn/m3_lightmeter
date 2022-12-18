@@ -1,8 +1,8 @@
-import 'package:lightmeter/data/models/nd_value.dart';
-import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'models/iso_value.dart';
+import 'models/photography_values/iso_value.dart';
+import 'models/photography_values/nd_value.dart';
+import 'models/theme_type.dart';
 
 class UserPreferencesService {
   static const _isoKey = "ISO";

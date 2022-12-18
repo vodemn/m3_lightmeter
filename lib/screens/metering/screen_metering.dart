@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/data/models/photography_value.dart';
+import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/settings/settings_screen.dart';
+import 'package:lightmeter/screens/settings/screen_settings.dart';
 
-import 'components/bottom_controls/bottom_controls.dart';
-import 'components/exposure_pairs_list/exposure_pairs_list.dart';
-import 'components/topbar/topbar.dart';
+import 'components/bottom_controls/widget_bottom_controls.dart';
+import 'components/exposure_pairs_list/widget_list_exposure_pairs.dart';
+import 'components/topbar/widget_topbar.dart';
 import 'bloc_metering.dart';
 import 'event_metering.dart';
 import 'state_metering.dart';

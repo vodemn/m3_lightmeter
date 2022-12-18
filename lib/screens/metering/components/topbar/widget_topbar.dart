@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/data/ev_source/camera/bloc_camera.dart';
+import 'package:lightmeter/screens/metering/ev_source/camera/bloc_camera.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/iso_value.dart';
-import 'package:lightmeter/data/models/nd_value.dart';
-import 'package:lightmeter/data/models/photography_value.dart';
+import 'package:lightmeter/data/models/photography_values/iso_value.dart';
+import 'package:lightmeter/data/models/photography_values/nd_value.dart';
+import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-import 'components/camera_preview.dart';
-import 'components/shared/animated_dialog.dart';
-import 'components/dialog_picker.dart';
-import 'components/reading_container.dart';
-import 'models/reading_value.dart';
+import 'components/widget_camera_preview.dart';
+import 'components/shared/widget_dialog_animated.dart';
+import 'components/widget_dialog_picker.dart';
+import 'components/container_reading_value.dart';
 
 class MeteringTopBar extends StatelessWidget {
   final ExposurePair? fastest;
@@ -57,7 +56,7 @@ class MeteringTopBar extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        ReadingContainer(
+                        ReadingValueContainer(
                           values: [
                             ReadingValue(
                               label: S.of(context).fastestExposurePair,
@@ -75,7 +74,7 @@ class MeteringTopBar extends StatelessWidget {
                         ),
                         /*
                         const _InnerPadding(),
-                        ReadingContainer.singleValue(
+                        ReadingValueContainer.singleValue(
                           value: ReadingValue(
                             label: 'EV',
                             value: ev.toStringAsFixed(1),
@@ -168,7 +167,7 @@ class _AnimatedDialogPicker<T extends PhotographyValue> extends StatelessWidget 
   Widget build(BuildContext context) {
     return AnimatedDialog(
       key: _key,
-      closedChild: ReadingContainer.singleValue(
+      closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: title,
           value: selectedValue.value.toString(),

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/data/ev_source/camera/bloc_camera.dart';
-import 'package:lightmeter/data/ev_source/ev_source_type.dart';
-import 'package:lightmeter/data/ev_source/random_ev/bloc_random_ev.dart';
-import 'package:lightmeter/data/models/photography_value.dart';
+import 'package:lightmeter/data/models/ev_source_type.dart';
+import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
-import 'package:lightmeter/screens/metering/bloc_metering.dart';
-import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
+
+import 'ev_source/camera/bloc_camera.dart';
+import 'ev_source/random_ev/bloc_random_ev.dart';
+import 'bloc_metering.dart';
+import 'communication/bloc_communication_metering.dart';
 
 import 'screen_metering.dart';
 

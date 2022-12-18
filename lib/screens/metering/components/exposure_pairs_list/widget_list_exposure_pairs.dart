@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/metering/components/exposure_pairs_list/components/exposure_pair_item.dart';
+import 'package:lightmeter/screens/metering/components/exposure_pairs_list/components/widget_item_list_exposure_pairs.dart';
 
 class ExposurePairsList extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
@@ -27,7 +27,7 @@ class ExposurePairsList extends StatelessWidget {
                     Expanded(
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: ExposurePaitListItem(
+                        child: ExposurePairsListItem(
                           exposurePairs[index].aperture,
                           tickOnTheLeft: false,
                         ),
@@ -36,7 +36,7 @@ class ExposurePairsList extends StatelessWidget {
                     Expanded(
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: ExposurePaitListItem(
+                        child: ExposurePairsListItem(
                           exposurePairs[index].shutterSpeed,
                           tickOnTheLeft: true,
                         ),

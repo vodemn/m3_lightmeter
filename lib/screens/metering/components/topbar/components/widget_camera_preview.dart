@@ -2,8 +2,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/data/ev_source/camera/bloc_camera.dart';
-import 'package:lightmeter/data/ev_source/camera/state_camera.dart';
+import 'package:lightmeter/screens/metering/ev_source/camera/bloc_camera.dart';
+import 'package:lightmeter/screens/metering/ev_source/camera/state_camera.dart';
 
 class CameraView extends StatelessWidget {
   const CameraView({Key? key}) : super(key: key);

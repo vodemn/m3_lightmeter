@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/screens/metering/components/shared/filled_circle.dart';
 
-class MeteringBottomControlsSideButton extends StatelessWidget {
+import 'shared/widget_circle_filled.dart';
+
+class MeteringSecondaryButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
 
-  const MeteringBottomControlsSideButton({
+  const MeteringSecondaryButton({
     required this.icon,
     required this.onPressed,
     super.key,

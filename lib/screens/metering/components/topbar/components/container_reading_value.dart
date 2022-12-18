@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/metering/components/topbar/models/reading_value.dart';
 
-class ReadingContainer extends StatelessWidget {
+class ReadingValue {
+  final String label;
+  final String value;
+
+  const ReadingValue({
+    required this.label,
+    required this.value,
+  });
+}
+
+class ReadingValueContainer extends StatelessWidget {
   late final List<Widget> _items;
 
-  ReadingContainer({
+  ReadingValueContainer({
     required List<ReadingValue> values,
     super.key,
   }) {
@@ -18,7 +27,7 @@ class ReadingContainer extends StatelessWidget {
     }
   }
 
-  ReadingContainer.singleValue({
+  ReadingValueContainer.singleValue({
     required ReadingValue value,
     super.key,
   }) : _items = [_ReadingValueBuilder(value)];

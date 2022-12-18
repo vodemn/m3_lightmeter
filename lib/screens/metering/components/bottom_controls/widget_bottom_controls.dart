@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-import 'components/measure_button.dart';
-import 'components/side_buttons.dart';
+import 'components/widget_button_measure.dart';
+import 'components/widget_button_secondary.dart';
 
 class MeteringBottomControls extends StatelessWidget {
   final VoidCallback onSourceChanged;
@@ -32,14 +32,14 @@ class MeteringBottomControls extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                MeteringBottomControlsSideButton(
+                MeteringSecondaryButton(
                   onPressed: onSourceChanged,
                   icon: Icons.flip_camera_android,
                 ),
                 MeteringMeasureButton(
                   onTap: onMeasure,
                 ),
-                MeteringBottomControlsSideButton(
+                MeteringSecondaryButton(
                   onPressed: onSettings,
                   icon: Icons.settings,
                 ),

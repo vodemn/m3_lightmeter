@@ -4,7 +4,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/theme.dart';
 import 'package:provider/provider.dart';
 
-import 'shared/dialog_picker.dart';
+import 'shared/widget_dialog_picker.dart';
 
 class ThemeTypeListTile extends StatelessWidget {
   const ThemeTypeListTile({super.key});
