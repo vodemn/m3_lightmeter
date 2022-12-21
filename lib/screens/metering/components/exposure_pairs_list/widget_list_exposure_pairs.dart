@@ -16,7 +16,7 @@ class ExposurePairsList extends StatelessWidget {
         Positioned.fill(
           child: ListView.builder(
             key: ValueKey(exposurePairs.hashCode),
-            padding: const EdgeInsets.all(Dimens.paddingL),
+            padding: const EdgeInsets.symmetric(vertical: Dimens.paddingL),
             itemCount: exposurePairs.length,
             itemBuilder: (_, index) => Stack(
               alignment: Alignment.center,

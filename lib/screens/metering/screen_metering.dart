@@ -5,6 +5,8 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 
 import 'components/bottom_controls/widget_bottom_controls.dart';
+import 'components/camera/widget_exposure_slider.dart';
+import 'components/camera/widget_zoom_camera.dart';
 import 'components/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'components/topbar/widget_topbar.dart';
 import 'bloc_metering.dart';
@@ -42,6 +44,19 @@ class _MeteringScreenState extends State<MeteringScreen> {
                       child: Row(
                         children: [
                           Expanded(child: ExposurePairsList(state.exposurePairs)),
+                          const SizedBox(width: Dimens.grid8),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
+                              child: Column(
+                                children: const [
+                                  Expanded(child: CameraExposureSlider()),
+                                  SizedBox(height: Dimens.grid24),
+                                  CameraZoomSlider(),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

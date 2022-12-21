@@ -13,14 +13,14 @@ class CameraView extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 3 / 4,
       child: BlocBuilder<CameraBloc, CameraState>(
+        buildWhen: (previous, current) => current is CameraInitializedState,
         builder: (context, state) {
-          if (state is CameraReadyState) {
+          if (state is CameraInitializedState) {
             final value = state.controller.value;
             return ValueListenableBuilder<CameraValue>(
               valueListenable: state.controller,
               builder: (_, __, ___) => AspectRatio(
-                aspectRatio:
-                    _isLandscape(value) ? value.aspectRatio : (1 / value.aspectRatio),
+                aspectRatio: _isLandscape(value) ? value.aspectRatio : (1 / value.aspectRatio),
                 child: RotatedBox(
                   quarterTurns: _getQuarterTurns(value),
                   child: state.controller.buildPreview(),

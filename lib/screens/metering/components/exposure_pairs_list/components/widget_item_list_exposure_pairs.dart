@@ -23,7 +23,7 @@ class ExposurePairsListItem<T extends PhotographyStopValue> extends StatelessWid
           width: tickLength(),
         ),
       ),
-      if (value.stopType != StopType.full) const SizedBox(width: Dimens.grid8),
+      if (value.stopType != StopType.full) const SizedBox(width: Dimens.grid4),
     ];
     return Row(
       mainAxisAlignment: tickOnTheLeft ? MainAxisAlignment.start : MainAxisAlignment.end,
@@ -45,9 +45,9 @@ class ExposurePairsListItem<T extends PhotographyStopValue> extends StatelessWid
   double tickLength() {
     switch (value.stopType) {
       case StopType.full:
-        return Dimens.grid24;
-      case StopType.half:
         return Dimens.grid16;
+      case StopType.half:
+        return Dimens.grid8;
       case StopType.third:
         return Dimens.grid8;
     }

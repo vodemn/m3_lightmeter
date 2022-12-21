@@ -4,7 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:exif/exif.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/screens/metering/ev_source/ev_source_bloc.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
@@ -20,6 +20,15 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
   CameraController? _cameraController;
   CameraController? get cameraController => _cameraController;
 
+  static const _maxZoom = 7.0;
+  RangeValues? _zoomRange;
+  double _currentZoom = 0.0;
+
+  static const _exposureMaxRange = RangeValues(-4, 4);
+  RangeValues? _exposureOffsetRange;
+  double _exposureStep = 0.0;
+  double _currentExposureOffset = 0.0;
+
   CameraBloc(MeteringCommunicationBloc communicationBloc)
       : super(
           communicationBloc,
@@ -29,6 +38,8 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
     WidgetsBinding.instance.addObserver(_observer);
 
     on<InitializeEvent>(_onInitialize);
+    on<ZoomChangedEvent>(_onZoomChanged);
+    on<ExposureOffsetChangedEvent>(_onExposureOffsetChanged);
 
     add(const InitializeEvent());
   }
@@ -66,7 +77,24 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
 
       await _cameraController!.initialize();
       await _cameraController!.setFlashMode(FlashMode.off);
-      emit(CameraReadyState(_cameraController!));
+
+      _zoomRange = await Future.wait<double>([
+        _cameraController!.getMinZoomLevel(),
+        _cameraController!.getMaxZoomLevel(),
+      ]).then((levels) => RangeValues(levels[0], min(_maxZoom, levels[1])));
+      _currentZoom = _zoomRange!.start;
+
+      _exposureOffsetRange = await Future.wait<double>([
+        _cameraController!.getMinExposureOffset(),
+        _cameraController!.getMaxExposureOffset(),
+      ]).then((levels) => RangeValues(max(_exposureMaxRange.start, levels[0]), min(_exposureMaxRange.end, levels[1])));
+      await _cameraController!.getExposureOffsetStepSize().then((value) {
+        _exposureStep = value == 0 ? 0.1 : value;
+      });
+
+      emit(CameraInitializedState(_cameraController!));
+
+      _emitActiveState(emit);
       _takePhoto().then((ev100) {
         if (ev100 != null) {
           communicationBloc.add(communication_event.MeasuredEvent(ev100));
@@ -75,6 +103,30 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
     } catch (e) {
       emit(const CameraErrorState());
     }
+  }
+
+  Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
+    _cameraController!.setZoomLevel(event.value);
+    _currentZoom = event.value;
+    _emitActiveState(emit);
+  }
+
+  Future<void> _onExposureOffsetChanged(ExposureOffsetChangedEvent event, Emitter emit) async {
+    _cameraController!.setExposureOffset(event.value);
+    _currentExposureOffset = event.value;
+    _emitActiveState(emit);
+  }
+
+  void _emitActiveState(Emitter emit) {
+    emit(CameraActiveState(
+      minZoom: _zoomRange!.start,
+      maxZoom: _zoomRange!.end,
+      currentZoom: _currentZoom,
+      minExposureOffset: _exposureOffsetRange!.start,
+      maxExposureOffset: _exposureOffsetRange!.end,
+      exposureOffsetStep: _exposureStep,
+      currentExposureOffset: _currentExposureOffset,
+    ));
   }
 
   Future<double?> _takePhoto() async {
