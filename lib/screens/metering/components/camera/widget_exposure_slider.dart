@@ -89,7 +89,7 @@ class _Ruler extends StatelessWidget {
             ],
           );
         },
-      ),
+      ).reversed.toList(),
     );
   }
 }
