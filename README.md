@@ -1,4 +1,9 @@
-# Lightmeter
+<p align="center">
+  <img src="assets/launcher_icon_circle.png" width="100" height="100">
+</p>
+<p align="center", style="font-size:60px;">
+  <b>Material Lightmeter</b>
+</p>
 
 ## Backstory
 
