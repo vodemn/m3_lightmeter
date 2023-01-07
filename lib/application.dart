@@ -15,63 +15,51 @@ import 'utils/stop_type_provider.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
-class Application extends StatefulWidget {
+class Application extends StatelessWidget {
   final EvSourceType evSource;
 
   const Application(this.evSource, {super.key});
 
   @override
-  State<Application> createState() => _ApplicationState();
-}
-
-class _ApplicationState extends State<Application> {
-  @override
-  void initState() {
-    super.initState();
-    final mySystemTheme = SystemUiOverlayStyle.light.copyWith(
-      statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.light,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    );
-    SystemChrome.setSystemUIOverlayStyle(mySystemTheme);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return FutureBuilder<SharedPreferences>(
       future: SharedPreferences.getInstance(),
-      builder: (context, snapshot) {
+      builder: (_, snapshot) {
         if (snapshot.data != null) {
           return MultiProvider(
             providers: [
               Provider(create: (_) => UserPreferencesService(snapshot.data!)),
-              Provider.value(value: widget.evSource),
+              Provider.value(value: evSource),
             ],
             child: Provider(
-              create: (context) => PermissionsService(),
+              create: (_) => PermissionsService(),
               child: StopTypeProvider(
                 child: ThemeProvider(
                   initialPrimaryColor: const Color(0xFF2196f3),
-                  builder: (context, child) => MaterialApp(
-                    theme: context.watch<ThemeData>(),
-                    localizationsDelegates: const [
-                      S.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    supportedLocales: S.delegate.supportedLocales,
-                    builder: (context, child) => MediaQuery(
-                      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                      child: child!,
+                  builder: (context, child) => AnnotatedRegion(
+                    value: SystemUiOverlayStyle(
+                      statusBarColor: context.watch<ThemeData>().colorScheme.surface,
+                      systemNavigationBarColor: context.watch<ThemeData>().colorScheme.surface,
                     ),
-                    home: const MeteringFlow(),
-                    routes: {
-                      "metering": (context) => const MeteringFlow(),
-                      "settings": (context) => const SettingsScreen(),
-                    },
+                    child: MaterialApp(
+                      theme: context.watch<ThemeData>(),
+                      localizationsDelegates: const [
+                        S.delegate,
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
+                      ],
+                      supportedLocales: S.delegate.supportedLocales,
+                      builder: (context, child) => MediaQuery(
+                        data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                        child: child!,
+                      ),
+                      initialRoute: "metering",
+                      routes: {
+                        "metering": (context) => const MeteringFlow(),
+                        "settings": (context) => const SettingsScreen(),
+                      },
+                    ),
                   ),
                 ),
               ),

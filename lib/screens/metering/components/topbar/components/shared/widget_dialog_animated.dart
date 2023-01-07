@@ -80,7 +80,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
       ),
     ));
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final mediaQuery = MediaQuery.of(context);
 
       _closedSize = _key.currentContext!.size!;
