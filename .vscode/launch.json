@@ -5,12 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "dev",
+            "name": "dev (android)",
             "request": "launch",
             "type": "dart",
             "args": [
                 "--flavor",
                 "dev",
+                "--dart-define",
+                "cameraPreviewAspectRatio=2/3",
+            ],
+            "program": "${workspaceFolder}/lib/main.dart",
+        },
+        {
+            "name": "dev (ios)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "dev",
+                "--dart-define",
+                "cameraPreviewAspectRatio=3/4",
             ],
             "program": "${workspaceFolder}/lib/main.dart",
         },
@@ -21,16 +35,32 @@
             "args": [
                 "--flavor",
                 "dev",
+                "--dart-define",
+                "cameraPreviewAspectRatio=3/4",
             ],
             "program": "${workspaceFolder}/lib/main_mock.dart",
         },
         {
-            "name": "prod",
+            "name": "prod (android)",
             "request": "launch",
             "type": "dart",
             "args": [
                 "--flavor",
                 "prod",
+                "--dart-define",
+                "cameraPreviewAspectRatio=2/3",
+            ],
+            "program": "${workspaceFolder}/lib/main.dart",
+        },
+        {
+            "name": "prod (ios)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "prod",
+                "--dart-define",
+                "cameraPreviewAspectRatio=3/4",
             ],
             "program": "${workspaceFolder}/lib/main.dart",
         },

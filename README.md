@@ -12,3 +12,10 @@ Some time ago I've started developing the [Material Lightmeter](https://play.goo
 But as the existing repo contained some sensitive data, that I've pushed due to lack of experience, I had to make a new one. And if creating a new repo, why not rewrite the app from scratch?)
 
 Without further delay behold my new Lightmeter app inspired by Material You (a.k.a. M3)
+
+## Build
+
+```
+flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3
+flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3 
+```

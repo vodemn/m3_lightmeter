@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/screens/metering/ev_source/camera/bloc_camera.dart';
 import 'package:lightmeter/screens/metering/ev_source/camera/state_camera.dart';
 
@@ -11,25 +12,27 @@ class CameraView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 3 / 4,
-      child: BlocBuilder<CameraBloc, CameraState>(
-        buildWhen: (previous, current) => current is CameraInitializedState,
-        builder: (context, state) {
-          if (state is CameraInitializedState) {
-            final value = state.controller.value;
-            return ValueListenableBuilder<CameraValue>(
-              valueListenable: state.controller,
-              builder: (_, __, ___) => AspectRatio(
-                aspectRatio: _isLandscape(value) ? value.aspectRatio : (1 / value.aspectRatio),
-                child: RotatedBox(
-                  quarterTurns: _getQuarterTurns(value),
-                  child: state.controller.buildPreview(),
+      aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
+      child: Center(
+        child: BlocBuilder<CameraBloc, CameraState>(
+          buildWhen: (previous, current) => current is CameraInitializedState,
+          builder: (context, state) {
+            if (state is CameraInitializedState) {
+              final value = state.controller.value;
+              return ValueListenableBuilder<CameraValue>(
+                valueListenable: state.controller,
+                builder: (_, __, ___) => AspectRatio(
+                  aspectRatio: _isLandscape(value) ? value.aspectRatio : (1 / value.aspectRatio),
+                  child: RotatedBox(
+                    quarterTurns: _getQuarterTurns(value),
+                    child: state.controller.buildPreview(),
+                  ),
                 ),
-              ),
-            );
-          }
-          return const ColoredBox(color: Colors.black);
-        },
+              );
+            }
+            return const ColoredBox(color: Colors.black);
+          },
+        ),
       ),
     );
   }
