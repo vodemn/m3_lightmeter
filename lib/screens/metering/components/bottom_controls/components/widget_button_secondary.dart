@@ -14,14 +14,16 @@ class MeteringSecondaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilledCircle(
-      color: Theme.of(context).colorScheme.surfaceVariant,
-      size: 48,
-      child: Center(
-        child: IconButton(
-          onPressed: onPressed,
-          color: Theme.of(context).colorScheme.onSurface,
-          icon: Icon(icon),
+    return Center(
+      child: FilledCircle(
+        color: Theme.of(context).colorScheme.surfaceVariant,
+        size: 48,
+        child: Center(
+          child: IconButton(
+            onPressed: onPressed,
+            color: Theme.of(context).colorScheme.onSurface,
+            icon: Icon(icon),
+          ),
         ),
       ),
     );
