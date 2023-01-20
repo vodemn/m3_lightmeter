@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/screens/metering/components/topbar/shape_topbar.dart';
-import 'package:lightmeter/screens/metering/components/widget_size_render.dart';
+import 'package:lightmeter/screens/metering/components/topbar/components/widget_size_render.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/photography_values/iso_value.dart';
@@ -65,7 +65,7 @@ class _MeteringTopBarState extends State<MeteringTopBar> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Expanded(
-                  child: ReadingsContainer(
+                  child: SizeRenderWidget(
                     onLayout: (size) => _onReadingsLayout(size.height),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class ReadingsContainer extends SingleChildRenderObjectWidget {
+class SizeRenderWidget extends SingleChildRenderObjectWidget {
   final ValueChanged<Size>? onLayout;
 
-  const ReadingsContainer({
+  const SizeRenderWidget({
     super.key,
     super.child,
     this.onLayout,
   });
 
   @override
-  RenderReadingsContainer createRenderObject(BuildContext context) => RenderReadingsContainer(onLayout: onLayout);
+  SizeRenderBox createRenderObject(BuildContext context) => SizeRenderBox(onLayout: onLayout);
 }
 
-class RenderReadingsContainer extends RenderProxyBox {
+class SizeRenderBox extends RenderProxyBox {
   final ValueChanged<Size>? onLayout;
 
-  RenderReadingsContainer({this.onLayout});
+  SizeRenderBox({this.onLayout});
 
   @override
   void performLayout() {
