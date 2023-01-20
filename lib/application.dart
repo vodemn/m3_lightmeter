@@ -39,6 +39,8 @@ class Application extends StatelessWidget {
                   builder: (context, child) => AnnotatedRegion(
                     value: SystemUiOverlayStyle(
                       statusBarColor: context.watch<ThemeData>().colorScheme.surface,
+                      statusBarIconBrightness:
+                          ThemeData.estimateBrightnessForColor(context.watch<ThemeData>().colorScheme.onSurface),
                       systemNavigationBarColor: context.watch<ThemeData>().colorScheme.surface,
                     ),
                     child: MaterialApp(
