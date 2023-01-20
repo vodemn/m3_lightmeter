@@ -13,6 +13,32 @@ But as the existing repo contained some sensitive data, that I've pushed due to 
 
 Without further delay behold my new Lightmeter app inspired by Material You (a.k.a. M3)
 
+## Legacy features
+
+The list of features that the old lightmeter app has and that have to be implemeneted in the M3 lightmeter.
+
+### Metering
+- [x] ISO selecting
+- [ ] Reciprocity for different films
+- [x] Reflected light metering
+- [ ] Incident light metering
+
+### Adjust
+- [ ] Light sources EV calibration
+- [ ] Customizable aperture range
+- [ ] Customizable shutter speed range
+- [x] ND filter select
+
+### General
+- [ ] Caffeine
+- [ ] Vibration
+- [ ] Volume button actions
+
+### Theme
+- [x] Dark theme
+- [ ] Picking primary color
+- [ ] Russian language
+
 ## Build
 
 ```
