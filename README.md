@@ -13,6 +13,12 @@ But as the existing repo contained some sensitive data, that I've pushed due to 
 
 Without further delay behold my new Lightmeter app inspired by Material You (a.k.a. M3)
 
+## Table of contents
+
+- [Backstory](#backstory)
+- [Legacy features](#legacy-features)
+- [Build](#build)
+
 ## Legacy features
 
 The list of features that the old lightmeter app has and that have to be implemeneted in the M3 lightmeter.
@@ -43,5 +49,4 @@ The list of features that the old lightmeter app has and that have to be impleme
 
 ```
 flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3
-flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3 
 ```
