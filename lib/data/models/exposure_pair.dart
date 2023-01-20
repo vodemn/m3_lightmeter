@@ -6,4 +6,7 @@ class ExposurePair {
   final ShutterSpeedValue shutterSpeed;
 
   const ExposurePair(this.aperture, this.shutterSpeed);
+
+  @override
+  String toString() => '${aperture.toString()} - ${shutterSpeed.toString()}';
 }

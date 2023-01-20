@@ -21,6 +21,8 @@ class MeteringScreen extends StatefulWidget {
 }
 
 class _MeteringScreenState extends State<MeteringScreen> {
+  double topBarOverflow = 0.0;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -37,59 +39,65 @@ class _MeteringScreenState extends State<MeteringScreen> {
             children: [
               Column(
                 children: [
-                  _topBar(state),
+                  MeteringTopBar(
+                    fastest: state.fastest,
+                    slowest: state.slowest,
+                    ev: state.ev,
+                    iso: state.iso,
+                    nd: state.nd,
+                    onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
+                    onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
+                    onCutoutLayout: (value) => topBarOverflow = value,
+                  ),
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
-                      child: Row(
-                        children: [
-                          Expanded(child: ExposurePairsList(state.exposurePairs)),
-                          const SizedBox(width: Dimens.grid8),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
-                              child: Column(
-                                children: const [
-                                  Expanded(child: CameraExposureSlider()),
-                                  SizedBox(height: Dimens.grid24),
-                                  CameraZoomSlider(),
-                                ],
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => OverflowBox(
+                        alignment: Alignment.bottomCenter,
+                        maxHeight: constraints.maxHeight + topBarOverflow.abs(),
+                        maxWidth: constraints.maxWidth,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: topBarOverflow >= 0 ? EdgeInsets.only(top: topBarOverflow) : EdgeInsets.zero,
+                                  child: ExposurePairsList(state.exposurePairs),
+                                ),
                               ),
-                            ),
+                              const SizedBox(width: Dimens.grid8),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM).add(
+                                      topBarOverflow <= 0 ? EdgeInsets.only(top: -topBarOverflow) : EdgeInsets.zero),
+                                  child: Column(
+                                    children: const [
+                                      Expanded(child: CameraExposureSlider()),
+                                      SizedBox(height: Dimens.grid24),
+                                      CameraZoomSlider(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                  _bottomBar(),
+                  MeteringBottomControls(
+                    onSourceChanged: () {},
+                    onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
+                    onSettings: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+                    },
+                  ),
                 ],
               ),
             ],
           );
         },
       ),
-    );
-  }
-
-  Widget _topBar(MeteringState state) {
-    return MeteringTopBar(
-      fastest: state.fastest,
-      slowest: state.slowest,
-      ev: state.ev,
-      iso: state.iso,
-      nd: state.nd,
-      onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
-      onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
-    );
-  }
-
-  Widget _bottomBar() {
-    return MeteringBottomControls(
-      onSourceChanged: () {},
-      onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
-      onSettings: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-      },
     );
   }
 }
