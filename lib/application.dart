@@ -40,7 +40,7 @@ class Application extends StatelessWidget {
                   initialPrimaryColor: const Color(0xFF2196f3),
                   builder: (context, child) => AnnotatedRegion(
                     value: SystemUiOverlayStyle(
-                      statusBarColor: context.watch<ThemeData>().colorScheme.surface,
+                      statusBarColor: Colors.transparent,
                       statusBarIconBrightness:
                           ThemeData.estimateBrightnessForColor(context.watch<ThemeData>().colorScheme.onSurface),
                       systemNavigationBarColor: context.watch<ThemeData>().colorScheme.surface,
