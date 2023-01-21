@@ -21,7 +21,7 @@ class CameraExposureSlider extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.sync),
                 onPressed: state.currentExposureOffset != 0.0
-                    ? () => context.read<CameraBloc>().add(const ExposureOffsetChangedEvent(0))
+                    ? () => context.read<CameraBloc>().add(const ExposureOffsetResetEvent())
                     : null,
               ),
               Expanded(

@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/interactors/haptics_interactor.dart';
 import 'package:lightmeter/screens/metering/ev_source/ev_source_bloc.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_event;
@@ -16,6 +17,7 @@ import 'event_camera.dart';
 import 'state_camera.dart';
 
 class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
+  final HapticsInteractor _hapticsInteractor;
   late final _WidgetsBindingObserver _observer;
   CameraController? _cameraController;
   CameraController? get cameraController => _cameraController;
@@ -29,8 +31,10 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
   double _exposureStep = 0.0;
   double _currentExposureOffset = 0.0;
 
-  CameraBloc(MeteringCommunicationBloc communicationBloc)
-      : super(
+  CameraBloc(
+    MeteringCommunicationBloc communicationBloc,
+    this._hapticsInteractor,
+  ) : super(
           communicationBloc,
           const CameraInitState(),
         ) {
@@ -40,6 +44,7 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
     on<InitializeEvent>(_onInitialize);
     on<ZoomChangedEvent>(_onZoomChanged);
     on<ExposureOffsetChangedEvent>(_onExposureOffsetChanged);
+    on<ExposureOffsetResetEvent>(_onExposureOffsetResetEvent);
 
     add(const InitializeEvent());
   }
@@ -115,6 +120,11 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
     _cameraController!.setExposureOffset(event.value);
     _currentExposureOffset = event.value;
     _emitActiveState(emit);
+  }
+
+  Future<void> _onExposureOffsetResetEvent(ExposureOffsetResetEvent event, Emitter emit) async {
+    _hapticsInteractor.quickVibration();
+    add(const ExposureOffsetChangedEvent(0));
   }
 
   void _emitActiveState(Emitter emit) {
