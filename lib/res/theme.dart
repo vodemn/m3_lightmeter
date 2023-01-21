@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
@@ -7,12 +8,10 @@ import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:provider/provider.dart';
 
 class ThemeProvider extends StatefulWidget {
-  final Color initialPrimaryColor;
   final Widget? child;
   final TransitionBuilder? builder;
 
   const ThemeProvider({
-    required this.initialPrimaryColor,
     this.child,
     this.builder,
     super.key,
@@ -28,7 +27,10 @@ class ThemeProvider extends StatefulWidget {
 
 class ThemeProviderState extends State<ThemeProvider> {
   late ThemeType _themeType;
-  late Color _primaryColor = widget.initialPrimaryColor;
+  Color _primaryColor = const Color(0xFF2196f3);
+  bool _allowDynamicColors = false;
+
+  bool get allowDynamicColors => _allowDynamicColors;
 
   @override
   void initState() {
@@ -38,16 +40,29 @@ class ThemeProviderState extends State<ThemeProvider> {
 
   @override
   Widget build(BuildContext context) {
-    return Provider.value(
-      value: _themeType,
-      child: Provider.value(
-        value: _themeFromColor(
-          _primaryColor,
-          _mapThemeTypeToBrightness(_themeType),
-        ),
-        builder: widget.builder,
-        child: widget.child,
-      ),
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        _allowDynamicColors = lightDynamic != null && darkDynamic != null;
+        if (_allowDynamicColors) {
+          final dynamicColorScheme = _themeBrightness == Brightness.light ? lightDynamic : darkDynamic;
+          if (dynamicColorScheme != null) {
+            _primaryColor = dynamicColorScheme.primary;
+          }
+        }
+        return Provider.value(
+          value: _themeType,
+          child: Provider.value(
+            value: _themeFromColorScheme(
+              _colorSchemeFromColor(
+                _primaryColor,
+                _themeBrightness,
+              ),
+            ),
+            builder: widget.builder,
+            child: widget.child,
+          ),
+        );
+      },
     );
   }
 
@@ -62,6 +77,17 @@ class ThemeProviderState extends State<ThemeProvider> {
     context.read<UserPreferencesService>().themeType = themeType;
   }
 
+  Brightness get _themeBrightness {
+    switch (_themeType) {
+      case ThemeType.light:
+        return Brightness.light;
+      case ThemeType.dark:
+        return Brightness.dark;
+      case ThemeType.systemDefault:
+        return SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    }
+  }
+
   void setPrimaryColor(Color color) {
     if (color == _primaryColor) {
       return;
@@ -72,20 +98,9 @@ class ThemeProviderState extends State<ThemeProvider> {
     });
   }
 
-  Brightness _mapThemeTypeToBrightness(ThemeType themeType) {
-    switch (themeType) {
-      case ThemeType.light:
-        return Brightness.light;
-      case ThemeType.dark:
-        return Brightness.dark;
-      case ThemeType.systemDefault:
-        return SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    }
-  }
-
-  ThemeData _themeFromColor(Color color, Brightness brightness) {
+  ColorScheme _colorSchemeFromColor(Color color, Brightness brightness) {
     final scheme = brightness == Brightness.light ? Scheme.light(color.value) : Scheme.dark(color.value);
-    final colorScheme = ColorScheme(
+    return ColorScheme(
       brightness: brightness,
       primary: Color(scheme.primary),
       onPrimary: Color(scheme.onPrimary),
@@ -102,9 +117,18 @@ class ThemeProviderState extends State<ThemeProvider> {
       surfaceVariant: Color.alphaBlend(Color(scheme.primary).withOpacity(0.5), Color(scheme.background)),
       onSurfaceVariant: Color(scheme.onSurfaceVariant),
     );
+  }
+
+  ThemeData _themeFromColorScheme(ColorScheme scheme) {
     return ThemeData(
       useMaterial3: true,
-      colorScheme: colorScheme,
+      bottomAppBarColor: scheme.surface,
+      brightness: scheme.brightness,
+      colorScheme: scheme,
+      dialogBackgroundColor: scheme.surface,
+      dialogTheme: DialogTheme(backgroundColor: scheme.surface),
+      scaffoldBackgroundColor: scheme.surface,
+      toggleableActiveColor: scheme.primary,
     );
   }
 }
