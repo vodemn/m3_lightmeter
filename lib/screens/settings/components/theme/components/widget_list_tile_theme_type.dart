@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/screens/settings/components/shared/widget_dialog_picker.dart';
 import 'package:provider/provider.dart';
-
-import 'shared/widget_dialog_picker.dart';
 
 class ThemeTypeListTile extends StatelessWidget {
   const ThemeTypeListTile({super.key});

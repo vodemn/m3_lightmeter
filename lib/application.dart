@@ -30,20 +30,21 @@ class Application extends StatelessWidget {
           return MultiProvider(
             providers: [
               Provider(create: (_) => UserPreferencesService(snapshot.data!)),
-              Provider(create: (_) => HapticsService()),
+              Provider(create: (_) => const HapticsService()),
+              Provider(create: (_) => PermissionsService()),
               Provider.value(value: evSource),
             ],
-            child: Provider(
-              create: (_) => PermissionsService(),
-              child: StopTypeProvider(
-                child: ThemeProvider(
-                  initialPrimaryColor: const Color(0xFF2196f3),
-                  builder: (context, child) => AnnotatedRegion(
+            child: StopTypeProvider(
+              child: ThemeProvider(
+                builder: (context, _) {
+                  final systemIconsBrightness =
+                      ThemeData.estimateBrightnessForColor(context.watch<ThemeData>().colorScheme.onSurface);
+                  return AnnotatedRegion(
                     value: SystemUiOverlayStyle(
                       statusBarColor: Colors.transparent,
-                      statusBarIconBrightness:
-                          ThemeData.estimateBrightnessForColor(context.watch<ThemeData>().colorScheme.onSurface),
+                      statusBarIconBrightness: systemIconsBrightness,
                       systemNavigationBarColor: context.watch<ThemeData>().colorScheme.surface,
+                      systemNavigationBarIconBrightness: systemIconsBrightness,
                     ),
                     child: MaterialApp(
                       theme: context.watch<ThemeData>(),
@@ -64,8 +65,8 @@ class Application extends StatelessWidget {
                         "settings": (context) => const SettingsScreen(),
                       },
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
           );
