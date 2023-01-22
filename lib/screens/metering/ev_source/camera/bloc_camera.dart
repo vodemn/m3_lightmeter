@@ -96,6 +96,7 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
       await _cameraController!.getExposureOffsetStepSize().then((value) {
         _exposureStep = value == 0 ? 0.1 : value;
       });
+      _currentExposureOffset = 0.0;
 
       emit(CameraInitializedState(_cameraController!));
 

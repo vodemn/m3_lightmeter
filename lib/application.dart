@@ -42,6 +42,8 @@ class Application extends StatelessWidget {
                   return AnnotatedRegion(
                     value: SystemUiOverlayStyle(
                       statusBarColor: Colors.transparent,
+                      statusBarBrightness:
+                          systemIconsBrightness == Brightness.light ? Brightness.dark : Brightness.light,
                       statusBarIconBrightness: systemIconsBrightness,
                       systemNavigationBarColor: context.watch<ThemeData>().colorScheme.surface,
                       systemNavigationBarIconBrightness: systemIconsBrightness,
