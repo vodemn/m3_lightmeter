@@ -20,6 +20,7 @@
     "haptics": "Haptics",
     "theme": "Theme",
     "chooseTheme": "Choose theme",
+    "dynamicColors": "Dynamic colors",
     "themeLight": "Light",
     "themeDark": "Dark",
     "themeSystemDefault": "System default",

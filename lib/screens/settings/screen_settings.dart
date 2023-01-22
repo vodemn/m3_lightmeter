@@ -4,7 +4,7 @@ import 'package:lightmeter/res/dimens.dart';
 
 import 'components/haptics/provider_list_tile_haptics.dart';
 import 'components/widget_list_tile_fractional_stops.dart';
-import 'components/widget_list_tile_theme_type.dart';
+import 'components/theme/widget_settings_theme.dart';
 import 'components/widget_label_version.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -41,7 +41,7 @@ class SettingsScreen extends StatelessWidget {
                 [
                   const StopTypeListTile(),
                   const HapticsListTileProvider(),
-                  const ThemeTypeListTile(),
+                  const ThemeSettings(),
                 ],
               ),
             ),
