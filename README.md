@@ -37,7 +37,7 @@ The list of features that the old lightmeter app has and that have to be impleme
 
 ### General
 - [ ] Caffeine
-- [ ] Vibration
+- [x] Vibration
 - [ ] Volume button actions
 
 ### Theme
