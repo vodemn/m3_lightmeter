@@ -9,7 +9,7 @@ import 'components/source_code/widget_list_tile_source_code.dart';
 import 'components/dynamic_colors/widget_list_tile_dynamic_colors.dart';
 import 'components/theme_type/widget_list_tile_theme_type.dart';
 import 'components/version/widget_list_tile_version.dart';
-import 'components/widget_list_tile_fractional_stops.dart';
+import 'components/fractional_stops/widget_list_tile_fractional_stops.dart';
 import 'components/write_email/widget_list_tile_write_email.dart';
 
 class SettingsScreen extends StatelessWidget {
