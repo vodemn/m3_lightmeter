@@ -9,6 +9,20 @@ class DynamicColorsListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context.read<DynamicColorsState>() == DynamicColorsState.unavailable) {
+      return Opacity(
+        opacity: 0.5,
+        child: IgnorePointer(
+          child: SwitchListTile(
+            secondary: const Icon(Icons.colorize),
+            title: Text(S.of(context).dynamicColors),
+            value: false,
+            enableFeedback: false,
+            onChanged: (value) {},
+          ),
+        ),
+      );
+    }
     return SwitchListTile(
       secondary: const Icon(Icons.colorize),
       title: Text(S.of(context).dynamicColors),

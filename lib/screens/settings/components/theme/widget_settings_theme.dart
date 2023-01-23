@@ -13,7 +13,7 @@ class ThemeSettings extends StatelessWidget {
     return Column(
       children: [
         const ThemeTypeListTile(),
-        if (context.read<DynamicColorsState>() != DynamicColorsState.unavailable) const DynamicColorsListTile(),
+        const DynamicColorsListTile(),
       ],
     );
   }
