@@ -4,18 +4,18 @@ import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/theme.dart';
 
-class DynamicColorsListTile extends StatelessWidget {
-  const DynamicColorsListTile({super.key});
+class DynamicColorListTile extends StatelessWidget {
+  const DynamicColorListTile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (context.read<DynamicColorsState>() == DynamicColorsState.unavailable) {
+    if (context.read<DynamicColorState>() == DynamicColorState.unavailable) {
       return Opacity(
         opacity: 0.5,
         child: IgnorePointer(
           child: SwitchListTile(
             secondary: const Icon(Icons.colorize),
-            title: Text(S.of(context).dynamicColors),
+            title: Text(S.of(context).dynamicColor),
             value: false,
             enableFeedback: false,
             onChanged: (value) {},
@@ -25,9 +25,9 @@ class DynamicColorsListTile extends StatelessWidget {
     }
     return SwitchListTile(
       secondary: const Icon(Icons.colorize),
-      title: Text(S.of(context).dynamicColors),
-      value: context.watch<DynamicColorsState>() == DynamicColorsState.enabled,
-      onChanged: ThemeProvider.of(context).enableDynamicColors,
+      title: Text(S.of(context).dynamicColor),
+      value: context.watch<DynamicColorState>() == DynamicColorState.enabled,
+      onChanged: ThemeProvider.of(context).enableDynamicColor,
     );
   }
 }

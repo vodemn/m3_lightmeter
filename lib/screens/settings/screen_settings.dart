@@ -6,7 +6,7 @@ import 'components/haptics/provider_list_tile_haptics.dart';
 import 'components/report_issue/widget_list_tile_report_issue.dart';
 import 'components/shared/settings_section/widget_settings_section.dart';
 import 'components/source_code/widget_list_tile_source_code.dart';
-import 'components/dynamic_colors/widget_list_tile_dynamic_colors.dart';
+import 'components/dynamic_color/widget_list_tile_dynamic_color.dart';
 import 'components/theme_type/widget_list_tile_theme_type.dart';
 import 'components/version/widget_list_tile_version.dart';
 import 'components/fractional_stops/widget_list_tile_fractional_stops.dart';
@@ -60,7 +60,7 @@ class SettingsScreen extends StatelessWidget {
                     title: S.of(context).theme,
                     children: const [
                       ThemeTypeListTile(),
-                      DynamicColorsListTile(),
+                      DynamicColorListTile(),
                     ],
                   ),
                   SettingsSection(

@@ -10,7 +10,7 @@ class UserPreferencesService {
 
   static const _hapticsKey = "haptics";
   static const _themeTypeKey = "themeType";
-  static const _dynamicColorsKey = "dynamicColors";
+  static const _dynamicColorKey = "dynamicColor";
 
   final SharedPreferences _sharedPreferences;
 
@@ -28,6 +28,6 @@ class UserPreferencesService {
   ThemeType get themeType => ThemeType.values[_sharedPreferences.getInt(_themeTypeKey) ?? 0];
   set themeType(ThemeType value) => _sharedPreferences.setInt(_themeTypeKey, value.index);
 
-  bool get dynamicColors => _sharedPreferences.getBool(_dynamicColorsKey) ?? false;
-  set dynamicColors(bool value) => _sharedPreferences.setBool(_dynamicColorsKey, value);
+  bool get dynamicColor => _sharedPreferences.getBool(_dynamicColorKey) ?? false;
+  set dynamicColor(bool value) => _sharedPreferences.setBool(_dynamicColorKey, value);
 }
