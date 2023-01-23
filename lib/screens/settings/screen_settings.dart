@@ -6,8 +6,8 @@ import 'components/haptics/provider_list_tile_haptics.dart';
 import 'components/report_issue/widget_list_tile_report_issue.dart';
 import 'components/shared/settings_section/widget_settings_section.dart';
 import 'components/source_code/widget_list_tile_source_code.dart';
-import 'components/theme/components/widget_list_tile_dynamic_colors.dart';
-import 'components/theme/components/widget_list_tile_theme_type.dart';
+import 'components/dynamic_colors/widget_list_tile_dynamic_colors.dart';
+import 'components/theme_type/widget_list_tile_theme_type.dart';
 import 'components/version/widget_list_tile_version.dart';
 import 'components/widget_list_tile_fractional_stops.dart';
 
@@ -45,14 +45,14 @@ class SettingsScreen extends StatelessWidget {
                 <SettingsSection>[
                   SettingsSection(
                     title: S.of(context).metering,
-                    children: [
-                      const StopTypeListTile(),
+                    children: const [
+                      StopTypeListTile(),
                     ],
                   ),
                   SettingsSection(
                     title: S.of(context).general,
-                    children: [
-                      const HapticsListTileProvider(),
+                    children: const [
+                      HapticsListTileProvider(),
                     ],
                   ),
                   SettingsSection(
