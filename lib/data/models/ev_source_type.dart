@@ -1,1 +1,1 @@
-enum EvSourceType { camera, mock }
+enum EvSourceType { camera, sensor }
