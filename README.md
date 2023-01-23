@@ -16,7 +16,12 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 ## Table of contents
 
 - [Backstory](#backstory)
+- [Table of contents](#table-of-contents)
 - [Legacy features](#legacy-features)
+  - [Metering](#metering)
+  - [Adjust](#adjust)
+  - [General](#general)
+  - [Theme](#theme)
 - [Build](#build)
 
 ## Legacy features
@@ -48,5 +53,5 @@ The list of features that the old lightmeter app has and that have to be impleme
 ## Build
 
 ```
-flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3
+flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_dev.dart
 ```
