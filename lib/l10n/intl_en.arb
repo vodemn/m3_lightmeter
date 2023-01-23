@@ -24,6 +24,7 @@
     "themeLight": "Light",
     "themeDark": "Dark",
     "themeSystemDefault": "System default",
+    "sourceCode": "Source code",
     "version": "Version: {version} ({buildNumber})",
     "@version": {
         "placeholders": {

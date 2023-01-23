@@ -22,6 +22,7 @@ dependencies:
   permission_handler: 10.2.0
   provider: 6.0.4
   shared_preferences: 2.0.15
+  url_launcher: 6.1.8
   vibration: 1.7.6
 
 dev_dependencies:
