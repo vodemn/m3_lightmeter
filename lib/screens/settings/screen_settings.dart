@@ -10,6 +10,7 @@ import 'components/dynamic_colors/widget_list_tile_dynamic_colors.dart';
 import 'components/theme_type/widget_list_tile_theme_type.dart';
 import 'components/version/widget_list_tile_version.dart';
 import 'components/widget_list_tile_fractional_stops.dart';
+import 'components/write_email/widget_list_tile_write_email.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -67,6 +68,7 @@ class SettingsScreen extends StatelessWidget {
                     children: const [
                       SourceCodeListTile(),
                       ReportIssueListTile(),
+                      WriteEmailListTile(),
                       VersionListTile(),
                     ],
                   ),

@@ -28,9 +28,11 @@
     "themeSystemDefault": "System default",
     "about": "About",
     "sourceCode": "Source code",
-    "reportIssue": "Report issue",
-    "version": "Version: {version} ({buildNumber})",
-    "@version": {
+    "reportIssue": "Report an issue",
+    "writeEmail": "Write an email",
+    "version": "Version",
+    "versionNumber": "{version} ({buildNumber})",
+    "@versionNumber": {
         "placeholders": {
             "version": {
                 "type": "String"

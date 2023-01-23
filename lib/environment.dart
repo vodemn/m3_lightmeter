@@ -12,10 +12,10 @@ class Environment {
   const Environment.dev()
       : sourceCodeUrl = 'https://github.com/vodemn/m3_lightmeter',
         issuesReportUrl = 'https://github.com/vodemn/m3_lightmeter/issues',
-        contactEmail = '';
+        contactEmail = 'contact.vodemn@gmail.com';
 
   const Environment.prod()
       : sourceCodeUrl = 'https://github.com/vodemn/m3_lightmeter',
         issuesReportUrl = 'https://github.com/vodemn/m3_lightmeter/issues',
-        contactEmail = '';
+        contactEmail = 'contact.vodemn@gmail.com';
 }
