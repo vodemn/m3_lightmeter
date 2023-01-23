@@ -21,6 +21,7 @@ class SettingsSection extends StatelessWidget {
         Dimens.paddingM,
       ),
       child: Material(
+        clipBehavior: Clip.antiAlias,
         borderRadius: BorderRadius.circular(Dimens.borderRadiusL),
         color: Theme.of(context).colorScheme.primaryContainer,
         child: Padding(
