@@ -13,7 +13,7 @@ class WriteEmailListTile extends StatelessWidget {
       leading: const Icon(Icons.email),
       title: Text(S.of(context).writeEmail),
       onTap: () {
-        launchUrl(Uri.parse('mailto:${context.read<Environment>().issuesReportUrl}?subject=M3 Lightmeter'));
+        launchUrl(Uri.parse('mailto:${context.read<Environment>().contactEmail}?subject=M3 Lightmeter'));
       },
     );
   }
