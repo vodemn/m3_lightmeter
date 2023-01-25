@@ -144,13 +144,11 @@ class _ThemeDataProvider extends StatelessWidget {
   ThemeData _themeFromColorScheme(ColorScheme scheme) {
     return ThemeData(
       useMaterial3: true,
-      bottomAppBarColor: scheme.surface,
       brightness: scheme.brightness,
       colorScheme: scheme,
       dialogBackgroundColor: scheme.surface,
       dialogTheme: DialogTheme(backgroundColor: scheme.surface),
       scaffoldBackgroundColor: scheme.surface,
-      toggleableActiveColor: scheme.primary,
     );
   }
 
