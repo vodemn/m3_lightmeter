@@ -12,7 +12,6 @@ This repo uses [Effective Dart Style](https://dart.dev/guides/language/effective
   - [Place elements used within one logical group in the _shared_ folder inside this group folder](#place-elements-used-within-one-logical-group-in-the-shared-folder-inside-this-group-folder)
   - [Always place component in its own folder](#always-place-component-in-its-own-folder)
 - [Formatting](#formatting)
-  - [Prefer maximum line length of 120 characters](#prefer-maximum-line-length-of-120-characters)
   - [Omit trailing comma after single parameter](#omit-trailing-comma-after-single-parameter)
 
 ## Folder structure guidelines
@@ -117,10 +116,6 @@ components/
 ```
 
 ## Formatting
-
-### Prefer maximum line length of 120 characters
-
-Just an alteration of the Style guide [rule](https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo#prefer-a-maximum-line-length-of-80-characters) changing the maximum line length from 80 to 120 characters.
 
 ### Omit trailing comma after single parameter
 
