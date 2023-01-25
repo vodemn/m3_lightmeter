@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/interactors/settings_interactor.dart';
+import 'package:provider/provider.dart';
 
-import 'components/calibration_dialog/widget_dialog_calibration.dart';
+import 'components/calibration_dialog/provider_dialog_calibration.dart';
 
 class CalibrationListTile extends StatelessWidget {
   const CalibrationListTile({super.key});
@@ -14,12 +16,11 @@ class CalibrationListTile extends StatelessWidget {
       onTap: () {
         showDialog<double>(
           context: context,
-          builder: (_) => CalibrationDialog(
-            cameraEvCalibration: 0.0,
+          builder: (_) => Provider.value(
+            value: context.read<SettingsInteractor>(),
+            child: const CalibrationDialogProvider(),
           ),
-        ).then((value) {
-          if (value != null) {}
-        });
+        );
       },
     );
   }

@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/settings/components/calibration/components/calibration_dialog/event_dialog_calibration.dart';
 import 'package:lightmeter/screens/shared/centered_slider/widget_slider_centered.dart';
 import 'package:lightmeter/utils/to_string_signed.dart';
 
-class CalibrationDialog extends StatefulWidget {
-  final double cameraEvCalibration;
+import 'bloc_dialog_calibration.dart';
+import 'state_dialog_calibration.dart';
 
-  const CalibrationDialog({
-    required this.cameraEvCalibration,
-    super.key,
-  });
+class CalibrationDialog extends StatefulWidget {
+  const CalibrationDialog({super.key});
 
   @override
   State<CalibrationDialog> createState() => _CalibrationDialogState();
 }
 
 class _CalibrationDialogState extends State<CalibrationDialog> {
-  late double _cameraEvCalibration = widget.cameraEvCalibration;
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -30,21 +28,20 @@ class _CalibrationDialogState extends State<CalibrationDialog> {
       ),
       title: Text(S.of(context).calibration),
       contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(S.of(context).calibrationMessage),
-          const SizedBox(height: Dimens.grid16),
-          _CalibrationUnit(
-            title: S.of(context).camera,
-            value: _cameraEvCalibration,
-            onChanged: (value) {
-              setState(() {
-                _cameraEvCalibration = value;
-              });
-            },
-          ),
-        ],
+      content: BlocBuilder<CalibrationDialogBloc, CalibrationDialogState>(
+        builder: (context, state) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(S.of(context).calibrationMessage),
+            const SizedBox(height: Dimens.grid16),
+            _CalibrationUnit(
+              title: S.of(context).camera,
+              value: state.cameraEvCalibration,
+              onChanged: (value) => context.read<CalibrationDialogBloc>().add(CameraEvCalibrationChangedEvent(value)),
+              onReset: () => context.read<CalibrationDialogBloc>().add(const CameraEvCalibrationResetEvent()),
+            ),
+          ],
+        ),
       ),
       actionsPadding: const EdgeInsets.fromLTRB(
         Dimens.paddingL,
@@ -58,7 +55,10 @@ class _CalibrationDialogState extends State<CalibrationDialog> {
           child: Text(S.of(context).cancel),
         ),
         TextButton(
-          onPressed: () => Navigator.of(context).pop(_cameraEvCalibration),
+          onPressed: () {
+            context.read<CalibrationDialogBloc>().add(const SaveCalibrationDialogEvent());
+            Navigator.of(context).pop();
+          },
           child: Text(S.of(context).save),
         ),
       ],
@@ -70,11 +70,13 @@ class _CalibrationUnit extends StatelessWidget {
   final String title;
   final double value;
   final ValueChanged<double> onChanged;
+  final VoidCallback onReset;
 
   const _CalibrationUnit({
     required this.title,
     required this.value,
     required this.onChanged,
+    required this.onReset,
   });
 
   @override
@@ -99,9 +101,7 @@ class _CalibrationUnit extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {
-                onChanged(0.0);
-              },
+              onPressed: onReset,
               icon: const Icon(Icons.sync),
             ),
           ],

@@ -44,6 +44,7 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
     on<InitializeEvent>(_onInitialize);
     on<ZoomChangedEvent>(_onZoomChanged);
     on<ExposureOffsetChangedEvent>(_onExposureOffsetChanged);
+    on<ExposureOffsetResetEvent>(_onExposureOffsetResetEvent);
 
     add(const InitializeEvent());
   }
@@ -119,8 +120,12 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
   Future<void> _onExposureOffsetChanged(ExposureOffsetChangedEvent event, Emitter emit) async {
     _cameraController!.setExposureOffset(event.value);
     _currentExposureOffset = event.value;
-    if (event.value == 0.0) _meteringInteractor.quickVibration();
     _emitActiveState(emit);
+  }
+
+  Future<void> _onExposureOffsetResetEvent(ExposureOffsetResetEvent event, Emitter emit) async {
+    _meteringInteractor.quickVibration();
+    add(const ExposureOffsetChangedEvent(0));
   }
 
   void _emitActiveState(Emitter emit) {
