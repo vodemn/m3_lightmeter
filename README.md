@@ -18,12 +18,8 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 - [Backstory](#backstory)
 - [Table of contents](#table-of-contents)
 - [Legacy features](#legacy-features)
-    - [Metering](#metering)
-    - [Adjust](#adjust)
-    - [General](#general)
-    - [Theme](#theme)
-  - [Build](#build)
-  - [Contribution](#contribution)
+- [Build](#build)
+- [Contribution](#contribution)
 
 # Legacy features
 
