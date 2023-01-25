@@ -59,4 +59,6 @@ flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib
 
 ## Contribution
 
+To report a bug or suggest a new feature open a new [issue](https://github.com/vodemn/m3_lightmeter/issues).
+
 In case you want to help develop this project you need to follow this [style guide](doc/style_guide.md).
