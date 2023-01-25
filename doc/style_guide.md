@@ -1,3 +1,4 @@
+# M3 Lightmeter repo style guide
 
 This repo uses [Effective Dart Style](https://dart.dev/guides/language/effective-dart/style) and [Style guide for Flutter repo](https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo#formatting) with some alterations.
 
