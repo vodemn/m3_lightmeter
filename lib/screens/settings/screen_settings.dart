@@ -3,9 +3,14 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 import 'components/haptics/provider_list_tile_haptics.dart';
-import 'components/widget_list_tile_fractional_stops.dart';
-import 'components/theme/widget_settings_theme.dart';
-import 'components/widget_label_version.dart';
+import 'components/report_issue/widget_list_tile_report_issue.dart';
+import 'components/shared/settings_section/widget_settings_section.dart';
+import 'components/source_code/widget_list_tile_source_code.dart';
+import 'components/dynamic_color/widget_list_tile_dynamic_color.dart';
+import 'components/theme_type/widget_list_tile_theme_type.dart';
+import 'components/version/widget_list_tile_version.dart';
+import 'components/fractional_stops/widget_list_tile_fractional_stops.dart';
+import 'components/write_email/widget_list_tile_write_email.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -38,18 +43,36 @@ class SettingsScreen extends StatelessWidget {
             ),
             SliverList(
               delegate: SliverChildListDelegate(
-                [
-                  const StopTypeListTile(),
-                  const HapticsListTileProvider(),
-                  const ThemeSettings(),
+                <SettingsSection>[
+                  SettingsSection(
+                    title: S.of(context).metering,
+                    children: const [
+                      StopTypeListTile(),
+                    ],
+                  ),
+                  SettingsSection(
+                    title: S.of(context).general,
+                    children: const [
+                      HapticsListTileProvider(),
+                    ],
+                  ),
+                  SettingsSection(
+                    title: S.of(context).theme,
+                    children: const [
+                      ThemeTypeListTile(),
+                      DynamicColorListTile(),
+                    ],
+                  ),
+                  SettingsSection(
+                    title: S.of(context).about,
+                    children: const [
+                      SourceCodeListTile(),
+                      ReportIssueListTile(),
+                      WriteEmailListTile(),
+                      VersionListTile(),
+                    ],
+                  ),
                 ],
-              ),
-            ),
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: const [VersionLabel()],
               ),
             ),
           ],

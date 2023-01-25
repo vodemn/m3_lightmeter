@@ -13,19 +13,26 @@
     "cancel": "Cancel",
     "select": "Select",
     "settings": "Settings",
+    "metering": "Metering",
     "fractionalStops": "Fractional stops",
     "showFractionalStops": "Show fractional stops",
     "halfStops": "1/2",
     "thirdStops": "1/3",
+    "general": "General",
     "haptics": "Haptics",
     "theme": "Theme",
     "chooseTheme": "Choose theme",
-    "dynamicColors": "Dynamic colors",
+    "dynamicColor": "Dynamic color",
     "themeLight": "Light",
     "themeDark": "Dark",
     "themeSystemDefault": "System default",
-    "version": "Version: {version} ({buildNumber})",
-    "@version": {
+    "about": "About",
+    "sourceCode": "Source code",
+    "reportIssue": "Report an issue",
+    "writeEmail": "Write an email",
+    "version": "Version",
+    "versionNumber": "{version} ({buildNumber})",
+    "@versionNumber": {
         "placeholders": {
             "version": {
                 "type": "String"

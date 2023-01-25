@@ -40,7 +40,7 @@ class MeteringFlow extends StatelessWidget {
               context.read<HapticsInteractor>(),
             ),
           ),
-          if (context.read<EvSourceType>() == EvSourceType.mock)
+          if (context.read<EvSourceType>() == EvSourceType.sensor)
             BlocProvider(
               lazy: false,
               create: (context) => RandomEvBloc(context.read<MeteringCommunicationBloc>()),

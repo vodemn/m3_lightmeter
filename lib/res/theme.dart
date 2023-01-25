@@ -26,13 +26,13 @@ class ThemeProvider extends StatefulWidget {
 
 class ThemeProviderState extends State<ThemeProvider> {
   late final _themeTypeNotifier = ValueNotifier<ThemeType>(context.read<UserPreferencesService>().themeType);
-  late final _dynamicColorsNotifier = ValueNotifier<bool>(context.read<UserPreferencesService>().dynamicColors);
+  late final _dynamicColorNotifier = ValueNotifier<bool>(context.read<UserPreferencesService>().dynamicColor);
   late final _primaryColorNotifier = ValueNotifier<Color>(const Color(0xFF2196f3));
 
   @override
   void dispose() {
     _themeTypeNotifier.dispose();
-    _dynamicColorsNotifier.dispose();
+    _dynamicColorNotifier.dispose();
     _primaryColorNotifier.dispose();
     super.dispose();
   }
@@ -44,9 +44,9 @@ class ThemeProviderState extends State<ThemeProvider> {
       builder: (_, themeType, __) => Provider.value(
         value: themeType,
         child: ValueListenableBuilder(
-          valueListenable: _dynamicColorsNotifier,
-          builder: (_, useDynamicColors, __) => _DynamicColorsProvider(
-            useDynamicColors: useDynamicColors,
+          valueListenable: _dynamicColorNotifier,
+          builder: (_, useDynamicColor, __) => _DynamicColorProvider(
+            useDynamicColor: useDynamicColor,
             themeBrightness: _themeBrightness,
             builder: (_, dynamicPrimaryColor) => ValueListenableBuilder(
               valueListenable: _primaryColorNotifier,
@@ -78,19 +78,19 @@ class ThemeProviderState extends State<ThemeProvider> {
     }
   }
 
-  void enableDynamicColors(bool enable) {
-    _dynamicColorsNotifier.value = enable;
-    context.read<UserPreferencesService>().dynamicColors = enable;
+  void enableDynamicColor(bool enable) {
+    _dynamicColorNotifier.value = enable;
+    context.read<UserPreferencesService>().dynamicColor = enable;
   }
 }
 
-class _DynamicColorsProvider extends StatelessWidget {
-  final bool useDynamicColors;
+class _DynamicColorProvider extends StatelessWidget {
+  final bool useDynamicColor;
   final Brightness themeBrightness;
   final Widget Function(BuildContext context, Color? primaryColor) builder;
 
-  const _DynamicColorsProvider({
-    required this.useDynamicColors,
+  const _DynamicColorProvider({
+    required this.useDynamicColor,
     required this.themeBrightness,
     required this.builder,
   });
@@ -99,19 +99,19 @@ class _DynamicColorsProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) {
-        late final DynamicColorsState state;
+        late final DynamicColorState state;
         late final Color? dynamicPrimaryColor;
         if (lightDynamic != null && darkDynamic != null) {
-          if (useDynamicColors) {
+          if (useDynamicColor) {
             dynamicPrimaryColor = (themeBrightness == Brightness.light ? lightDynamic : darkDynamic).primary;
-            state = DynamicColorsState.enabled;
+            state = DynamicColorState.enabled;
           } else {
             dynamicPrimaryColor = null;
-            state = DynamicColorsState.disabled;
+            state = DynamicColorState.disabled;
           }
         } else {
           dynamicPrimaryColor = null;
-          state = DynamicColorsState.unavailable;
+          state = DynamicColorState.unavailable;
         }
         return Provider.value(
           value: state,
@@ -144,13 +144,11 @@ class _ThemeDataProvider extends StatelessWidget {
   ThemeData _themeFromColorScheme(ColorScheme scheme) {
     return ThemeData(
       useMaterial3: true,
-      bottomAppBarColor: scheme.surface,
       brightness: scheme.brightness,
       colorScheme: scheme,
       dialogBackgroundColor: scheme.surface,
       dialogTheme: DialogTheme(backgroundColor: scheme.surface),
       scaffoldBackgroundColor: scheme.surface,
-      toggleableActiveColor: scheme.primary,
     );
   }
 

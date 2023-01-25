@@ -1,1 +1,1 @@
-enum DynamicColorsState { unavailable, enabled, disabled }
+enum DynamicColorState { unavailable, enabled, disabled }
