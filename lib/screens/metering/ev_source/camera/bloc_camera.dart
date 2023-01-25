@@ -61,7 +61,7 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
     if (communicationState is communication_states.MeasureState) {
       _takePhoto().then((ev100) {
         if (ev100 != null) {
-          communicationBloc.add(communication_event.MeasuredEvent(ev100));
+          communicationBloc.add(communication_event.MeasuredEvent(ev100 + _meteringInteractor.cameraEvCalibration));
         }
       });
     }

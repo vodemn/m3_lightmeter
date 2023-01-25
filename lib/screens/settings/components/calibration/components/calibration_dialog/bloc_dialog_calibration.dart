@@ -23,7 +23,7 @@ class CalibrationDialogBloc extends Bloc<CalibrationDialogEvent, CalibrationDial
 
   void _onCameraEvCalibrationReset(CameraEvCalibrationResetEvent event, Emitter emit) {
     _settingsInteractor.quickVibration();
-    _cameraEvCalibration = _settingsInteractor.cameraEvCalibration;
+    _cameraEvCalibration = 0;
     emit(CalibrationDialogState(_cameraEvCalibration));
   }
 

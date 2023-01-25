@@ -10,6 +10,8 @@ class MeteringInteractor {
     this._hapticsService,
   );
 
+  double get cameraEvCalibration => _userPreferencesService.cameraEvCalibration;
+
   bool get isHapticsEnabled => _userPreferencesService.haptics;
 
   /// Executes vibration if haptics are enabled in settings
