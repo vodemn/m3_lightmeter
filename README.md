@@ -5,7 +5,7 @@
   <b>Material Lightmeter</b>
 </p>
 
-## Backstory
+# Backstory
 
 Some time ago I've started developing the [Material Lightmeter](https://play.google.com/store/apps/details?id=com.vodemn.lightmeter&hl=en&gl=US) app. Unfortunately, the last update of this app was almost a year prior to creation of this repo. So after reading some positive review on Google Play saying that "this is an excellent app, too bad it is no longer updated", I've decided to make an update and also make this app open source. Maybe someone sometime will decide to contribute to this project.
 
@@ -13,18 +13,19 @@ But as the existing repo contained some sensitive data, that I've pushed due to 
 
 Without further delay behold my new Lightmeter app inspired by Material You (a.k.a. M3)
 
-## Table of contents
+# Table of contents
 
 - [Backstory](#backstory)
 - [Table of contents](#table-of-contents)
 - [Legacy features](#legacy-features)
-  - [Metering](#metering)
-  - [Adjust](#adjust)
-  - [General](#general)
-  - [Theme](#theme)
-- [Build](#build)
+    - [Metering](#metering)
+    - [Adjust](#adjust)
+    - [General](#general)
+    - [Theme](#theme)
+  - [Build](#build)
+  - [Contribution](#contribution)
 
-## Legacy features
+# Legacy features
 
 The list of features that the old lightmeter app has and that have to be implemeneted in the M3 lightmeter.
 
@@ -55,3 +56,7 @@ The list of features that the old lightmeter app has and that have to be impleme
 ```
 flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_dev.dart
 ```
+
+## Contribution
+
+In case you want to help develop this project you need to follow this [style guide](doc/style_guide.md).
