@@ -21,7 +21,7 @@ class Dimens {
   static const Duration durationML = Duration(milliseconds: 250);
   static const Duration durationL = Duration(milliseconds: 300);
 
-  // `CameraSlider`
+  // `CenteredSlider`
   static const double cameraSliderTrackHeight = grid4;
   static const double cameraSliderTrackRadius = cameraSliderTrackHeight / 2;
   static const double cameraSliderHandleSize = 32;

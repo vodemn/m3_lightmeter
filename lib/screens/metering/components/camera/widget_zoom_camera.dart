@@ -4,7 +4,7 @@ import 'package:lightmeter/screens/metering/ev_source/camera/bloc_camera.dart';
 import 'package:lightmeter/screens/metering/ev_source/camera/event_camera.dart';
 import 'package:lightmeter/screens/metering/ev_source/camera/state_camera.dart';
 
-import 'shared/widget_slider_camera.dart';
+import '../../../shared/centered_slider/widget_slider_centered.dart';
 
 class CameraZoomSlider extends StatelessWidget {
   const CameraZoomSlider({super.key});
@@ -14,7 +14,7 @@ class CameraZoomSlider extends StatelessWidget {
     return BlocBuilder<CameraBloc, CameraState>(
       builder: (context, state) {
         if (state is CameraActiveState) {
-          return CameraSlider(
+          return CenteredSlider(
             icon: const Icon(Icons.search),
             value: state.currentZoom,
             min: state.minZoom,

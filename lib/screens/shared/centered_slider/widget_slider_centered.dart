@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-class CameraSlider extends StatefulWidget {
-  final Icon icon;
+class CenteredSlider extends StatefulWidget {
+  final Icon? icon;
   final double value;
   final double min;
   final double max;
   final ValueChanged<double> onChanged;
   final bool isVertical;
 
-  const CameraSlider({
-    required this.icon,
+  const CenteredSlider({
+    this.icon,
     required this.value,
     required this.min,
     required this.max,
@@ -20,10 +20,10 @@ class CameraSlider extends StatefulWidget {
   });
 
   @override
-  State<CameraSlider> createState() => _CameraSliderState();
+  State<CenteredSlider> createState() => _CenteredSliderState();
 }
 
-class _CameraSliderState extends State<CameraSlider> {
+class _CenteredSliderState extends State<CenteredSlider> {
   double relativeValue = 0.0;
 
   @override
@@ -33,40 +33,44 @@ class _CameraSliderState extends State<CameraSlider> {
   }
 
   @override
-  void didUpdateWidget(CameraSlider oldWidget) {
+  void didUpdateWidget(CenteredSlider oldWidget) {
     super.didUpdateWidget(oldWidget);
     relativeValue = (widget.value - widget.min) / (widget.max - widget.min);
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final biggestSize = widget.isVertical ? constraints.maxHeight : constraints.maxWidth;
-        final handleDistance = biggestSize - Dimens.cameraSliderHandleSize;
-        return RotatedBox(
-          quarterTurns: widget.isVertical ? -1 : 0,
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTapUp: (details) => _updateHandlePosition(details.localPosition.dx, handleDistance),
-            onHorizontalDragUpdate: (details) => _updateHandlePosition(details.localPosition.dx, handleDistance),
-            child: SizedBox(
-              height: Dimens.cameraSliderHandleSize,
-              width: biggestSize,
-              child: _Slider(
-                handleDistance: handleDistance,
-                handleSize: Dimens.cameraSliderHandleSize,
-                trackThickness: Dimens.cameraSliderTrackHeight,
-                value: relativeValue,
-                icon: RotatedBox(
-                  quarterTurns: widget.isVertical ? 1 : 0,
-                  child: widget.icon,
+    return SizedBox(
+      height: widget.isVertical ? double.maxFinite : Dimens.cameraSliderHandleSize,
+      width: !widget.isVertical ? double.maxFinite : Dimens.cameraSliderHandleSize,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final biggestSize = widget.isVertical ? constraints.maxHeight : constraints.maxWidth;
+          final handleDistance = biggestSize - Dimens.cameraSliderHandleSize;
+          return RotatedBox(
+            quarterTurns: widget.isVertical ? -1 : 0,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTapUp: (details) => _updateHandlePosition(details.localPosition.dx, handleDistance),
+              onHorizontalDragUpdate: (details) => _updateHandlePosition(details.localPosition.dx, handleDistance),
+              child: SizedBox(
+                height: Dimens.cameraSliderHandleSize,
+                width: biggestSize,
+                child: _Slider(
+                  handleDistance: handleDistance,
+                  handleSize: Dimens.cameraSliderHandleSize,
+                  trackThickness: Dimens.cameraSliderTrackHeight,
+                  value: relativeValue,
+                  icon: RotatedBox(
+                    quarterTurns: widget.isVertical ? 1 : 0,
+                    child: widget.icon,
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

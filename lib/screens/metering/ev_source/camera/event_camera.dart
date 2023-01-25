@@ -17,7 +17,3 @@ class ExposureOffsetChangedEvent extends CameraEvent {
 
   const ExposureOffsetChangedEvent(this.value);
 }
-
-class ExposureOffsetResetEvent extends CameraEvent {
-  const ExposureOffsetResetEvent();
-}

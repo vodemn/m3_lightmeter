@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
+import 'components/calibration/widget_list_tile_calibration.dart';
 import 'components/haptics/provider_list_tile_haptics.dart';
 import 'components/report_issue/widget_list_tile_report_issue.dart';
 import 'components/shared/settings_section/widget_settings_section.dart';
@@ -48,6 +49,7 @@ class SettingsScreen extends StatelessWidget {
                     title: S.of(context).metering,
                     children: const [
                       StopTypeListTile(),
+                      CalibrationListTile(),
                     ],
                   ),
                   SettingsSection(

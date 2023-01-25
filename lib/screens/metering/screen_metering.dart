@@ -88,7 +88,7 @@ class _MeteringScreenState extends State<MeteringScreen> {
                   MeteringBottomControls(
                     onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
                     onSettings: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+                      Navigator.pushNamed(context, 'settings');
                     },
                   ),
                 ],

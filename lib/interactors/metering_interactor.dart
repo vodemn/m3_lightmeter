@@ -1,16 +1,16 @@
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 
-class HapticsInteractor {
+class MeteringInteractor {
   final UserPreferencesService _userPreferencesService;
   final HapticsService _hapticsService;
 
-  const HapticsInteractor(
+  const MeteringInteractor(
     this._userPreferencesService,
     this._hapticsService,
   );
 
-  bool get isEnabled => _userPreferencesService.haptics;
+  bool get isHapticsEnabled => _userPreferencesService.haptics;
 
   /// Executes vibration if haptics are enabled in settings
   void quickVibration() {
