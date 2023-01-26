@@ -26,7 +26,7 @@ class ThemeProvider extends StatefulWidget {
 
 class ThemeProviderState extends State<ThemeProvider> {
   UserPreferencesService get _prefs => context.read<UserPreferencesService>();
-  
+
   late final _themeTypeNotifier = ValueNotifier<ThemeType>(_prefs.themeType);
   late final _dynamicColorNotifier = ValueNotifier<bool>(_prefs.dynamicColor);
   late final _primaryColorNotifier = ValueNotifier<Color>(const Color(0xFF2196f3));
@@ -159,6 +159,7 @@ class _ThemeDataProvider extends StatelessWidget {
     final scheme = brightness == Brightness.light
         ? Scheme.light(primaryColor.value)
         : Scheme.dark(primaryColor.value);
+
     return ColorScheme(
       brightness: brightness,
       primary: Color(scheme.primary),
@@ -171,10 +172,15 @@ class _ThemeDataProvider extends StatelessWidget {
       onError: Color(scheme.onError),
       background: Color(scheme.background),
       onBackground: Color(scheme.onBackground),
-      surface: Color.alphaBlend(Color(scheme.primary).withOpacity(0.05), Color(scheme.background)),
+      surface: Color.alphaBlend(
+        Color(scheme.primary).withOpacity(0.05),
+        Color(scheme.background),
+      ),
       onSurface: Color(scheme.onSurface),
-      surfaceVariant:
-          Color.alphaBlend(Color(scheme.primary).withOpacity(0.5), Color(scheme.background)),
+      surfaceVariant: Color.alphaBlend(
+        Color(scheme.primary).withOpacity(0.5),
+        Color(scheme.background),
+      ),
       onSurfaceVariant: Color(scheme.onSurfaceVariant),
     );
   }
