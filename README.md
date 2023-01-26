@@ -7,10 +7,15 @@
 
 # Table of contents
 
+- [Table of contents](#table-of-contents)
 - [Backstory](#backstory)
 - [Legacy features](#legacy-features)
-- [Build](#build)
-- [Contribution](#contribution)
+    - [Metering](#metering)
+    - [Adjust](#adjust)
+    - [General](#general)
+    - [Theme](#theme)
+  - [Build](#build)
+  - [Contribution](#contribution)
 
 # Backstory
 
@@ -31,7 +36,7 @@ The list of features that the old lightmeter app has and that have to be impleme
 - [ ] Incident light metering
 
 ### Adjust
-- [ ] Light sources EV calibration
+- [x] Light sources EV calibration
 - [ ] Customizable aperture range
 - [ ] Customizable shutter speed range
 - [x] ND filter select
