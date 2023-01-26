@@ -32,7 +32,10 @@ class SettingsScreen extends StatelessWidget {
                 titlePadding: const EdgeInsets.all(Dimens.paddingM),
                 title: Text(
                   S.of(context).settings,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 24),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 24,
+                  ),
                 ),
               ),
               actions: [

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/metering/components/exposure_pairs_list/components/widget_item_list_exposure_pairs.dart';
+
+import 'components/widget_item_list_exposure_pairs.dart';
 
 class ExposurePairsList extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
@@ -51,7 +52,9 @@ class ExposurePairsList extends StatelessWidget {
                     builder: (context, constraints) => Align(
                       alignment: index == 0
                           ? Alignment.bottomCenter
-                          : (index == exposurePairs.length - 1 ? Alignment.topCenter : Alignment.center),
+                          : (index == exposurePairs.length - 1
+                              ? Alignment.topCenter
+                              : Alignment.center),
                       child: SizedBox(
                         height: index == 0 || index == exposurePairs.length - 1
                             ? constraints.maxHeight / 2

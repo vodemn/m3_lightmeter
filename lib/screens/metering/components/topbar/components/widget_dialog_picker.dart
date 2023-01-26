@@ -4,7 +4,8 @@ import 'package:lightmeter/data/models/photography_values/photography_value.dart
 import 'package:lightmeter/res/dimens.dart';
 
 typedef DialogPickerItemBuilder<T extends PhotographyValue> = Widget Function(BuildContext, T);
-typedef DialogPickerEvDifferenceBuilder<T extends PhotographyValue> = String Function(T selected, T other);
+typedef DialogPickerEvDifferenceBuilder<T extends PhotographyValue> = String Function(
+    T selected, T other);
 
 class MeteringScreenDialogPicker<T extends PhotographyValue> extends StatefulWidget {
   final String title;
@@ -32,7 +33,8 @@ class MeteringScreenDialogPicker<T extends PhotographyValue> extends StatefulWid
   State<MeteringScreenDialogPicker<T>> createState() => _MeteringScreenDialogPickerState<T>();
 }
 
-class _MeteringScreenDialogPickerState<T extends PhotographyValue> extends State<MeteringScreenDialogPicker<T>> {
+class _MeteringScreenDialogPickerState<T extends PhotographyValue>
+    extends State<MeteringScreenDialogPicker<T>> {
   late T _selectedValue = widget.initialValue;
   final _scrollController = ScrollController();
 
@@ -101,7 +103,9 @@ class _MeteringScreenDialogPickerState<T extends PhotographyValue> extends State
                 child: widget.itemTitleBuilder(context, widget.values[index]),
               ),
               secondary: widget.values[index].value != _selectedValue.value
-                  ? Text(S.of(context).ev(widget.evDifferenceBuilder.call(_selectedValue, widget.values[index])))
+                  ? Text(S
+                      .of(context)
+                      .ev(widget.evDifferenceBuilder.call(_selectedValue, widget.values[index])))
                   : null,
               onChanged: (value) {
                 if (value != null) {

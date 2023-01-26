@@ -25,8 +25,10 @@ class ThemeProvider extends StatefulWidget {
 }
 
 class ThemeProviderState extends State<ThemeProvider> {
-  late final _themeTypeNotifier = ValueNotifier<ThemeType>(context.read<UserPreferencesService>().themeType);
-  late final _dynamicColorNotifier = ValueNotifier<bool>(context.read<UserPreferencesService>().dynamicColor);
+  UserPreferencesService get _prefs => context.read<UserPreferencesService>();
+  
+  late final _themeTypeNotifier = ValueNotifier<ThemeType>(_prefs.themeType);
+  late final _dynamicColorNotifier = ValueNotifier<bool>(_prefs.dynamicColor);
   late final _primaryColorNotifier = ValueNotifier<Color>(const Color(0xFF2196f3));
 
   @override
@@ -64,7 +66,7 @@ class ThemeProviderState extends State<ThemeProvider> {
 
   void setThemeType(ThemeType themeType) {
     _themeTypeNotifier.value = themeType;
-    context.read<UserPreferencesService>().themeType = themeType;
+    _prefs.themeType = themeType;
   }
 
   Brightness get _themeBrightness {
@@ -80,7 +82,7 @@ class ThemeProviderState extends State<ThemeProvider> {
 
   void enableDynamicColor(bool enable) {
     _dynamicColorNotifier.value = enable;
-    context.read<UserPreferencesService>().dynamicColor = enable;
+    _prefs.dynamicColor = enable;
   }
 }
 
@@ -103,7 +105,8 @@ class _DynamicColorProvider extends StatelessWidget {
         late final Color? dynamicPrimaryColor;
         if (lightDynamic != null && darkDynamic != null) {
           if (useDynamicColor) {
-            dynamicPrimaryColor = (themeBrightness == Brightness.light ? lightDynamic : darkDynamic).primary;
+            dynamicPrimaryColor =
+                (themeBrightness == Brightness.light ? lightDynamic : darkDynamic).primary;
             state = DynamicColorState.enabled;
           } else {
             dynamicPrimaryColor = null;
@@ -153,7 +156,9 @@ class _ThemeDataProvider extends StatelessWidget {
   }
 
   ColorScheme _colorSchemeFromColor() {
-    final scheme = brightness == Brightness.light ? Scheme.light(primaryColor.value) : Scheme.dark(primaryColor.value);
+    final scheme = brightness == Brightness.light
+        ? Scheme.light(primaryColor.value)
+        : Scheme.dark(primaryColor.value);
     return ColorScheme(
       brightness: brightness,
       primary: Color(scheme.primary),
@@ -168,7 +173,8 @@ class _ThemeDataProvider extends StatelessWidget {
       onBackground: Color(scheme.onBackground),
       surface: Color.alphaBlend(Color(scheme.primary).withOpacity(0.05), Color(scheme.background)),
       onSurface: Color(scheme.onSurface),
-      surfaceVariant: Color.alphaBlend(Color(scheme.primary).withOpacity(0.5), Color(scheme.background)),
+      surfaceVariant:
+          Color.alphaBlend(Color(scheme.primary).withOpacity(0.5), Color(scheme.background)),
       onSurfaceVariant: Color(scheme.onSurfaceVariant),
     );
   }

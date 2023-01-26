@@ -17,6 +17,8 @@ class CalibrationDialog extends StatefulWidget {
 }
 
 class _CalibrationDialogState extends State<CalibrationDialog> {
+  CalibrationDialogBloc get bloc => context.read<CalibrationDialogBloc>();
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -37,8 +39,8 @@ class _CalibrationDialogState extends State<CalibrationDialog> {
             _CalibrationUnit(
               title: S.of(context).camera,
               value: state.cameraEvCalibration,
-              onChanged: (value) => context.read<CalibrationDialogBloc>().add(CameraEvCalibrationChangedEvent(value)),
-              onReset: () => context.read<CalibrationDialogBloc>().add(const CameraEvCalibrationResetEvent()),
+              onChanged: (value) => bloc.add(CameraEvCalibrationChangedEvent(value)),
+              onReset: () => bloc.add(const CameraEvCalibrationResetEvent()),
             ),
           ],
         ),
@@ -56,7 +58,7 @@ class _CalibrationDialogState extends State<CalibrationDialog> {
         ),
         TextButton(
           onPressed: () {
-            context.read<CalibrationDialogBloc>().add(const SaveCalibrationDialogEvent());
+            bloc.add(const SaveCalibrationDialogEvent());
             Navigator.of(context).pop();
           },
           child: Text(S.of(context).save),

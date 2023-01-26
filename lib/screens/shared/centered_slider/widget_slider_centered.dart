@@ -51,8 +51,14 @@ class _CenteredSliderState extends State<CenteredSlider> {
             quarterTurns: widget.isVertical ? -1 : 0,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTapUp: (details) => _updateHandlePosition(details.localPosition.dx, handleDistance),
-              onHorizontalDragUpdate: (details) => _updateHandlePosition(details.localPosition.dx, handleDistance),
+              onTapUp: (details) => _updateHandlePosition(
+                details.localPosition.dx,
+                handleDistance,
+              ),
+              onHorizontalDragUpdate: (details) => _updateHandlePosition(
+                details.localPosition.dx,
+                handleDistance,
+              ),
               child: SizedBox(
                 height: Dimens.cameraSliderHandleSize,
                 width: biggestSize,
@@ -83,10 +89,8 @@ class _CenteredSliderState extends State<CenteredSlider> {
       relativeValue = (offset - Dimens.cameraSliderHandleSize / 2) / handleDistance;
     }
     setState(() {});
-    widget.onChanged(_clampToRange(relativeValue));
+    widget.onChanged(relativeValue * (widget.max - widget.min) + widget.min);
   }
-
-  double _clampToRange(double relativeValue) => relativeValue * (widget.max - widget.min) + widget.min;
 }
 
 class _Slider extends StatelessWidget {
@@ -111,7 +115,9 @@ class _Slider extends StatelessWidget {
       children: [
         Positioned(
           height: trackThickness,
-          width: handleDistance + trackThickness, // add thickness to maintain radius overlap with handle
+
+          /// add thickness to maintain radius overlap with handle
+          width: handleDistance + trackThickness,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(trackThickness / 2),
             child: ColoredBox(color: Theme.of(context).colorScheme.surfaceVariant),

@@ -8,8 +8,10 @@ import 'package:lightmeter/data/models/photography_values/photography_value.dart
 import 'package:lightmeter/data/models/photography_values/shutter_speed_value.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
-import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_events;
-import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
+    as communication_events;
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
+    as communication_states;
 import 'package:lightmeter/utils/log_2.dart';
 
 import 'communication/bloc_communication_metering.dart';
@@ -132,7 +134,8 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
         evSteps = (ev / 0.3).floor();
         break;
     }
-    final evOffset = _shutterSpeedValues.indexOf(const ShutterSpeedValue(1, false, StopType.full)) - evSteps;
+    final evOffset =
+        _shutterSpeedValues.indexOf(const ShutterSpeedValue(1, false, StopType.full)) - evSteps;
 
     late final int apertureOffset;
     late final int shutterSpeedOffset;
@@ -144,7 +147,8 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       shutterSpeedOffset = 0;
     }
 
-    int itemsCount = min(_apertureValues.length + shutterSpeedOffset, _shutterSpeedValues.length + apertureOffset) -
+    int itemsCount = min(_apertureValues.length + shutterSpeedOffset,
+            _shutterSpeedValues.length + apertureOffset) -
         max(apertureOffset, shutterSpeedOffset);
 
     if (itemsCount < 0) {

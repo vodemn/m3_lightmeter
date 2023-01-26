@@ -8,17 +8,17 @@ class TopBarShape extends CustomPainter {
 
   /// The appendix is on the left side
   /// but if appendix height is negative, then we have to make a cutout
-  /// 
+  ///
   ///         negative                       positive
   ///   |                   |   ///   |                   |
   ///   |                   |   ///   |                   |
   ///   |                   |   ///   |                   |
   ///   |                   |   ///   |                   |
-  ///   \________           |   ///   |           ________/     
+  ///   \________           |   ///   |           ________/
   ///            \          |   ///   |          /              ↑
   ///            |          |   ///   |          |              | appendix height
   ///            \__________/   ///   \__________/              ↓
-  /// 
+  ///
   final double appendixHeight;
   final double appendixWidth;
 
@@ -54,7 +54,7 @@ class TopBarShape extends CustomPainter {
       );
 
       // Bottom side with step
-      final double allowedRadius = min(appendixHeight.abs() / 2, Dimens.borderRadiusL);
+      final allowedRadius = min(appendixHeight.abs() / 2, Dimens.borderRadiusL);
       path.lineTo(appendixWidth - allowedRadius, size.height + appendixHeight);
 
       final bool isCutout = appendixHeight < 0;

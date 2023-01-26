@@ -39,13 +39,15 @@ class Application extends StatelessWidget {
             child: StopTypeProvider(
               child: ThemeProvider(
                 builder: (context, _) {
-                  final systemIconsBrightness =
-                      ThemeData.estimateBrightnessForColor(context.watch<ThemeData>().colorScheme.onSurface);
+                  final systemIconsBrightness = ThemeData.estimateBrightnessForColor(
+                    context.watch<ThemeData>().colorScheme.onSurface,
+                  );
                   return AnnotatedRegion(
                     value: SystemUiOverlayStyle(
                       statusBarColor: Colors.transparent,
-                      statusBarBrightness:
-                          systemIconsBrightness == Brightness.light ? Brightness.dark : Brightness.light,
+                      statusBarBrightness: systemIconsBrightness == Brightness.light
+                          ? Brightness.dark
+                          : Brightness.light,
                       statusBarIconBrightness: systemIconsBrightness,
                       systemNavigationBarColor: context.watch<ThemeData>().colorScheme.surface,
                       systemNavigationBarIconBrightness: systemIconsBrightness,

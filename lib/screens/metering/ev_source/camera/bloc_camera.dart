@@ -9,8 +9,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/ev_source/ev_source_bloc.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
-import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_event;
-import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
+    as communication_event;
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
+    as communication_states;
 import 'package:lightmeter/utils/log_2.dart';
 
 import 'event_camera.dart';
@@ -61,7 +63,9 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
     if (communicationState is communication_states.MeasureState) {
       _takePhoto().then((ev100) {
         if (ev100 != null) {
-          communicationBloc.add(communication_event.MeasuredEvent(ev100 + _meteringInteractor.cameraEvCalibration));
+          communicationBloc.add(
+            communication_event.MeasuredEvent(ev100 + _meteringInteractor.cameraEvCalibration),
+          );
         }
       });
     }
@@ -92,7 +96,12 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
       _exposureOffsetRange = await Future.wait<double>([
         _cameraController!.getMinExposureOffset(),
         _cameraController!.getMaxExposureOffset(),
-      ]).then((levels) => RangeValues(max(_exposureMaxRange.start, levels[0]), min(_exposureMaxRange.end, levels[1])));
+      ]).then(
+        (levels) => RangeValues(
+          max(_exposureMaxRange.start, levels[0]),
+          min(_exposureMaxRange.end, levels[1]),
+        ),
+      );
       await _cameraController!.getExposureOffsetStepSize().then((value) {
         _exposureStep = value == 0 ? 0.1 : value;
       });

@@ -2,7 +2,7 @@ import 'package:vibration/vibration.dart';
 
 class HapticsService {
   const HapticsService();
-  
+
   Future<void> quickVibration() async => _tryVibrate(duration: 25, amplitude: 96);
 
   Future<void> responseVibration() async => _tryVibrate(duration: 50, amplitude: 128);

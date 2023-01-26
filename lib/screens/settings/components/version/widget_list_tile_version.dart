@@ -12,12 +12,9 @@ class VersionListTile extends StatelessWidget {
       title: Text(S.of(context).version),
       trailing: FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
-        builder: (context, snapshot) {
-          if (snapshot.data != null) {
-            return Text(S.of(context).versionNumber(snapshot.data!.version, snapshot.data!.buildNumber));
-          }
-          return const SizedBox.shrink();
-        },
+        builder: (context, snapshot) => snapshot.data != null
+            ? Text(S.of(context).versionNumber(snapshot.data!.version, snapshot.data!.buildNumber))
+            : const SizedBox.shrink(),
       ),
     );
   }

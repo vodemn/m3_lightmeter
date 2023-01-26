@@ -55,6 +55,8 @@ class CameraView extends StatelessWidget {
   DeviceOrientation _getApplicableOrientation(CameraValue value) {
     return value.isRecordingVideo
         ? value.recordingOrientation!
-        : (value.previewPauseOrientation ?? value.lockedCaptureOrientation ?? value.deviceOrientation);
+        : (value.previewPauseOrientation ??
+            value.lockedCaptureOrientation ??
+            value.deviceOrientation);
   }
 }

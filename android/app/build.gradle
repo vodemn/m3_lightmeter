@@ -49,6 +49,18 @@ android {
         versionName flutterVersionName
     }
 
+    signingConfigs {
+        debug {}
+        /*
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+        */
+    }
+
     flavorDimensions "app"
     productFlavors {
         dev {
@@ -60,6 +72,17 @@ android {
             applicationId "com.vodemn.lightmeter"
             dimension "app"
             signingConfig signingConfigs.debug
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
         }
     }
 }

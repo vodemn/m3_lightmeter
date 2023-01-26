@@ -22,10 +22,12 @@ class MeteringScreen extends StatefulWidget {
 class _MeteringScreenState extends State<MeteringScreen> {
   double topBarOverflow = 0.0;
 
+  MeteringBloc get _bloc => context.read<MeteringBloc>();
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    context.read<MeteringBloc>().add(StopTypeChangedEvent(context.watch<StopType>()));
+    _bloc.add(StopTypeChangedEvent(context.watch<StopType>()));
   }
 
   @override
@@ -33,66 +35,83 @@ class _MeteringScreenState extends State<MeteringScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: BlocBuilder<MeteringBloc, MeteringState>(
-        builder: (context, state) {
-          return Stack(
-            children: [
-              Column(
-                children: [
-                  MeteringTopBar(
-                    fastest: state.fastest,
-                    slowest: state.slowest,
-                    ev: state.ev,
-                    iso: state.iso,
-                    nd: state.nd,
-                    onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
-                    onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
-                    onCutoutLayout: (value) => topBarOverflow = value,
-                  ),
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) => OverflowBox(
-                        alignment: Alignment.bottomCenter,
-                        maxHeight: constraints.maxHeight + topBarOverflow.abs(),
-                        maxWidth: constraints.maxWidth,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: topBarOverflow >= 0 ? EdgeInsets.only(top: topBarOverflow) : EdgeInsets.zero,
-                                  child: ExposurePairsList(state.exposurePairs),
-                                ),
-                              ),
-                              const SizedBox(width: Dimens.grid8),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM).add(
-                                      topBarOverflow <= 0 ? EdgeInsets.only(top: -topBarOverflow) : EdgeInsets.zero),
-                                  child: Column(
-                                    children: const [
-                                      Expanded(child: CameraExposureSlider()),
-                                      SizedBox(height: Dimens.grid24),
-                                      CameraZoomSlider(),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+        builder: (context, state) => Column(
+          children: [
+            MeteringTopBar(
+              fastest: state.fastest,
+              slowest: state.slowest,
+              ev: state.ev,
+              iso: state.iso,
+              nd: state.nd,
+              onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
+              onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
+              onCutoutLayout: (value) => topBarOverflow = value,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
+                child: _MiddleContentWrapper(
+                  topBarOverflow: topBarOverflow,
+                  leftContent: ExposurePairsList(state.exposurePairs),
+                  rightContent: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
+                    child: Column(
+                      children: const [
+                        Expanded(child: CameraExposureSlider()),
+                        SizedBox(height: Dimens.grid24),
+                        CameraZoomSlider(),
+                      ],
                     ),
                   ),
-                  MeteringBottomControls(
-                    onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
-                    onSettings: () => Navigator.pushNamed(context, 'settings'),
-                  ),
-                ],
+                ),
               ),
-            ],
-          );
-        },
+            ),
+            MeteringBottomControls(
+              onMeasure: () => _bloc.add(const MeasureEvent()),
+              onSettings: () => Navigator.pushNamed(context, 'settings'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MiddleContentWrapper extends StatelessWidget {
+  final double topBarOverflow;
+  final Widget leftContent;
+  final Widget rightContent;
+
+  const _MiddleContentWrapper({
+    required this.topBarOverflow,
+    required this.leftContent,
+    required this.rightContent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) => OverflowBox(
+        alignment: Alignment.bottomCenter,
+        maxHeight: constraints.maxHeight + topBarOverflow.abs(),
+        maxWidth: constraints.maxWidth,
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(top: topBarOverflow >= 0 ? topBarOverflow : 0),
+                child: leftContent,
+              ),
+            ),
+            const SizedBox(width: Dimens.grid8),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(top: topBarOverflow <= 0 ? -topBarOverflow : 0),
+                child: rightContent,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

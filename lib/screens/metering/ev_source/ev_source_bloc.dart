@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
-import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
+    as communication_states;
 
 abstract class EvSourceBloc<E, S> extends Bloc<E, S> {
   final MeteringCommunicationBloc communicationBloc;

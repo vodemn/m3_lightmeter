@@ -60,18 +60,19 @@ class _ReadingValueBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final textColor = Theme.of(context).colorScheme.onPrimaryContainer;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           reading.label,
-          style: textTheme.labelMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimaryContainer),
+          style: textTheme.labelMedium?.copyWith(color: textColor),
         ),
         const SizedBox(height: Dimens.grid4),
         Text(
           reading.value,
-          style: textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimaryContainer),
+          style: textTheme.titleMedium?.copyWith(color: textColor),
         ),
       ],
     );

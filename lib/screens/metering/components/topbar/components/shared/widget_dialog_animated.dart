@@ -47,7 +47,10 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
       reverseDuration: Dimens.durationML,
       vsync: this,
     );
-    _defaultCurvedAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
+    _defaultCurvedAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
     _barrierColorAnimation = ColorTween(
       begin: Colors.transparent,
       end: Colors.black54,

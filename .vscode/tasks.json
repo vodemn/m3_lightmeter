@@ -1,0 +1,53 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "fvm_build_android_dev",
+            "type": "shell",
+            "command": ".fvm/flutter_sdk/bin/flutter",
+            "args": [
+                "build",
+                "apk",
+                "--flavor",
+                "dev",
+                "--release",
+                "--dart-define",
+                "cameraPreviewAspectRatio=2/3",
+                "-t",
+                "lib/main_dev.dart",
+            ],
+        },
+        {
+            "label": "fvm_build_android_prod",
+            "type": "shell",
+            "command": ".fvm/flutter_sdk/bin/flutter",
+            "args": [
+                "build",
+                "apk",
+                "--flavor",
+                "prod",
+                "--release",
+                "--dart-define",
+                "cameraPreviewAspectRatio=2/3",
+                "-t",
+                "lib/main_prod.dart",
+            ],
+        },
+        {
+            "label": "fvm_build_appbundle",
+            "type": "shell",
+            "command": ".fvm/flutter_sdk/bin/flutter",
+            "args": [
+                "build",
+                "appbundle",
+                "--flavor",
+                "prod",
+                "--release",
+                "--dart-define",
+                "cameraPreviewAspectRatio=2/3",
+                "-t",
+                "lib/main_prod.dart",
+            ],
+        },
+    ]
+}

@@ -174,7 +174,9 @@ class _NdValueTile extends StatelessWidget {
       subtitle: S.of(context).ndFilterFactor,
       selectedValue: value,
       values: ndValues,
-      itemTitleBuilder: (_, value) => Text(value.value == 0 ? S.of(context).none : value.value.toString()),
+      itemTitleBuilder: (_, value) => Text(
+        value.value == 0 ? S.of(context).none : value.value.toString(),
+      ),
       // using descending order, because ND filter darkens image & lowers EV
       evDifferenceBuilder: (selected, other) => other.toStringDifference(selected),
       onChanged: onChanged,

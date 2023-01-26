@@ -6,7 +6,11 @@ class ExposurePairsListItem<T extends PhotographyStopValue> extends StatelessWid
   final T value;
   final bool tickOnTheLeft;
 
-  const ExposurePairsListItem(this.value, {required this.tickOnTheLeft, super.key});
+  const ExposurePairsListItem(
+    this.value, {
+    required this.tickOnTheLeft,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
