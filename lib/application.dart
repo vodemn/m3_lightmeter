@@ -12,7 +12,7 @@ import 'environment.dart';
 import 'generated/l10n.dart';
 import 'res/theme.dart';
 import 'screens/metering/flow_metering.dart';
-import 'screens/settings/screen_settings.dart';
+import 'screens/settings/flow_settings.dart';
 import 'utils/stop_type_provider.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -66,7 +66,7 @@ class Application extends StatelessWidget {
                       initialRoute: "metering",
                       routes: {
                         "metering": (context) => const MeteringFlow(),
-                        "settings": (context) => const SettingsScreen(),
+                        "settings": (context) => const SettingsFlow(),
                       },
                     ),
                   );

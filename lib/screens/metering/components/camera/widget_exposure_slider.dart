@@ -4,9 +4,8 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/ev_source/camera/bloc_camera.dart';
 import 'package:lightmeter/screens/metering/ev_source/camera/event_camera.dart';
 import 'package:lightmeter/screens/metering/ev_source/camera/state_camera.dart';
+import 'package:lightmeter/screens/shared/centered_slider/widget_slider_centered.dart';
 import 'package:lightmeter/utils/to_string_signed.dart';
-
-import 'shared/widget_slider_camera.dart';
 
 class CameraExposureSlider extends StatelessWidget {
   const CameraExposureSlider({super.key});
@@ -21,7 +20,7 @@ class CameraExposureSlider extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.sync),
                 onPressed: state.currentExposureOffset != 0.0
-                    ? () => context.read<CameraBloc>().add(const ExposureOffsetResetEvent())
+                    ? () => context.read<CameraBloc>().add(const ExposureOffsetChangedEvent(0.0))
                     : null,
               ),
               Expanded(
@@ -32,7 +31,7 @@ class CameraExposureSlider extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: Dimens.grid8),
                       child: _Ruler(state.minExposureOffset, state.maxExposureOffset),
                     ),
-                    CameraSlider(
+                    CenteredSlider(
                       isVertical: true,
                       icon: const Icon(Icons.light_mode),
                       value: state.currentExposureOffset,

@@ -1,17 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/interactors/haptics_interactor.dart';
+import 'package:lightmeter/interactors/settings_interactor.dart';
 
 class HapticsListTileBloc extends Cubit<bool> {
-  final HapticsInteractor _hapticsInteractor;
+  final SettingsInteractor _settingsInteractor;
 
   HapticsListTileBloc(
-    this._hapticsInteractor,
-  ) : super(_hapticsInteractor.isEnabled);
+    this._settingsInteractor,
+  ) : super(_settingsInteractor.isHapticsEnabled);
 
   void onHapticsChange(bool value) {
-    _hapticsInteractor.enableHaptics(value);
+    _settingsInteractor.enableHaptics(value);
     if (value) {
-      _hapticsInteractor.quickVibration();
+      _settingsInteractor.quickVibration();
     }
     emit(value);
   }

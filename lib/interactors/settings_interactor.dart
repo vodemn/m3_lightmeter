@@ -1,16 +1,19 @@
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 
-class HapticsInteractor {
+class SettingsInteractor {
   final UserPreferencesService _userPreferencesService;
   final HapticsService _hapticsService;
 
-  const HapticsInteractor(
+  const SettingsInteractor(
     this._userPreferencesService,
     this._hapticsService,
   );
 
-  bool get isEnabled => _userPreferencesService.haptics;
+  double get cameraEvCalibration => _userPreferencesService.cameraEvCalibration;
+  void setCameraEvCalibration(double value) => _userPreferencesService.cameraEvCalibration = value;
+
+  bool get isHapticsEnabled => _userPreferencesService.haptics;
 
   /// Executes vibration if haptics are enabled in settings
   void quickVibration() {

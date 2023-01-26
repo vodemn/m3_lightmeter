@@ -7,3 +7,13 @@ extension SignedString on num {
     }
   }
 }
+
+extension SignedStringDouble on double {
+  String toStringSignedAsFixed(fractionDigits) {
+    if (this > 0) {
+      return "+${toStringAsFixed(fractionDigits)}";
+    } else {
+      return toStringAsFixed(fractionDigits);
+    }
+  }
+}

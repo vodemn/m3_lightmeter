@@ -8,6 +8,8 @@ class UserPreferencesService {
   static const _isoKey = "iso";
   static const _ndFilterKey = "nd";
 
+  static const _cameraEvCalibrationKey = "cameraEvCalibration";
+
   static const _hapticsKey = "haptics";
   static const _themeTypeKey = "themeType";
   static const _dynamicColorKey = "dynamicColor";
@@ -24,6 +26,9 @@ class UserPreferencesService {
 
   bool get haptics => _sharedPreferences.getBool(_hapticsKey) ?? false;
   set haptics(bool value) => _sharedPreferences.setBool(_hapticsKey, value);
+
+  double get cameraEvCalibration => _sharedPreferences.getDouble(_cameraEvCalibrationKey) ?? 0.0;
+  set cameraEvCalibration(double value) => _sharedPreferences.setDouble(_cameraEvCalibrationKey, value);
 
   ThemeType get themeType => ThemeType.values[_sharedPreferences.getInt(_themeTypeKey) ?? 0];
   set themeType(ThemeType value) => _sharedPreferences.setInt(_themeTypeKey, value.index);

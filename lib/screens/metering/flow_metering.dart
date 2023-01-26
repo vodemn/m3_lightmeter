@@ -4,7 +4,7 @@ import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
-import 'package:lightmeter/interactors/haptics_interactor.dart';
+import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:provider/provider.dart';
 
 import 'ev_source/camera/bloc_camera.dart';
@@ -19,7 +19,7 @@ class MeteringFlow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (context) => HapticsInteractor(
+      create: (context) => MeteringInteractor(
         context.read<UserPreferencesService>(),
         context.read<HapticsService>(),
       ),
@@ -30,14 +30,14 @@ class MeteringFlow extends StatelessWidget {
             create: (context) => MeteringBloc(
               context.read<MeteringCommunicationBloc>(),
               context.read<UserPreferencesService>(),
-              context.read<HapticsInteractor>(),
+              context.read<MeteringInteractor>(),
               context.read<StopType>(),
             ),
           ),
           BlocProvider(
             create: (context) => CameraBloc(
               context.read<MeteringCommunicationBloc>(),
-              context.read<HapticsInteractor>(),
+              context.read<MeteringInteractor>(),
             ),
           ),
           if (context.read<EvSourceType>() == EvSourceType.sensor)

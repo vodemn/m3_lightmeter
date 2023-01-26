@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/settings/screen_settings.dart';
 
 import 'components/bottom_controls/widget_bottom_controls.dart';
 import 'components/camera/widget_exposure_slider.dart';
@@ -87,9 +86,7 @@ class _MeteringScreenState extends State<MeteringScreen> {
                   ),
                   MeteringBottomControls(
                     onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
-                    onSettings: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-                    },
+                    onSettings: () => Navigator.pushNamed(context, 'settings'),
                   ),
                 ],
               ),

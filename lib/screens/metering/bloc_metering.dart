@@ -7,7 +7,7 @@ import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/data/models/photography_values/shutter_speed_value.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
-import 'package:lightmeter/interactors/haptics_interactor.dart';
+import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
 import 'package:lightmeter/utils/log_2.dart';
@@ -19,7 +19,7 @@ import 'state_metering.dart';
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   final MeteringCommunicationBloc _communicationBloc;
   final UserPreferencesService _userPreferencesService;
-  final HapticsInteractor _hapticsInteractor;
+  final MeteringInteractor _meteringInteractor;
   late final StreamSubscription<communication_states.ScreenState> _communicationSubscription;
 
   List<ApertureValue> get _apertureValues => apertureValues.whereStopType(stopType);
@@ -30,7 +30,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   MeteringBloc(
     this._communicationBloc,
     this._userPreferencesService,
-    this._hapticsInteractor,
+    this._meteringInteractor,
     this.stopType,
   ) : super(
           MeteringState(
@@ -103,12 +103,12 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   }
 
   void _onMeasure(_, __) {
-    _hapticsInteractor.quickVibration();
+    _meteringInteractor.quickVibration();
     _communicationBloc.add(const communication_events.MeasureEvent());
   }
 
   void _onMeasured(MeasuredEvent event, Emitter emit) {
-    _hapticsInteractor.responseVibration();
+    _meteringInteractor.responseVibration();
     final ev = event.ev100 + log2(state.iso.value / 100);
     emit(MeteringState(
       iso: state.iso,

@@ -6,7 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/interactors/haptics_interactor.dart';
+import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/ev_source/ev_source_bloc.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_event;
@@ -17,7 +17,7 @@ import 'event_camera.dart';
 import 'state_camera.dart';
 
 class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
-  final HapticsInteractor _hapticsInteractor;
+  final MeteringInteractor _meteringInteractor;
   late final _WidgetsBindingObserver _observer;
   CameraController? _cameraController;
   CameraController? get cameraController => _cameraController;
@@ -33,7 +33,7 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
 
   CameraBloc(
     MeteringCommunicationBloc communicationBloc,
-    this._hapticsInteractor,
+    this._meteringInteractor,
   ) : super(
           communicationBloc,
           const CameraInitState(),
@@ -61,7 +61,7 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
     if (communicationState is communication_states.MeasureState) {
       _takePhoto().then((ev100) {
         if (ev100 != null) {
-          communicationBloc.add(communication_event.MeasuredEvent(ev100));
+          communicationBloc.add(communication_event.MeasuredEvent(ev100 + _meteringInteractor.cameraEvCalibration));
         }
       });
     }
@@ -124,7 +124,7 @@ class CameraBloc extends EvSourceBloc<CameraEvent, CameraState> {
   }
 
   Future<void> _onExposureOffsetResetEvent(ExposureOffsetResetEvent event, Emitter emit) async {
-    _hapticsInteractor.quickVibration();
+    _meteringInteractor.quickVibration();
     add(const ExposureOffsetChangedEvent(0));
   }
 
