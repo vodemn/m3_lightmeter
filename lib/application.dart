@@ -6,6 +6,7 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'data/light_sensor_service.dart';
 import 'data/permissions_service.dart';
 import 'data/shared_prefs_service.dart';
 import 'environment.dart';
@@ -35,6 +36,7 @@ class Application extends StatelessWidget {
               Provider(create: (_) => UserPreferencesService(snapshot.data!)),
               Provider(create: (_) => const HapticsService()),
               Provider(create: (_) => PermissionsService()),
+              Provider(create: (_) => const LightSensorService()),
             ],
             child: StopTypeProvider(
               child: ThemeProvider(
