@@ -38,6 +38,9 @@ class CameraContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topBarOverflow = Dimens.readingContainerHeight -
+        ((MediaQuery.of(context).size.width - Dimens.grid8 - 2 * Dimens.paddingM) / 2) /
+            PlatformConfig.cameraPreviewAspectRatio;
     return Column(
       children: [
         MeteringTopBar(
@@ -49,11 +52,17 @@ class CameraContainer extends StatelessWidget {
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
           ),
+          appendixHeight: topBarOverflow,
+          preview: const _CameraViewBuilder(),
         ),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
-            child: ExposurePairsList(exposurePairs),
+            child: _MiddleContentWrapper(
+              topBarOverflow: topBarOverflow,
+              leftContent: ExposurePairsList(exposurePairs),
+              rightContent: const _CameraControlsBuilder(),
+            ),
           ),
         ),
       ],
@@ -85,23 +94,66 @@ class _CameraControlsBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CameraContainerBloc, CameraContainerState>(
-      builder: (context, state) => AnimatedSwitcher(
-        duration: Dimens.durationS,
-        child: state is CameraActiveState
-            ? CameraControls(
-                exposureOffsetRange: state.exposureOffsetRange,
-                exposureOffsetValue: state.currentExposureOffset,
-                onExposureOffsetChanged: (value) {
-                  context.read<CameraContainerBloc>().add(ExposureOffsetChangedEvent(value));
-                },
-                zoomRange: state.zoomRange,
-                zoomValue: state.currentZoom,
-                onZoomChanged: (value) {
-                  context.read<CameraContainerBloc>().add(ZoomChangedEvent(value));
-                },
-              )
-            : const SizedBox.shrink(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
+      child: BlocBuilder<CameraContainerBloc, CameraContainerState>(
+        builder: (context, state) => AnimatedSwitcher(
+          duration: Dimens.durationS,
+          child: state is CameraActiveState
+              ? CameraControls(
+                  exposureOffsetRange: state.exposureOffsetRange,
+                  exposureOffsetValue: state.currentExposureOffset,
+                  onExposureOffsetChanged: (value) {
+                    context.read<CameraContainerBloc>().add(ExposureOffsetChangedEvent(value));
+                  },
+                  zoomRange: state.zoomRange,
+                  zoomValue: state.currentZoom,
+                  onZoomChanged: (value) {
+                    context.read<CameraContainerBloc>().add(ZoomChangedEvent(value));
+                  },
+                )
+              : const SizedBox.shrink(),
+        ),
+      ),
+    );
+  }
+}
+
+class _MiddleContentWrapper extends StatelessWidget {
+  final double topBarOverflow;
+  final Widget leftContent;
+  final Widget rightContent;
+
+  const _MiddleContentWrapper({
+    required this.topBarOverflow,
+    required this.leftContent,
+    required this.rightContent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) => OverflowBox(
+        alignment: Alignment.bottomCenter,
+        maxHeight: constraints.maxHeight + topBarOverflow.abs(),
+        maxWidth: constraints.maxWidth,
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(top: topBarOverflow >= 0 ? topBarOverflow : 0),
+                child: leftContent,
+              ),
+            ),
+            const SizedBox(width: Dimens.grid8),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(top: topBarOverflow <= 0 ? -topBarOverflow : 0),
+                child: rightContent,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

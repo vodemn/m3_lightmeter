@@ -21,6 +21,10 @@ class Dimens {
   static const Duration durationML = Duration(milliseconds: 250);
   static const Duration durationL = Duration(milliseconds: 300);
 
+  // TopBar
+  /// Probably this is a bad practice, but with text size locked, the height is always 212
+  static const double readingContainerHeight = 212;
+
   // `CenteredSlider`
   static const double cameraSliderTrackHeight = grid4;
   static const double cameraSliderTrackRadius = cameraSliderTrackHeight / 2;
