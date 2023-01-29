@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/photography_values/photography_value.dart';
+import 'package:lightmeter/environment.dart';
+import 'package:lightmeter/providers/ev_source_type_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 import 'components/bottom_controls/widget_bottom_controls.dart';
-import 'components/camera/widget_exposure_slider.dart';
-import 'components/camera/widget_zoom_camera.dart';
-import 'components/exposure_pairs_list/widget_list_exposure_pairs.dart';
-import 'components/topbar/widget_topbar.dart';
+import 'components/camera/provider_container_camera.dart';
+import 'components/light_sensor_container/provider_container_light_sensor.dart';
 import 'bloc_metering.dart';
 import 'event_metering.dart';
 import 'state_metering.dart';
@@ -20,8 +21,6 @@ class MeteringScreen extends StatefulWidget {
 }
 
 class _MeteringScreenState extends State<MeteringScreen> {
-  double topBarOverflow = 0.0;
-
   MeteringBloc get _bloc => context.read<MeteringBloc>();
 
   @override
@@ -34,84 +33,42 @@ class _MeteringScreenState extends State<MeteringScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: BlocBuilder<MeteringBloc, MeteringState>(
-        builder: (context, state) => Column(
-          children: [
-            MeteringTopBar(
-              fastest: state.fastest,
-              slowest: state.slowest,
-              ev: state.ev,
-              iso: state.iso,
-              nd: state.nd,
-              onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
-              onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
-              onCutoutLayout: (value) => topBarOverflow = value,
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
-                child: _MiddleContentWrapper(
-                  topBarOverflow: topBarOverflow,
-                  leftContent: ExposurePairsList(state.exposurePairs),
-                  rightContent: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
-                    child: Column(
-                      children: const [
-                        Expanded(child: CameraExposureSlider()),
-                        SizedBox(height: Dimens.grid24),
-                        CameraZoomSlider(),
-                      ],
-                    ),
-                  ),
-                ),
+      body: Column(
+        children: [
+          Expanded(
+            child: BlocBuilder<MeteringBloc, MeteringState>(
+              builder: (context, state) => AnimatedSwitcher(
+                duration: Dimens.durationS,
+                child: context.watch<EvSourceType>() == EvSourceType.camera
+                    ? CameraContainerProvider(
+                        fastest: state.fastest,
+                        slowest: state.slowest,
+                        iso: state.iso,
+                        nd: state.nd,
+                        onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
+                        onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
+                        exposurePairs: state.exposurePairs,
+                      )
+                    : LightSensorContainerProvider(
+                        fastest: state.fastest,
+                        slowest: state.slowest,
+                        iso: state.iso,
+                        nd: state.nd,
+                        onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
+                        onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
+                        exposurePairs: state.exposurePairs,
+                      ),
               ),
             ),
-            MeteringBottomControls(
-              onMeasure: () => _bloc.add(const MeasureEvent()),
-              onSettings: () => Navigator.pushNamed(context, 'settings'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MiddleContentWrapper extends StatelessWidget {
-  final double topBarOverflow;
-  final Widget leftContent;
-  final Widget rightContent;
-
-  const _MiddleContentWrapper({
-    required this.topBarOverflow,
-    required this.leftContent,
-    required this.rightContent,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => OverflowBox(
-        alignment: Alignment.bottomCenter,
-        maxHeight: constraints.maxHeight + topBarOverflow.abs(),
-        maxWidth: constraints.maxWidth,
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(top: topBarOverflow >= 0 ? topBarOverflow : 0),
-                child: leftContent,
-              ),
-            ),
-            const SizedBox(width: Dimens.grid8),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(top: topBarOverflow <= 0 ? -topBarOverflow : 0),
-                child: rightContent,
-              ),
-            ),
-          ],
-        ),
+          ),
+          MeteringBottomControls(
+            onSwitchEvSourceType: context.read<Environment>().hasLightSensor
+                ? EvSourceTypeProvider.of(context).toggleType
+                : null,
+            onMeasure: () => _bloc.add(const MeasureEvent()),
+            onSettings: () => Navigator.pushNamed(context, 'settings'),
+          ),
+        ],
       ),
     );
   }

@@ -5,10 +5,12 @@ import 'components/widget_button_measure.dart';
 import 'components/widget_button_secondary.dart';
 
 class MeteringBottomControls extends StatelessWidget {
+  final VoidCallback? onSwitchEvSourceType;
   final VoidCallback onMeasure;
   final VoidCallback onSettings;
 
   const MeteringBottomControls({
+    required this.onSwitchEvSourceType,
     required this.onMeasure,
     required this.onSettings,
     super.key,
@@ -30,7 +32,15 @@ class MeteringBottomControls extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Spacer(),
+                if (onSwitchEvSourceType != null)
+                  Expanded(
+                    child: MeteringSecondaryButton(
+                      onPressed: onSwitchEvSourceType!,
+                      icon: Icons.sync,
+                    ),
+                  )
+                else
+                  const Spacer(),
                 MeteringMeasureButton(
                   onTap: onMeasure,
                 ),

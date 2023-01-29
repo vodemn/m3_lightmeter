@@ -7,7 +7,7 @@ import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
-import 'package:lightmeter/screens/metering/ev_source/bloc_base_ev_source.dart';
+import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_event;
@@ -15,10 +15,10 @@ import 'package:lightmeter/screens/metering/communication/state_communication_me
     as communication_states;
 import 'package:lightmeter/utils/log_2.dart';
 
-import 'event_camera.dart';
-import 'state_camera.dart';
+import 'event_container_camera.dart';
+import 'state_container_camera.dart';
 
-class CameraBloc extends EvSourceBlocBase<CameraEvent, CameraState> {
+class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;
   late final _WidgetsBindingObserver _observer;
   CameraController? _cameraController;
@@ -33,7 +33,7 @@ class CameraBloc extends EvSourceBlocBase<CameraEvent, CameraState> {
   double _exposureStep = 0.0;
   double _currentExposureOffset = 0.0;
 
-  CameraBloc(
+  CameraContainerBloc(
     MeteringCommunicationBloc communicationBloc,
     this._meteringInteractor,
   ) : super(
@@ -139,11 +139,9 @@ class CameraBloc extends EvSourceBlocBase<CameraEvent, CameraState> {
 
   void _emitActiveState(Emitter emit) {
     emit(CameraActiveState(
-      minZoom: _zoomRange!.start,
-      maxZoom: _zoomRange!.end,
+      zoomRange: _zoomRange!,
       currentZoom: _currentZoom,
-      minExposureOffset: _exposureOffsetRange!.start,
-      maxExposureOffset: _exposureOffsetRange!.end,
+      exposureOffsetRange: _exposureOffsetRange!,
       exposureOffsetStep: _exposureStep,
       currentExposureOffset: _currentExposureOffset,
     ));

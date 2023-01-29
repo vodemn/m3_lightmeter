@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-import 'components/widget_item_list_exposure_pairs.dart';
+import 'components/exposure_pairs_list_item/widget_item_list_exposure_pairs.dart';
 
 class ExposurePairsList extends StatelessWidget {
   final List<ExposurePair> exposurePairs;

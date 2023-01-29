@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:lightmeter/interactors/metering_interactor.dart';
-import 'package:lightmeter/screens/metering/ev_source/bloc_base_ev_source.dart';
+import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_event;
@@ -8,15 +8,16 @@ import 'package:lightmeter/screens/metering/communication/state_communication_me
     as communication_states;
 import 'package:lightmeter/utils/log_2.dart';
 
-import 'event_light_sensor.dart';
-import 'state_light_sensor.dart';
+import 'event_container_light_sensor.dart';
+import 'state_container_light_sensor.dart';
 
-class LightSensorBloc extends EvSourceBlocBase<LightSensorEvent, LightSensorState> {
+class LightSensorContainerBloc
+    extends EvSourceBlocBase<LightSensorContainerEvent, LightSensorContainerState> {
   final MeteringInteractor _meteringInteractor;
 
   StreamSubscription<int>? _luxSubscriptions;
 
-  LightSensorBloc(
+  LightSensorContainerBloc(
     MeteringCommunicationBloc communicationBloc,
     this._meteringInteractor,
   ) : super(

@@ -1,13 +1,15 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'models/ev_source_type.dart';
 import 'models/photography_values/iso_value.dart';
 import 'models/photography_values/nd_value.dart';
 import 'models/theme_type.dart';
 
 class UserPreferencesService {
   static const _isoKey = "iso";
-  static const _ndFilterKey = "nd";
+  static const _ndFilterKey = "ndFilter";
 
+  static const _evSourceTypeKey = "evSourceType";
   static const _cameraEvCalibrationKey = "cameraEvCalibration";
 
   static const _hapticsKey = "haptics";
@@ -23,6 +25,9 @@ class UserPreferencesService {
 
   NdValue get ndFilter => ndValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_ndFilterKey) ?? 0));
   set ndFilter(NdValue value) => _sharedPreferences.setInt(_ndFilterKey, value.value);
+
+  EvSourceType get evSourceType => EvSourceType.values[_sharedPreferences.getInt(_evSourceTypeKey) ?? 0];
+  set evSourceType(EvSourceType value) => _sharedPreferences.setInt(_evSourceTypeKey, value.index);
 
   bool get haptics => _sharedPreferences.getBool(_hapticsKey) ?? false;
   set haptics(bool value) => _sharedPreferences.setBool(_hapticsKey, value);

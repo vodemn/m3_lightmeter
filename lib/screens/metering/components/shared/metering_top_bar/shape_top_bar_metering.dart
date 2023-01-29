@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-class TopBarShape extends CustomPainter {
+class MeteringTopBarShape extends CustomPainter {
   final Color color;
 
   /// The appendix is on the left side
@@ -22,7 +22,7 @@ class TopBarShape extends CustomPainter {
   final double appendixHeight;
   final double appendixWidth;
 
-  TopBarShape({
+  MeteringTopBarShape({
     required this.color,
     required this.appendixHeight,
     required this.appendixWidth,
@@ -38,8 +38,8 @@ class TopBarShape extends CustomPainter {
         RRect.fromLTRBAndCorners(
           0,
           0,
-          0,
-          0,
+          size.width,
+          size.height,
           bottomLeft: circularRadius,
           bottomRight: circularRadius,
         ),

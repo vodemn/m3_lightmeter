@@ -7,7 +7,7 @@ typedef DialogPickerItemBuilder<T extends PhotographyValue> = Widget Function(Bu
 typedef DialogPickerEvDifferenceBuilder<T extends PhotographyValue> = String Function(
     T selected, T other);
 
-class MeteringScreenDialogPicker<T extends PhotographyValue> extends StatefulWidget {
+class PhotographyValuePickerDialog<T extends PhotographyValue> extends StatefulWidget {
   final String title;
   final String subtitle;
   final T initialValue;
@@ -17,7 +17,7 @@ class MeteringScreenDialogPicker<T extends PhotographyValue> extends StatefulWid
   final VoidCallback onCancel;
   final ValueChanged onSelect;
 
-  const MeteringScreenDialogPicker({
+  const PhotographyValuePickerDialog({
     required this.title,
     required this.subtitle,
     required this.initialValue,
@@ -30,11 +30,11 @@ class MeteringScreenDialogPicker<T extends PhotographyValue> extends StatefulWid
   });
 
   @override
-  State<MeteringScreenDialogPicker<T>> createState() => _MeteringScreenDialogPickerState<T>();
+  State<PhotographyValuePickerDialog<T>> createState() => _PhotographyValuePickerDialogState<T>();
 }
 
-class _MeteringScreenDialogPickerState<T extends PhotographyValue>
-    extends State<MeteringScreenDialogPicker<T>> {
+class _PhotographyValuePickerDialogState<T extends PhotographyValue>
+    extends State<PhotographyValuePickerDialog<T>> {
   late T _selectedValue = widget.initialValue;
   final _scrollController = ScrollController();
 
