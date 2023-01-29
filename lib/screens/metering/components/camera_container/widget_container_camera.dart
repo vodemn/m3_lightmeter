@@ -5,7 +5,7 @@ import 'package:lightmeter/data/models/photography_values/iso_value.dart';
 import 'package:lightmeter/data/models/photography_values/nd_value.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/metering/components/camera/components/camera_view/widget_camera_view.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/components/camera_view/widget_camera_view.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/widget_top_bar_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';

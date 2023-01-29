@@ -7,7 +7,7 @@ import 'package:lightmeter/providers/ev_source_type_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 import 'components/bottom_controls/widget_bottom_controls.dart';
-import 'components/camera/provider_container_camera.dart';
+import 'components/camera_container/provider_container_camera.dart';
 import 'components/light_sensor_container/provider_container_light_sensor.dart';
 import 'bloc_metering.dart';
 import 'event_metering.dart';
