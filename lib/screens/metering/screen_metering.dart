@@ -4,7 +4,6 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
-import 'package:lightmeter/res/dimens.dart';
 
 import 'components/bottom_controls/widget_bottom_controls.dart';
 import 'components/camera_container/provider_container_camera.dart';
