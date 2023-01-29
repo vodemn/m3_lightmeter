@@ -6,7 +6,9 @@ import 'state_communication_metering.dart';
 class MeteringCommunicationBloc
     extends Bloc<MeteringCommunicationEvent, MeteringCommunicationState> {
   MeteringCommunicationBloc() : super(const InitState()) {
-    on<MeasureEvent>((_, emit) => emit(const MeasureState()));
+    // `MeasureState` is not const, so that `Bloc` treats each state as new and updates state stream
+    // ignore: prefer_const_constructors
+    on<MeasureEvent>((_, emit) => emit(MeasureState()));
     on<MeasuredEvent>((event, emit) => emit(MeasuredState(event.ev100)));
   }
 }

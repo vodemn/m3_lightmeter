@@ -11,6 +11,7 @@ class UserPreferencesService {
 
   static const _evSourceTypeKey = "evSourceType";
   static const _cameraEvCalibrationKey = "cameraEvCalibration";
+  static const _lightSensorEvCalibrationKey = "lightSensorEvCalibration";
 
   static const _hapticsKey = "haptics";
   static const _themeTypeKey = "themeType";
@@ -34,6 +35,9 @@ class UserPreferencesService {
 
   double get cameraEvCalibration => _sharedPreferences.getDouble(_cameraEvCalibrationKey) ?? 0.0;
   set cameraEvCalibration(double value) => _sharedPreferences.setDouble(_cameraEvCalibrationKey, value);
+
+  double get lightSensorEvCalibration => _sharedPreferences.getDouble(_lightSensorEvCalibrationKey) ?? 0.0;
+  set lightSensorEvCalibration(double value) => _sharedPreferences.setDouble(_lightSensorEvCalibrationKey, value);
 
   ThemeType get themeType => ThemeType.values[_sharedPreferences.getInt(_themeTypeKey) ?? 0];
   set themeType(ThemeType value) => _sharedPreferences.setInt(_themeTypeKey, value.index);

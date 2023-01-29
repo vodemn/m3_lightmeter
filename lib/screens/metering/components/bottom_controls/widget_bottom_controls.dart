@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:provider/provider.dart';
 
 import 'components/widget_button_measure.dart';
 import 'components/widget_button_secondary.dart';
@@ -36,7 +38,9 @@ class MeteringBottomControls extends StatelessWidget {
                   Expanded(
                     child: MeteringSecondaryButton(
                       onPressed: onSwitchEvSourceType!,
-                      icon: Icons.sync,
+                      icon: context.watch<EvSourceType>() != EvSourceType.camera
+                          ? Icons.camera_rear
+                          : Icons.wb_incandescent,
                     ),
                   )
                 else

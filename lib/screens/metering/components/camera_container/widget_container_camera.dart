@@ -15,7 +15,6 @@ import 'components/camera_controls/widget_camera_controls.dart';
 import 'event_container_camera.dart';
 import 'state_container_camera.dart';
 
-// TODO: add stepHeight calculation based on Text
 class CameraContainer extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;

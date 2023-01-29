@@ -16,6 +16,7 @@ class MeteringInteractor {
   );
 
   double get cameraEvCalibration => _userPreferencesService.cameraEvCalibration;
+  double get lightSensorEvCalibration => _userPreferencesService.lightSensorEvCalibration;
 
   bool get isHapticsEnabled => _userPreferencesService.haptics;
 

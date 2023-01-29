@@ -34,8 +34,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   double _currentExposureOffset = 0.0;
 
   CameraContainerBloc(
-    MeteringCommunicationBloc communicationBloc,
     this._meteringInteractor,
+    MeteringCommunicationBloc communicationBloc,
   ) : super(
           communicationBloc,
           const CameraInitState(),

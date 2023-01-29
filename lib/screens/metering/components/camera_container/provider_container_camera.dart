@@ -33,8 +33,8 @@ class CameraContainerProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CameraContainerBloc(
-        context.read<MeteringCommunicationBloc>(),
         context.read<MeteringInteractor>(),
+        context.read<MeteringCommunicationBloc>(),
       ),
       child: CameraContainer(
         fastest: fastest,

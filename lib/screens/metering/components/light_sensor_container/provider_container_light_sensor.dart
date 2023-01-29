@@ -32,9 +32,10 @@ class LightSensorContainerProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
+      lazy: false,
       create: (context) => LightSensorContainerBloc(
-        context.read<MeteringCommunicationBloc>(),
         context.read<MeteringInteractor>(),
+        context.read<MeteringCommunicationBloc>(),
       ),
       child: LightSensorContainer(
         fastest: fastest,

@@ -18,8 +18,8 @@ class LightSensorContainerBloc
   StreamSubscription<int>? _luxSubscriptions;
 
   LightSensorContainerBloc(
-    MeteringCommunicationBloc communicationBloc,
     this._meteringInteractor,
+    MeteringCommunicationBloc communicationBloc,
   ) : super(
           communicationBloc,
           const LightSensorInitState(),
@@ -30,7 +30,9 @@ class LightSensorContainerBloc
     if (communicationState is communication_states.MeasureState) {
       if (_luxSubscriptions == null) {
         _luxSubscriptions = _meteringInteractor.luxStream().listen((event) {
-          communicationBloc.add(communication_event.MeasuredEvent(log2(event.toDouble() / 2.5)));
+          communicationBloc.add(communication_event.MeasuredEvent(
+            log2(event.toDouble() / 2.5) + _meteringInteractor.lightSensorEvCalibration,
+          ));
         });
       } else {
         _luxSubscriptions?.cancel().then((_) => _luxSubscriptions = null);
