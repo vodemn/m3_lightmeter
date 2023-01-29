@@ -33,7 +33,7 @@ The list of features that the old lightmeter app has and that have to be impleme
 - [x] ISO selecting
 - [ ] Reciprocity for different films
 - [x] Reflected light metering
-- [ ] Incident light metering
+- [x] Incident light metering
 
 ### Adjust
 - [x] Light sources EV calibration
