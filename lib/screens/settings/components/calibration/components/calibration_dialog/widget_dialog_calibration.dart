@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/calibration/components/calibration_dialog/event_dialog_calibration.dart';
@@ -14,6 +15,7 @@ class CalibrationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool hasLightSensor = context.read<Environment>().hasLightSensor;
     return AlertDialog(
       titlePadding: const EdgeInsets.fromLTRB(
         Dimens.paddingL,
@@ -27,7 +29,11 @@ class CalibrationDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(S.of(context).calibrationMessage),
+            Text(
+              hasLightSensor
+                  ? S.of(context).calibrationMessage
+                  : S.of(context).calibrationMessageCameraOnly,
+            ),
             const SizedBox(height: Dimens.grid16),
             BlocBuilder<CalibrationDialogBloc, CalibrationDialogState>(
               buildWhen: (previous, current) =>
@@ -43,20 +49,21 @@ class CalibrationDialog extends StatelessWidget {
                     .add(const CameraEvCalibrationResetEvent()),
               ),
             ),
-            BlocBuilder<CalibrationDialogBloc, CalibrationDialogState>(
-              buildWhen: (previous, current) =>
-                  previous.lightSensorEvCalibration != current.lightSensorEvCalibration,
-              builder: (context, state) => _CalibrationUnit(
-                title: S.of(context).lightSensor,
-                value: state.lightSensorEvCalibration,
-                onChanged: (value) => context
-                    .read<CalibrationDialogBloc>()
-                    .add(LightSensorEvCalibrationChangedEvent(value)),
-                onReset: () => context
-                    .read<CalibrationDialogBloc>()
-                    .add(const LightSensorEvCalibrationResetEvent()),
+            if (hasLightSensor)
+              BlocBuilder<CalibrationDialogBloc, CalibrationDialogState>(
+                buildWhen: (previous, current) =>
+                    previous.lightSensorEvCalibration != current.lightSensorEvCalibration,
+                builder: (context, state) => _CalibrationUnit(
+                  title: S.of(context).lightSensor,
+                  value: state.lightSensorEvCalibration,
+                  onChanged: (value) => context
+                      .read<CalibrationDialogBloc>()
+                      .add(LightSensorEvCalibrationChangedEvent(value)),
+                  onReset: () => context
+                      .read<CalibrationDialogBloc>()
+                      .add(const LightSensorEvCalibrationResetEvent()),
+                ),
               ),
-            ),
           ],
         ),
       ),
