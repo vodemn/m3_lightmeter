@@ -54,8 +54,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   @override
   Future<void> close() async {
     WidgetsBinding.instance.removeObserver(_observer);
-    _cameraController?.dispose();
-    super.close();
+    unawaited(_cameraController?.dispose());
+    return super.close();
   }
 
   @override
@@ -110,11 +110,6 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       emit(CameraInitializedState(_cameraController!));
 
       _emitActiveState(emit);
-      _takePhoto().then((ev100) {
-        if (ev100 != null) {
-          communicationBloc.add(communication_event.MeasuredEvent(ev100));
-        }
-      });
     } catch (e) {
       emit(const CameraErrorState());
     }
