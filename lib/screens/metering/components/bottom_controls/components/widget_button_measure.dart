@@ -36,6 +36,11 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
             _isPressed = false;
           });
         },
+        onTapCancel: () {
+          setState(() {
+            _isPressed = false;
+          });
+        },
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(widget.size / 2),
