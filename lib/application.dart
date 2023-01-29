@@ -14,7 +14,7 @@ import 'data/shared_prefs_service.dart';
 import 'environment.dart';
 import 'generated/l10n.dart';
 import 'providers/ev_source_type_provider.dart';
-import 'res/theme.dart';
+import 'providers/theme_provider.dart';
 import 'screens/metering/flow_metering.dart';
 import 'screens/settings/flow_settings.dart';
 import 'utils/stop_type_provider.dart';

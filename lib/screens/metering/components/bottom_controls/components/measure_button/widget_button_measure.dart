@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
-
-import 'shared/widget_circle_filled.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/components/shared/widget_circle_filled.dart';
 
 class MeteringMeasureButton extends StatefulWidget {
   final double size;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/providers/theme_provider.dart';
 
 class DynamicColorListTile extends StatelessWidget {
   const DynamicColorListTile({super.key});
