@@ -4,6 +4,7 @@ import 'package:lightmeter/res/dimens.dart';
 
 import 'components/calibration/widget_list_tile_calibration.dart';
 import 'components/haptics/provider_list_tile_haptics.dart';
+import 'components/primary_color/widget_list_tile_primary_color.dart';
 import 'components/report_issue/widget_list_tile_report_issue.dart';
 import 'components/shared/settings_section/widget_settings_section.dart';
 import 'components/source_code/widget_list_tile_source_code.dart';
@@ -65,6 +66,7 @@ class SettingsScreen extends StatelessWidget {
                     title: S.of(context).theme,
                     children: const [
                       ThemeTypeListTile(),
+                      PrimaryColorListTile(),
                       DynamicColorListTile(),
                     ],
                   ),

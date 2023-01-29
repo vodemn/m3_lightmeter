@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/components/shared/widget_circle_filled.dart';
+import 'package:lightmeter/screens/shared/filled_circle/widget_circle_filled.dart';
 
 class MeteringSecondaryButton extends StatelessWidget {
   final IconData icon;
