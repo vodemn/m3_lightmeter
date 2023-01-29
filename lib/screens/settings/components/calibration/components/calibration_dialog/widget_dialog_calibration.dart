@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/calibration/components/calibration_dialog/event_dialog_calibration.dart';
@@ -9,18 +10,12 @@ import 'package:lightmeter/utils/to_string_signed.dart';
 import 'bloc_dialog_calibration.dart';
 import 'state_dialog_calibration.dart';
 
-class CalibrationDialog extends StatefulWidget {
+class CalibrationDialog extends StatelessWidget {
   const CalibrationDialog({super.key});
 
   @override
-  State<CalibrationDialog> createState() => _CalibrationDialogState();
-}
-
-class _CalibrationDialogState extends State<CalibrationDialog> {
-  CalibrationDialogBloc get bloc => context.read<CalibrationDialogBloc>();
-
-  @override
   Widget build(BuildContext context) {
+    final bool hasLightSensor = context.read<Environment>().hasLightSensor;
     return AlertDialog(
       titlePadding: const EdgeInsets.fromLTRB(
         Dimens.paddingL,
@@ -30,18 +25,45 @@ class _CalibrationDialogState extends State<CalibrationDialog> {
       ),
       title: Text(S.of(context).calibration),
       contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
-      content: BlocBuilder<CalibrationDialogBloc, CalibrationDialogState>(
-        builder: (context, state) => Column(
+      content: SingleChildScrollView(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(S.of(context).calibrationMessage),
-            const SizedBox(height: Dimens.grid16),
-            _CalibrationUnit(
-              title: S.of(context).camera,
-              value: state.cameraEvCalibration,
-              onChanged: (value) => bloc.add(CameraEvCalibrationChangedEvent(value)),
-              onReset: () => bloc.add(const CameraEvCalibrationResetEvent()),
+            Text(
+              hasLightSensor
+                  ? S.of(context).calibrationMessage
+                  : S.of(context).calibrationMessageCameraOnly,
             ),
+            const SizedBox(height: Dimens.grid16),
+            BlocBuilder<CalibrationDialogBloc, CalibrationDialogState>(
+              buildWhen: (previous, current) =>
+                  previous.cameraEvCalibration != current.cameraEvCalibration,
+              builder: (context, state) => _CalibrationUnit(
+                title: S.of(context).camera,
+                value: state.cameraEvCalibration,
+                onChanged: (value) => context
+                    .read<CalibrationDialogBloc>()
+                    .add(CameraEvCalibrationChangedEvent(value)),
+                onReset: () => context
+                    .read<CalibrationDialogBloc>()
+                    .add(const CameraEvCalibrationResetEvent()),
+              ),
+            ),
+            if (hasLightSensor)
+              BlocBuilder<CalibrationDialogBloc, CalibrationDialogState>(
+                buildWhen: (previous, current) =>
+                    previous.lightSensorEvCalibration != current.lightSensorEvCalibration,
+                builder: (context, state) => _CalibrationUnit(
+                  title: S.of(context).lightSensor,
+                  value: state.lightSensorEvCalibration,
+                  onChanged: (value) => context
+                      .read<CalibrationDialogBloc>()
+                      .add(LightSensorEvCalibrationChangedEvent(value)),
+                  onReset: () => context
+                      .read<CalibrationDialogBloc>()
+                      .add(const LightSensorEvCalibrationResetEvent()),
+                ),
+              ),
           ],
         ),
       ),
@@ -58,7 +80,7 @@ class _CalibrationDialogState extends State<CalibrationDialog> {
         ),
         TextButton(
           onPressed: () {
-            bloc.add(const SaveCalibrationDialogEvent());
+            context.read<CalibrationDialogBloc>().add(const SaveCalibrationDialogEvent());
             Navigator.of(context).pop();
           },
           child: Text(S.of(context).save),

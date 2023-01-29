@@ -13,6 +13,9 @@ class SettingsInteractor {
   double get cameraEvCalibration => _userPreferencesService.cameraEvCalibration;
   void setCameraEvCalibration(double value) => _userPreferencesService.cameraEvCalibration = value;
 
+  double get lightSensorEvCalibration => _userPreferencesService.lightSensorEvCalibration;
+  void setLightSensorEvCalibration(double value) => _userPreferencesService.lightSensorEvCalibration = value;
+
   bool get isHapticsEnabled => _userPreferencesService.haptics;
 
   /// Executes vibration if haptics are enabled in settings
