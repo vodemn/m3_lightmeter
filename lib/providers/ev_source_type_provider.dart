@@ -60,5 +60,6 @@ class EvSourceTypeProviderState extends State<EvSourceTypeProvider> {
         valueListenable.value = EvSourceType.camera;
         break;
     }
+    context.read<UserPreferencesService>().evSourceType = valueListenable.value;
   }
 }

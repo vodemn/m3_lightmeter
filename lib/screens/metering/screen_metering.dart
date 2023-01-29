@@ -37,28 +37,25 @@ class _MeteringScreenState extends State<MeteringScreen> {
         children: [
           Expanded(
             child: BlocBuilder<MeteringBloc, MeteringState>(
-              builder: (context, state) => AnimatedSwitcher(
-                duration: Dimens.durationS,
-                child: context.watch<EvSourceType>() == EvSourceType.camera
-                    ? CameraContainerProvider(
-                        fastest: state.fastest,
-                        slowest: state.slowest,
-                        iso: state.iso,
-                        nd: state.nd,
-                        onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
-                        onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
-                        exposurePairs: state.exposurePairs,
-                      )
-                    : LightSensorContainerProvider(
-                        fastest: state.fastest,
-                        slowest: state.slowest,
-                        iso: state.iso,
-                        nd: state.nd,
-                        onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
-                        onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
-                        exposurePairs: state.exposurePairs,
-                      ),
-              ),
+              builder: (context, state) => context.watch<EvSourceType>() == EvSourceType.camera
+                  ? CameraContainerProvider(
+                      fastest: state.fastest,
+                      slowest: state.slowest,
+                      iso: state.iso,
+                      nd: state.nd,
+                      onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
+                      onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
+                      exposurePairs: state.exposurePairs,
+                    )
+                  : LightSensorContainerProvider(
+                      fastest: state.fastest,
+                      slowest: state.slowest,
+                      iso: state.iso,
+                      nd: state.nd,
+                      onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
+                      onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
+                      exposurePairs: state.exposurePairs,
+                    ),
             ),
           ),
           MeteringBottomControls(
