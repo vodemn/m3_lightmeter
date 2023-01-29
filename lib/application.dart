@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -34,7 +36,7 @@ class _ApplicationState extends State<Application> {
     return FutureBuilder(
       future: Future.wait([
         SharedPreferences.getInstance(),
-        LightSensor.hasSensor,
+        Platform.isAndroid ? LightSensor.hasSensor : Future.value(false),
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
