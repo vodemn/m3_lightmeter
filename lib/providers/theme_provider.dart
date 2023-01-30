@@ -175,7 +175,11 @@ class _ThemeDataProvider extends StatelessWidget {
       primaryColor: primaryColor,
       colorScheme: scheme,
       dialogBackgroundColor: scheme.surface,
-      dialogTheme: DialogTheme(backgroundColor: scheme.surface),
+      dialogTheme: DialogTheme(
+        backgroundColor: scheme.surface,
+        surfaceTintColor: scheme.surfaceTint,
+        elevation: 6,
+      ),
       scaffoldBackgroundColor: scheme.surface,
     );
   }

@@ -89,6 +89,7 @@ class _IsoValueTile extends StatelessWidget {
       evDifferenceBuilder: (selected, other) => selected.toStringDifference(other),
       onChanged: onChanged,
       closedChild: ReadingValueContainer.singleValue(
+        backgroundColor: null,
         value: ReadingValue(
           label: S.of(context).iso,
           value: value.value.toString(),
@@ -118,6 +119,7 @@ class _NdValueTile extends StatelessWidget {
       evDifferenceBuilder: (selected, other) => other.toStringDifference(selected),
       onChanged: onChanged,
       closedChild: ReadingValueContainer.singleValue(
+        backgroundColor: null,
         value: ReadingValue(
           label: S.of(context).iso,
           value: value.value.toString(),
