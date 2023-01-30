@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:provider/provider.dart';
 
 import 'components/calibration/widget_list_tile_calibration.dart';
 import 'components/haptics/provider_list_tile_haptics.dart';
@@ -64,10 +66,11 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   SettingsSection(
                     title: S.of(context).theme,
-                    children: const [
-                      ThemeTypeListTile(),
-                      PrimaryColorListTile(),
-                      DynamicColorListTile(),
+                    children: [
+                      const ThemeTypeListTile(),
+                      const PrimaryColorListTile(),
+                      if (context.read<DynamicColorState>() != DynamicColorState.unavailable)
+                        const DynamicColorListTile(),
                     ],
                   ),
                   SettingsSection(
