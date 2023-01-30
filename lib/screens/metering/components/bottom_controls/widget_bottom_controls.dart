@@ -4,7 +4,6 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:provider/provider.dart';
 
 import 'components/measure_button/widget_button_measure.dart';
-import 'components/secondary_button/widget_button_secondary.dart';
 
 class MeteringBottomControls extends StatelessWidget {
   final VoidCallback? onSwitchEvSourceType;
@@ -36,11 +35,13 @@ class MeteringBottomControls extends StatelessWidget {
               children: [
                 if (onSwitchEvSourceType != null)
                   Expanded(
-                    child: MeteringSecondaryButton(
-                      onPressed: onSwitchEvSourceType!,
-                      icon: context.watch<EvSourceType>() != EvSourceType.camera
-                          ? Icons.camera_rear
-                          : Icons.wb_incandescent,
+                    child: Center(
+                      child: IconButton(
+                        onPressed: onSwitchEvSourceType,
+                        icon: Icon(context.watch<EvSourceType>() != EvSourceType.camera
+                            ? Icons.camera_rear
+                            : Icons.wb_incandescent),
+                      ),
                     ),
                   )
                 else
@@ -49,9 +50,11 @@ class MeteringBottomControls extends StatelessWidget {
                   onTap: onMeasure,
                 ),
                 Expanded(
-                  child: MeteringSecondaryButton(
-                    onPressed: onSettings,
-                    icon: Icons.settings,
+                  child: Center(
+                    child: IconButton(
+                      onPressed: onSettings,
+                      icon: const Icon(Icons.settings),
+                    ),
                   ),
                 ),
               ],

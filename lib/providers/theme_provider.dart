@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
+import 'package:lightmeter/res/dimens.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
 import 'package:provider/provider.dart';
@@ -174,11 +175,30 @@ class _ThemeDataProvider extends StatelessWidget {
       brightness: scheme.brightness,
       primaryColor: primaryColor,
       colorScheme: scheme,
+      appBarTheme: AppBarTheme(
+        elevation: 4,
+        color: scheme.surface,
+        surfaceTintColor: scheme.surfaceTint,
+      ),
+      cardTheme: CardTheme(
+        clipBehavior: Clip.antiAlias,
+        color: scheme.surface,
+        elevation: 4,
+        margin: EdgeInsets.zero,
+        shadowColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimens.borderRadiusL)),
+        surfaceTintColor: scheme.surfaceTint,
+      ),
       dialogBackgroundColor: scheme.surface,
       dialogTheme: DialogTheme(
         backgroundColor: scheme.surface,
         surfaceTintColor: scheme.surfaceTint,
         elevation: 6,
+      ),
+      listTileTheme: ListTileThemeData(
+        style: ListTileStyle.list,
+        iconColor: scheme.onSurface,
+        textColor: scheme.onSurface,
       ),
       scaffoldBackgroundColor: scheme.surface,
     );

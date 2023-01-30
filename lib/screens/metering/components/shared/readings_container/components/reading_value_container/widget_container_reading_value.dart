@@ -12,12 +12,10 @@ class ReadingValue {
 }
 
 class ReadingValueContainer extends StatelessWidget {
-  final Color? backgroundColor;
   late final List<Widget> _items;
 
   ReadingValueContainer({
     required List<ReadingValue> values,
-    this.backgroundColor,
     super.key,
   }) {
     _items = [];
@@ -31,7 +29,6 @@ class ReadingValueContainer extends StatelessWidget {
 
   ReadingValueContainer.singleValue({
     required ReadingValue value,
-    this.backgroundColor,
     super.key,
   }) : _items = [_ReadingValueBuilder(value)];
 
@@ -40,7 +37,7 @@ class ReadingValueContainer extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
       child: ColoredBox(
-        color: backgroundColor ?? Theme.of(context).colorScheme.primaryContainer,
+        color: Theme.of(context).colorScheme.primaryContainer,
         child: Padding(
           padding: const EdgeInsets.all(Dimens.paddingM),
           child: Column(

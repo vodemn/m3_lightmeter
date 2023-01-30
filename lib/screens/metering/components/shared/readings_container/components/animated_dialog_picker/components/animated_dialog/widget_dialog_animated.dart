@@ -141,13 +141,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
       onTap: _openDialog,
       child: Opacity(
         opacity: _isDialogShown ? 0 : 1,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
-          child: ColoredBox(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            child: widget.child ?? widget.closedChild,
-          ),
-        ),
+        child: widget.child ?? widget.closedChild,
       ),
     );
   }
