@@ -13,6 +13,16 @@ class PrimaryColorDialogPicker extends StatefulWidget {
 
 class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
   late Color _selected = Theme.of(context).primaryColor;
+  late final ScrollController _scrollController = ScrollController(
+    initialScrollOffset:
+        ThemeProvider.primaryColorsList.indexOf(_selected) * (Dimens.grid48 + Dimens.grid8),
+  );
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +34,13 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
         Dimens.paddingM,
       ),
       title: Text(S.of(context).choosePrimaryColor),
-      contentPadding: EdgeInsets.zero,
       content: SizedBox(
         height: Dimens.grid48,
         width: double.maxFinite,
         child: ListView.separated(
+          controller: _scrollController,
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
+          padding: EdgeInsets.zero,
           separatorBuilder: (_, __) => const SizedBox(width: Dimens.grid8),
           itemCount: ThemeProvider.primaryColorsList.length,
           itemBuilder: (_, index) {
