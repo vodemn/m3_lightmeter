@@ -93,8 +93,10 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         begin: _closedSize,
         end: widget.openedSize ??
             Size(
-              mediaQuery.size.width - mediaQuery.padding.horizontal - Dimens.paddingM * 2,
-              mediaQuery.size.height - mediaQuery.padding.vertical - Dimens.paddingM * 2,
+              mediaQuery.size.width -
+                  mediaQuery.padding.horizontal -
+                  Dimens.dialogMargin.horizontal,
+              mediaQuery.size.height - mediaQuery.padding.vertical - Dimens.dialogMargin.vertical,
             ),
       );
       _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);

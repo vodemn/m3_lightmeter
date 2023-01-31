@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// `valueM` represents the base value.
 /// All other values differs by 8dp.
 class Dimens {
@@ -32,4 +34,8 @@ class Dimens {
   static const double cameraSliderTrackRadius = cameraSliderTrackHeight / 2;
   static const double cameraSliderHandleSize = 32;
   static const double cameraSliderHandleIconSize = cameraSliderHandleSize * 2 / 3;
+
+  // Dialog
+  // Taken from `Dialog` documentation
+  static const EdgeInsets dialogMargin = EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0);
 }
