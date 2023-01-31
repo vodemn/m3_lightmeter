@@ -5,7 +5,7 @@ import 'package:lightmeter/data/models/photography_values/photography_value.dart
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
 
-import 'components/bottom_controls/widget_bottom_controls.dart';
+import 'components/bottom_controls/provider_bottom_controls.dart';
 import 'components/camera_container/provider_container_camera.dart';
 import 'components/light_sensor_container/provider_container_light_sensor.dart';
 import 'bloc_metering.dart';
@@ -57,7 +57,7 @@ class _MeteringScreenState extends State<MeteringScreen> {
                     ),
             ),
           ),
-          MeteringBottomControls(
+          MeteringBottomControlsProvider(
             onSwitchEvSourceType: context.read<Environment>().hasLightSensor
                 ? EvSourceTypeProvider.of(context).toggleType
                 : null,

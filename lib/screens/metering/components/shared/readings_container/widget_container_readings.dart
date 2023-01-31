@@ -119,7 +119,7 @@ class _NdValueTile extends StatelessWidget {
       onChanged: onChanged,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
-          label: S.of(context).iso,
+          label: S.of(context).nd,
           value: value.value.toString(),
         ),
       ),

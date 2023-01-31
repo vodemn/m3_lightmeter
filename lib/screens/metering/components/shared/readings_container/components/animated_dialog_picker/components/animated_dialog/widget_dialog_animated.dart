@@ -35,6 +35,8 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
   late final Animation<double> _borderRadiusAnimation;
   late final Animation<double> _closedOpacityAnimation;
   late final Animation<double> _openedOpacityAnimation;
+  late final Animation<Color?> _foregroundColorAnimation;
+  late final Animation<double> _elevationAnimation;
 
   bool _isDialogShown = false;
 
@@ -91,8 +93,10 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         begin: _closedSize,
         end: widget.openedSize ??
             Size(
-              mediaQuery.size.width - mediaQuery.padding.horizontal - Dimens.paddingM * 2,
-              mediaQuery.size.height - mediaQuery.padding.vertical - Dimens.paddingM * 2,
+              mediaQuery.size.width -
+                  mediaQuery.padding.horizontal -
+                  Dimens.dialogMargin.horizontal,
+              mediaQuery.size.height - mediaQuery.padding.vertical - Dimens.dialogMargin.vertical,
             ),
       );
       _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
@@ -113,6 +117,20 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _foregroundColorAnimation = ColorTween(
+      begin: Theme.of(context).colorScheme.primaryContainer,
+      end: Theme.of(context).colorScheme.surface,
+    ).animate(_defaultCurvedAnimation);
+
+    _elevationAnimation = Tween<double>(
+      begin: 0,
+      end: Theme.of(context).dialogTheme.elevation!,
+    ).animate(_defaultCurvedAnimation);
+  }
+
+  @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
@@ -125,13 +143,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
       onTap: _openDialog,
       child: Opacity(
         opacity: _isDialogShown ? 0 : 1,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
-          child: ColoredBox(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            child: widget.child ?? widget.closedChild,
-          ),
-        ),
+        child: widget.child ?? widget.closedChild,
       ),
     );
   }
@@ -151,6 +163,8 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
             sizeAnimation: _sizeAnimation,
             offsetAnimation: _offsetAnimation,
             borderRadiusAnimation: _borderRadiusAnimation,
+            foregroundColorAnimation: _foregroundColorAnimation,
+            elevationAnimation: _elevationAnimation,
             onDismiss: close,
             builder: widget.closedChild != null && widget.openedChild != null
                 ? (_) => _AnimatedSwitcher(
@@ -195,6 +209,8 @@ class _AnimatedOverlay extends StatelessWidget {
   final Animation<Size?> sizeAnimation;
   final Animation<Size?> offsetAnimation;
   final Animation<double> borderRadiusAnimation;
+  final Animation<Color?> foregroundColorAnimation;
+  final Animation<double> elevationAnimation;
   final VoidCallback onDismiss;
   final Widget? child;
   final Widget Function(BuildContext context)? builder;
@@ -205,6 +221,8 @@ class _AnimatedOverlay extends StatelessWidget {
     required this.sizeAnimation,
     required this.offsetAnimation,
     required this.borderRadiusAnimation,
+    required this.foregroundColorAnimation,
+    required this.elevationAnimation,
     required this.onDismiss,
     this.child,
     this.builder,
@@ -236,7 +254,9 @@ class _AnimatedOverlay extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(borderRadiusAnimation.value),
                 child: Material(
-                  color: Theme.of(context).colorScheme.primaryContainer,
+                  elevation: elevationAnimation.value,
+                  surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+                  color: foregroundColorAnimation.value,
                   child: builder?.call(context) ?? child,
                 ),
               ),

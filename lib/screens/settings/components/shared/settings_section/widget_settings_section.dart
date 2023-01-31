@@ -20,10 +20,7 @@ class SettingsSection extends StatelessWidget {
         Dimens.paddingM,
         Dimens.paddingM,
       ),
-      child: Material(
-        clipBehavior: Clip.antiAlias,
-        borderRadius: BorderRadius.circular(Dimens.borderRadiusL),
-        color: Theme.of(context).colorScheme.primaryContainer,
+      child: Card(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
           child: Column(
@@ -34,7 +31,10 @@ class SettingsSection extends StatelessWidget {
                 padding: const EdgeInsets.only(left: Dimens.paddingM),
                 child: Text(
                   title,
-                  style: Theme.of(context).textTheme.labelLarge,
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
                 ),
               ),
               ...children,

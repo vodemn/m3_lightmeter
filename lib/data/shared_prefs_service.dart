@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/ev_source_type.dart';
@@ -15,6 +16,7 @@ class UserPreferencesService {
 
   static const _hapticsKey = "haptics";
   static const _themeTypeKey = "themeType";
+  static const _primaryColorKey = "primaryColor";
   static const _dynamicColorKey = "dynamicColor";
 
   final SharedPreferences _sharedPreferences;
@@ -41,6 +43,9 @@ class UserPreferencesService {
 
   ThemeType get themeType => ThemeType.values[_sharedPreferences.getInt(_themeTypeKey) ?? 0];
   set themeType(ThemeType value) => _sharedPreferences.setInt(_themeTypeKey, value.index);
+
+  Color get primaryColor => Color(_sharedPreferences.getInt(_primaryColorKey) ?? 0xff2196f3);
+  set primaryColor(Color value) => _sharedPreferences.setInt(_primaryColorKey, value.value);
 
   bool get dynamicColor => _sharedPreferences.getBool(_dynamicColorKey) ?? false;
   set dynamicColor(bool value) => _sharedPreferences.setBool(_dynamicColorKey, value);

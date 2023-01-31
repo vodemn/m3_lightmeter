@@ -57,37 +57,34 @@ class _PhotographyValuePickerDialogState<T extends PhotographyValue>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ColoredBox(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  Dimens.paddingL,
-                  Dimens.paddingL,
-                  Dimens.paddingL,
-                  Dimens.paddingM,
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      widget.title,
-                      style: Theme.of(context).textTheme.headlineSmall!,
-                    ),
-                    const SizedBox(height: Dimens.grid16),
-                    Text(
-                      widget.subtitle,
-                      style: Theme.of(context).textTheme.bodyMedium!,
-                    ),
-                  ],
-                ),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                Dimens.paddingL,
+                Dimens.paddingL,
+                Dimens.paddingL,
+                Dimens.paddingM,
               ),
-              Divider(
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-                height: 0,
+              child: Column(
+                children: [
+                  Text(
+                    widget.title,
+                    style: Theme.of(context).textTheme.headlineSmall!,
+                  ),
+                  const SizedBox(height: Dimens.grid16),
+                  Text(
+                    widget.subtitle,
+                    style: Theme.of(context).textTheme.bodyMedium!,
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Divider(
+              color: Theme.of(context).colorScheme.onSurface,
+              height: 0,
+            ),
+          ],
         ),
         Expanded(
           child: ListView.builder(
@@ -117,35 +114,32 @@ class _PhotographyValuePickerDialogState<T extends PhotographyValue>
             ),
           ),
         ),
-        ColoredBox(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          child: Column(
-            children: [
-              Divider(
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-                height: 0,
+        Column(
+          children: [
+            Divider(
+              color: Theme.of(context).colorScheme.onSurface,
+              height: 0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(Dimens.paddingL),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  const Spacer(),
+                  TextButton(
+                    onPressed: widget.onCancel,
+                    child: Text(S.of(context).cancel),
+                  ),
+                  const SizedBox(width: Dimens.grid16),
+                  TextButton(
+                    onPressed: () => widget.onSelect(_selectedValue),
+                    child: Text(S.of(context).select),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(Dimens.paddingL),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    const Spacer(),
-                    TextButton(
-                      onPressed: widget.onCancel,
-                      child: Text(S.of(context).cancel),
-                    ),
-                    const SizedBox(width: Dimens.grid16),
-                    TextButton(
-                      onPressed: () => widget.onSelect(_selectedValue),
-                      child: Text(S.of(context).select),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );
