@@ -44,7 +44,7 @@ class ThemeProvider extends StatefulWidget {
   State<ThemeProvider> createState() => ThemeProviderState();
 }
 
-class ThemeProviderState extends State<ThemeProvider> {
+class ThemeProviderState extends State<ThemeProvider> with WidgetsBindingObserver {
   UserPreferencesService get _prefs => context.read<UserPreferencesService>();
 
   late final _themeTypeNotifier = ValueNotifier<ThemeType>(_prefs.themeType);
@@ -52,7 +52,20 @@ class ThemeProviderState extends State<ThemeProvider> {
   late final _primaryColorNotifier = ValueNotifier<Color>(_prefs.primaryColor);
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    super.didChangePlatformBrightness();
+    setState(() {});
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _themeTypeNotifier.dispose();
     _dynamicColorNotifier.dispose();
     _primaryColorNotifier.dispose();
