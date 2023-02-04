@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/settings/components/calibration/components/calibration_dialog/event_dialog_calibration.dart';
 import 'package:lightmeter/screens/shared/centered_slider/widget_slider_centered.dart';
 import 'package:lightmeter/utils/to_string_signed.dart';
 
 import 'bloc_dialog_calibration.dart';
+import 'event_dialog_calibration.dart';
 import 'state_dialog_calibration.dart';
 
 class CalibrationDialog extends StatelessWidget {
@@ -17,12 +17,7 @@ class CalibrationDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool hasLightSensor = context.read<Environment>().hasLightSensor;
     return AlertDialog(
-      titlePadding: const EdgeInsets.fromLTRB(
-        Dimens.paddingL,
-        Dimens.paddingL,
-        Dimens.paddingL,
-        Dimens.paddingM,
-      ),
+      titlePadding: Dimens.dialogTitlePadding,
       title: Text(S.of(context).calibration),
       contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
       content: SingleChildScrollView(
@@ -67,12 +62,7 @@ class CalibrationDialog extends StatelessWidget {
           ],
         ),
       ),
-      actionsPadding: const EdgeInsets.fromLTRB(
-        Dimens.paddingL,
-        Dimens.paddingM,
-        Dimens.paddingL,
-        Dimens.paddingL,
-      ),
+      actionsPadding: Dimens.dialogActionsPadding,
       actions: [
         TextButton(
           onPressed: Navigator.of(context).pop,

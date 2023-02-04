@@ -24,12 +24,7 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titlePadding: const EdgeInsets.fromLTRB(
-        Dimens.paddingL,
-        Dimens.paddingL,
-        Dimens.paddingL,
-        Dimens.paddingM,
-      ),
+      titlePadding: Dimens.dialogTitlePadding,
       title: Text(S.of(context).choosePrimaryColor),
       content: SizedBox(
         height: Dimens.grid48,
@@ -60,12 +55,7 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
           ),
         ),
       ),
-      actionsPadding: const EdgeInsets.fromLTRB(
-        Dimens.paddingL,
-        Dimens.paddingM,
-        Dimens.paddingL,
-        Dimens.paddingL,
-      ),
+      actionsPadding: Dimens.dialogActionsPadding,
       actions: [
         TextButton(
           onPressed: Navigator.of(context).pop,

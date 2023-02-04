@@ -37,5 +37,17 @@ class Dimens {
 
   // Dialog
   // Taken from `Dialog` documentation
+  static const EdgeInsets dialogTitlePadding = EdgeInsets.fromLTRB(
+    paddingL,
+    paddingL,
+    paddingL,
+    paddingM,
+  );
+  static const EdgeInsets dialogActionsPadding = EdgeInsets.fromLTRB(
+    paddingL,
+    paddingM,
+    paddingL,
+    paddingL,
+  );
   static const EdgeInsets dialogMargin = EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0);
 }
