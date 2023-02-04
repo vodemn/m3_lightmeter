@@ -91,7 +91,7 @@ class _SelectableColorItemState extends State<_SelectableColorItem> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.selected) {
         Scrollable.ensureVisible(context);
       }
