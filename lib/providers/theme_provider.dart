@@ -44,7 +44,7 @@ class ThemeProvider extends StatefulWidget {
   State<ThemeProvider> createState() => ThemeProviderState();
 }
 
-class ThemeProviderState extends State<ThemeProvider> {
+class ThemeProviderState extends State<ThemeProvider> with WidgetsBindingObserver {
   UserPreferencesService get _prefs => context.read<UserPreferencesService>();
 
   late final _themeTypeNotifier = ValueNotifier<ThemeType>(_prefs.themeType);
@@ -52,7 +52,20 @@ class ThemeProviderState extends State<ThemeProvider> {
   late final _primaryColorNotifier = ValueNotifier<Color>(_prefs.primaryColor);
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    super.didChangePlatformBrightness();
+    setState(() {});
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _themeTypeNotifier.dispose();
     _dynamicColorNotifier.dispose();
     _primaryColorNotifier.dispose();
@@ -216,16 +229,18 @@ class _ThemeDataProvider extends StatelessWidget {
 
     return ColorScheme(
       brightness: brightness,
+      background: Color(scheme.background),
+      error: Color(scheme.error),
+      errorContainer: Color(scheme.errorContainer),
+      onBackground: Color(scheme.onBackground),
+      onError: Color(scheme.onError),
+      onErrorContainer: Color(scheme.onErrorContainer),
       primary: Color(scheme.primary),
       onPrimary: Color(scheme.onPrimary),
       primaryContainer: Color(scheme.primaryContainer),
       onPrimaryContainer: Color(scheme.onPrimaryContainer),
       secondary: Color(scheme.secondary),
       onSecondary: Color(scheme.onSecondary),
-      error: Color(scheme.error),
-      onError: Color(scheme.onError),
-      background: Color(scheme.background),
-      onBackground: Color(scheme.onBackground),
       surface: Color.alphaBlend(
         Color(scheme.primary).withOpacity(0.05),
         Color(scheme.background),
@@ -236,6 +251,8 @@ class _ThemeDataProvider extends StatelessWidget {
         Color(scheme.background),
       ),
       onSurfaceVariant: Color(scheme.onSurfaceVariant),
+      outline: Color(scheme.outline),
+      outlineVariant: Color(scheme.outlineVariant),
     );
   }
 }

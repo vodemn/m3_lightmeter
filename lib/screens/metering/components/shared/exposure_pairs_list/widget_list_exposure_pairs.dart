@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/res/dimens.dart';
 
+import 'components/empty_exposure_pairs_list/widget_list_exposure_pairs_empty.dart';
 import 'components/exposure_pairs_list_item/widget_item_list_exposure_pairs.dart';
 
 class ExposurePairsList extends StatelessWidget {
@@ -11,6 +12,9 @@ class ExposurePairsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (exposurePairs.isEmpty) {
+      return const EmptyExposurePairsList();
+    }
     return Stack(
       alignment: Alignment.center,
       children: [

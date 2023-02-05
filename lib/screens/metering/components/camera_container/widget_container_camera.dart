@@ -12,6 +12,7 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 
 import 'bloc_container_camera.dart';
 import 'components/camera_controls/widget_camera_controls.dart';
+import 'components/camera_view_placeholder/widget_placeholder_camera_view.dart';
 import 'event_container_camera.dart';
 import 'state_container_camera.dart';
 
@@ -76,13 +77,11 @@ class _CameraViewBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
-      child: Center(
-        child: BlocBuilder<CameraContainerBloc, CameraContainerState>(
-          buildWhen: (previous, current) => current is CameraInitializedState,
-          builder: (context, state) => state is CameraInitializedState
-              ? CameraView(controller: state.controller)
-              : const ColoredBox(color: Colors.black),
-        ),
+      child: BlocBuilder<CameraContainerBloc, CameraContainerState>(
+        buildWhen: (previous, current) => current is CameraInitializedState,
+        builder: (context, state) => state is CameraInitializedState
+            ? Center(child: CameraView(controller: state.controller))
+            : const CameraViewPlaceholder(),
       ),
     );
   }

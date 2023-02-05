@@ -46,9 +46,7 @@ class MeteringBottomControls extends StatelessWidget {
                   )
                 else
                   const Spacer(),
-                MeteringMeasureButton(
-                  onTap: onMeasure,
-                ),
+                MeteringMeasureButton(onTap: onMeasure),
                 Expanded(
                   child: Center(
                     child: IconButton(
