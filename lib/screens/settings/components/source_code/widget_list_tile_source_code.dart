@@ -13,7 +13,10 @@ class SourceCodeListTile extends StatelessWidget {
       leading: const Icon(Icons.code),
       title: Text(S.of(context).sourceCode),
       onTap: () {
-        launchUrl(Uri.parse(context.read<Environment>().sourceCodeUrl));
+        launchUrl(
+          Uri.parse(context.read<Environment>().sourceCodeUrl),
+          mode: LaunchMode.externalApplication,
+        );
       },
     );
   }

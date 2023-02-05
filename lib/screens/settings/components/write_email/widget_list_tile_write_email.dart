@@ -14,7 +14,9 @@ class WriteEmailListTile extends StatelessWidget {
       title: Text(S.of(context).writeEmail),
       onTap: () {
         launchUrl(
-            Uri.parse('mailto:${context.read<Environment>().contactEmail}?subject=M3 Lightmeter'));
+          Uri.parse('mailto:${context.read<Environment>().contactEmail}?subject=M3 Lightmeter'),
+          mode: LaunchMode.externalApplication,
+        );
       },
     );
   }
