@@ -10,12 +10,8 @@
 - [Table of contents](#table-of-contents)
 - [Backstory](#backstory)
 - [Legacy features](#legacy-features)
-    - [Metering](#metering)
-    - [Adjust](#adjust)
-    - [General](#general)
-    - [Theme](#theme)
-  - [Build](#build)
-  - [Contribution](#contribution)
+- [Build](#build)
+- [Contribution](#contribution)
 
 # Backstory
 
