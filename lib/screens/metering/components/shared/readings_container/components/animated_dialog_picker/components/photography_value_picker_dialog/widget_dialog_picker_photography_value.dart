@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/data/models/photography_values/photography_value.dart';
@@ -37,19 +36,8 @@ class PhotographyValuePickerDialog<T extends PhotographyValue> extends StatefulW
 class _PhotographyValuePickerDialogState<T extends PhotographyValue>
     extends State<PhotographyValuePickerDialog<T>> {
   late T _selectedValue = widget.initialValue;
-  late final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollController.jumpTo(clampDouble(
-        Dimens.grid56 * widget.values.indexOf(_selectedValue),
-        _scrollController.position.minScrollExtent,
-        _scrollController.position.maxScrollExtent,
-      ));
-    });
-  }
+  late final _scrollController =
+      ScrollController(initialScrollOffset: Dimens.grid56 * widget.values.indexOf(_selectedValue));
 
   @override
   void dispose() {
