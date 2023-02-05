@@ -17,6 +17,7 @@
     "filmSpeed": "Film speed",
     "nd": "ND",
     "ndFilterFactor": "Neutral density filter factor",
+    "noExposurePairs": "There are no exposure pairs for the selected settings.",
     "none": "None",
     "cancel": "Cancel",
     "select": "Select",

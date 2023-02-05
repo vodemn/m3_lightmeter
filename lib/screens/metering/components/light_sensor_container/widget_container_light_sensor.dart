@@ -44,7 +44,7 @@ class LightSensorContainer extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
-            child: ExposurePairsList(exposurePairs),
+            child: Center(child: ExposurePairsList(exposurePairs)),
           ),
         ),
       ],

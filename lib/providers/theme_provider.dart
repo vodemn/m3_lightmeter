@@ -224,16 +224,18 @@ class _ThemeDataProvider extends StatelessWidget {
 
     return ColorScheme(
       brightness: brightness,
+      background: Color(scheme.background),
+      error: Color(scheme.error),
+      errorContainer: Color(scheme.errorContainer),
+      onBackground: Color(scheme.onBackground),
+      onError: Color(scheme.onError),
+      onErrorContainer: Color(scheme.onErrorContainer),
       primary: Color(scheme.primary),
       onPrimary: Color(scheme.onPrimary),
       primaryContainer: Color(scheme.primaryContainer),
       onPrimaryContainer: Color(scheme.onPrimaryContainer),
       secondary: Color(scheme.secondary),
       onSecondary: Color(scheme.onSecondary),
-      error: Color(scheme.error),
-      onError: Color(scheme.onError),
-      background: Color(scheme.background),
-      onBackground: Color(scheme.onBackground),
       surface: Color.alphaBlend(
         Color(scheme.primary).withOpacity(0.05),
         Color(scheme.background),
@@ -244,6 +246,8 @@ class _ThemeDataProvider extends StatelessWidget {
         Color(scheme.background),
       ),
       onSurfaceVariant: Color(scheme.onSurfaceVariant),
+      outline: Color(scheme.outline),
+      outlineVariant: Color(scheme.outlineVariant),
     );
   }
 }
