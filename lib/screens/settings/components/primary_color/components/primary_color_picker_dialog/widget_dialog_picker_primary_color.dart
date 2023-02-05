@@ -13,10 +13,7 @@ class PrimaryColorDialogPicker extends StatefulWidget {
 
 class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
   late Color _selected = Theme.of(context).primaryColor;
-  late final ScrollController _scrollController = ScrollController(
-    initialScrollOffset:
-        ThemeProvider.primaryColorsList.indexOf(_selected) * (Dimens.grid48 + Dimens.grid8),
-  );
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void dispose() {
@@ -27,42 +24,38 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titlePadding: const EdgeInsets.fromLTRB(
-        Dimens.paddingL,
-        Dimens.paddingL,
-        Dimens.paddingL,
-        Dimens.paddingM,
-      ),
+      titlePadding: Dimens.dialogTitlePadding,
       title: Text(S.of(context).choosePrimaryColor),
       content: SizedBox(
         height: Dimens.grid48,
         width: double.maxFinite,
-        child: ListView.separated(
+        child: SingleChildScrollView(
           controller: _scrollController,
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.zero,
-          separatorBuilder: (_, __) => const SizedBox(width: Dimens.grid8),
-          itemCount: ThemeProvider.primaryColorsList.length,
-          itemBuilder: (_, index) {
-            final color = ThemeProvider.primaryColorsList[index];
-            return _SelectableColorItem(
-              color: color,
-              selected: color.value == _selected.value,
-              onTap: () {
-                setState(() {
-                  _selected = color;
-                });
+          child: Row(
+            children: List.generate(
+              ThemeProvider.primaryColorsList.length,
+              (index) {
+                final color = ThemeProvider.primaryColorsList[index];
+                return Padding(
+                  padding: EdgeInsets.only(left: index == 0 ? 0 : Dimens.paddingS),
+                  child: _SelectableColorItem(
+                    color: color,
+                    selected: color.value == _selected.value,
+                    onTap: () {
+                      setState(() {
+                        _selected = color;
+                      });
+                    },
+                  ),
+                );
               },
-            );
-          },
+            ),
+          ),
         ),
       ),
-      actionsPadding: const EdgeInsets.fromLTRB(
-        Dimens.paddingL,
-        Dimens.paddingM,
-        Dimens.paddingL,
-        Dimens.paddingL,
-      ),
+      actionsPadding: Dimens.dialogActionsPadding,
       actions: [
         TextButton(
           onPressed: Navigator.of(context).pop,
@@ -79,7 +72,7 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
   }
 }
 
-class _SelectableColorItem extends StatelessWidget {
+class _SelectableColorItem extends StatefulWidget {
   final Color color;
   final bool selected;
   final VoidCallback onTap;
@@ -91,18 +84,33 @@ class _SelectableColorItem extends StatelessWidget {
   }) : super(key: ValueKey(color));
 
   @override
+  State<_SelectableColorItem> createState() => _SelectableColorItemState();
+}
+
+class _SelectableColorItemState extends State<_SelectableColorItem> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.selected) {
+        Scrollable.ensureVisible(context);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: FilledCircle(
         size: Dimens.grid48,
-        color: color,
+        color: widget.color,
         child: AnimatedSwitcher(
           duration: Dimens.durationS,
-          child: selected
+          child: widget.selected
               ? Icon(
                   Icons.check,
-                  color: ThemeData.estimateBrightnessForColor(color) == Brightness.light
+                  color: ThemeData.estimateBrightnessForColor(widget.color) == Brightness.light
                       ? Colors.black
                       : Colors.white,
                 )

@@ -26,12 +26,7 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titlePadding: const EdgeInsets.fromLTRB(
-        Dimens.paddingL,
-        Dimens.paddingL,
-        Dimens.paddingL,
-        Dimens.paddingM,
-      ),
+      titlePadding: Dimens.dialogTitlePadding,
       title: Text(widget.title),
       contentPadding: EdgeInsets.zero,
       content: Column(
@@ -53,12 +48,7 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
             )
             .toList(),
       ),
-      actionsPadding: const EdgeInsets.fromLTRB(
-        Dimens.paddingL,
-        Dimens.paddingM,
-        Dimens.paddingL,
-        Dimens.paddingL,
-      ),
+      actionsPadding: Dimens.dialogActionsPadding,
       actions: [
         TextButton(
           onPressed: Navigator.of(context).pop,

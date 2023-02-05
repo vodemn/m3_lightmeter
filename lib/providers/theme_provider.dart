@@ -208,6 +208,11 @@ class _ThemeDataProvider extends StatelessWidget {
         surfaceTintColor: scheme.surfaceTint,
         elevation: 6,
       ),
+      dividerColor: scheme.outlineVariant,
+      dividerTheme: DividerThemeData(
+        color: scheme.outlineVariant,
+        space: 0,
+      ),
       listTileTheme: ListTileThemeData(
         style: ListTileStyle.list,
         iconColor: scheme.onSurface,

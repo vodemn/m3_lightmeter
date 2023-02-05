@@ -36,15 +36,8 @@ class PhotographyValuePickerDialog<T extends PhotographyValue> extends StatefulW
 class _PhotographyValuePickerDialogState<T extends PhotographyValue>
     extends State<PhotographyValuePickerDialog<T>> {
   late T _selectedValue = widget.initialValue;
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollController.jumpTo(Dimens.grid56 * widget.values.indexOf(_selectedValue));
-    });
-  }
+  late final _scrollController =
+      ScrollController(initialScrollOffset: Dimens.grid56 * widget.values.indexOf(_selectedValue));
 
   @override
   void dispose() {
@@ -57,35 +50,23 @@ class _PhotographyValuePickerDialogState<T extends PhotographyValue>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                Dimens.paddingL,
-                Dimens.paddingL,
-                Dimens.paddingL,
-                Dimens.paddingM,
+        Padding(
+          padding: Dimens.dialogTitlePadding,
+          child: Column(
+            children: [
+              Text(
+                widget.title,
+                style: Theme.of(context).textTheme.headlineSmall!,
               ),
-              child: Column(
-                children: [
-                  Text(
-                    widget.title,
-                    style: Theme.of(context).textTheme.headlineSmall!,
-                  ),
-                  const SizedBox(height: Dimens.grid16),
-                  Text(
-                    widget.subtitle,
-                    style: Theme.of(context).textTheme.bodyMedium!,
-                  ),
-                ],
+              const SizedBox(height: Dimens.grid16),
+              Text(
+                widget.subtitle,
+                style: Theme.of(context).textTheme.bodyMedium!,
               ),
-            ),
-            Divider(
-              color: Theme.of(context).colorScheme.onSurface,
-              height: 0,
-            ),
-          ],
+            ],
+          ),
         ),
+        const Divider(),
         Expanded(
           child: ListView.builder(
             controller: _scrollController,
@@ -114,32 +95,25 @@ class _PhotographyValuePickerDialogState<T extends PhotographyValue>
             ),
           ),
         ),
-        Column(
-          children: [
-            Divider(
-              color: Theme.of(context).colorScheme.onSurface,
-              height: 0,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(Dimens.paddingL),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  const Spacer(),
-                  TextButton(
-                    onPressed: widget.onCancel,
-                    child: Text(S.of(context).cancel),
-                  ),
-                  const SizedBox(width: Dimens.grid16),
-                  TextButton(
-                    onPressed: () => widget.onSelect(_selectedValue),
-                    child: Text(S.of(context).select),
-                  ),
-                ],
+        const Divider(),
+        Padding(
+          padding: Dimens.dialogActionsPadding,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const Spacer(),
+              TextButton(
+                onPressed: widget.onCancel,
+                child: Text(S.of(context).cancel),
               ),
-            ),
-          ],
+              const SizedBox(width: Dimens.grid16),
+              TextButton(
+                onPressed: () => widget.onSelect(_selectedValue),
+                child: Text(S.of(context).select),
+              ),
+            ],
+          ),
         ),
       ],
     );
