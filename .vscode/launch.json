@@ -8,6 +8,7 @@
             "name": "dev (android)",
             "request": "launch",
             "type": "dart",
+            //"flutterMode": "profile",
             "args": [
                 "--flavor",
                 "dev",

@@ -6,12 +6,14 @@ import 'package:lightmeter/data/models/photography_values/nd_value.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_view/widget_camera_view.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/widget_top_bar_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';
 
 import 'bloc_container_camera.dart';
 import 'components/camera_controls/widget_camera_controls.dart';
+import 'components/camera_controls_placeholder/widget_placeholder_camera_controls.dart';
 import 'components/camera_view_placeholder/widget_placeholder_camera_view.dart';
 import 'event_container_camera.dart';
 import 'state_container_camera.dart';
@@ -78,10 +80,17 @@ class _CameraViewBuilder extends StatelessWidget {
     return AspectRatio(
       aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
       child: BlocBuilder<CameraContainerBloc, CameraContainerState>(
-        buildWhen: (previous, current) => current is CameraInitializedState,
-        builder: (context, state) => state is CameraInitializedState
-            ? Center(child: CameraView(controller: state.controller))
-            : const CameraViewPlaceholder(),
+        buildWhen: (previous, current) =>
+            current is CameraLoadingState ||
+            current is CameraInitializedState ||
+            current is CameraErrorState,
+        builder: (context, state) {
+          if (state is CameraInitializedState) {
+            return Center(child: CameraView(controller: state.controller));
+          } else {
+            return CameraViewPlaceholder(error: state is CameraErrorState ? state.error : null);
+          }
+        },
       ),
     );
   }
@@ -95,23 +104,40 @@ class _CameraControlsBuilder extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
       child: BlocBuilder<CameraContainerBloc, CameraContainerState>(
-        builder: (context, state) => AnimatedSwitcher(
-          duration: Dimens.durationS,
-          child: state is CameraActiveState
-              ? CameraControls(
-                  exposureOffsetRange: state.exposureOffsetRange,
-                  exposureOffsetValue: state.currentExposureOffset,
-                  onExposureOffsetChanged: (value) {
-                    context.read<CameraContainerBloc>().add(ExposureOffsetChangedEvent(value));
-                  },
-                  zoomRange: state.zoomRange,
-                  zoomValue: state.currentZoom,
-                  onZoomChanged: (value) {
-                    context.read<CameraContainerBloc>().add(ZoomChangedEvent(value));
-                  },
-                )
-              : const SizedBox.shrink(),
-        ),
+        builder: (context, state) {
+          late final Widget child;
+          if (state is CameraActiveState) {
+            child = CameraControls(
+              exposureOffsetRange: state.exposureOffsetRange,
+              exposureOffsetValue: state.currentExposureOffset,
+              onExposureOffsetChanged: (value) {
+                context.read<CameraContainerBloc>().add(ExposureOffsetChangedEvent(value));
+              },
+              zoomRange: state.zoomRange,
+              zoomValue: state.currentZoom,
+              onZoomChanged: (value) {
+                context.read<CameraContainerBloc>().add(ZoomChangedEvent(value));
+              },
+            );
+          } else if (state is CameraErrorState) {
+            child = CameraControlsPlaceholder(
+              error: state.error,
+              onReset: () {
+                context.read<CameraContainerBloc>().add(
+                    state.error == CameraErrorType.permissionNotGranted
+                        ? const OpenAppSettingsEvent()
+                        : const InitializeEvent());
+              },
+            );
+          } else {
+            child = const SizedBox.shrink();
+          }
+
+          return AnimatedSwitcher(
+            duration: Dimens.durationS,
+            child: child,
+          );
+        },
       ),
     );
   }

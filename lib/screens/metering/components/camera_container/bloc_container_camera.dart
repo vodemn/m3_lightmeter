@@ -7,6 +7,7 @@ import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
@@ -43,12 +44,14 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     _observer = _WidgetsBindingObserver(_appLifecycleStateObserver);
     WidgetsBinding.instance.addObserver(_observer);
 
+    on<RequestPermissionEvent>(_onRequestPermission);
+    on<OpenAppSettingsEvent>(_onOpenAppSettings);
     on<InitializeEvent>(_onInitialize);
     on<ZoomChangedEvent>(_onZoomChanged);
     on<ExposureOffsetChangedEvent>(_onExposureOffsetChanged);
     on<ExposureOffsetResetEvent>(_onExposureOffsetResetEvent);
 
-    add(const InitializeEvent());
+    add(const RequestPermissionEvent());
   }
 
   @override
@@ -71,10 +74,33 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     }
   }
 
+  Future<void> _onRequestPermission(_, Emitter emit) async {
+    final hasPermission = await _meteringInteractor.requestPermission();
+    if (!hasPermission) {
+      emit(const CameraErrorState(CameraErrorType.permissionNotGranted));
+    } else {
+      add(const InitializeEvent());
+    }
+  }
+
+  Future<void> _onOpenAppSettings(_, Emitter emit) async {
+    _meteringInteractor.openAppSettings();
+  }
+
   Future<void> _onInitialize(_, Emitter emit) async {
     emit(const CameraLoadingState());
+    final hasPermission = await _meteringInteractor.checkCameraPermission();
+    if (!hasPermission) {
+      emit(const CameraErrorState(CameraErrorType.permissionNotGranted));
+      return;
+    }
+
     try {
       final cameras = await availableCameras();
+      if (cameras.isEmpty) {
+        emit(const CameraErrorState(CameraErrorType.noCamerasDetected));
+        return;
+      }
       _cameraController = CameraController(
         cameras.firstWhere(
           (camera) => camera.lensDirection == CameraLensDirection.back,
@@ -111,7 +137,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
       _emitActiveState(emit);
     } catch (e) {
-      emit(const CameraErrorState());
+      emit(const CameraErrorState(CameraErrorType.other));
     }
   }
 
@@ -174,7 +200,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
         add(const InitializeEvent());
         break;
       case AppLifecycleState.paused:
-      case AppLifecycleState.inactive:
+      case AppLifecycleState.detached:
         _cameraController?.dispose();
         _cameraController = null;
         break;
@@ -186,11 +212,16 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 /// This is needed only because we cannot use `with` with mixins
 class _WidgetsBindingObserver with WidgetsBindingObserver {
   final ValueChanged<AppLifecycleState> onLifecycleStateChanged;
+  AppLifecycleState? _prevState;
 
   _WidgetsBindingObserver(this.onLifecycleStateChanged);
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_prevState == AppLifecycleState.inactive && state == AppLifecycleState.resumed) {
+      return;
+    }
+    _prevState = state;
     onLifecycleStateChanged(state);
   }
 }

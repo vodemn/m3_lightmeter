@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/models/photography_values/photography_value.dart';
+import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
       create: (context) => MeteringInteractor(
         context.read<UserPreferencesService>(),
         context.read<HapticsService>(),
+        context.read<PermissionsService>(),
         context.read<LightSensorService>(),
       ),
       child: MultiBlocProvider(
