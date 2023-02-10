@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 
 abstract class CameraContainerState {
   const CameraContainerState();
@@ -36,5 +37,7 @@ class CameraActiveState extends CameraContainerState {
 }
 
 class CameraErrorState extends CameraContainerState {
-  const CameraErrorState();
+  final CameraErrorType error;
+
+  const CameraErrorState(this.error);
 }

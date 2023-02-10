@@ -1,8 +1,5 @@
 {
     "@@locale": "en",
-    "permissionNeeded": "Permission needed",
-    "permissionNeededMessage": "To use Lightmeter, turn on Camera permissions.",
-    "openSettings": "Open settings",
     "fastestExposurePair": "Fastest",
     "slowestExposurePair": "Slowest",
     "ev": "{value} EV",
@@ -18,6 +15,9 @@
     "nd": "ND",
     "ndFilterFactor": "Neutral density filter factor",
     "noExposurePairs": "There are no exposure pairs for the selected settings.",
+    "noCamerasDetected": "Seems like your device doesn't have any cameras connected",
+    "noCameraPermission": "Camera permission is not granted.",
+    "otherCameraError": "An error occurred when connecting to the camera.",
     "none": "None",
     "cancel": "Cancel",
     "select": "Select",
