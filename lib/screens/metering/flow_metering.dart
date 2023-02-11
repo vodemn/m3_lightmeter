@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/models/photography_values/photography_value.dart';
@@ -25,6 +26,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
     return Provider(
       create: (context) => MeteringInteractor(
         context.read<UserPreferencesService>(),
+        context.read<CaffeineService>(),
         context.read<HapticsService>(),
         context.read<PermissionsService>(),
         context.read<LightSensorService>(),

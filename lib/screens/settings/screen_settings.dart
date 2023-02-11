@@ -4,6 +4,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:provider/provider.dart';
 
+import 'components/caffeine/provider_list_tile_caffeine.dart';
 import 'components/calibration/widget_list_tile_calibration.dart';
 import 'components/haptics/provider_list_tile_haptics.dart';
 import 'components/primary_color/widget_list_tile_primary_color.dart';
@@ -61,6 +62,7 @@ class SettingsScreen extends StatelessWidget {
                   SettingsSection(
                     title: S.of(context).general,
                     children: const [
+                      CaffeineListTileProvider(),
                       HapticsListTileProvider(),
                     ],
                   ),

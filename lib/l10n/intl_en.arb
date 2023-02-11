@@ -34,6 +34,7 @@
     "camera": "Camera",
     "lightSensor": "Light sensor",
     "general": "General",
+    "keepScreenOn": "Keep screen on",
     "haptics": "Haptics",
     "theme": "Theme",
     "chooseTheme": "Choose theme",

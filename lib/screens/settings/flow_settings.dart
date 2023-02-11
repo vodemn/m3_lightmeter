@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/interactors/settings_interactor.dart';
@@ -13,6 +14,7 @@ class SettingsFlow extends StatelessWidget {
     return Provider(
       create: (context) => SettingsInteractor(
         context.read<UserPreferencesService>(),
+        context.read<CaffeineService>(),
         context.read<HapticsService>(),
       ),
       child: const SettingsScreen(),
