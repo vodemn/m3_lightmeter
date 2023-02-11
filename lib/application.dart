@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:light_sensor/light_sensor.dart';
+import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +38,7 @@ class Application extends StatelessWidget {
             providers: [
               Provider.value(value: env.copyWith(hasLightSensor: snapshot.data![1] as bool)),
               Provider(create: (_) => UserPreferencesService(snapshot.data![0] as SharedPreferences)),
+              Provider(create: (_) => const CaffeineService()),
               Provider(create: (_) => const HapticsService()),
               Provider(create: (_) => PermissionsService()),
               Provider(create: (_) => const LightSensorService()),

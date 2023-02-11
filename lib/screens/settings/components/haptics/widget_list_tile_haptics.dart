@@ -14,7 +14,7 @@ class HapticsListTile extends StatelessWidget {
         secondary: const Icon(Icons.vibration),
         title: Text(S.of(context).haptics),
         value: state,
-        onChanged: context.read<HapticsListTileBloc>().onHapticsChange,
+        onChanged: context.read<HapticsListTileBloc>().onHapticsChanged,
       ),
     );
   }

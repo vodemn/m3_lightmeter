@@ -14,7 +14,9 @@ class UserPreferencesService {
   static const _cameraEvCalibrationKey = "cameraEvCalibration";
   static const _lightSensorEvCalibrationKey = "lightSensorEvCalibration";
 
+  static const _caffeineKey = "caffeine";
   static const _hapticsKey = "haptics";
+
   static const _themeTypeKey = "themeType";
   static const _primaryColorKey = "primaryColor";
   static const _dynamicColorKey = "dynamicColor";
@@ -32,7 +34,10 @@ class UserPreferencesService {
   EvSourceType get evSourceType => EvSourceType.values[_sharedPreferences.getInt(_evSourceTypeKey) ?? 0];
   set evSourceType(EvSourceType value) => _sharedPreferences.setInt(_evSourceTypeKey, value.index);
 
-  bool get haptics => _sharedPreferences.getBool(_hapticsKey) ?? false;
+  bool get caffeine => _sharedPreferences.getBool(_caffeineKey) ?? false;
+  set caffeine(bool value) => _sharedPreferences.setBool(_caffeineKey, value);
+
+  bool get haptics => _sharedPreferences.getBool(_hapticsKey) ?? true;
   set haptics(bool value) => _sharedPreferences.setBool(_hapticsKey, value);
 
   double get cameraEvCalibration => _sharedPreferences.getDouble(_cameraEvCalibrationKey) ?? 0.0;
