@@ -1,0 +1,65 @@
+{
+    "@@locale": "ru",
+    "fastestExposurePair": "Короткая выдержка",
+    "slowestExposurePair": "Длинная выдержка",
+    "ev": "{value} EV",
+    "@ev": {
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "iso": "ISO",
+    "filmSpeed": "Чувствительность плёнки",
+    "nd": "ND",
+    "ndFilterFactor": "Степень затемнения нейтрального фильтра",
+    "noExposurePairs": "Для выбранных настроек нет пар экспозиции.",
+    "noCamerasDetected": "Похоже, ваше устройство не имеет камеры.",
+    "noCameraPermission": "Нет разрешения на доступ к камере.",
+    "otherCameraError": "Произошла ошибка при подключении к камере.",
+    "none": "Нет",
+    "cancel": "Отменить",
+    "select": "Выбрать",
+    "save": "Сохранить",
+    "settings": "Настройки",
+    "metering": "Измерения",
+    "fractionalStops": "Дробные значения",
+    "showFractionalStops": "Показывать дробные значения",
+    "halfStops": "1/2",
+    "thirdStops": "1/3",
+    "calibration": "Калибровка",
+    "calibrationMessage": "Точность измерений данного приложения полностью зависит от точности камеры и датчика освещенности вашего устройства. Поэтому рекомендуется самостоятельно подобрать калибровочные значения, которые дадут желаемый результат измерений.",
+    "calibrationMessageCameraOnly": "Точность измерений данного приложения полностью зависит от точности камеры вашего устройства. Поэтому рекомендуется самостоятельно подобрать калибровочное значение, которое даст желаемый результат измерений.",
+    "camera": "Камера",
+    "lightSensor": "Датчик освещённости",
+    "general": "Общие",
+    "keepScreenOn": "Запрет блокировки",
+    "haptics": "Вибрация",
+    "language": "Язык",
+    "chooseLanguage": "Выберите язык",
+    "theme": "Тема",
+    "chooseTheme": "Выберите тему",
+    "themeLight": "Светлая",
+    "themeDark": "Тёмная",
+    "themeSystemDefault": "Системная",
+    "dynamicColor": "Динамический цвет",
+    "primaryColor": "Основной цвет",
+    "choosePrimaryColor": "Выберите основной цвет",
+    "about": "О приложении",
+    "sourceCode": "Исходный код",
+    "reportIssue": "Сообщить о проблеме",
+    "writeEmail": "Написать на почту",
+    "version": "Версия",
+    "versionNumber": "{version} ({buildNumber})",
+    "@versionNumber": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            },
+            "buildNumber": {
+                "type": "String"
+            }
+        }
+    }
+}

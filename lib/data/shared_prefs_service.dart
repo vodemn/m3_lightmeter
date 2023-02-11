@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/ev_source_type.dart';
@@ -16,6 +17,7 @@ class UserPreferencesService {
 
   static const _caffeineKey = "caffeine";
   static const _hapticsKey = "haptics";
+  static const _localeKey = "locale";
 
   static const _themeTypeKey = "themeType";
   static const _primaryColorKey = "primaryColor";
@@ -39,6 +41,12 @@ class UserPreferencesService {
 
   bool get haptics => _sharedPreferences.getBool(_hapticsKey) ?? true;
   set haptics(bool value) => _sharedPreferences.setBool(_hapticsKey, value);
+
+  SupportedLocale get locale => SupportedLocale.values.firstWhere(
+        (e) => e.toString() == _sharedPreferences.getString(_localeKey),
+        orElse: () => SupportedLocale.en,
+      );
+  set locale(SupportedLocale value) => _sharedPreferences.setString(_localeKey, value.toString());
 
   double get cameraEvCalibration => _sharedPreferences.getDouble(_cameraEvCalibrationKey) ?? 0.0;
   set cameraEvCalibration(double value) => _sharedPreferences.setDouble(_cameraEvCalibrationKey, value);

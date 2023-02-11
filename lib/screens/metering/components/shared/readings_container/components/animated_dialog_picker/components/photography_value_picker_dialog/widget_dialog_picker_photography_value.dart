@@ -57,11 +57,13 @@ class _PhotographyValuePickerDialogState<T extends PhotographyValue>
               Text(
                 widget.title,
                 style: Theme.of(context).textTheme.headlineSmall!,
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: Dimens.grid16),
               Text(
                 widget.subtitle,
                 style: Theme.of(context).textTheme.bodyMedium!,
+                textAlign: TextAlign.center,
               ),
             ],
           ),
