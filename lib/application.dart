@@ -57,7 +57,7 @@ class Application extends StatelessWidget {
                             ? Brightness.dark
                             : Brightness.light,
                         statusBarIconBrightness: systemIconsBrightness,
-                        systemNavigationBarColor: context.watch<ThemeData>().colorScheme.surface,
+                        systemNavigationBarColor: Colors.transparent,
                         systemNavigationBarIconBrightness: systemIconsBrightness,
                       ),
                       child: MaterialApp(

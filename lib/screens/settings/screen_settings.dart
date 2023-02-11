@@ -25,6 +25,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         top: false,
+        bottom: false,
         child: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
@@ -51,7 +52,7 @@ class SettingsScreen extends StatelessWidget {
             ),
             SliverList(
               delegate: SliverChildListDelegate(
-                <SettingsSection>[
+                <Widget>[
                   SettingsSection(
                     title: S.of(context).metering,
                     children: const [
@@ -84,6 +85,7 @@ class SettingsScreen extends StatelessWidget {
                       VersionListTile(),
                     ],
                   ),
+                  SizedBox(height: MediaQuery.of(context).padding.bottom),
                 ],
               ),
             ),
