@@ -8,11 +8,8 @@ class HapticsListTileBloc extends Cubit<bool> {
     this._settingsInteractor,
   ) : super(_settingsInteractor.isHapticsEnabled);
 
-  void onHapticsChange(bool value) {
+  void onHapticsChanged(bool value) {
     _settingsInteractor.enableHaptics(value);
-    if (value) {
-      _settingsInteractor.quickVibration();
-    }
     emit(value);
   }
 }
