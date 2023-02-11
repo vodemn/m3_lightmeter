@@ -38,7 +38,7 @@ The list of features that the old lightmeter app has and that have to be impleme
 - [x] ND filter select
 
 ### General
-- [ ] Caffeine
+- [x] Caffeine
 - [x] Vibration
 - [ ] Volume button actions
 
