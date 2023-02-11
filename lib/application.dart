@@ -6,6 +6,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:light_sensor/light_sensor.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
+import 'package:lightmeter/data/models/supported_locale.dart';
+import 'package:lightmeter/providers/supported_locale_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,7 +39,8 @@ class Application extends StatelessWidget {
           return MultiProvider(
             providers: [
               Provider.value(value: env.copyWith(hasLightSensor: snapshot.data![1] as bool)),
-              Provider(create: (_) => UserPreferencesService(snapshot.data![0] as SharedPreferences)),
+              Provider(
+                  create: (_) => UserPreferencesService(snapshot.data![0] as SharedPreferences)),
               Provider(create: (_) => const CaffeineService()),
               Provider(create: (_) => const HapticsService()),
               Provider(create: (_) => PermissionsService()),
@@ -45,23 +48,12 @@ class Application extends StatelessWidget {
             ],
             child: StopTypeProvider(
               child: EvSourceTypeProvider(
-                child: ThemeProvider(
-                  builder: (context, _) {
-                    final systemIconsBrightness = ThemeData.estimateBrightnessForColor(
-                      context.watch<ThemeData>().colorScheme.onSurface,
-                    );
-                    return AnnotatedRegion(
-                      value: SystemUiOverlayStyle(
-                        statusBarColor: Colors.transparent,
-                        statusBarBrightness: systemIconsBrightness == Brightness.light
-                            ? Brightness.dark
-                            : Brightness.light,
-                        statusBarIconBrightness: systemIconsBrightness,
-                        systemNavigationBarColor: Colors.transparent,
-                        systemNavigationBarIconBrightness: systemIconsBrightness,
-                      ),
+                child: SupportedLocaleProvider(
+                  child: ThemeProvider(
+                    builder: (context, _) => _AnnotatedRegionWrapper(
                       child: MaterialApp(
                         theme: context.watch<ThemeData>(),
+                        locale: Locale(context.watch<SupportedLocale>().intlName),
                         localizationsDelegates: const [
                           S.delegate,
                           GlobalMaterialLocalizations.delegate,
@@ -79,8 +71,8 @@ class Application extends StatelessWidget {
                           "settings": (context) => const SettingsFlow(),
                         },
                       ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -88,6 +80,30 @@ class Application extends StatelessWidget {
         }
         return const SizedBox();
       },
+    );
+  }
+}
+
+class _AnnotatedRegionWrapper extends StatelessWidget {
+  final Widget child;
+
+  const _AnnotatedRegionWrapper({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final systemIconsBrightness = ThemeData.estimateBrightnessForColor(
+      context.watch<ThemeData>().colorScheme.onSurface,
+    );
+    return AnnotatedRegion(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness:
+            systemIconsBrightness == Brightness.light ? Brightness.dark : Brightness.light,
+        statusBarIconBrightness: systemIconsBrightness,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: systemIconsBrightness,
+      ),
+      child: child,
     );
   }
 }
