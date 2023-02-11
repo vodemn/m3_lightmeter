@@ -45,7 +45,7 @@ The list of features that the old lightmeter app has and that have to be impleme
 ### Theme
 - [x] Dark theme
 - [x] Picking primary color
-- [ ] Russian language
+- [x] Russian language
 
 ## Build
 
