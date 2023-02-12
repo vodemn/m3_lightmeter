@@ -1,0 +1,30 @@
+name: Crowdin push
+on:
+  push:
+    branches:
+      - main
+      - crowdin
+concurrency:
+  group: ${{ github.workflow }}
+permissions:
+  contents: read
+env:
+  REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+  CROWDIN_PROJECT_ID: 567473
+  CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
+jobs:
+  upload-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v3
+      - name: Upload
+        uses: crowdin/github-action@1.5.0
+        with:
+          crowdin_branch_name: main
+          upload_sources: true
+          upload_sources_args: "--delete-obsolete"
+          upload_translations: true
+          import_eq_suggestions: true
+          auto_approve_imported: false
+          add_crowdin_branch: main
