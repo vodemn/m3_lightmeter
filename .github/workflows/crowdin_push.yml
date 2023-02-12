@@ -2,7 +2,8 @@ name: Crowdin push
 on:
   push:
     branches:
-      - develop
+      - main
+      - crowdin
 concurrency:
   group: ${{ github.workflow }}
 permissions:
