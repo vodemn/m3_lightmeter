@@ -1,7 +1,4 @@
-project_id_env: PROJECT_ID_CROWDIN
-api_token_env: TOKEN_CROWDIN
 base_path: "./lib/l10n"
-base_url: "https://api.crowdin.com"
 
 preserve_hierarchy: true
 
