@@ -61,6 +61,5 @@
                 "type": "String"
             }
         }
-    },
-    "test": "Test"
+    }
 }
