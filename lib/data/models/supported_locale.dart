@@ -1,11 +1,13 @@
 import 'package:intl/intl.dart';
 
-enum SupportedLocale { en, ru }
+enum SupportedLocale { en, fr, ru }
 
 SupportedLocale get currentLanguage {
   switch (Intl.getCurrentLocale()) {
     case "en":
       return SupportedLocale.en;
+    case "fr":
+      return SupportedLocale.fr;
     case "ru":
       return SupportedLocale.ru;
     default:
@@ -20,6 +22,8 @@ extension SupportedLocaleExtension on SupportedLocale {
     switch (this) {
       case SupportedLocale.en:
         return 'English';
+      case SupportedLocale.fr:
+        return 'Français';
       case SupportedLocale.ru:
         return 'Русский';
     }
