@@ -35,3 +35,14 @@ jobs:
 
       - name: Build Apk
         run: flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_dev.dart
+
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: m3_lightmeter.apk
+        path: build/app/outputs/flutter-apk/app-dev-release.apk
