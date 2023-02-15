@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Dart
+name: Pull Request check
 
 on:
   push:
@@ -14,6 +14,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
@@ -31,7 +32,7 @@ jobs:
         run: flutter pub run intl_utils:generate
 
       - name: Analyze project source
-        run: flutter analyze
+        run: flutter analyze lib --fatal-infos
 
       - name: Run tests
         run: flutter test

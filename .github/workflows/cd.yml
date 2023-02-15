@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build Apk
+name: Build app-dev-release.apk
 
 on:
   push:
@@ -35,3 +35,8 @@ jobs:
 
       - name: Build Apk
         run: flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_dev.dart
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: m3_lightmeter.apk
+          path: build/app/outputs/flutter-apk/app-dev-release.apk
