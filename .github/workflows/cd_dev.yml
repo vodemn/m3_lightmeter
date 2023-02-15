@@ -3,11 +3,10 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build app-dev-release.apk
+name: Build Dev APK
 
 on:
   push:
-    branches: ["cd"]
     tags:
       - "v*.*.*"
   workflow_dispatch:
