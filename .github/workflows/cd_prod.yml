@@ -3,13 +3,9 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build Dev APK
+name: Build Prod App Bundle
 
 on:
-  push:
-    branches: ["cd"]
-    tags:
-      - "v*.*.*"
   workflow_dispatch:
 
 jobs:
@@ -48,9 +44,9 @@ jobs:
           flutter pub run intl_utils:generate
 
       - name: Build Apk
-        run: flutter build apk --release --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_dev.dart
+        run: flutter build appbundle --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
 
       - uses: actions/upload-artifact@v3
         with:
           name: m3_lightmeter.apk
-          path: build/app/outputs/flutter-apk/app-dev-release.apk
+          path: build/app/outputs/flutter-apk/app-prod-release.apk
