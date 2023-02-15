@@ -33,6 +33,18 @@ jobs:
       - name: Analyze project source
         run: flutter analyze
 
+      - name: Restore Android keystore .jsk and .properties files
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
+        run: |
+          KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
+          echo -n "$KEYSTORE" | base64 --decode --output $KEYSTORE_PATH
+          cp $KEYSTORE_PATH ./android/app
+          KEYSTORE_PROPERTIES_PATH=$RUNNER_TEMP/key.properties
+          echo -n "$KEYSTORE_PROPERTIES" | base64 --decode --output $KEYSTORE_PROPERTIES_PATH
+          cp $KEYSTORE_PROPERTIES_PATH ./android
+
       - name: Build Apk
         run: flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_dev.dart
 
