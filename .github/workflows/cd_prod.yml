@@ -1,0 +1,52 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Build Prod App Bundle
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-11
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: "11"
+
+      - name: Restore Android keystore .jsk and .properties files
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
+        run: |
+          KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
+          echo -n "$KEYSTORE" | base64 --decode --output $KEYSTORE_PATH
+          cp $KEYSTORE_PATH ./android/app
+          KEYSTORE_PROPERTIES_PATH=$RUNNER_TEMP/key.properties
+          echo -n "$KEYSTORE_PROPERTIES" | base64 --decode --output $KEYSTORE_PROPERTIES_PATH
+          cp $KEYSTORE_PROPERTIES_PATH ./android
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: Prepare flutter project
+        run: | 
+          flutter --version
+          flutter pub get
+          flutter pub run intl_utils:generate
+
+      - name: Build appbundle
+        run: flutter build appbundle --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: m3_lightmeter.apk
+          path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
