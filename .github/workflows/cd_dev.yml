@@ -10,6 +10,7 @@ on:
     branches: ["cd"]
     tags:
       - "v*.*.*"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -47,7 +48,7 @@ jobs:
           flutter pub run intl_utils:generate
 
       - name: Build Apk
-        run: flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_dev.dart
+        run: flutter build apk --release --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_dev.dart
 
       - uses: actions/upload-artifact@v3
         with:
