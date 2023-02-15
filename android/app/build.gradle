@@ -69,12 +69,12 @@ android {
         dev {
             applicationId "com.vodemn.lightmeter.dev"
             dimension "app"
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
         prod {
             applicationId "com.vodemn.lightmeter"
             dimension "app"
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 
@@ -83,7 +83,7 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
         }
