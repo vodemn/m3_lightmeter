@@ -25,7 +25,42 @@ class UserPreferencesService {
 
   final SharedPreferences _sharedPreferences;
 
-  UserPreferencesService(this._sharedPreferences);
+  UserPreferencesService(this._sharedPreferences) {
+    final legacyIsoIndex = _sharedPreferences.getInt("curIsoIndex");
+    if (legacyIsoIndex != null) {
+      iso = isoValues[legacyIsoIndex];
+      _sharedPreferences.remove("curIsoIndex");
+    }
+
+    final legacyNdIndex = _sharedPreferences.getInt("curndIndex");
+    if (legacyNdIndex != null) {
+      /// Legacy ND list has 1 extra value at the end, so this check is needed
+      if (legacyNdIndex < ndValues.length) {
+        ndFilter = ndValues[legacyNdIndex];
+      }
+      _sharedPreferences.remove("curndIndex");
+    }
+
+    final legacyCameraCalibration = _sharedPreferences.getDouble("cameraCalibr");
+    if (legacyCameraCalibration != null) {
+      cameraEvCalibration = legacyCameraCalibration;
+      _sharedPreferences.remove("cameraCalibr");
+    }
+
+    final legacyLightSensorCalibration = _sharedPreferences.getDouble("sensorCalibr");
+    if (legacyLightSensorCalibration != null) {
+      lightSensorEvCalibration = legacyLightSensorCalibration;
+      _sharedPreferences.remove("sensorCalibr");
+    }
+
+    final legacyHaptics = _sharedPreferences.getBool("vibrate");
+    if (legacyHaptics != null) {
+      haptics = legacyHaptics;
+      _sharedPreferences.remove("vibrate");
+    }
+
+    // TODO remove all unused keys
+  }
 
   IsoValue get iso => isoValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
   set iso(IsoValue value) => _sharedPreferences.setInt(_isoKey, value.value);
