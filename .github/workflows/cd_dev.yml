@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build Dev APK
+name: Build APK
 
 on:
   workflow_dispatch:
@@ -58,6 +58,8 @@ jobs:
         run: flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_$FLAVOR.dart
 
       - uses: actions/upload-artifact@v3
+        env:
+          FLAVOR: ${{ github.event.inputs.flavor }}
         with:
-          name: m3_lightmeter.apk
-          path: build/app/outputs/flutter-apk/app-dev-release.apk
+          name: m3_lightmeter_$FLAVOR
+          path: build/app/outputs/flutter-apk/app-$FLAVOR-release.apk
