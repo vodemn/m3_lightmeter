@@ -57,12 +57,16 @@ class _MeteringScreenState extends State<MeteringScreen> {
                     ),
             ),
           ),
-          MeteringBottomControlsProvider(
-            onSwitchEvSourceType: context.read<Environment>().hasLightSensor
-                ? EvSourceTypeProvider.of(context).toggleType
-                : null,
-            onMeasure: () => _bloc.add(const MeasureEvent()),
-            onSettings: () => Navigator.pushNamed(context, 'settings'),
+          BlocBuilder<MeteringBloc, MeteringState>(
+            buildWhen: (previous, current) => previous.ev != current.ev,
+            builder: (context, state) => MeteringBottomControlsProvider(
+              ev: context.read<Environment>().buildType == BuildType.dev ? state.ev : null,
+              onSwitchEvSourceType: context.read<Environment>().hasLightSensor
+                  ? EvSourceTypeProvider.of(context).toggleType
+                  : null,
+              onMeasure: () => _bloc.add(const MeasureEvent()),
+              onSettings: () => Navigator.pushNamed(context, 'settings'),
+            ),
           ),
         ],
       ),

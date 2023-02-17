@@ -2,8 +2,9 @@
     "@@locale": "ru",
     "fastestExposurePair": "Короткая выдержка",
     "slowestExposurePair": "Длинная выдержка",
-    "ev": "{value} EV",
-    "@ev": {
+    "ev": "EV",
+    "evValue": "{value} EV",
+    "@evValue": {
         "placeholders": {
             "value": {
                 "type": "String"

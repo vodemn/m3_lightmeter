@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/filled_circle/widget_circle_filled.dart';
 
 class MeteringMeasureButton extends StatefulWidget {
+  final double? ev;
   final double size;
   final VoidCallback onTap;
 
   const MeteringMeasureButton({
     required this.onTap,
+    required this.ev,
     this.size = 72,
     super.key,
   });
@@ -55,6 +58,16 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
               child: FilledCircle(
                 color: Theme.of(context).colorScheme.onSurface,
                 size: widget.size - Dimens.grid16,
+                child: Center(
+                  child: widget.ev != null
+                      ? Text(
+                          '${widget.ev!.toStringAsFixed(1)}\n${S.of(context).ev}',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.surface,
+                              ),
+                        )
+                      : null,
+                ),
               ),
             ),
           ),

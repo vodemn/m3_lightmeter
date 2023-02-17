@@ -83,9 +83,8 @@ class _PhotographyValuePickerDialogState<T extends PhotographyValue>
                 child: widget.itemTitleBuilder(context, widget.values[index]),
               ),
               secondary: widget.values[index].value != _selectedValue.value
-                  ? Text(S
-                      .of(context)
-                      .ev(widget.evDifferenceBuilder.call(_selectedValue, widget.values[index])))
+                  ? Text(S.of(context).evValue(
+                      widget.evDifferenceBuilder.call(_selectedValue, widget.values[index])))
                   : null,
               onChanged: (value) {
                 if (value != null) {
