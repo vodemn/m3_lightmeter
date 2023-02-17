@@ -26,10 +26,14 @@ class UserPreferencesService {
   final SharedPreferences _sharedPreferences;
 
   UserPreferencesService(this._sharedPreferences) {
+    _migrateOldKeys();
+  }
+
+  Future<void> _migrateOldKeys() async {
     final legacyIsoIndex = _sharedPreferences.getInt("curIsoIndex");
     if (legacyIsoIndex != null) {
       iso = isoValues[legacyIsoIndex];
-      _sharedPreferences.remove("curIsoIndex");
+      await _sharedPreferences.remove("curIsoIndex");
     }
 
     final legacyNdIndex = _sharedPreferences.getInt("curndIndex");
@@ -38,28 +42,26 @@ class UserPreferencesService {
       if (legacyNdIndex < ndValues.length) {
         ndFilter = ndValues[legacyNdIndex];
       }
-      _sharedPreferences.remove("curndIndex");
+      await _sharedPreferences.remove("curndIndex");
     }
 
     final legacyCameraCalibration = _sharedPreferences.getDouble("cameraCalibr");
     if (legacyCameraCalibration != null) {
       cameraEvCalibration = legacyCameraCalibration;
-      _sharedPreferences.remove("cameraCalibr");
+      await _sharedPreferences.remove("cameraCalibr");
     }
 
     final legacyLightSensorCalibration = _sharedPreferences.getDouble("sensorCalibr");
     if (legacyLightSensorCalibration != null) {
       lightSensorEvCalibration = legacyLightSensorCalibration;
-      _sharedPreferences.remove("sensorCalibr");
+      await _sharedPreferences.remove("sensorCalibr");
     }
 
     final legacyHaptics = _sharedPreferences.getBool("vibrate");
     if (legacyHaptics != null) {
       haptics = legacyHaptics;
-      _sharedPreferences.remove("vibrate");
+      await _sharedPreferences.remove("vibrate");
     }
-
-    // TODO remove all unused keys
   }
 
   IsoValue get iso => isoValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
