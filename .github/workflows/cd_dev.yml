@@ -57,9 +57,8 @@ jobs:
           FLAVOR: ${{ github.event.inputs.flavor }}
         run: flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_$FLAVOR.dart
 
-      - uses: actions/upload-artifact@v3
-        env:
-          FLAVOR: ${{ github.event.inputs.flavor }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
           name: m3_lightmeter_$FLAVOR
-          path: build/app/outputs/flutter-apk/app-$FLAVOR-release.apk
+          path: build/app/outputs/flutter-apk/app-${{ github.event.inputs.flavor }}-release.apk
