@@ -6,10 +6,16 @@
 name: Build Dev APK
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
   workflow_dispatch:
+    inputs:
+      flavor:
+        description: 'Flavor'   
+        type: choice  
+        required: true
+        options:
+          - dev
+          - prod
+        default: 'dev'
 
 jobs:
   build:
@@ -47,7 +53,9 @@ jobs:
           flutter pub run intl_utils:generate
 
       - name: Build Apk
-        run: flutter build apk --release --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_dev.dart
+        env:
+          FLAVOR: ${{ github.event.inputs.flavor }}
+        run: flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_$FLAVOR.dart
 
       - uses: actions/upload-artifact@v3
         with:
