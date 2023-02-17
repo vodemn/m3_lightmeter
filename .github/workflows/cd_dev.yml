@@ -60,5 +60,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: m3_lightmeter_$FLAVOR
+          name: m3_lightmeter_${{ github.event.inputs.flavor }}
           path: build/app/outputs/flutter-apk/app-${{ github.event.inputs.flavor }}-release.apk
