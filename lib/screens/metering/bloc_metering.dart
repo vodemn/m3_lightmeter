@@ -122,19 +122,9 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   }
 
   List<ExposurePair> _buildExposureValues(double ev) {
-    late final int evSteps;
-    switch (stopType) {
-      case StopType.full:
-        evSteps = ev.floor();
-        break;
-      case StopType.half:
-        evSteps = (ev / 0.5).floor();
-        break;
-      case StopType.third:
-        evSteps = (ev / 0.3).floor();
-        break;
-    }
-    final evOffset =
+    /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
+    final int evSteps = (ev * (stopType.index + 1)).round();
+    final int evOffset =
         _shutterSpeedValues.indexOf(const ShutterSpeedValue(1, false, StopType.full)) - evSteps;
 
     late final int apertureOffset;
@@ -147,7 +137,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       shutterSpeedOffset = 0;
     }
 
-    int itemsCount = min(_apertureValues.length + shutterSpeedOffset,
+    final int itemsCount = min(_apertureValues.length + shutterSpeedOffset,
             _shutterSpeedValues.length + apertureOffset) -
         max(apertureOffset, shutterSpeedOffset);
 
