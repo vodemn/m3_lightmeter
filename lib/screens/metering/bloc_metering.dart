@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/photography_values/aperture_value.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/data/models/photography_values/iso_value.dart';
+import 'package:lightmeter/data/models/photography_values/nd_value.dart';
 import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/data/models/photography_values/shutter_speed_value.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
@@ -29,16 +31,20 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   StopType stopType;
 
+  late IsoValue _iso = _userPreferencesService.iso;
+  late NdValue _nd = _userPreferencesService.ndFilter;
+  double _ev = 0.0;
+  bool _isMeteringInProgress = false;
+
   MeteringBloc(
     this._communicationBloc,
     this._userPreferencesService,
     this._meteringInteractor,
     this.stopType,
   ) : super(
-          MeteringState(
+          MeteringEndedState(
             iso: _userPreferencesService.iso,
             ev: 0.0,
-            evCompensation: 0.0,
             nd: _userPreferencesService.ndFilter,
             exposurePairs: [],
           ),
@@ -53,8 +59,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     on<NdChangedEvent>(_onNdChanged);
     on<MeasureEvent>(_onMeasure);
     on<MeasuredEvent>(_onMeasured);
-
-    add(const MeasureEvent());
   }
 
   @override
@@ -65,60 +69,57 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   void _onCommunicationState(communication_states.ScreenState communicationState) {
     if (communicationState is communication_states.MeasuredState) {
+      _isMeteringInProgress = communicationState is communication_states.MeteringInProgressState;
       add(MeasuredEvent(communicationState.ev100));
     }
   }
 
   void _onStopTypeChanged(StopTypeChangedEvent event, Emitter emit) {
     stopType = event.stopType;
-    emit(MeteringState(
-      iso: state.iso,
-      ev: state.ev,
-      evCompensation: state.evCompensation,
-      nd: state.nd,
-      exposurePairs: _buildExposureValues(state.ev),
-    ));
+    _emitMeasuredState(emit);
   }
 
   void _onIsoChanged(IsoChangedEvent event, Emitter emit) {
     _userPreferencesService.iso = event.isoValue;
-    final ev = state.ev + log2(event.isoValue.value / state.iso.value);
-    emit(MeteringState(
-      iso: event.isoValue,
-      ev: ev,
-      evCompensation: state.evCompensation,
-      nd: state.nd,
-      exposurePairs: _buildExposureValues(ev),
-    ));
+    _ev = _ev + log2(event.isoValue.value / _iso.value);
+    _iso = event.isoValue;
+    _emitMeasuredState(emit);
   }
 
   void _onNdChanged(NdChangedEvent event, Emitter emit) {
     _userPreferencesService.ndFilter = event.ndValue;
-    final ev = state.ev - event.ndValue.stopReduction + state.nd.stopReduction;
-    emit(MeteringState(
-      iso: state.iso,
-      ev: ev,
-      evCompensation: state.evCompensation,
-      nd: event.ndValue,
-      exposurePairs: _buildExposureValues(ev),
-    ));
+    _ev = _ev - event.ndValue.stopReduction + _nd.stopReduction;
+    _nd = event.ndValue;
+    _emitMeasuredState(emit);
   }
 
-  void _onMeasure(_, __) {
+  void _onMeasure(_, Emitter emit) {
     _meteringInteractor.quickVibration();
     _communicationBloc.add(const communication_events.MeasureEvent());
+    _isMeteringInProgress = true;
+    emit(const LoadingState());
   }
 
   void _onMeasured(MeasuredEvent event, Emitter emit) {
     _meteringInteractor.responseVibration();
-    final ev = event.ev100 + log2(state.iso.value / 100);
-    emit(MeteringState(
-      iso: state.iso,
-      ev: ev,
-      evCompensation: state.evCompensation,
-      nd: state.nd,
-      exposurePairs: _buildExposureValues(ev),
-    ));
+    _ev = event.ev100 + log2(_iso.value / 100);
+    _emitMeasuredState(emit);
+  }
+
+  void _emitMeasuredState(Emitter emit) {
+    emit(_isMeteringInProgress
+        ? MeteringInProgressState(
+            iso: _iso,
+            ev: _ev,
+            nd: _nd,
+            exposurePairs: _buildExposureValues(_ev),
+          )
+        : MeteringEndedState(
+            iso: _iso,
+            ev: _ev,
+            nd: _nd,
+            exposurePairs: _buildExposureValues(_ev),
+          ));
   }
 
   List<ExposurePair> _buildExposureValues(double ev) {

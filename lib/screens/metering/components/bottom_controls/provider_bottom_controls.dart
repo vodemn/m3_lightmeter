@@ -5,12 +5,14 @@ import 'widget_bottom_controls.dart';
 
 class MeteringBottomControlsProvider extends StatelessWidget {
   final double? ev;
+  final bool isMetering;
   final VoidCallback? onSwitchEvSourceType;
   final VoidCallback onMeasure;
   final VoidCallback onSettings;
 
   const MeteringBottomControlsProvider({
     required this.ev,
+    required this.isMetering,
     required this.onSwitchEvSourceType,
     required this.onMeasure,
     required this.onSettings,
@@ -33,6 +35,7 @@ class MeteringBottomControlsProvider extends StatelessWidget {
       ),
       child: MeteringBottomControls(
         ev: ev,
+        isMetering: isMetering,
         onSwitchEvSourceType: onSwitchEvSourceType,
         onMeasure: onMeasure,
         onSettings: onSettings,
