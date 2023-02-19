@@ -34,6 +34,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   double _exposureStep = 0.0;
   double _currentExposureOffset = 0.0;
 
+  double _ev100 = 0.0;
+
   CameraContainerBloc(
     this._meteringInteractor,
     MeteringCommunicationBloc communicationBloc,
@@ -58,17 +60,17 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   Future<void> close() async {
     WidgetsBinding.instance.removeObserver(_observer);
     unawaited(_cameraController?.dispose());
+    communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
     return super.close();
   }
 
   @override
   void onCommunicationState(communication_states.SourceState communicationState) {
     if (communicationState is communication_states.MeasureState) {
-      _takePhoto().then((ev100) {
-        if (ev100 != null) {
-          communicationBloc.add(
-            communication_event.MeasuredEvent(ev100 + _meteringInteractor.cameraEvCalibration),
-          );
+      _takePhoto().then((ev100Raw) {
+        if (ev100Raw != null) {
+          _ev100 = ev100Raw + _meteringInteractor.cameraEvCalibration;
+          communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
         }
       });
     }

@@ -18,8 +18,16 @@ class MeasureState extends SourceState {
   const MeasureState();
 }
 
-class MeasuredState extends ScreenState {
+abstract class MeasuredState extends ScreenState {
   final double ev100;
 
   const MeasuredState(this.ev100);
+}
+
+class MeteringInProgressState extends MeasuredState {
+  const MeteringInProgressState(super.ev100);
+}
+
+class MeteringEndedState extends MeasuredState {
+  const MeteringEndedState(super.ev100);
 }

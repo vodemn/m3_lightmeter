@@ -5,13 +5,13 @@ import 'package:lightmeter/screens/shared/filled_circle/widget_circle_filled.dar
 
 class MeteringMeasureButton extends StatefulWidget {
   final double? ev;
-  final double size;
+  final bool isMetering;
   final VoidCallback onTap;
 
   const MeteringMeasureButton({
-    required this.onTap,
     required this.ev,
-    this.size = 72,
+    required this.isMetering,
+    required this.onTap,
     super.key,
   });
 
@@ -23,9 +23,17 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
   bool _isPressed = false;
 
   @override
+  void didUpdateWidget(covariant MeteringMeasureButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isMetering != widget.isMetering) {
+      _isPressed = widget.isMetering;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SizedBox.fromSize(
-      size: Size.square(widget.size),
+    return IgnorePointer(
+      ignoring: widget.isMetering && widget.ev == null,
       child: GestureDetector(
         onTap: widget.onTap,
         onTapDown: (_) {
@@ -43,36 +51,50 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
             _isPressed = false;
           });
         },
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(widget.size / 2),
-            border: Border.all(
-              width: Dimens.grid4,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-          child: Center(
-            child: AnimatedScale(
-              duration: Dimens.durationS,
-              scale: _isPressed ? 0.9 : 1.0,
-              child: FilledCircle(
-                color: Theme.of(context).colorScheme.onSurface,
-                size: widget.size - Dimens.grid16,
-                child: Center(
-                  child: widget.ev != null
-                      ? Text(
-                          '${widget.ev!.toStringAsFixed(1)}\n${S.of(context).ev}',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.surface,
-                              ),
-                        )
-                      : null,
+        child: SizedBox.fromSize(
+          size: const Size.square(Dimens.grid72),
+          child: Stack(
+            children: [
+              Center(
+                child: AnimatedScale(
+                  duration: Dimens.durationS,
+                  scale: _isPressed ? 0.9 : 1.0,
+                  child: FilledCircle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    size: Dimens.grid72 - Dimens.grid8,
+                    child: Center(
+                      child: widget.ev != null ? _EvValueText(ev: widget.ev!) : null,
+                    ),
+                  ),
                 ),
               ),
-            ),
+              Positioned.fill(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  strokeWidth: Dimens.grid4,
+                  value: widget.isMetering ? null : 1,
+                ),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _EvValueText extends StatelessWidget {
+  final double ev;
+
+  const _EvValueText({required this.ev});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Text(
+      '${ev.toStringAsFixed(1)}\n${S.of(context).ev}',
+      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.surface),
+      textAlign: TextAlign.center,
     );
   }
 }
