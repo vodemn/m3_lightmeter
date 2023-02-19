@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/theme_provider.dart';
+import 'package:lightmeter/res/dimens.dart';
 
 import 'components/primary_color_picker_dialog/widget_dialog_picker_primary_color.dart';
 
@@ -13,7 +14,7 @@ class PrimaryColorListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     if (context.watch<DynamicColorState>() == DynamicColorState.enabled) {
       return Opacity(
-        opacity: 0.5,
+        opacity: Dimens.disabledOpacity,
         child: IgnorePointer(
           child: ListTile(
             leading: const Icon(Icons.palette),

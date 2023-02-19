@@ -26,6 +26,9 @@ class Dimens {
   static const Duration durationML = Duration(milliseconds: 250);
   static const Duration durationL = Duration(milliseconds: 300);
 
+  static const double enabledOpacity = 1.0;
+  static const double disabledOpacity = 0.38;
+
   // TopBar
   /// Probably this is a bad practice, but with text size locked, the height is always 212
   static const double readingContainerHeight = 212;
