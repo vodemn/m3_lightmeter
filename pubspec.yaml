@@ -1,7 +1,7 @@
 name: lightmeter
 description: A new Flutter project.
 publish_to: "none"
-version: 0.7.0+11
+version: 0.8.1+13
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
