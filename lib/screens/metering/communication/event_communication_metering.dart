@@ -14,8 +14,16 @@ class MeasureEvent extends ScreenEvent {
   const MeasureEvent();
 }
 
-class MeasuredEvent extends SourceEvent {
+abstract class MeasuredEvent extends SourceEvent {
   final double ev100;
 
   const MeasuredEvent(this.ev100);
+}
+
+class MeteringInProgressEvent extends MeasuredEvent {
+  const MeteringInProgressEvent(super.ev100);
+}
+
+class MeteringEndedEvent extends MeasuredEvent {
+  const MeteringEndedEvent(super.ev100);
 }

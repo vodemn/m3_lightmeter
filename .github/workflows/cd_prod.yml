@@ -43,7 +43,7 @@ jobs:
           flutter pub get
           flutter pub run intl_utils:generate
 
-      - name: Build Apk
+      - name: Build appbundle
         run: flutter build appbundle --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
 
       - uses: actions/upload-artifact@v3

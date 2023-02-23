@@ -2,8 +2,9 @@
     "@@locale": "fr",
     "fastestExposurePair": "Le plus rapide",
     "slowestExposurePair": "Le plus lent",
-    "ev": "{value} EV",
-    "@ev": {
+    "ev": "EV",
+    "evValue": "{value} EV",
+    "@evValue": {
         "placeholders": {
             "value": {
                 "type": "String"

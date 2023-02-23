@@ -13,6 +13,7 @@ class Dimens {
   static const double grid24 = 24;
   static const double grid48 = 48;
   static const double grid56 = 56;
+  static const double grid72 = 72;
   static const double grid168 = 168;
 
   static const double paddingS = 8;

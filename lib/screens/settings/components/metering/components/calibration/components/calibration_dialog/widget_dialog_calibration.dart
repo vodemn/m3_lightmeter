@@ -101,7 +101,7 @@ class _CalibrationUnit extends StatelessWidget {
         ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(title),
-          trailing: Text(S.of(context).ev(value.toStringSignedAsFixed(1))),
+          trailing: Text(S.of(context).evValue(value.toStringSignedAsFixed(1))),
         ),
         Row(
           mainAxisSize: MainAxisSize.min,

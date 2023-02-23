@@ -16,6 +16,7 @@ class LightSensorContainerBloc
   final MeteringInteractor _meteringInteractor;
 
   StreamSubscription<int>? _luxSubscriptions;
+  double _ev100 = 0.0;
 
   LightSensorContainerBloc(
     this._meteringInteractor,
@@ -30,11 +31,11 @@ class LightSensorContainerBloc
     if (communicationState is communication_states.MeasureState) {
       if (_luxSubscriptions == null) {
         _luxSubscriptions = _meteringInteractor.luxStream().listen((event) {
-          communicationBloc.add(communication_event.MeasuredEvent(
-            log2(event.toDouble() / 2.5) + _meteringInteractor.lightSensorEvCalibration,
-          ));
+          _ev100 = log2(event.toDouble() / 2.5) + _meteringInteractor.lightSensorEvCalibration;
+          communicationBloc.add(communication_event.MeteringInProgressEvent(_ev100));
         });
       } else {
+        communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
         _luxSubscriptions?.cancel().then((_) => _luxSubscriptions = null);
       }
     }
@@ -42,6 +43,7 @@ class LightSensorContainerBloc
 
   @override
   Future<void> close() async {
+    communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
     _luxSubscriptions?.cancel().then((_) => _luxSubscriptions = null);
     return super.close();
   }

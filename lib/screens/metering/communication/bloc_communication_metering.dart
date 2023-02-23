@@ -9,6 +9,7 @@ class MeteringCommunicationBloc
     // `MeasureState` is not const, so that `Bloc` treats each state as new and updates state stream
     // ignore: prefer_const_constructors
     on<MeasureEvent>((_, emit) => emit(MeasureState()));
-    on<MeasuredEvent>((event, emit) => emit(MeasuredState(event.ev100)));
+    on<MeteringInProgressEvent>((event, emit) => emit(MeteringInProgressState(event.ev100)));
+    on<MeteringEndedEvent>((event, emit) => emit(MeteringEndedState(event.ev100)));
   }
 }

@@ -1,6 +1,8 @@
 name: Crowdin push
 on:
   push:
+    paths:
+      - lib/l10n/**
     branches:
       - main
       - crowdin
