@@ -50,3 +50,10 @@ jobs:
         with:
           name: m3_lightmeter_bundle
           path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
+
+      - name: Upload native debug symbols to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: m3_lightmeter_native_debug_symbols
+          path: |
+            build/app/intermediates/merged_native_libs/prodRelease/out/lib/
