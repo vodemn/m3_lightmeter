@@ -11,6 +11,9 @@ on:
       versionCode:
         description: 'Version code'
         required: true
+      versionName:
+        description: 'Version name'
+        required: true
 
 jobs:
   build:
@@ -52,6 +55,7 @@ jobs:
         with:
           gradlePath: app/build.gradle # or app/build.gradle.kts 
           versionCode: ${{ github.event.inputs.versionCode }}
+          versionName: ${{ github.event.inputs.versionName }}
 
       - name: Build appbundle
         run: flutter build appbundle --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
