@@ -7,13 +7,6 @@ name: Build Prod App Bundle
 
 on:
   workflow_dispatch:
-    inputs:
-      versionCode:
-        description: 'Version code'
-        required: true
-      versionName:
-        description: 'Version name'
-        required: true
 
 jobs:
   build:
@@ -49,18 +42,12 @@ jobs:
           flutter --version
           flutter pub get
           flutter pub run intl_utils:generate
-      
-      - name: Bump version
-        uses: chkfung/android-version-actions@v1.2.1
-        with:
-          gradlePath: android/app/build.gradle
-          versionCode: ${{ github.event.inputs.versionCode }}
-          versionName: ${{ github.event.inputs.versionName }}
 
       - name: Build appbundle
         run: flutter build appbundle --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload app bundle to artifacts
+        uses: actions/upload-artifact@v3
         with:
           name: m3_lightmeter_bundle
           path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
