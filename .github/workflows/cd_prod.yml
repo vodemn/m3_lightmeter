@@ -48,5 +48,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: m3_lightmeter.apk
-          path: build/app/outputs/flutter-apk/app-prod-release.apk
+          name: m3_lightmeter_bundle
+          path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
