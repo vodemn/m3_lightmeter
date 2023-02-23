@@ -53,7 +53,7 @@ jobs:
       - name: Bump version
         uses: chkfung/android-version-actions@v1.2.1
         with:
-          gradlePath: app/build.gradle # or app/build.gradle.kts 
+          gradlePath: android/app/build.gradle
           versionCode: ${{ github.event.inputs.versionCode }}
           versionName: ${{ github.event.inputs.versionName }}
 
