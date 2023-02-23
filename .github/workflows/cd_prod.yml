@@ -7,6 +7,10 @@ name: Build Prod App Bundle
 
 on:
   workflow_dispatch:
+    inputs:
+      versionCode:
+        description: 'Version code'
+        required: true
 
 jobs:
   build:
@@ -42,6 +46,12 @@ jobs:
           flutter --version
           flutter pub get
           flutter pub run intl_utils:generate
+      
+      - name: Bump version
+        uses: chkfung/android-version-actions@v1.2.1
+        with:
+          gradlePath: app/build.gradle # or app/build.gradle.kts 
+          versionCode: ${{ github.event.inputs.versionCode }}
 
       - name: Build appbundle
         run: flutter build appbundle --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
