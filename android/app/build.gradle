@@ -51,7 +51,9 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
+        /// legacy material-lightmeter ap stopped updating after 60022
+        /// 7xxxx means that it is a new app
+        versionCode 70000 + flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
