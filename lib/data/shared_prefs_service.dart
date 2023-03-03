@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/ev_source_type.dart';
-import 'models/photography_values/iso_value.dart';
-import 'models/photography_values/nd_value.dart';
 import 'models/theme_type.dart';
 
 class UserPreferencesService {
@@ -64,13 +63,16 @@ class UserPreferencesService {
     }
   }
 
-  IsoValue get iso => isoValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
+  IsoValue get iso =>
+      isoValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
   set iso(IsoValue value) => _sharedPreferences.setInt(_isoKey, value.value);
 
-  NdValue get ndFilter => ndValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_ndFilterKey) ?? 0));
+  NdValue get ndFilter =>
+      ndValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_ndFilterKey) ?? 0));
   set ndFilter(NdValue value) => _sharedPreferences.setInt(_ndFilterKey, value.value);
 
-  EvSourceType get evSourceType => EvSourceType.values[_sharedPreferences.getInt(_evSourceTypeKey) ?? 0];
+  EvSourceType get evSourceType =>
+      EvSourceType.values[_sharedPreferences.getInt(_evSourceTypeKey) ?? 0];
   set evSourceType(EvSourceType value) => _sharedPreferences.setInt(_evSourceTypeKey, value.index);
 
   bool get caffeine => _sharedPreferences.getBool(_caffeineKey) ?? false;
@@ -86,10 +88,13 @@ class UserPreferencesService {
   set locale(SupportedLocale value) => _sharedPreferences.setString(_localeKey, value.toString());
 
   double get cameraEvCalibration => _sharedPreferences.getDouble(_cameraEvCalibrationKey) ?? 0.0;
-  set cameraEvCalibration(double value) => _sharedPreferences.setDouble(_cameraEvCalibrationKey, value);
+  set cameraEvCalibration(double value) =>
+      _sharedPreferences.setDouble(_cameraEvCalibrationKey, value);
 
-  double get lightSensorEvCalibration => _sharedPreferences.getDouble(_lightSensorEvCalibrationKey) ?? 0.0;
-  set lightSensorEvCalibration(double value) => _sharedPreferences.setDouble(_lightSensorEvCalibrationKey, value);
+  double get lightSensorEvCalibration =>
+      _sharedPreferences.getDouble(_lightSensorEvCalibrationKey) ?? 0.0;
+  set lightSensorEvCalibration(double value) =>
+      _sharedPreferences.setDouble(_lightSensorEvCalibrationKey, value);
 
   ThemeType get themeType => ThemeType.values[_sharedPreferences.getInt(_themeTypeKey) ?? 0];
   set themeType(ThemeType value) => _sharedPreferences.setInt(_themeTypeKey, value.index);

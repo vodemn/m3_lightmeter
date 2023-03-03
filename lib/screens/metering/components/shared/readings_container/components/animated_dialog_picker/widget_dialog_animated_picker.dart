@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/animated_dialog/widget_dialog_animated.dart';
 import 'components/photography_value_picker_dialog/widget_dialog_picker_photography_value.dart';

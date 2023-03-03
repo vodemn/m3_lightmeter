@@ -1,5 +1,4 @@
-import 'photography_values/aperture_value.dart';
-import 'photography_values/shutter_speed_value.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class ExposurePair {
   final ApertureValue aperture;

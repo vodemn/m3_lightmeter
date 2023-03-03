@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
-import 'package:lightmeter/res/dimens.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class ExposurePairsListItem<T extends PhotographyStopValue> extends StatelessWidget {
   final T value;

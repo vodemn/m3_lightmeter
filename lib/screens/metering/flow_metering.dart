@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc_metering.dart';

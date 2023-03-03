@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/photography_values/iso_value.dart';
-import 'package:lightmeter/data/models/photography_values/nd_value.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/res/dimens.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/animated_dialog_picker/widget_dialog_animated_picker.dart';
 import 'components/reading_value_container/widget_container_reading_value.dart';

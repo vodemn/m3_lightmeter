@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_picker.dart/widget_dialog_picker.dart';
 import 'package:lightmeter/utils/stop_type_provider.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:provider/provider.dart';
 
 class StopTypeListTile extends StatelessWidget {
