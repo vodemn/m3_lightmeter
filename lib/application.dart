@@ -8,6 +8,7 @@ import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/providers/supported_locale_provider.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,7 +17,6 @@ import 'data/permissions_service.dart';
 import 'data/shared_prefs_service.dart';
 import 'environment.dart';
 import 'generated/l10n.dart';
-import 'providers/equipment_profile_provider.dart';
 import 'providers/ev_source_type_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/metering/flow_metering.dart';

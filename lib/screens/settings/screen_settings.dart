@@ -3,7 +3,6 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 import 'components/about/widget_settings_section_about.dart';
-import 'components/equipment/widget_settings_section_equipment.dart';
 import 'components/general/widget_settings_section_general.dart';
 import 'components/metering/widget_settings_section_metering.dart';
 import 'components/theme/widget_settings_section_theme.dart';
@@ -45,7 +44,6 @@ class SettingsScreen extends StatelessWidget {
               delegate: SliverChildListDelegate(
                 <Widget>[
                   const MeteringSettingsSection(),
-                  const EquipmentSettingsSection(),
                   const GeneralSettingsSection(),
                   const ThemeSettingsSection(),
                   const AboutSettingsSection(),
