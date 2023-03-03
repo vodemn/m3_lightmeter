@@ -12,7 +12,9 @@ import 'components/reading_value_container/widget_container_reading_value.dart';
 class ReadingsContainer extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;
+  final List<IsoValue> isoValues;
   final IsoValue iso;
+  final List<NdValue> ndValues;
   final NdValue nd;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
@@ -20,7 +22,9 @@ class ReadingsContainer extends StatelessWidget {
   const ReadingsContainer({
     required this.fastest,
     required this.slowest,
+    required this.isoValues,
     required this.iso,
+    required this.ndValues,
     required this.nd,
     required this.onIsoChanged,
     required this.onNdChanged,
@@ -49,14 +53,16 @@ class ReadingsContainer extends StatelessWidget {
           children: [
             Expanded(
               child: _IsoValueTile(
-                value: iso,
+                selectedValue: iso,
+                values: isoValues,
                 onChanged: onIsoChanged,
               ),
             ),
             const _InnerPadding(),
             Expanded(
               child: _NdValueTile(
-                value: nd,
+                selectedValue: nd,
+                values: ndValues,
                 onChanged: onNdChanged,
               ),
             ),
@@ -72,18 +78,23 @@ class _InnerPadding extends SizedBox {
 }
 
 class _IsoValueTile extends StatelessWidget {
-  final IsoValue value;
+  final List<IsoValue> values;
+  final IsoValue selectedValue;
   final ValueChanged<IsoValue> onChanged;
 
-  const _IsoValueTile({required this.value, required this.onChanged});
+  const _IsoValueTile({
+    required this.selectedValue,
+    required this.values,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<IsoValue>(
       title: S.of(context).iso,
       subtitle: S.of(context).filmSpeed,
-      selectedValue: value,
-      values: isoValues,
+      selectedValue: selectedValue,
+      values: values,
       itemTitleBuilder: (_, value) => Text(value.value.toString()),
       // using ascending order, because increase in film speed rises EV
       evDifferenceBuilder: (selected, other) => selected.toStringDifference(other),
@@ -91,7 +102,7 @@ class _IsoValueTile extends StatelessWidget {
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: S.of(context).iso,
-          value: value.value.toString(),
+          value: selectedValue.value.toString(),
         ),
       ),
     );
@@ -99,18 +110,23 @@ class _IsoValueTile extends StatelessWidget {
 }
 
 class _NdValueTile extends StatelessWidget {
-  final NdValue value;
+  final List<NdValue> values;
+  final NdValue selectedValue;
   final ValueChanged<NdValue> onChanged;
 
-  const _NdValueTile({required this.value, required this.onChanged});
+  const _NdValueTile({
+    required this.selectedValue,
+    required this.values,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<NdValue>(
       title: S.of(context).nd,
       subtitle: S.of(context).ndFilterFactor,
-      selectedValue: value,
-      values: ndValues,
+      selectedValue: selectedValue,
+      values: values,
       itemTitleBuilder: (_, value) => Text(
         value.value == 0 ? S.of(context).none : value.value.toString(),
       ),
@@ -120,7 +136,7 @@ class _NdValueTile extends StatelessWidget {
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: S.of(context).nd,
-          value: value.value.toString(),
+          value: selectedValue.value.toString(),
         ),
       ),
     );

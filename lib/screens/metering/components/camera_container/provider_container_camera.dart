@@ -4,6 +4,7 @@ import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/photography_values/iso_value.dart';
 import 'package:lightmeter/data/models/photography_values/nd_value.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 
 import 'bloc_container_camera.dart';
@@ -40,7 +41,9 @@ class CameraContainerProvider extends StatelessWidget {
       child: CameraContainer(
         fastest: fastest,
         slowest: slowest,
+        isoValues: EquipmentProfile.of(context)?.isoValues ?? isoValues,
         iso: iso,
+        ndValues: EquipmentProfile.of(context)?.ndValues ?? ndValues,
         nd: nd,
         onIsoChanged: onIsoChanged,
         onNdChanged: onNdChanged,
