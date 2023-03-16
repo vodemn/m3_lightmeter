@@ -13,26 +13,19 @@ class EquipmentProfilesListTile extends StatelessWidget {
       onTap: () {
         showEquipmentProfilesDialog(
           context,
-          EquipmentProfilesDialogLocalizationData(
-            title: S.of(context).equipmentProfiles,
-            addProfile: '',
-            equipmentProfileScreenLocalizationData: EquipmentProfileScreenLocalizationData(
-              isoValues: S.of(context).isoValues,
-              isoValuesFilterDescription: S.of(context).isoValuesFilterDescription,
-              ndValues: S.of(context).ndFilters,
-              ndValuesFilterDescription: S.of(context).ndFiltersFilterDescription,
-              apertureValues: S.of(context).apertureValues,
-              apertureValuesFilterDescription: S.of(context).apertureValuesFilterDescription,
-              shutterSpeedValues: S.of(context).shutterSpeedValues,
-              shutterSpeedValuesFilterDescription:
-                  S.of(context).shutterSpeedValuesFilterDescription,
-              dialogFilterLocalizationData: DialogFilterLocalizationData(
-                cancel: S.of(context).cancel,
-                save: S.of(context).save,
-              ),
+          EquipmentProfileSectionLocalizationData(
+            isoValues: S.of(context).isoValues,
+            isoValuesFilterDescription: S.of(context).isoValuesFilterDescription,
+            ndValues: S.of(context).ndFilters,
+            ndValuesFilterDescription: S.of(context).ndFiltersFilterDescription,
+            apertureValues: S.of(context).apertureValues,
+            apertureValuesFilterDescription: S.of(context).apertureValuesFilterDescription,
+            shutterSpeedValues: S.of(context).shutterSpeedValues,
+            shutterSpeedValuesFilterDescription: S.of(context).shutterSpeedValuesFilterDescription,
+            dialogFilterLocalizationData: DialogFilterLocalizationData(
+              cancel: S.of(context).cancel,
+              save: S.of(context).save,
             ),
-            cancel: S.of(context).cancel,
-            select: S.of(context).select,
           ),
         );
       },
