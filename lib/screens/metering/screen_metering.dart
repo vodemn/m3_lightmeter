@@ -40,6 +40,8 @@ class _MeteringScreenState extends State<MeteringScreen> {
               buildWhen: (_, current) => current is MeteringDataState,
               builder: (_, state) => state is MeteringDataState
                   ? _MeteringContainerBuidler(
+                      onEquipmentProfileChanged: (value) =>
+                          _bloc.add(EquipmentProfileChangedEvent(value)),
                       fastest: state.fastest,
                       slowest: state.slowest,
                       iso: state.iso,
@@ -69,6 +71,7 @@ class _MeteringScreenState extends State<MeteringScreen> {
 }
 
 class _MeteringContainerBuidler extends StatelessWidget {
+  final ValueChanged<EquipmentProfileData> onEquipmentProfileChanged;
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final IsoValue iso;
@@ -78,6 +81,7 @@ class _MeteringContainerBuidler extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
 
   const _MeteringContainerBuidler({
+    required this.onEquipmentProfileChanged,
     required this.fastest,
     required this.slowest,
     required this.iso,
@@ -91,6 +95,7 @@ class _MeteringContainerBuidler extends StatelessWidget {
   Widget build(BuildContext context) {
     return context.watch<EvSourceType>() == EvSourceType.camera
         ? CameraContainerProvider(
+            onEquipmentProfileChanged: onEquipmentProfileChanged,
             fastest: fastest,
             slowest: slowest,
             iso: iso,
@@ -100,6 +105,7 @@ class _MeteringContainerBuidler extends StatelessWidget {
             exposurePairs: exposurePairs,
           )
         : LightSensorContainerProvider(
+            onEquipmentProfileChanged: onEquipmentProfileChanged,
             fastest: fastest,
             slowest: slowest,
             iso: iso,

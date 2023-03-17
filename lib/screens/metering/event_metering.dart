@@ -10,6 +10,12 @@ class StopTypeChangedEvent extends MeteringEvent {
   const StopTypeChangedEvent(this.stopType);
 }
 
+class EquipmentProfileChangedEvent extends MeteringEvent {
+  final EquipmentProfileData equipmentProfileData;
+
+  const EquipmentProfileChangedEvent(this.equipmentProfileData);
+}
+
 class IsoChangedEvent extends MeteringEvent {
   final IsoValue isoValue;
 

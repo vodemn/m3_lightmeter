@@ -49,6 +49,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
         .map((state) => state as communication_states.ScreenState)
         .listen(_onCommunicationState);
 
+    on<EquipmentProfileChangedEvent>(_onEquipmentProfileChanged);
     on<StopTypeChangedEvent>(_onStopTypeChanged);
     on<IsoChangedEvent>(_onIsoChanged);
     on<NdChangedEvent>(_onNdChanged);
@@ -71,6 +72,24 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   void _onStopTypeChanged(StopTypeChangedEvent event, Emitter emit) {
     stopType = event.stopType;
+    _emitMeasuredState(emit);
+  }
+
+  void _onEquipmentProfileChanged(EquipmentProfileChangedEvent event, Emitter emit) {
+    /// Update selected ISO value, if selected equipment profile
+    /// doesn't contain currently selected value
+    if (!event.equipmentProfileData.isoValues.any((v) => _iso.value == v.value)) {
+      _userPreferencesService.iso = event.equipmentProfileData.isoValues.first;
+      _ev = _ev + log2(event.equipmentProfileData.isoValues.first.value / _iso.value);
+      _iso = event.equipmentProfileData.isoValues.first;
+    }
+
+    /// The same for ND filter
+    if (!event.equipmentProfileData.ndValues.any((v) => _nd.value == v.value)) {
+      _userPreferencesService.ndFilter = event.equipmentProfileData.ndValues.first;
+      _ev = _ev - event.equipmentProfileData.ndValues.first.stopReduction + _nd.stopReduction;
+      _nd = event.equipmentProfileData.ndValues.first;
+    }
     _emitMeasuredState(emit);
   }
 

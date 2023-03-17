@@ -10,6 +10,7 @@ import 'bloc_container_light_sensor.dart';
 import 'widget_container_light_sensor.dart';
 
 class LightSensorContainerProvider extends StatelessWidget {
+  final ValueChanged<EquipmentProfileData> onEquipmentProfileChanged;
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final IsoValue iso;
@@ -19,6 +20,7 @@ class LightSensorContainerProvider extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
 
   const LightSensorContainerProvider({
+    required this.onEquipmentProfileChanged,
     required this.fastest,
     required this.slowest,
     required this.iso,
@@ -38,6 +40,7 @@ class LightSensorContainerProvider extends StatelessWidget {
         context.read<MeteringCommunicationBloc>(),
       ),
       child: LightSensorContainer(
+        onEquipmentProfileChanged: onEquipmentProfileChanged,
         fastest: fastest,
         slowest: slowest,
         isoValues: EquipmentProfile.of(context)?.isoValues ?? isoValues,

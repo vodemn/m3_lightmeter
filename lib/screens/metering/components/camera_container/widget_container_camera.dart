@@ -17,6 +17,7 @@ import 'event_container_camera.dart';
 import 'state_container_camera.dart';
 
 class CameraContainer extends StatelessWidget {
+  final ValueChanged<EquipmentProfileData> onEquipmentProfileChanged;
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final List<IsoValue> isoValues;
@@ -28,6 +29,7 @@ class CameraContainer extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
 
   const CameraContainer({
+    required this.onEquipmentProfileChanged,
     required this.fastest,
     required this.slowest,
     required this.isoValues,
@@ -49,6 +51,7 @@ class CameraContainer extends StatelessWidget {
       children: [
         MeteringTopBar(
           readingsContainer: ReadingsContainer(
+            onEquipmentProfileChanged: onEquipmentProfileChanged,
             fastest: fastest,
             slowest: slowest,
             isoValues: isoValues,

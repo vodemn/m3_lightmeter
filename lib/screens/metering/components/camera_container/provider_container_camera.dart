@@ -10,6 +10,7 @@ import 'bloc_container_camera.dart';
 import 'widget_container_camera.dart';
 
 class CameraContainerProvider extends StatelessWidget {
+  final ValueChanged<EquipmentProfileData> onEquipmentProfileChanged;
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final IsoValue iso;
@@ -19,6 +20,7 @@ class CameraContainerProvider extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
 
   const CameraContainerProvider({
+    required this.onEquipmentProfileChanged,
     required this.fastest,
     required this.slowest,
     required this.iso,
@@ -38,6 +40,7 @@ class CameraContainerProvider extends StatelessWidget {
         context.read<MeteringCommunicationBloc>(),
       ),
       child: CameraContainer(
+        onEquipmentProfileChanged: onEquipmentProfileChanged,
         fastest: fastest,
         slowest: slowest,
         isoValues: EquipmentProfile.of(context)?.isoValues ?? isoValues,
