@@ -15,17 +15,18 @@ class EquipmentProfileProvider extends StatefulWidget {
 }
 
 class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
-  final List<EquipmentProfileData> _profiles = [
-    const EquipmentProfileData(
-      id: '0',
-      name: 'Default',
-      apertureValues: apertureValues,
-      ndValues: ndValues,
-      shutterSpeedValues: shutterSpeedValues,
-      isoValues: isoValues,
-    ),
-  ];
-  late EquipmentProfileData? _selectedProfile = _profiles.isNotEmpty ? _profiles.first : null;
+  final List<EquipmentProfileData> _profiles = [];
+
+  late EquipmentProfileData _selectedProfile = _profiles.isNotEmpty
+      ? _profiles.first
+      : const EquipmentProfileData(
+          id: 'default',
+          name: '',
+          apertureValues: apertureValues,
+          ndValues: ndValues,
+          shutterSpeedValues: shutterSpeedValues,
+          isoValues: isoValues,
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +78,12 @@ class EquipmentProfile extends InheritedWidget {
     super.key,
   });
 
-  static EquipmentProfileData? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<EquipmentProfile>()?.data;
+  static EquipmentProfileData? of(BuildContext context, {bool listen = true}) {
+    if (listen) {
+      return context.dependOnInheritedWidgetOfExactType<EquipmentProfile>()?.data;
+    } else {
+      return context.findAncestorWidgetOfExactType<EquipmentProfile>()?.data;
+    }
   }
 
   @override

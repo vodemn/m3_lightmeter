@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'bloc_container_light_sensor.dart';
