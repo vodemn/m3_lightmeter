@@ -27,34 +27,47 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
       titlePadding: Dimens.dialogTitlePadding,
       title: Text(S.of(context).choosePrimaryColor),
       content: SizedBox(
-        height: Dimens.grid48,
-        width: double.maxFinite,
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.zero,
-          child: Row(
-            children: List.generate(
-              ThemeProvider.primaryColorsList.length,
-              (index) {
-                final color = ThemeProvider.primaryColorsList[index];
-                return Padding(
-                  padding: EdgeInsets.only(left: index == 0 ? 0 : Dimens.paddingS),
-                  child: _SelectableColorItem(
-                    color: color,
-                    selected: color.value == _selected.value,
-                    onTap: () {
-                      setState(() {
-                        _selected = color;
-                      });
+          height: Dimens.grid48,
+          width: double.maxFinite,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.zero,
+                child: Row(
+                  children: List.generate(
+                    ThemeProvider.primaryColorsList.length,
+                    (index) {
+                      final color = ThemeProvider.primaryColorsList[index];
+                      return Padding(
+                        padding: EdgeInsets.only(left: index == 0 ? 0 : Dimens.paddingS),
+                        child: _SelectableColorItem(
+                          color: color,
+                          selected: color.value == _selected.value,
+                          onTap: () {
+                            setState(() {
+                              _selected = color;
+                            });
+                          },
+                        ),
+                      );
                     },
                   ),
-                );
-              },
-            ),
-          ),
-        ),
-      ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  _Cutout(),
+                  RotatedBox(
+                    quarterTurns: 2,
+                    child: _Cutout(),
+                  ),
+                ],
+              ),
+            ],
+          )),
       actionsPadding: Dimens.dialogActionsPadding,
       actions: [
         TextButton(
@@ -119,4 +132,48 @@ class _SelectableColorItemState extends State<_SelectableColorItem> {
       ),
     );
   }
+}
+
+class _Cutout extends StatelessWidget {
+  const _Cutout();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: Dimens.grid48,
+      width: Dimens.grid24,
+      child: ClipPath(
+        clipper: const _CutoutClipper(),
+        child: Material(
+          color: Theme.of(context).dialogTheme.backgroundColor,
+          surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+          elevation: Theme.of(context).dialogTheme.elevation!,
+          shadowColor: Colors.transparent,
+        ),
+      ),
+    );
+  }
+}
+
+class _CutoutClipper extends CustomClipper<Path> {
+  const _CutoutClipper();
+
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    final radius = size.height / 2;
+    path.lineTo(radius, 0);
+    path.arcToPoint(
+      Offset(radius, size.height),
+      radius: Radius.circular(radius),
+      rotation: 180,
+      clockwise: false,
+    );
+    path.lineTo(0, size.height);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper oldClipper) => false;
 }
