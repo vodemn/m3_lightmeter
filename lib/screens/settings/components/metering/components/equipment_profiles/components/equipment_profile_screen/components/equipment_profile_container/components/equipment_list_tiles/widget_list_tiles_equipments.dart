@@ -35,6 +35,9 @@ class EquipmentListTiles extends StatelessWidget {
           title: S.of(context).isoValues,
           description: S.of(context).isoValuesFilterDescription,
           values: isoValues,
+          valuesCount: selectedIsoValues.length == isoValues.length
+              ? S.of(context).equipmentProfileAllValues
+              : S.of(context).equipmentProfileValuesCount(selectedIsoValues.length),
           selectedValues: selectedIsoValues,
           rangeSelect: false,
           onChanged: onIsoValuesSelecred,
@@ -44,6 +47,9 @@ class EquipmentListTiles extends StatelessWidget {
           title: S.of(context).ndFilters,
           description: S.of(context).ndFiltersFilterDescription,
           values: ndValues,
+          valuesCount: selectedNdValues.length == ndValues.length
+              ? S.of(context).equipmentProfileAllValues
+              : S.of(context).equipmentProfileValuesCount(selectedNdValues.length),
           selectedValues: selectedNdValues,
           rangeSelect: false,
           onChanged: onNdValuesSelected,
@@ -53,6 +59,9 @@ class EquipmentListTiles extends StatelessWidget {
           title: S.of(context).apertureValues,
           description: S.of(context).apertureValuesFilterDescription,
           values: apertureValues,
+          valuesCount: selectedApertureValues.length == apertureValues.length
+              ? S.of(context).equipmentProfileAllValues
+              : S.of(context).equipmentProfileValuesCount(selectedApertureValues.length),
           selectedValues: selectedApertureValues,
           rangeSelect: true,
           onChanged: onApertureValuesSelected,
@@ -62,6 +71,9 @@ class EquipmentListTiles extends StatelessWidget {
           title: S.of(context).shutterSpeedValues,
           description: S.of(context).shutterSpeedValuesFilterDescription,
           values: shutterSpeedValues,
+          valuesCount: selectedShutterSpeedValues.length == shutterSpeedValues.length
+              ? S.of(context).equipmentProfileAllValues
+              : S.of(context).equipmentProfileValuesCount(selectedShutterSpeedValues.length),
           selectedValues: selectedShutterSpeedValues,
           rangeSelect: true,
           onChanged: onShutterSpeedValuesSelected,
@@ -74,6 +86,7 @@ class EquipmentListTiles extends StatelessWidget {
 class _EquipmentListTile<T extends PhotographyValue> extends StatelessWidget {
   final IconData icon;
   final String title;
+  final String valuesCount;
   final String description;
   final List<T> selectedValues;
   final List<T> values;
@@ -83,6 +96,7 @@ class _EquipmentListTile<T extends PhotographyValue> extends StatelessWidget {
   const _EquipmentListTile({
     required this.icon,
     required this.title,
+    required this.valuesCount,
     required this.description,
     required this.selectedValues,
     required this.values,
@@ -96,6 +110,7 @@ class _EquipmentListTile<T extends PhotographyValue> extends StatelessWidget {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
+      trailing: Text(valuesCount),
       onTap: () {
         showDialog(
           context: context,

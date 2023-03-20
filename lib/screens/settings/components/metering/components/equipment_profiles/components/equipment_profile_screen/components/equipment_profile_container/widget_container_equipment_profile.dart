@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/equipment_list_tiles/widget_list_tiles_equipments.dart';
 
 class EquipmentProfileContainer extends StatefulWidget {
   final EquipmentProfileData data;
-  final VoidCallback onExpand;
+  final ValueChanged<EquipmentProfileData> onUpdate;
   final VoidCallback onDelete;
+  final VoidCallback onExpand;
 
   const EquipmentProfileContainer({
     required this.data,
-    required this.onExpand,
+    required this.onUpdate,
     required this.onDelete,
+    required this.onExpand,
     super.key,
   });
 
@@ -21,7 +24,7 @@ class EquipmentProfileContainer extends StatefulWidget {
 }
 
 class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
-  final TextEditingController _nameController = TextEditingController(text: 'Default');
+  late final TextEditingController _nameController = TextEditingController(text: widget.data.name);
   final FocusNode _fieldFocusNode = FocusNode();
   bool _expanded = false;
 
@@ -57,8 +60,8 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
                         focusNode: _fieldFocusNode,
                         controller: _nameController,
                         onChanged: (value) {},
-                        decoration: const InputDecoration(
-                          hintText: 'Profile name',
+                        decoration: InputDecoration(
+                          hintText: S.of(context).equipmentProfileNameHint,
                           border: InputBorder.none,
                         ),
                       ),

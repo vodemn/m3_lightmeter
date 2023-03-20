@@ -17,7 +17,6 @@ class _EquipmentProfileScreenState extends State<EquipmentProfileScreen> {
   static const maxProfiles = 5; // replace with a constant from iap
 
   late List<GlobalKey<EquipmentProfileContainerState>> profileContainersKeys = [];
-
   int get profilesCount => EquipmentProfiles.of(context)?.length ?? 0;
 
   @override
@@ -56,30 +55,40 @@ class _EquipmentProfileScreenState extends State<EquipmentProfileScreen> {
             key: profileContainersKeys[index],
             data: EquipmentProfiles.of(context)![index],
             onExpand: () => _keepExpandedAt(index),
-            onDelete: () {
-              EquipmentProfileProvider.of(context)
-                  .deleteProfile(EquipmentProfiles.of(context)![index]);
-              profileContainersKeys.removeAt(index);
-            },
+            onUpdate: _updateProfile,
+            onDelete: () => _removeProfileAt(index),
           ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: profilesCount < maxProfiles
           ? FloatingActionButton(
-              onPressed: () {
-                showDialog(context: context, builder: (_) => const EquipmentProfileNameDialog())
-                    .then((value) {
-                  if (value != null) {
-                    EquipmentProfileProvider.of(context).addProfile(value);
-                    profileContainersKeys.add(GlobalKey<EquipmentProfileContainerState>());
-                  }
-                });
-              },
+              onPressed: _addProfile,
               child: const Icon(Icons.add),
             )
           : null,
     );
+  }
+
+  void _addProfile() {
+    showDialog<String>(
+      context: context,
+      builder: (_) => const EquipmentProfileNameDialog(),
+    ).then((value) {
+      if (value != null) {
+        EquipmentProfileProvider.of(context).addProfile(value);
+        profileContainersKeys.add(GlobalKey<EquipmentProfileContainerState>());
+      }
+    });
+  }
+
+  void _updateProfile(EquipmentProfileData data) {
+    //
+  }
+
+  void _removeProfileAt(int index) {
+    EquipmentProfileProvider.of(context).deleteProfile(EquipmentProfiles.of(context)![index]);
+    profileContainersKeys.removeAt(index);
   }
 
   void _keepExpandedAt(int index) {

@@ -34,7 +34,7 @@ class _EquipmentProfileNameDialogState extends State<EquipmentProfileNameDialog>
           valueListenable: _nameController,
           builder: (_, value, __) => TextButton(
             onPressed: value.text.isNotEmpty
-                ? () => Navigator.of(context).pop(value.text.isNotEmpty)
+                ? () => Navigator.of(context).pop(value.text)
                 : null,
             child: Text(S.of(context).save),
           ),
