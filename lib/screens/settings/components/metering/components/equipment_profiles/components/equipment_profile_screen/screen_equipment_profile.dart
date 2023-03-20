@@ -23,13 +23,27 @@ class _EquipmentProfileScreenState extends State<EquipmentProfileScreen> {
       ),
       body: SafeArea(
         bottom: false,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(Dimens.paddingM),
+        child: ListView.separated(
+          padding: EdgeInsets.fromLTRB(
+            Dimens.paddingM,
+            Dimens.paddingM,
+            Dimens.paddingM,
+            Dimens.paddingM +
+                MediaQuery.of(context).padding.bottom +
+                Dimens.grid56 +
+                kFloatingActionButtonMargin,
+          ),
+          separatorBuilder: (context, index) => const SizedBox(height: Dimens.grid16),
           itemCount: EquipmentProfiles.of(context)?.length ?? 0,
           itemBuilder: (_, index) => EquipmentListTilesSection(
             data: EquipmentProfiles.of(context)![index],
           ),
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: EquipmentProfileProvider.of(context).addProfile,
+        child: const Icon(Icons.add),
       ),
     );
   }

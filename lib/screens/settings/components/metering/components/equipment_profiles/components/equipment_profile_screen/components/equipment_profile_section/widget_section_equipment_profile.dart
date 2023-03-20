@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-import 'components/equipment_list_tile/widget_list_tile_equipment.dart';
+import 'components/equipment_list_tiles/widget_list_tiles_equipments.dart';
 
 class EquipmentListTilesSection extends StatefulWidget {
   final EquipmentProfileData data;
@@ -69,7 +70,17 @@ class _EquipmentListTilesSectionState extends State<EquipmentListTilesSection> {
                 ),
               ],
             ),
-            if (_expanded) const _DialogsListTiles()
+            if (_expanded)
+              EquipmentListTiles(
+                selectedApertureValues: widget.data.apertureValues,
+                selectedIsoValues: widget.data.isoValues,
+                selectedNdValues: widget.data.ndValues,
+                selectedShutterSpeedValues: widget.data.shutterSpeedValues,
+                onApertureValuesSelected: (value) {},
+                onIsoValuesSelecred: (value) {},
+                onNdValuesSelected: (value) {},
+                onShutterSpeedValuesSelected: (value) {},
+              ),
           ],
         ),
       ),
@@ -82,60 +93,18 @@ class _EquipmentListTilesSectionState extends State<EquipmentListTilesSection> {
         setState(() {
           _expanded = !_expanded;
         });
-        if (!_expanded) {
+        if (_expanded) {
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            Scrollable.ensureVisible(
+              context,
+              alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+            );
+          });
+        } else {
           _fieldFocusNode.unfocus();
         }
       },
       icon: Icon(_expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
-    );
-  }
-}
-
-class _DialogsListTiles extends StatelessWidget {
-  const _DialogsListTiles();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        EquipmentListTile<IsoValue>(
-          icon: Icons.iso,
-          title: S.of(context).isoValues,
-          description: S.of(context).isoValuesFilterDescription,
-          values: isoValues,
-          selectedValues: const [],
-          rangeSelect: false,
-          onChanged: (value) {},
-        ),
-        EquipmentListTile<NdValue>(
-          icon: Icons.filter_b_and_w,
-          title: S.of(context).ndFilters,
-          description: S.of(context).ndFiltersFilterDescription,
-          values: ndValues,
-          selectedValues: const [],
-          rangeSelect: false,
-          onChanged: (value) {},
-        ),
-        EquipmentListTile<ApertureValue>(
-          icon: Icons.camera,
-          title: S.of(context).apertureValues,
-          description: S.of(context).apertureValuesFilterDescription,
-          values: apertureValues,
-          selectedValues: const [],
-          rangeSelect: true,
-          onChanged: (value) {},
-        ),
-        EquipmentListTile<ShutterSpeedValue>(
-          icon: Icons.shutter_speed,
-          title: S.of(context).shutterSpeedValues,
-          description: S.of(context).shutterSpeedValuesFilterDescription,
-          values: shutterSpeedValues,
-          selectedValues: const [],
-          rangeSelect: true,
-          onChanged: (value) {},
-        ),
-      ],
     );
   }
 }

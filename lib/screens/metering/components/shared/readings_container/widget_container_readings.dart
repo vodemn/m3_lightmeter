@@ -38,8 +38,7 @@ class ReadingsContainer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (IAPProducts.of(context, IAPProductType.equipment)?.status ==
-            IAPProductStatus.purchased) ...[
+        if (true) ...[
           ReadingValueContainer.singleValue(
             value: ReadingValue(
               label: S.of(context).equipment,
