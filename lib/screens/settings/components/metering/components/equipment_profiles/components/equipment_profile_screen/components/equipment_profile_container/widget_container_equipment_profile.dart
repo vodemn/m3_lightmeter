@@ -4,21 +4,23 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/equipment_list_tiles/widget_list_tiles_equipments.dart';
 
-class EquipmentListTilesSection extends StatefulWidget {
+class EquipmentProfileContainer extends StatefulWidget {
   final EquipmentProfileData data;
+  final VoidCallback onExpand;
   final VoidCallback onDelete;
 
-  const EquipmentListTilesSection({
+  const EquipmentProfileContainer({
     required this.data,
+    required this.onExpand,
     required this.onDelete,
     super.key,
   });
 
   @override
-  State<EquipmentListTilesSection> createState() => _EquipmentListTilesSectionState();
+  State<EquipmentProfileContainer> createState() => EquipmentProfileContainerState();
 }
 
-class _EquipmentListTilesSectionState extends State<EquipmentListTilesSection> {
+class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
   final TextEditingController _nameController = TextEditingController(text: 'Default');
   final FocusNode _fieldFocusNode = FocusNode();
   bool _expanded = false;
@@ -93,22 +95,28 @@ class _EquipmentListTilesSectionState extends State<EquipmentListTilesSection> {
 
   Widget _collapseButton() {
     return IconButton(
-      onPressed: () {
-        setState(() {
-          _expanded = !_expanded;
-        });
-        if (_expanded) {
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            Scrollable.ensureVisible(
-              context,
-              alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-            );
-          });
-        } else {
-          _fieldFocusNode.unfocus();
-        }
-      },
+      onPressed: _expanded ? collapse : expand,
       icon: Icon(_expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
     );
+  }
+
+  void expand() {
+    widget.onExpand();
+    setState(() {
+      _expanded = true;
+    });
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      Scrollable.ensureVisible(
+        context,
+        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+      );
+    });
+  }
+
+  void collapse() {
+    setState(() {
+      _expanded = false;
+    });
+    _fieldFocusNode.unfocus();
   }
 }

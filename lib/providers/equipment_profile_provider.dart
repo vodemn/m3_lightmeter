@@ -77,8 +77,12 @@ class EquipmentProfiles extends InheritedWidget {
     super.key,
   });
 
-  static List<EquipmentProfileData>? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<EquipmentProfiles>()?.profiles;
+  static List<EquipmentProfileData>? of(BuildContext context, {bool listen = true}) {
+    if (listen) {
+      return context.dependOnInheritedWidgetOfExactType<EquipmentProfiles>()?.profiles;
+    } else {
+      return context.findAncestorWidgetOfExactType<EquipmentProfiles>()?.profiles;
+    }
   }
 
   @override

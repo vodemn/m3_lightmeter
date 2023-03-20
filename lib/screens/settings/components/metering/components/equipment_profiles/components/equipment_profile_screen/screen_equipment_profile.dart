@@ -3,7 +3,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-import 'components/equipment_profile_section/widget_section_equipment_profile.dart';
+import 'components/equipment_profile_container/widget_container_equipment_profile.dart';
 
 class EquipmentProfileScreen extends StatefulWidget {
   const EquipmentProfileScreen({super.key});
@@ -13,6 +13,22 @@ class EquipmentProfileScreen extends StatefulWidget {
 }
 
 class _EquipmentProfileScreenState extends State<EquipmentProfileScreen> {
+  static const maxProfiles = 5; // replace with a constant from iap
+
+  late List<GlobalKey<EquipmentProfileContainerState>> profileContainersKeys = [];
+
+  int get profilesCount => EquipmentProfiles.of(context)?.length ?? 0;
+
+  @override
+  void initState() {
+    super.initState();
+    profileContainersKeys = List.filled(
+      EquipmentProfiles.of(context, listen: false)?.length ?? 0,
+      GlobalKey<EquipmentProfileContainerState>(),
+      growable: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,21 +50,38 @@ class _EquipmentProfileScreenState extends State<EquipmentProfileScreen> {
                 kFloatingActionButtonMargin,
           ),
           separatorBuilder: (context, index) => const SizedBox(height: Dimens.grid16),
-          itemCount: EquipmentProfiles.of(context)?.length ?? 0,
-          itemBuilder: (_, index) => EquipmentListTilesSection(
+          itemCount: profilesCount,
+          itemBuilder: (context, index) => EquipmentProfileContainer(
+            key: profileContainersKeys[index],
             data: EquipmentProfiles.of(context)![index],
+            onExpand: () => _keepExpandedAt(index),
             onDelete: () {
               EquipmentProfileProvider.of(context)
                   .deleteProfile(EquipmentProfiles.of(context)![index]);
+              profileContainersKeys.removeAt(index);
             },
           ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: EquipmentProfileProvider.of(context).addProfile,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: profilesCount < maxProfiles
+          ? FloatingActionButton(
+              onPressed: () {
+                EquipmentProfileProvider.of(context).addProfile();
+                profileContainersKeys.add(GlobalKey<EquipmentProfileContainerState>());
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
+  }
+
+  void _keepExpandedAt(int index) {
+    profileContainersKeys.getRange(0, index).forEach((element) {
+      element.currentState?.collapse();
+    });
+    profileContainersKeys.getRange(index + 1, profilesCount).forEach((element) {
+      element.currentState?.collapse();
+    });
   }
 }
