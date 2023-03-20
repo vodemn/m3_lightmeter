@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:lightmeter/generated/l10n.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/equipment_list_tiles/widget_list_tiles_equipments.dart';
 
 class EquipmentListTilesSection extends StatefulWidget {
   final EquipmentProfileData data;
+  final VoidCallback onDelete;
 
-  const EquipmentListTilesSection({required this.data, super.key});
+  const EquipmentListTilesSection({
+    required this.data,
+    required this.onDelete,
+    super.key,
+  });
 
   @override
   State<EquipmentListTilesSection> createState() => _EquipmentListTilesSectionState();
@@ -63,7 +67,7 @@ class _EquipmentListTilesSectionState extends State<EquipmentListTilesSection> {
                   children: [
                     _collapseButton(),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: widget.onDelete,
                       icon: const Icon(Icons.delete),
                     ),
                   ],

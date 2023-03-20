@@ -37,6 +37,10 @@ class _EquipmentProfileScreenState extends State<EquipmentProfileScreen> {
           itemCount: EquipmentProfiles.of(context)?.length ?? 0,
           itemBuilder: (_, index) => EquipmentListTilesSection(
             data: EquipmentProfiles.of(context)![index],
+            onDelete: () {
+              EquipmentProfileProvider.of(context)
+                  .deleteProfile(EquipmentProfiles.of(context)![index]);
+            },
           ),
         ),
       ),

@@ -45,11 +45,27 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     });
   }
 
-  void addProfile(EquipmentProfileData data) {}
+  /// Creates a default equipment profile
+  void addProfile() {
+    _profiles.add(const EquipmentProfileData(
+      id: 'default',
+      name: '',
+      apertureValues: apertureValues,
+      ndValues: ndValues,
+      shutterSpeedValues: shutterSpeedValues,
+      isoValues: isoValues,
+    ));
+    setState(() {});
+  }
 
-  void updateProdile(EquipmentProfileData data) {}
+  void updateProdile(EquipmentProfileData data) {
+    //
+  }
 
-  void deleteProfile(EquipmentProfileData data) {}
+  void deleteProfile(EquipmentProfileData data) {
+    _profiles.remove(data);
+    setState(() {});
+  }
 }
 
 class EquipmentProfiles extends InheritedWidget {
