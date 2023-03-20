@@ -46,10 +46,10 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   }
 
   /// Creates a default equipment profile
-  void addProfile() {
-    _profiles.add(const EquipmentProfileData(
+  void addProfile(String name) {
+    _profiles.add(EquipmentProfileData(
       id: 'default',
-      name: '',
+      name: name,
       apertureValues: apertureValues,
       ndValues: ndValues,
       shutterSpeedValues: shutterSpeedValues,

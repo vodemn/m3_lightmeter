@@ -35,6 +35,8 @@
     "camera": "Camera",
     "lightSensor": "Light sensor",
     "equipment": "Equipment",
+    "equipmentProfileName": "Equipment profile name",
+    "equipmentProfileNameHint": "Praktica MTL5B",
     "apertureValues": "Aperture values",
     "apertureValuesFilterDescription": "Select the range of aperture values to display. This is usually determined by the lens you are using.",
     "ndFilters": "ND filters",

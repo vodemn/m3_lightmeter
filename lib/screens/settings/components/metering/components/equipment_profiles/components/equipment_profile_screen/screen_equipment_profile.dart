@@ -4,6 +4,7 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/equipment_profile_container/widget_container_equipment_profile.dart';
+import 'components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
 
 class EquipmentProfileScreen extends StatefulWidget {
   const EquipmentProfileScreen({super.key});
@@ -67,8 +68,13 @@ class _EquipmentProfileScreenState extends State<EquipmentProfileScreen> {
       floatingActionButton: profilesCount < maxProfiles
           ? FloatingActionButton(
               onPressed: () {
-                EquipmentProfileProvider.of(context).addProfile();
-                profileContainersKeys.add(GlobalKey<EquipmentProfileContainerState>());
+                showDialog(context: context, builder: (_) => const EquipmentProfileNameDialog())
+                    .then((value) {
+                  if (value != null) {
+                    EquipmentProfileProvider.of(context).addProfile(value);
+                    profileContainersKeys.add(GlobalKey<EquipmentProfileContainerState>());
+                  }
+                });
               },
               child: const Icon(Icons.add),
             )
