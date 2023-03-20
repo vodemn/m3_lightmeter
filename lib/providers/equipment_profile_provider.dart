@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+import 'package:uuid/uuid.dart';
 
 class EquipmentProfileProvider extends StatefulWidget {
   final Widget child;
@@ -48,7 +49,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   /// Creates a default equipment profile
   void addProfile(String name) {
     _profiles.add(EquipmentProfileData(
-      id: 'default',
+      id: const Uuid().v1(),
       name: name,
       apertureValues: apertureValues,
       ndValues: ndValues,
@@ -59,7 +60,11 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   }
 
   void updateProdile(EquipmentProfileData data) {
-    //
+    final indexToUpdate = _profiles.indexWhere((element) => element.id == data.id);
+    if (indexToUpdate >= 0) {
+      _profiles[indexToUpdate] = data;
+      setState(() {});
+    }
   }
 
   void deleteProfile(EquipmentProfileData data) {

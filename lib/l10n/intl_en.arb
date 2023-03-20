@@ -37,16 +37,14 @@
     "equipment": "Equipment",
     "equipmentProfileName": "Equipment profile name",
     "equipmentProfileNameHint": "Praktica MTL5B",
-    "equipmentProfileValuesCount": "{count} values",
+    "equipmentProfileValuesCount" : "{count, plural, zero{0 values} one{1 value} other{{count} values}}",
     "@equipmentProfileValuesCount": {
-        "count": {
-            "min": {
-                "type": "int",
-                "format": "decimalPattern"
+        "placeholders": {
+            "count": {
+                "type": "int"
             }
         }
     },
-
     "equipmentProfileAllValues": "All",
     "apertureValues": "Aperture values",
     "apertureValuesFilterDescription": "Select the range of aperture values to display. This is usually determined by the lens you are using.",

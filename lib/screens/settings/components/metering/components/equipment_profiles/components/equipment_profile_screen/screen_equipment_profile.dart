@@ -55,7 +55,7 @@ class _EquipmentProfileScreenState extends State<EquipmentProfileScreen> {
             key: profileContainersKeys[index],
             data: EquipmentProfiles.of(context)![index],
             onExpand: () => _keepExpandedAt(index),
-            onUpdate: _updateProfile,
+            onUpdate: (profileData) => _updateProfileAt(profileData, index),
             onDelete: () => _removeProfileAt(index),
           ),
         ),
@@ -82,8 +82,8 @@ class _EquipmentProfileScreenState extends State<EquipmentProfileScreen> {
     });
   }
 
-  void _updateProfile(EquipmentProfileData data) {
-    //
+  void _updateProfileAt(EquipmentProfileData data, int index) {
+    EquipmentProfileProvider.of(context).updateProdile(data);
   }
 
   void _removeProfileAt(int index) {

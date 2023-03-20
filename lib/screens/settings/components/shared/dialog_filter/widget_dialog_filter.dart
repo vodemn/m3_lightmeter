@@ -7,6 +7,7 @@ class DialogFilter<T extends PhotographyValue> extends StatefulWidget {
   final String title;
   final String description;
   final List<T> values;
+  final List<T> selectedValues;
   final String Function(BuildContext context, T value) titleAdapter;
   final bool rangeSelect;
 
@@ -15,6 +16,7 @@ class DialogFilter<T extends PhotographyValue> extends StatefulWidget {
     required this.title,
     required this.description,
     required this.values,
+    required this.selectedValues,
     required this.titleAdapter,
     this.rangeSelect = false,
     super.key,
@@ -25,14 +27,14 @@ class DialogFilter<T extends PhotographyValue> extends StatefulWidget {
 }
 
 class _DialogFilterState<T extends PhotographyValue> extends State<DialogFilter<T>> {
-  late final List<bool> _selectedValues = List.generate(
+  late final List<bool> checkboxValues = List.generate(
     widget.values.length,
-    (_) => true,
+    (index) => widget.selectedValues.any((element) => element.value == widget.values[index].value),
     growable: false,
   );
 
-  bool get _hasAnySelected => _selectedValues.contains(true);
-  bool get _hasAnyUnselected => _selectedValues.contains(false);
+  bool get _hasAnySelected => checkboxValues.contains(true);
+  bool get _hasAnyUnselected => checkboxValues.contains(false);
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +59,7 @@ class _DialogFilterState<T extends PhotographyValue> extends State<DialogFilter<
                 children: List.generate(
                   widget.values.length,
                   (index) => CheckboxListTile(
-                    value: _selectedValues[index],
+                    value: checkboxValues[index],
                     controlAffinity: ListTileControlAffinity.leading,
                     title: Text(
                       widget.titleAdapter(context, widget.values[index]),
@@ -68,25 +70,25 @@ class _DialogFilterState<T extends PhotographyValue> extends State<DialogFilter<
                         setState(() {
                           if (widget.rangeSelect) {
                             if (value) {
-                              final indexOfChecked = _selectedValues.indexOf(value);
+                              final indexOfChecked = checkboxValues.indexOf(value);
                               if (indexOfChecked == -1) {
-                                _selectedValues[index] = value;
+                                checkboxValues[index] = value;
                               } else if (indexOfChecked < index) {
-                                _selectedValues.fillRange(indexOfChecked, index + 1, value);
+                                checkboxValues.fillRange(indexOfChecked, index + 1, value);
                               } else {
-                                _selectedValues.fillRange(index, indexOfChecked, value);
+                                checkboxValues.fillRange(index, indexOfChecked, value);
                               }
                             } else {
-                              if (index > _selectedValues.length / 2) {
-                                _selectedValues.fillRange(index, _selectedValues.length, false);
-                                _selectedValues[index] = value;
+                              if (index > checkboxValues.length / 2) {
+                                checkboxValues.fillRange(index, checkboxValues.length, false);
+                                checkboxValues[index] = value;
                               } else {
-                                _selectedValues.fillRange(0, index, false);
-                                _selectedValues[index] = value;
+                                checkboxValues.fillRange(0, index, false);
+                                checkboxValues[index] = value;
                               }
                             }
                           } else {
-                            _selectedValues[index] = value;
+                            checkboxValues[index] = value;
                           }
                         });
                       }
@@ -115,8 +117,17 @@ class _DialogFilterState<T extends PhotographyValue> extends State<DialogFilter<
                   child: Text(S.of(context).cancel),
                 ),
                 TextButton(
-                  onPressed:
-                      _hasAnySelected ? () => Navigator.of(context).pop(_selectedValues) : null,
+                  onPressed: _hasAnySelected
+                      ? () {
+                          List<T> selectedValues = [];
+                          for (int i = 0; i < widget.values.length; i++) {
+                            if (checkboxValues[i]) {
+                              selectedValues.add(widget.values[i]);
+                            }
+                          }
+                          Navigator.of(context).pop(selectedValues);
+                        }
+                      : null,
                   child: Text(S.of(context).save),
                 ),
               ],
@@ -130,9 +141,9 @@ class _DialogFilterState<T extends PhotographyValue> extends State<DialogFilter<
   void _toggleAll() {
     setState(() {
       if (_hasAnyUnselected) {
-        _selectedValues.fillRange(0, _selectedValues.length, true);
+        checkboxValues.fillRange(0, checkboxValues.length, true);
       } else {
-        _selectedValues.fillRange(0, _selectedValues.length, false);
+        checkboxValues.fillRange(0, checkboxValues.length, false);
       }
     });
   }

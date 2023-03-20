@@ -112,17 +112,22 @@ class _EquipmentListTile<T extends PhotographyValue> extends StatelessWidget {
       title: Text(title),
       trailing: Text(valuesCount),
       onTap: () {
-        showDialog(
+        showDialog<List<T>>(
           context: context,
           builder: (_) => DialogFilter<T>(
             icon: Icon(icon),
             title: title,
             description: description,
             values: values,
+            selectedValues: selectedValues,
             titleAdapter: (_, value) => value.toString(),
             rangeSelect: rangeSelect,
           ),
-        );
+        ).then((values) {
+          if (values != null) {
+            onChanged(values);
+          }
+        });
       },
     );
   }

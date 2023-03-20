@@ -24,9 +24,30 @@ class EquipmentProfileContainer extends StatefulWidget {
 }
 
 class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
-  late final TextEditingController _nameController = TextEditingController(text: widget.data.name);
-  final FocusNode _fieldFocusNode = FocusNode();
+  late EquipmentProfileData _equipmentProfileData = EquipmentProfileData(
+    id: widget.data.id,
+    name: widget.data.name,
+    apertureValues: widget.data.apertureValues,
+    ndValues: widget.data.ndValues,
+    shutterSpeedValues: widget.data.shutterSpeedValues,
+    isoValues: widget.data.isoValues,
+  );
+  late final _nameController = TextEditingController(text: _equipmentProfileData.name);
+  final _fieldFocusNode = FocusNode();
   bool _expanded = false;
+
+  @override
+  void didUpdateWidget(EquipmentProfileContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _equipmentProfileData = EquipmentProfileData(
+      id: widget.data.id,
+      name: widget.data.name,
+      apertureValues: widget.data.apertureValues,
+      ndValues: widget.data.ndValues,
+      shutterSpeedValues: widget.data.shutterSpeedValues,
+      isoValues: widget.data.isoValues,
+    );
+  }
 
   @override
   void dispose() {
@@ -59,7 +80,10 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
                       child: TextFormField(
                         focusNode: _fieldFocusNode,
                         controller: _nameController,
-                        onChanged: (value) {},
+                        onFieldSubmitted: (value) {
+                          _equipmentProfileData = _equipmentProfileData.copyWith(name: value);
+                          widget.onUpdate(_equipmentProfileData);
+                        },
                         decoration: InputDecoration(
                           hintText: S.of(context).equipmentProfileNameHint,
                           border: InputBorder.none,
@@ -81,14 +105,26 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
             ),
             if (_expanded)
               EquipmentListTiles(
-                selectedApertureValues: widget.data.apertureValues,
-                selectedIsoValues: widget.data.isoValues,
-                selectedNdValues: widget.data.ndValues,
-                selectedShutterSpeedValues: widget.data.shutterSpeedValues,
-                onApertureValuesSelected: (value) {},
-                onIsoValuesSelecred: (value) {},
-                onNdValuesSelected: (value) {},
-                onShutterSpeedValuesSelected: (value) {},
+                selectedApertureValues: _equipmentProfileData.apertureValues,
+                selectedIsoValues: _equipmentProfileData.isoValues,
+                selectedNdValues: _equipmentProfileData.ndValues,
+                selectedShutterSpeedValues: _equipmentProfileData.shutterSpeedValues,
+                onApertureValuesSelected: (value) {
+                  _equipmentProfileData = _equipmentProfileData.copyWith(apertureValues: value);
+                  widget.onUpdate(_equipmentProfileData);
+                },
+                onIsoValuesSelecred: (value) {
+                  _equipmentProfileData = _equipmentProfileData.copyWith(isoValues: value);
+                  widget.onUpdate(_equipmentProfileData);
+                },
+                onNdValuesSelected: (value) {
+                  _equipmentProfileData = _equipmentProfileData.copyWith(ndValues: value);
+                  widget.onUpdate(_equipmentProfileData);
+                },
+                onShutterSpeedValuesSelected: (value) {
+                  _equipmentProfileData = _equipmentProfileData.copyWith(shutterSpeedValues: value);
+                  widget.onUpdate(_equipmentProfileData);
+                },
               ),
           ],
         ),
