@@ -50,7 +50,6 @@ class _DialogFilterState<T extends PhotographyValue> extends State<DialogFilter<
             child: Text(widget.description),
           ),
           const Divider(),
-          // TODO: try to find lazy-building solution
           Expanded(
             child: SingleChildScrollView(
               child: Column(
