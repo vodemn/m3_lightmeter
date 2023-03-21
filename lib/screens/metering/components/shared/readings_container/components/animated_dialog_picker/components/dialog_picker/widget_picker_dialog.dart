@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+import 'package:lightmeter/res/dimens.dart';
 
 typedef DialogPickerItemTitleBuilder<T> = Widget Function(BuildContext context, T value);
 typedef DialogPickerItemTrailingBuilder<T> = Widget? Function(T selected, T value);
 
 class DialogPicker<T> extends StatefulWidget {
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final T initialValue;
   final List<T> values;
   final DialogPickerItemTitleBuilder<T> itemTitleBuilder;
-  final DialogPickerItemTrailingBuilder<T> itemTrailingBuilder;
+  final DialogPickerItemTrailingBuilder<T>? itemTrailingBuilder;
   final VoidCallback onCancel;
   final ValueChanged onSelect;
 
   const DialogPicker({
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     required this.initialValue,
     required this.values,
     required this.itemTitleBuilder,
-    required this.itemTrailingBuilder,
+    this.itemTrailingBuilder,
     required this.onCancel,
     required this.onSelect,
     super.key,
@@ -56,12 +56,14 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
                 style: Theme.of(context).textTheme.headlineSmall!,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: Dimens.grid16),
-              Text(
-                widget.subtitle,
-                style: Theme.of(context).textTheme.bodyMedium!,
-                textAlign: TextAlign.center,
-              ),
+              if (widget.subtitle != null) ...[
+                const SizedBox(height: Dimens.grid16),
+                Text(
+                  widget.subtitle!,
+                  style: Theme.of(context).textTheme.bodyMedium!,
+                  textAlign: TextAlign.center,
+                ),
+              ]
             ],
           ),
         ),
@@ -79,7 +81,7 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
                 style: Theme.of(context).textTheme.bodyLarge!,
                 child: widget.itemTitleBuilder(context, widget.values[index]),
               ),
-              secondary: widget.itemTrailingBuilder(_selectedValue, widget.values[index]),
+              secondary: widget.itemTrailingBuilder?.call(_selectedValue, widget.values[index]),
               onChanged: (value) {
                 if (value != null) {
                   setState(() {

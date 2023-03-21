@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/platform_config.dart';
+import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_view/widget_camera_view.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
@@ -44,7 +45,7 @@ class CameraContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final topBarOverflow = Dimens.readingContainerHeight -
+    final topBarOverflow = Dimens.readingContainerDefaultHeight -
         ((MediaQuery.of(context).size.width - Dimens.grid8 - 2 * Dimens.paddingM) / 2) /
             PlatformConfig.cameraPreviewAspectRatio;
     return Column(

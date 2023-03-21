@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/res/dimens.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/animated_dialog_picker/widget_picker_dialog_animated.dart';
@@ -37,12 +38,11 @@ class ReadingsContainer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (true) ...[
-          ReadingValueContainer.singleValue(
-            value: ReadingValue(
-              label: S.of(context).equipment,
-              value: EquipmentProfile.of(context)!.name,
-            ),
+        if (EquipmentProfile.of(context) != null && EquipmentProfiles.of(context) != null) ...[
+          _EquipmentProfilePicker(
+            selectedValue: EquipmentProfile.of(context)!,
+            values: EquipmentProfiles.of(context)!,
+            onChanged: (value) {},
           ),
           const _InnerPadding(),
         ],
@@ -62,7 +62,7 @@ class ReadingsContainer extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _IsoValueTile(
+              child: _IsoValuePicker(
                 selectedValue: iso,
                 values: isoValues,
                 onChanged: onIsoChanged,
@@ -70,7 +70,7 @@ class ReadingsContainer extends StatelessWidget {
             ),
             const _InnerPadding(),
             Expanded(
-              child: _NdValueTile(
+              child: _NdValuePicker(
                 selectedValue: nd,
                 values: ndValues,
                 onChanged: onNdChanged,
@@ -87,12 +87,41 @@ class _InnerPadding extends SizedBox {
   const _InnerPadding() : super(height: Dimens.grid8, width: Dimens.grid8);
 }
 
-class _IsoValueTile extends StatelessWidget {
+class _EquipmentProfilePicker extends StatelessWidget {
+  final List<EquipmentProfileData> values;
+  final EquipmentProfileData selectedValue;
+  final ValueChanged<EquipmentProfileData> onChanged;
+
+  const _EquipmentProfilePicker({
+    required this.selectedValue,
+    required this.values,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedDialogPicker<EquipmentProfileData>(
+      title: S.of(context).equipmentProfiles,
+      selectedValue: selectedValue,
+      values: values,
+      itemTitleBuilder: (_, value) => Text(value.name),
+      onChanged: onChanged,
+      closedChild: ReadingValueContainer.singleValue(
+        value: ReadingValue(
+          label: S.of(context).equipmentProfiles,
+          value: selectedValue.name,
+        ),
+      ),
+    );
+  }
+}
+
+class _IsoValuePicker extends StatelessWidget {
   final List<IsoValue> values;
   final IsoValue selectedValue;
   final ValueChanged<IsoValue> onChanged;
 
-  const _IsoValueTile({
+  const _IsoValuePicker({
     required this.selectedValue,
     required this.values,
     required this.onChanged,
@@ -121,12 +150,12 @@ class _IsoValueTile extends StatelessWidget {
   }
 }
 
-class _NdValueTile extends StatelessWidget {
+class _NdValuePicker extends StatelessWidget {
   final List<NdValue> values;
   final NdValue selectedValue;
   final ValueChanged<NdValue> onChanged;
 
-  const _NdValueTile({
+  const _NdValuePicker({
     required this.selectedValue,
     required this.values,
     required this.onChanged,
