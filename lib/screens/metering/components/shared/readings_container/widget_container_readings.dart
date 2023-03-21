@@ -38,7 +38,8 @@ class ReadingsContainer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (EquipmentProfile.of(context) != null && EquipmentProfiles.of(context) != null) ...[
+        if (EquipmentProfile.of(context) != null &&
+            (EquipmentProfiles.of(context)?.isNotEmpty ?? false)) ...[
           _EquipmentProfilePicker(
             selectedValue: EquipmentProfile.of(context)!,
             values: EquipmentProfiles.of(context)!,
