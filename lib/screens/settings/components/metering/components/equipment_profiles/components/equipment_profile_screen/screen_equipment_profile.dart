@@ -7,14 +7,14 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'components/equipment_profile_container/widget_container_equipment_profile.dart';
 import 'components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
 
-class EquipmentProfileScreen extends StatefulWidget {
-  const EquipmentProfileScreen({super.key});
+class EquipmentProfilesScreen extends StatefulWidget {
+  const EquipmentProfilesScreen({super.key});
 
   @override
-  State<EquipmentProfileScreen> createState() => _EquipmentProfileScreenState();
+  State<EquipmentProfilesScreen> createState() => _EquipmentProfilesScreenState();
 }
 
-class _EquipmentProfileScreenState extends State<EquipmentProfileScreen> {
+class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   static const maxProfiles = 5; // replace with a constant from iap
 
   late List<GlobalKey<EquipmentProfileContainerState>> profileContainersKeys = [];
