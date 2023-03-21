@@ -2,38 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-typedef DialogPickerItemBuilder<T extends PhotographyValue> = Widget Function(BuildContext, T);
-typedef DialogPickerEvDifferenceBuilder<T extends PhotographyValue> = String Function(
-    T selected, T other);
+typedef DialogPickerItemTitleBuilder<T> = Widget Function(BuildContext context, T value);
+typedef DialogPickerItemTrailingBuilder<T> = Widget? Function(T selected, T value);
 
-class PhotographyValuePickerDialog<T extends PhotographyValue> extends StatefulWidget {
+class DialogPicker<T> extends StatefulWidget {
   final String title;
   final String subtitle;
   final T initialValue;
   final List<T> values;
-  final DialogPickerItemBuilder<T> itemTitleBuilder;
-  final DialogPickerEvDifferenceBuilder<T> evDifferenceBuilder;
+  final DialogPickerItemTitleBuilder<T> itemTitleBuilder;
+  final DialogPickerItemTrailingBuilder<T> itemTrailingBuilder;
   final VoidCallback onCancel;
   final ValueChanged onSelect;
 
-  const PhotographyValuePickerDialog({
+  const DialogPicker({
     required this.title,
     required this.subtitle,
     required this.initialValue,
     required this.values,
     required this.itemTitleBuilder,
-    required this.evDifferenceBuilder,
+    required this.itemTrailingBuilder,
     required this.onCancel,
     required this.onSelect,
     super.key,
   });
 
   @override
-  State<PhotographyValuePickerDialog<T>> createState() => _PhotographyValuePickerDialogState<T>();
+  State<DialogPicker<T>> createState() => _DialogPickerState<T>();
 }
 
-class _PhotographyValuePickerDialogState<T extends PhotographyValue>
-    extends State<PhotographyValuePickerDialog<T>> {
+class _DialogPickerState<T> extends State<DialogPicker<T>> {
   late T _selectedValue = widget.initialValue;
   late final _scrollController =
       ScrollController(initialScrollOffset: Dimens.grid56 * widget.values.indexOf(_selectedValue));
@@ -81,10 +79,7 @@ class _PhotographyValuePickerDialogState<T extends PhotographyValue>
                 style: Theme.of(context).textTheme.bodyLarge!,
                 child: widget.itemTitleBuilder(context, widget.values[index]),
               ),
-              secondary: widget.values[index].value != _selectedValue.value
-                  ? Text(S.of(context).evValue(
-                      widget.evDifferenceBuilder.call(_selectedValue, widget.values[index])))
-                  : null,
+              secondary: widget.itemTrailingBuilder(_selectedValue, widget.values[index]),
               onChanged: (value) {
                 if (value != null) {
                   setState(() {

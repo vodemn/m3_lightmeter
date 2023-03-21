@@ -4,7 +4,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-import 'components/animated_dialog_picker/widget_dialog_animated_picker.dart';
+import 'components/animated_dialog_picker/widget_picker_dialog_animated.dart';
 import 'components/reading_value_container/widget_container_reading_value.dart';
 
 /// Contains a column of fastest & slowest exposure pairs + a row of ISO and ND pickers
@@ -107,7 +107,9 @@ class _IsoValueTile extends StatelessWidget {
       values: values,
       itemTitleBuilder: (_, value) => Text(value.value.toString()),
       // using ascending order, because increase in film speed rises EV
-      evDifferenceBuilder: (selected, other) => selected.toStringDifference(other),
+      itemTrailingBuilder: (selected, value) => value.value != selected.value
+          ? Text(S.of(context).evValue(selected.toStringDifference(value)))
+          : null,
       onChanged: onChanged,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
@@ -141,7 +143,9 @@ class _NdValueTile extends StatelessWidget {
         value.value == 0 ? S.of(context).none : value.value.toString(),
       ),
       // using descending order, because ND filter darkens image & lowers EV
-      evDifferenceBuilder: (selected, other) => other.toStringDifference(selected),
+      itemTrailingBuilder: (selected, value) => value.value != selected.value
+          ? Text(S.of(context).evValue(value.toStringDifference(selected)))
+          : null,
       onChanged: onChanged,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(

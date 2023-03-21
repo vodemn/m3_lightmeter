@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/animated_dialog/widget_dialog_animated.dart';
-import 'components/photography_value_picker_dialog/widget_dialog_picker_photography_value.dart';
+import 'components/dialog_picker/widget_picker_dialog.dart';
 
-class AnimatedDialogPicker<T extends PhotographyValue> extends StatelessWidget {
+class AnimatedDialogPicker<T> extends StatelessWidget {
   final _key = GlobalKey<AnimatedDialogState>();
   final String title;
   final String subtitle;
   final T selectedValue;
   final List<T> values;
-  final DialogPickerItemBuilder<T> itemTitleBuilder;
-  final DialogPickerEvDifferenceBuilder<T> evDifferenceBuilder;
+  final DialogPickerItemTitleBuilder<T> itemTitleBuilder;
+  final DialogPickerItemTrailingBuilder<T> itemTrailingBuilder;
   final ValueChanged<T> onChanged;
   final Widget closedChild;
 
@@ -21,7 +20,7 @@ class AnimatedDialogPicker<T extends PhotographyValue> extends StatelessWidget {
     required this.selectedValue,
     required this.values,
     required this.itemTitleBuilder,
-    required this.evDifferenceBuilder,
+    required this.itemTrailingBuilder,
     required this.onChanged,
     required this.closedChild,
     super.key,
@@ -32,13 +31,13 @@ class AnimatedDialogPicker<T extends PhotographyValue> extends StatelessWidget {
     return AnimatedDialog(
       key: _key,
       closedChild: closedChild,
-      openedChild: PhotographyValuePickerDialog<T>(
+      openedChild: DialogPicker<T>(
         title: title,
         subtitle: subtitle,
         initialValue: selectedValue,
         values: values,
         itemTitleBuilder: itemTitleBuilder,
-        evDifferenceBuilder: evDifferenceBuilder,
+        itemTrailingBuilder: itemTrailingBuilder,
         onCancel: () {
           _key.currentState?.close();
         },
