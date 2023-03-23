@@ -43,7 +43,10 @@ class ReadingsContainer extends StatelessWidget {
           _EquipmentProfilePicker(
             selectedValue: EquipmentProfile.of(context)!,
             values: EquipmentProfiles.of(context)!,
-            onChanged: (value) {},
+            onChanged: (value) {
+              EquipmentProfileProvider.of(context).setProfile(value);
+              onEquipmentProfileChanged(value);
+            },
           ),
           const _InnerPadding(),
         ],
