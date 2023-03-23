@@ -50,15 +50,18 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
                 Dimens.grid56 +
                 kFloatingActionButtonMargin,
           ),
-          separatorBuilder: (context, index) => const SizedBox(height: Dimens.grid16),
+          separatorBuilder: (context, index) =>
+              index > 0 ? const SizedBox(height: Dimens.grid16) : const SizedBox.shrink(),
           itemCount: profilesCount,
-          itemBuilder: (context, index) => EquipmentProfileContainer(
-            key: profileContainersKeys[index],
-            data: EquipmentProfiles.of(context)![index],
-            onExpand: () => _keepExpandedAt(index),
-            onUpdate: (profileData) => _updateProfileAt(profileData, index),
-            onDelete: () => _removeProfileAt(index),
-          ),
+          itemBuilder: (context, index) => index > 0
+              ? EquipmentProfileContainer(
+                  key: profileContainersKeys[index],
+                  data: EquipmentProfiles.of(context)![index],
+                  onExpand: () => _keepExpandedAt(index),
+                  onUpdate: (profileData) => _updateProfileAt(profileData, index),
+                  onDelete: () => _removeProfileAt(index),
+                )
+              : const SizedBox.shrink(),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

@@ -16,18 +16,18 @@ class EquipmentProfileProvider extends StatefulWidget {
 }
 
 class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
-  final List<EquipmentProfileData> _profiles = [];
+  final List<EquipmentProfileData> _profiles = [
+    const EquipmentProfileData(
+      id: '',
+      name: '',
+      apertureValues: apertureValues,
+      ndValues: ndValues,
+      shutterSpeedValues: shutterSpeedValues,
+      isoValues: isoValues,
+    )
+  ];
 
-  late EquipmentProfileData _selectedProfile = _profiles.isNotEmpty
-      ? _profiles.first
-      : const EquipmentProfileData(
-          id: 'default',
-          name: '',
-          apertureValues: apertureValues,
-          ndValues: ndValues,
-          shutterSpeedValues: shutterSpeedValues,
-          isoValues: isoValues,
-        );
+  late EquipmentProfileData _selectedProfile = _profiles.first;
 
   @override
   Widget build(BuildContext context) {

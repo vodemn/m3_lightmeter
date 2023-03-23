@@ -105,12 +105,12 @@ class _EquipmentProfilePicker extends StatelessWidget {
       title: S.of(context).equipmentProfiles,
       selectedValue: selectedValue,
       values: values,
-      itemTitleBuilder: (_, value) => Text(value.name),
+      itemTitleBuilder: (_, value) => Text(value.id.isEmpty ? S.of(context).none : value.name),
       onChanged: onChanged,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: S.of(context).equipmentProfiles,
-          value: selectedValue.name,
+          value: selectedValue.id.isEmpty ? S.of(context).none : selectedValue.name,
         ),
       ),
     );
