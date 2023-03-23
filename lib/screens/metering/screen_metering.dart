@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/environment.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -26,6 +27,7 @@ class _MeteringScreenState extends State<MeteringScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _bloc.add(EquipmentProfileChangedEvent(EquipmentProfile.of(context)!));
     _bloc.add(StopTypeChangedEvent(context.watch<StopType>()));
   }
 
@@ -40,8 +42,6 @@ class _MeteringScreenState extends State<MeteringScreen> {
               buildWhen: (_, current) => current is MeteringDataState,
               builder: (_, state) => state is MeteringDataState
                   ? _MeteringContainerBuidler(
-                      onEquipmentProfileChanged: (value) =>
-                          _bloc.add(EquipmentProfileChangedEvent(value)),
                       fastest: state.fastest,
                       slowest: state.slowest,
                       iso: state.iso,
@@ -71,7 +71,6 @@ class _MeteringScreenState extends State<MeteringScreen> {
 }
 
 class _MeteringContainerBuidler extends StatelessWidget {
-  final ValueChanged<EquipmentProfileData> onEquipmentProfileChanged;
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final IsoValue iso;
@@ -81,7 +80,6 @@ class _MeteringContainerBuidler extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
 
   const _MeteringContainerBuidler({
-    required this.onEquipmentProfileChanged,
     required this.fastest,
     required this.slowest,
     required this.iso,
@@ -95,7 +93,6 @@ class _MeteringContainerBuidler extends StatelessWidget {
   Widget build(BuildContext context) {
     return context.watch<EvSourceType>() == EvSourceType.camera
         ? CameraContainerProvider(
-            onEquipmentProfileChanged: onEquipmentProfileChanged,
             fastest: fastest,
             slowest: slowest,
             iso: iso,
@@ -105,7 +102,6 @@ class _MeteringContainerBuidler extends StatelessWidget {
             exposurePairs: exposurePairs,
           )
         : LightSensorContainerProvider(
-            onEquipmentProfileChanged: onEquipmentProfileChanged,
             fastest: fastest,
             slowest: slowest,
             iso: iso,

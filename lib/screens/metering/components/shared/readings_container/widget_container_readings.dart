@@ -10,7 +10,6 @@ import 'components/reading_value_container/widget_container_reading_value.dart';
 
 /// Contains a column of fastest & slowest exposure pairs + a row of ISO and ND pickers
 class ReadingsContainer extends StatelessWidget {
-  final ValueChanged<EquipmentProfileData> onEquipmentProfileChanged;
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final List<IsoValue> isoValues;
@@ -21,7 +20,6 @@ class ReadingsContainer extends StatelessWidget {
   final ValueChanged<NdValue> onNdChanged;
 
   const ReadingsContainer({
-    required this.onEquipmentProfileChanged,
     required this.fastest,
     required this.slowest,
     required this.isoValues,
@@ -43,10 +41,7 @@ class ReadingsContainer extends StatelessWidget {
           _EquipmentProfilePicker(
             selectedValue: EquipmentProfile.of(context)!,
             values: EquipmentProfiles.of(context)!,
-            onChanged: (value) {
-              EquipmentProfileProvider.of(context).setProfile(value);
-              onEquipmentProfileChanged(value);
-            },
+            onChanged: EquipmentProfileProvider.of(context).setProfile,
           ),
           const _InnerPadding(),
         ],

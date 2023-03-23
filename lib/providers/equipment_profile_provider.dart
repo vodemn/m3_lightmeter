@@ -63,12 +63,18 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     final indexToUpdate = _profiles.indexWhere((element) => element.id == data.id);
     if (indexToUpdate >= 0) {
       _profiles[indexToUpdate] = data;
+      if (data.id == _selectedProfile.id) {
+        _selectedProfile = _profiles[indexToUpdate];
+      }
       setState(() {});
     }
   }
 
   void deleteProfile(EquipmentProfileData data) {
     _profiles.remove(data);
+    if (data.id == _selectedProfile.id) {
+      _selectedProfile = _profiles.first;
+    }
     setState(() {});
   }
 }

@@ -7,7 +7,6 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class LightSensorContainer extends StatelessWidget {
-  final ValueChanged<EquipmentProfileData> onEquipmentProfileChanged;
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final List<IsoValue> isoValues;
@@ -19,7 +18,6 @@ class LightSensorContainer extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
 
   const LightSensorContainer({
-    required this.onEquipmentProfileChanged,
     required this.fastest,
     required this.slowest,
     required this.isoValues,
@@ -38,7 +36,6 @@ class LightSensorContainer extends StatelessWidget {
       children: [
         MeteringTopBar(
           readingsContainer: ReadingsContainer(
-            onEquipmentProfileChanged: onEquipmentProfileChanged,
             fastest: fastest,
             slowest: slowest,
             isoValues: isoValues,
