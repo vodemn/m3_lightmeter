@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/equipment_list_tiles/widget_list_tiles_equipments.dart';
@@ -25,7 +25,7 @@ class EquipmentProfileContainer extends StatefulWidget {
 }
 
 class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
-  late EquipmentProfileData _equipmentProfileData = EquipmentProfileData(
+  late EquipmentProfileData _equipmentData = EquipmentProfileData(
     id: widget.data.id,
     name: widget.data.name,
     apertureValues: widget.data.apertureValues,
@@ -33,14 +33,12 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
     shutterSpeedValues: widget.data.shutterSpeedValues,
     isoValues: widget.data.isoValues,
   );
-  late final _nameController = TextEditingController(text: _equipmentProfileData.name);
-  final _fieldFocusNode = FocusNode();
   bool _expanded = false;
 
   @override
   void didUpdateWidget(EquipmentProfileContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _equipmentProfileData = EquipmentProfileData(
+    _equipmentData = EquipmentProfileData(
       id: widget.data.id,
       name: widget.data.name,
       apertureValues: widget.data.apertureValues,
@@ -48,13 +46,6 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
       shutterSpeedValues: widget.data.shutterSpeedValues,
       isoValues: widget.data.isoValues,
     );
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _fieldFocusNode.dispose();
-    super.dispose();
   }
 
   @override
@@ -66,70 +57,59 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      Dimens.paddingM,
-                      0,
-                      Dimens.paddingM,
-                      0,
-                    ),
-                    child: IgnorePointer(
-                      ignoring: !_expanded,
-                      child: TextFormField(
-                        focusNode: _fieldFocusNode,
-                        controller: _nameController,
-                        onFieldSubmitted: (value) {
-                          _equipmentProfileData = _equipmentProfileData.copyWith(name: value);
-                          widget.onUpdate(_equipmentProfileData);
-                        },
-                        decoration: InputDecoration(
-                          hintText: S.of(context).equipmentProfileNameHint,
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
+            ListTile(
+              title: Text(
+                _equipmentData.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _collapseButton(),
+                  IconButton(
+                    onPressed: widget.onDelete,
+                    icon: const Icon(Icons.delete),
                   ),
-                ),
-                Row(
-                  children: [
-                    _collapseButton(),
-                    IconButton(
-                      onPressed: widget.onDelete,
-                      icon: const Icon(Icons.delete),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
+              onTap: () {
+                showDialog<String>(
+                  context: context,
+                  builder: (_) => EquipmentProfileNameDialog(initialValue: _equipmentData.name),
+                ).then((value) {
+                  if (value != null) {
+                    _equipmentData = _equipmentData.copyWith(name: value);
+                    widget.onUpdate(_equipmentData);
+                  }
+                });
+              },
             ),
             AnimatedSize(
               alignment: Alignment.topCenter,
               duration: Dimens.durationM,
               child: _expanded
                   ? EquipmentListTiles(
-                      selectedApertureValues: _equipmentProfileData.apertureValues,
-                      selectedIsoValues: _equipmentProfileData.isoValues,
-                      selectedNdValues: _equipmentProfileData.ndValues,
-                      selectedShutterSpeedValues: _equipmentProfileData.shutterSpeedValues,
+                      selectedApertureValues: _equipmentData.apertureValues,
+                      selectedIsoValues: _equipmentData.isoValues,
+                      selectedNdValues: _equipmentData.ndValues,
+                      selectedShutterSpeedValues: _equipmentData.shutterSpeedValues,
                       onApertureValuesSelected: (value) {
-                        _equipmentProfileData =
-                            _equipmentProfileData.copyWith(apertureValues: value);
-                        widget.onUpdate(_equipmentProfileData);
+                        _equipmentData = _equipmentData.copyWith(apertureValues: value);
+                        widget.onUpdate(_equipmentData);
                       },
                       onIsoValuesSelecred: (value) {
-                        _equipmentProfileData = _equipmentProfileData.copyWith(isoValues: value);
-                        widget.onUpdate(_equipmentProfileData);
+                        _equipmentData = _equipmentData.copyWith(isoValues: value);
+                        widget.onUpdate(_equipmentData);
                       },
                       onNdValuesSelected: (value) {
-                        _equipmentProfileData = _equipmentProfileData.copyWith(ndValues: value);
-                        widget.onUpdate(_equipmentProfileData);
+                        _equipmentData = _equipmentData.copyWith(ndValues: value);
+                        widget.onUpdate(_equipmentData);
                       },
                       onShutterSpeedValuesSelected: (value) {
-                        _equipmentProfileData =
-                            _equipmentProfileData.copyWith(shutterSpeedValues: value);
-                        widget.onUpdate(_equipmentProfileData);
+                        _equipmentData = _equipmentData.copyWith(shutterSpeedValues: value);
+                        widget.onUpdate(_equipmentData);
                       },
                     )
                   : Row(mainAxisSize: MainAxisSize.max),
@@ -164,6 +144,5 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
     setState(() {
       _expanded = false;
     });
-    _fieldFocusNode.unfocus();
   }
 }

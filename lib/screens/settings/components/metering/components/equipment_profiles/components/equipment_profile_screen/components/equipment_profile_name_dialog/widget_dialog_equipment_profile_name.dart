@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 
 class EquipmentProfileNameDialog extends StatefulWidget {
-  const EquipmentProfileNameDialog({super.key});
+  final String initialValue;
+
+  const EquipmentProfileNameDialog({this.initialValue = '', super.key});
 
   @override
   State<EquipmentProfileNameDialog> createState() => _EquipmentProfileNameDialogState();
 }
 
 class _EquipmentProfileNameDialogState extends State<EquipmentProfileNameDialog> {
-  final TextEditingController _nameController = TextEditingController();
+  late final _nameController = TextEditingController(text: widget.initialValue);
 
   @override
   void dispose() {
@@ -33,9 +35,7 @@ class _EquipmentProfileNameDialogState extends State<EquipmentProfileNameDialog>
         ValueListenableBuilder(
           valueListenable: _nameController,
           builder: (_, value, __) => TextButton(
-            onPressed: value.text.isNotEmpty
-                ? () => Navigator.of(context).pop(value.text)
-                : null,
+            onPressed: value.text.isNotEmpty ? () => Navigator.of(context).pop(value.text) : null,
             child: Text(S.of(context).save),
           ),
         ),
