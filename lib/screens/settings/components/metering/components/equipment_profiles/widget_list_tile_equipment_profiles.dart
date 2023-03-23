@@ -14,7 +14,7 @@ class EquipmentProfilesListTile extends StatelessWidget {
       title: Text(S.of(context).equipmentProfiles),
       onTap: () {
         Navigator.of(context).push<EquipmentProfileData>(
-            MaterialPageRoute(builder: (_) => const EquipmentProfileScreen()));
+            MaterialPageRoute(builder: (_) => const EquipmentProfilesScreen()));
       },
     );
   }

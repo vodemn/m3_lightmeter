@@ -104,29 +104,36 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
                 ),
               ],
             ),
-            if (_expanded)
-              EquipmentListTiles(
-                selectedApertureValues: _equipmentProfileData.apertureValues,
-                selectedIsoValues: _equipmentProfileData.isoValues,
-                selectedNdValues: _equipmentProfileData.ndValues,
-                selectedShutterSpeedValues: _equipmentProfileData.shutterSpeedValues,
-                onApertureValuesSelected: (value) {
-                  _equipmentProfileData = _equipmentProfileData.copyWith(apertureValues: value);
-                  widget.onUpdate(_equipmentProfileData);
-                },
-                onIsoValuesSelecred: (value) {
-                  _equipmentProfileData = _equipmentProfileData.copyWith(isoValues: value);
-                  widget.onUpdate(_equipmentProfileData);
-                },
-                onNdValuesSelected: (value) {
-                  _equipmentProfileData = _equipmentProfileData.copyWith(ndValues: value);
-                  widget.onUpdate(_equipmentProfileData);
-                },
-                onShutterSpeedValuesSelected: (value) {
-                  _equipmentProfileData = _equipmentProfileData.copyWith(shutterSpeedValues: value);
-                  widget.onUpdate(_equipmentProfileData);
-                },
-              ),
+            AnimatedSize(
+              alignment: Alignment.topCenter,
+              duration: Dimens.durationM,
+              child: _expanded
+                  ? EquipmentListTiles(
+                      selectedApertureValues: _equipmentProfileData.apertureValues,
+                      selectedIsoValues: _equipmentProfileData.isoValues,
+                      selectedNdValues: _equipmentProfileData.ndValues,
+                      selectedShutterSpeedValues: _equipmentProfileData.shutterSpeedValues,
+                      onApertureValuesSelected: (value) {
+                        _equipmentProfileData =
+                            _equipmentProfileData.copyWith(apertureValues: value);
+                        widget.onUpdate(_equipmentProfileData);
+                      },
+                      onIsoValuesSelecred: (value) {
+                        _equipmentProfileData = _equipmentProfileData.copyWith(isoValues: value);
+                        widget.onUpdate(_equipmentProfileData);
+                      },
+                      onNdValuesSelected: (value) {
+                        _equipmentProfileData = _equipmentProfileData.copyWith(ndValues: value);
+                        widget.onUpdate(_equipmentProfileData);
+                      },
+                      onShutterSpeedValuesSelected: (value) {
+                        _equipmentProfileData =
+                            _equipmentProfileData.copyWith(shutterSpeedValues: value);
+                        widget.onUpdate(_equipmentProfileData);
+                      },
+                    )
+                  : Row(mainAxisSize: MainAxisSize.max),
+            ),
           ],
         ),
       ),
