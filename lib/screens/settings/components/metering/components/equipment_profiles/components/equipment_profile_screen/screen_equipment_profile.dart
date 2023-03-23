@@ -23,11 +23,9 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   @override
   void initState() {
     super.initState();
-    profileContainersKeys = List.filled(
-      EquipmentProfiles.of(context, listen: false).length,
-      GlobalKey<EquipmentProfileContainerState>(),
-      growable: true,
-    );
+    profileContainersKeys = EquipmentProfiles.of(context, listen: false)
+        .map((e) => GlobalKey<EquipmentProfileContainerState>(debugLabel: e.id))
+        .toList();
   }
 
   @override
