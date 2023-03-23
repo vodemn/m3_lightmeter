@@ -18,13 +18,13 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   static const maxProfiles = 5; // replace with a constant from iap
 
   late List<GlobalKey<EquipmentProfileContainerState>> profileContainersKeys = [];
-  int get profilesCount => EquipmentProfiles.of(context)?.length ?? 0;
+  int get profilesCount => EquipmentProfiles.of(context).length;
 
   @override
   void initState() {
     super.initState();
     profileContainersKeys = List.filled(
-      EquipmentProfiles.of(context, listen: false)?.length ?? 0,
+      EquipmentProfiles.of(context, listen: false).length,
       GlobalKey<EquipmentProfileContainerState>(),
       growable: true,
     );
@@ -56,7 +56,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
           itemBuilder: (context, index) => index > 0
               ? EquipmentProfileContainer(
                   key: profileContainersKeys[index],
-                  data: EquipmentProfiles.of(context)![index],
+                  data: EquipmentProfiles.of(context)[index],
                   onExpand: () => _keepExpandedAt(index),
                   onUpdate: (profileData) => _updateProfileAt(profileData, index),
                   onDelete: () => _removeProfileAt(index),
@@ -91,7 +91,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   }
 
   void _removeProfileAt(int index) {
-    EquipmentProfileProvider.of(context).deleteProfile(EquipmentProfiles.of(context)![index]);
+    EquipmentProfileProvider.of(context).deleteProfile(EquipmentProfiles.of(context)[index]);
     profileContainersKeys.removeAt(index);
   }
 

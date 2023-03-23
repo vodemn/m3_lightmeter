@@ -27,7 +27,7 @@ class _MeteringScreenState extends State<MeteringScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _bloc.add(EquipmentProfileChangedEvent(EquipmentProfile.of(context)!));
+    _bloc.add(EquipmentProfileChangedEvent(EquipmentProfile.of(context)));
     _bloc.add(StopTypeChangedEvent(context.watch<StopType>()));
   }
 

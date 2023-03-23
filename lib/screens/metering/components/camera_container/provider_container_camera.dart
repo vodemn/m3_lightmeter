@@ -40,9 +40,9 @@ class CameraContainerProvider extends StatelessWidget {
       child: CameraContainer(
         fastest: fastest,
         slowest: slowest,
-        isoValues: EquipmentProfile.of(context)?.isoValues ?? isoValues,
+        isoValues: EquipmentProfile.of(context).isoValues,
         iso: iso,
-        ndValues: EquipmentProfile.of(context)?.ndValues ?? ndValues,
+        ndValues: EquipmentProfile.of(context).ndValues,
         nd: nd,
         onIsoChanged: onIsoChanged,
         onNdChanged: onNdChanged,

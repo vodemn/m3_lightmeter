@@ -88,11 +88,11 @@ class EquipmentProfiles extends InheritedWidget {
     super.key,
   });
 
-  static List<EquipmentProfileData>? of(BuildContext context, {bool listen = true}) {
+  static List<EquipmentProfileData> of(BuildContext context, {bool listen = true}) {
     if (listen) {
-      return context.dependOnInheritedWidgetOfExactType<EquipmentProfiles>()?.profiles;
+      return context.dependOnInheritedWidgetOfExactType<EquipmentProfiles>()!.profiles;
     } else {
-      return context.findAncestorWidgetOfExactType<EquipmentProfiles>()?.profiles;
+      return context.findAncestorWidgetOfExactType<EquipmentProfiles>()!.profiles;
     }
   }
 
@@ -101,7 +101,7 @@ class EquipmentProfiles extends InheritedWidget {
 }
 
 class EquipmentProfile extends InheritedWidget {
-  final EquipmentProfileData? data;
+  final EquipmentProfileData data;
 
   const EquipmentProfile({
     required this.data,
@@ -109,11 +109,11 @@ class EquipmentProfile extends InheritedWidget {
     super.key,
   });
 
-  static EquipmentProfileData? of(BuildContext context, {bool listen = true}) {
+  static EquipmentProfileData of(BuildContext context, {bool listen = true}) {
     if (listen) {
-      return context.dependOnInheritedWidgetOfExactType<EquipmentProfile>()?.data;
+      return context.dependOnInheritedWidgetOfExactType<EquipmentProfile>()!.data;
     } else {
-      return context.findAncestorWidgetOfExactType<EquipmentProfile>()?.data;
+      return context.findAncestorWidgetOfExactType<EquipmentProfile>()!.data;
     }
   }
 

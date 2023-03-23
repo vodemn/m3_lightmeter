@@ -49,7 +49,7 @@ class CameraContainer extends StatelessWidget {
             PlatformConfig.cameraPreviewAspectRatio;
 
     double topBarOverflow = Dimens.readingContainerDefaultHeight - cameraViewHeight;
-    if (EquipmentProfiles.of(context)?.isNotEmpty ?? false) {
+    if (EquipmentProfiles.of(context).isNotEmpty) {
       topBarOverflow += Dimens.readingContainerSingleValueHeight;
       topBarOverflow += Dimens.paddingS;
     }
