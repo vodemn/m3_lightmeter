@@ -24,6 +24,7 @@ class _EquipmentProfileNameDialogState extends State<EquipmentProfileNameDialog>
     return AlertDialog(
       title: Text(S.of(context).equipmentProfileName),
       content: TextField(
+        autofocus: true,
         controller: _nameController,
         decoration: InputDecoration(hintText: S.of(context).equipmentProfileNameHint),
       ),
