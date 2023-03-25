@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/res/dimens.dart';
@@ -24,7 +26,8 @@ class EquipmentProfileContainer extends StatefulWidget {
   State<EquipmentProfileContainer> createState() => EquipmentProfileContainerState();
 }
 
-class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
+class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
+    with TickerProviderStateMixin {
   late EquipmentProfileData _equipmentData = EquipmentProfileData(
     id: widget.data.id,
     name: widget.data.name,
@@ -33,7 +36,12 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
     shutterSpeedValues: widget.data.shutterSpeedValues,
     isoValues: widget.data.isoValues,
   );
-  bool _expanded = false;
+
+  late final AnimationController _controller = AnimationController(
+    duration: Dimens.durationM,
+    vsync: this,
+  );
+  bool get _expanded => _controller.isCompleted;
 
   @override
   void didUpdateWidget(EquipmentProfileContainer oldWidget) {
@@ -49,6 +57,12 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
@@ -58,61 +72,52 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text(
-                _equipmentData.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              title: Row(
+                children: [
+                  _AnimatedNameLeading(controller: _controller),
+                  const SizedBox(width: Dimens.grid8),
+                  Text(
+                    _equipmentData.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
               trailing: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _collapseButton(),
+                  _AnimatedArrowButton(
+                    controller: _controller,
+                    onPressed: () => _expanded ? collapse() : expand(),
+                  ),
                   IconButton(
                     onPressed: widget.onDelete,
                     icon: const Icon(Icons.delete),
                   ),
                 ],
               ),
-              onTap: () {
-                showDialog<String>(
-                  context: context,
-                  builder: (_) => EquipmentProfileNameDialog(initialValue: _equipmentData.name),
-                ).then((value) {
-                  if (value != null) {
-                    _equipmentData = _equipmentData.copyWith(name: value);
-                    widget.onUpdate(_equipmentData);
-                  }
-                });
-              },
+              onTap: () => _expanded ? _showNameDialog() : expand(),
             ),
-            AnimatedSize(
-              alignment: Alignment.topCenter,
-              duration: Dimens.durationM,
-              child: _expanded
-                  ? EquipmentListTiles(
-                      selectedApertureValues: _equipmentData.apertureValues,
-                      selectedIsoValues: _equipmentData.isoValues,
-                      selectedNdValues: _equipmentData.ndValues,
-                      selectedShutterSpeedValues: _equipmentData.shutterSpeedValues,
-                      onApertureValuesSelected: (value) {
-                        _equipmentData = _equipmentData.copyWith(apertureValues: value);
-                        widget.onUpdate(_equipmentData);
-                      },
-                      onIsoValuesSelecred: (value) {
-                        _equipmentData = _equipmentData.copyWith(isoValues: value);
-                        widget.onUpdate(_equipmentData);
-                      },
-                      onNdValuesSelected: (value) {
-                        _equipmentData = _equipmentData.copyWith(ndValues: value);
-                        widget.onUpdate(_equipmentData);
-                      },
-                      onShutterSpeedValuesSelected: (value) {
-                        _equipmentData = _equipmentData.copyWith(shutterSpeedValues: value);
-                        widget.onUpdate(_equipmentData);
-                      },
-                    )
-                  : Row(mainAxisSize: MainAxisSize.max),
+            _AnimatedEquipmentListTiles(
+              controller: _controller,
+              equipmentData: _equipmentData,
+              onApertureValuesSelected: (value) {
+                _equipmentData = _equipmentData.copyWith(apertureValues: value);
+                widget.onUpdate(_equipmentData);
+              },
+              onIsoValuesSelecred: (value) {
+                _equipmentData = _equipmentData.copyWith(isoValues: value);
+                widget.onUpdate(_equipmentData);
+              },
+              onNdValuesSelected: (value) {
+                _equipmentData = _equipmentData.copyWith(ndValues: value);
+                widget.onUpdate(_equipmentData);
+              },
+              onShutterSpeedValuesSelected: (value) {
+                _equipmentData = _equipmentData.copyWith(shutterSpeedValues: value);
+                widget.onUpdate(_equipmentData);
+              },
             ),
           ],
         ),
@@ -120,18 +125,21 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
     );
   }
 
-  Widget _collapseButton() {
-    return IconButton(
-      onPressed: _expanded ? collapse : expand,
-      icon: Icon(_expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
-    );
+  void _showNameDialog() {
+    showDialog<String>(
+      context: context,
+      builder: (_) => EquipmentProfileNameDialog(initialValue: _equipmentData.name),
+    ).then((value) {
+      if (value != null) {
+        _equipmentData = _equipmentData.copyWith(name: value);
+        widget.onUpdate(_equipmentData);
+      }
+    });
   }
 
   void expand() {
     widget.onExpand();
-    setState(() {
-      _expanded = true;
-    });
+    _controller.forward();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Scrollable.ensureVisible(
         context,
@@ -141,8 +149,89 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> {
   }
 
   void collapse() {
-    setState(() {
-      _expanded = false;
-    });
+    _controller.reverse();
+  }
+}
+
+class _AnimatedNameLeading extends AnimatedWidget {
+  const _AnimatedNameLeading({required AnimationController controller})
+      : super(listenable: controller);
+
+  Animation<double> get _progress => listenable as Animation<double>;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(right: _progress.value * Dimens.grid24),
+      child: Icon(
+        Icons.edit,
+        size: _progress.value * Dimens.grid24,
+      ),
+    );
+  }
+}
+
+class _AnimatedArrowButton extends AnimatedWidget {
+  final VoidCallback onPressed;
+
+  const _AnimatedArrowButton({
+    required AnimationController controller,
+    required this.onPressed,
+  }) : super(listenable: controller);
+
+  Animation<double> get _progress => listenable as Animation<double>;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: onPressed,
+      icon: Transform.rotate(
+        angle: _progress.value * pi,
+        child: const Icon(Icons.keyboard_arrow_down),
+      ),
+    );
+  }
+}
+
+class _AnimatedEquipmentListTiles extends AnimatedWidget {
+  final EquipmentProfileData equipmentData;
+  final ValueChanged<List<ApertureValue>> onApertureValuesSelected;
+  final ValueChanged<List<IsoValue>> onIsoValuesSelecred;
+  final ValueChanged<List<NdValue>> onNdValuesSelected;
+  final ValueChanged<List<ShutterSpeedValue>> onShutterSpeedValuesSelected;
+
+  const _AnimatedEquipmentListTiles({
+    required AnimationController controller,
+    required this.equipmentData,
+    required this.onApertureValuesSelected,
+    required this.onIsoValuesSelecred,
+    required this.onNdValuesSelected,
+    required this.onShutterSpeedValuesSelected,
+  }) : super(listenable: controller);
+
+  Animation<double> get _progress => listenable as Animation<double>;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedOverflowBox(
+      alignment: Alignment.topCenter,
+      size: Size(
+        double.maxFinite,
+        _progress.value * Dimens.grid56 * 4,
+      ),
+      child: Opacity(
+        opacity: _progress.value,
+        child: EquipmentListTiles(
+          selectedApertureValues: equipmentData.apertureValues,
+          selectedIsoValues: equipmentData.isoValues,
+          selectedNdValues: equipmentData.ndValues,
+          selectedShutterSpeedValues: equipmentData.shutterSpeedValues,
+          onApertureValuesSelected: onApertureValuesSelected,
+          onIsoValuesSelecred: onIsoValuesSelecred,
+          onNdValuesSelected: onNdValuesSelected,
+          onShutterSpeedValuesSelected: onShutterSpeedValuesSelected,
+        ),
+      ),
+    );
   }
 }
