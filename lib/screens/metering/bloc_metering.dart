@@ -96,7 +96,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       _ev = _ev - event.equipmentProfileData.ndValues.first.stopReduction + _nd.stopReduction;
       _nd = event.equipmentProfileData.ndValues.first;
     }
-    
+
     _emitMeasuredState(emit);
   }
 
@@ -146,8 +146,26 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   List<ExposurePair> _buildExposureValues(double ev) {
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
     final int evSteps = (ev * (stopType.index + 1)).round();
-    final int evOffset =
-        _shutterSpeedValues.indexOf(const ShutterSpeedValue(1, false, StopType.full)) - evSteps;
+
+    /// Basically we use 1" shutter speed as an anchor point for building the exposure pairs list.
+    /// But user can exclude this value from the list using custom equipment profile.
+    /// So we have to restore the index of the anchor value.
+    const ShutterSpeedValue anchorShutterSpeed = ShutterSpeedValue(1, false, StopType.full);
+    int anchorIndex = _shutterSpeedValues.indexOf(anchorShutterSpeed);
+    if (anchorIndex < 0) {
+      final filteredFullList = shutterSpeedValues.whereStopType(stopType);
+      final customListStartIndex = filteredFullList.indexOf(_shutterSpeedValues.first);
+      final fullListAnchor = filteredFullList.indexOf(anchorShutterSpeed);
+      if (customListStartIndex < fullListAnchor) {
+        /// This means, that user excluded anchor value at the end,
+        /// i.e. all shutter speed values are shorter than 1".
+        anchorIndex = fullListAnchor - customListStartIndex;
+      } else {
+        /// In case user excludes anchor value at the start,
+        /// we can do no adjustment.
+      }
+    }
+    final int evOffset = anchorIndex - evSteps;
 
     late final int apertureOffset;
     late final int shutterSpeedOffset;
