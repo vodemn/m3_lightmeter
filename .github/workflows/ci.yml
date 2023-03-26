@@ -22,7 +22,7 @@ jobs:
           ssh-private-key: |
             ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
           repo-mappings: |
-            github.com/vodemn/m3_lightmeter_iap
+            https://github.com/vodemn/m3_lightmeter_iap
 
       - uses: actions/checkout@v3
         with:
