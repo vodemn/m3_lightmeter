@@ -41,6 +41,14 @@ jobs:
           echo -n "$KEYSTORE_PROPERTIES" | base64 --decode --output $KEYSTORE_PROPERTIES_PATH
           cp $KEYSTORE_PROPERTIES_PATH ./android
 
+      - name: Restore firebase_options.dart
+        env:
+          KEYSTORE: ${{ secrets.FIREBASE_OPTIONS }}
+        run: |
+          FIREBASE_OPTIONS_PATH=$RUNNER_TEMP/firebase_options.dart
+          echo -n "$FIREBASE_OPTIONS" | base64 --decode --output $FIREBASE_OPTIONS_PATH
+          cp $FIREBASE_OPTIONS_PATH ./lib
+
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
