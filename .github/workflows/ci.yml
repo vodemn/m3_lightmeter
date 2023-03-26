@@ -7,9 +7,9 @@ name: Pull Request check
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -17,11 +17,18 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - uses: shaunco/ssh-agent@git-repo-mapping
+        with:
+          ssh-private-key: |
+            ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
+          repo-mappings: |
+            github.com/vodemn/m3_lightmeter_iap
+
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-      
+          with:
+            channel: "stable"
+
       - name: Check flutter version
         run: flutter --version
 
@@ -33,6 +40,5 @@ jobs:
 
       - name: Analyze project source
         run: flutter analyze lib --fatal-infos
-
 #      - name: Run tests
 #        run: flutter test
