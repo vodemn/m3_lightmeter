@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class EquipmentProfileProvider extends StatefulWidget {
@@ -16,23 +18,37 @@ class EquipmentProfileProvider extends StatefulWidget {
 }
 
 class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
-  final List<EquipmentProfileData> _profiles = [
-    const EquipmentProfileData(
-      id: '',
-      name: '',
-      apertureValues: apertureValues,
-      ndValues: ndValues,
-      shutterSpeedValues: shutterSpeedValues,
-      isoValues: isoValues,
-    )
-  ];
+  static const EquipmentProfileData _defaultProfile = EquipmentProfileData(
+    id: '',
+    name: '',
+    apertureValues: apertureValues,
+    ndValues: ndValues,
+    shutterSpeedValues: shutterSpeedValues,
+    isoValues: isoValues,
+  );
 
-  late EquipmentProfileData _selectedProfile = _profiles.first;
+  List<EquipmentProfileData> _customProfiles = [];
+  String _selectedId = '';
+
+  EquipmentProfileData get _selectedProfile => _customProfiles.firstWhere(
+        (e) => e.id == _selectedId,
+        orElse: () {
+          context.read<UserPreferencesService>().selectedEquipmentProfileId = _defaultProfile.id;
+          return _defaultProfile;
+        },
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedId = context.read<UserPreferencesService>().selectedEquipmentProfileId;
+    _customProfiles = context.read<UserPreferencesService>().equipmentProfiles;
+  }
 
   @override
   Widget build(BuildContext context) {
     return EquipmentProfiles(
-      profiles: _profiles,
+      profiles: [_defaultProfile] + _customProfiles,
       child: EquipmentProfile(
         data: _selectedProfile,
         child: widget.child,
@@ -42,13 +58,14 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
 
   void setProfile(EquipmentProfileData data) {
     setState(() {
-      _selectedProfile = data;
+      _selectedId = data.id;
     });
+    context.read<UserPreferencesService>().selectedEquipmentProfileId = _selectedProfile.id;
   }
 
   /// Creates a default equipment profile
   void addProfile(String name) {
-    _profiles.add(EquipmentProfileData(
+    _customProfiles.add(EquipmentProfileData(
       id: const Uuid().v1(),
       name: name,
       apertureValues: apertureValues,
@@ -56,25 +73,24 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
       shutterSpeedValues: shutterSpeedValues,
       isoValues: isoValues,
     ));
-    setState(() {});
+    _refreshSavedProfiles();
   }
 
   void updateProdile(EquipmentProfileData data) {
-    final indexToUpdate = _profiles.indexWhere((element) => element.id == data.id);
+    final indexToUpdate = _customProfiles.indexWhere((element) => element.id == data.id);
     if (indexToUpdate >= 0) {
-      _profiles[indexToUpdate] = data;
-      if (data.id == _selectedProfile.id) {
-        _selectedProfile = _profiles[indexToUpdate];
-      }
-      setState(() {});
+      _customProfiles[indexToUpdate] = data;
+      _refreshSavedProfiles();
     }
   }
 
   void deleteProfile(EquipmentProfileData data) {
-    _profiles.remove(data);
-    if (data.id == _selectedProfile.id) {
-      _selectedProfile = _profiles.first;
-    }
+    _customProfiles.remove(data);
+    _refreshSavedProfiles();
+  }
+
+  void _refreshSavedProfiles() {
+    context.read<UserPreferencesService>().equipmentProfiles = _customProfiles;
     setState(() {});
   }
 }

@@ -21,6 +21,10 @@ dependencies:
   intl_utils: 2.8.1
   light_sensor: 2.0.2
   material_color_utilities: 0.2.0
+  m3_lightmeter_iap:
+    git:
+      url: "https://github.com/vodemn/m3_lightmeter_iap"
+      ref: main
   m3_lightmeter_resources:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_resources"
