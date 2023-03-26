@@ -1,5 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:lightmeter/environment.dart';
 
-import 'launch_app.dart';
+import 'application.dart';
+import 'firebase_options.dart';
 
-void main() => launchApp(const Environment.prod());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const Application(Environment.prod()));
+}
