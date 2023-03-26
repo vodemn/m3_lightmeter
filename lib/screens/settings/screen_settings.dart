@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 
 import 'components/about/widget_settings_section_about.dart';
 import 'components/general/widget_settings_section_general.dart';
@@ -12,48 +12,27 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        top: false,
-        bottom: false,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              pinned: true,
-              automaticallyImplyLeading: false,
-              expandedHeight: Dimens.grid168,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: false,
-                titlePadding: const EdgeInsets.all(Dimens.paddingM),
-                title: Text(
-                  S.of(context).settings,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-              actions: [
-                IconButton(
-                  onPressed: Navigator.of(context).pop,
-                  icon: const Icon(Icons.close),
-                ),
-              ],
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                <Widget>[
-                  const MeteringSettingsSection(),
-                  const GeneralSettingsSection(),
-                  const ThemeSettingsSection(),
-                  const AboutSettingsSection(),
-                  SizedBox(height: MediaQuery.of(context).padding.bottom),
-                ],
-              ),
-            ),
-          ],
+    return SliverScreen(
+      title: S.of(context).settings,
+      appBarActions: [
+        IconButton(
+          onPressed: Navigator.of(context).pop,
+          icon: const Icon(Icons.close),
         ),
-      ),
+      ],
+      slivers: [
+        SliverList(
+          delegate: SliverChildListDelegate(
+            <Widget>[
+              const MeteringSettingsSection(),
+              const GeneralSettingsSection(),
+              const ThemeSettingsSection(),
+              const AboutSettingsSection(),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
