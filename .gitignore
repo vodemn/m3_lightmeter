@@ -54,3 +54,7 @@ pubspec.lock
 .fvm/
 .jks
 keystore.properties
+android/app/google-services.json
+ios/firebase_app_id_file.json
+ios/Runner/GoogleService-Info.plist
+lib/firebase_options.dart
