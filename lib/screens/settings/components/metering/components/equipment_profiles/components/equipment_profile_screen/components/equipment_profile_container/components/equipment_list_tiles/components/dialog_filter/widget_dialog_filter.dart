@@ -10,7 +10,6 @@ class DialogFilter<T extends PhotographyValue> extends StatefulWidget {
   final List<T> values;
   final List<T> selectedValues;
   final String Function(BuildContext context, T value) titleAdapter;
-  final bool rangeSelect;
 
   const DialogFilter({
     required this.icon,
@@ -19,7 +18,6 @@ class DialogFilter<T extends PhotographyValue> extends StatefulWidget {
     required this.values,
     required this.selectedValues,
     required this.titleAdapter,
-    this.rangeSelect = false,
     super.key,
   });
 
@@ -68,28 +66,7 @@ class _DialogFilterState<T extends PhotographyValue> extends State<DialogFilter<
                     onChanged: (value) {
                       if (value != null) {
                         setState(() {
-                          if (widget.rangeSelect) {
-                            if (value) {
-                              final indexOfChecked = checkboxValues.indexOf(value);
-                              if (indexOfChecked == -1) {
-                                checkboxValues[index] = value;
-                              } else if (indexOfChecked < index) {
-                                checkboxValues.fillRange(indexOfChecked, index + 1, value);
-                              } else {
-                                checkboxValues.fillRange(index, indexOfChecked, value);
-                              }
-                            } else {
-                              if (index > checkboxValues.length / 2) {
-                                checkboxValues.fillRange(index, checkboxValues.length, false);
-                                checkboxValues[index] = value;
-                              } else {
-                                checkboxValues.fillRange(0, index, false);
-                                checkboxValues[index] = value;
-                              }
-                            }
-                          } else {
-                            checkboxValues[index] = value;
-                          }
+                          checkboxValues[index] = value;
                         });
                       }
                     },
