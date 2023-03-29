@@ -73,13 +73,16 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
           children: [
             ListTile(
               title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   _AnimatedNameLeading(controller: _controller),
                   const SizedBox(width: Dimens.grid8),
-                  Text(
-                    _equipmentData.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  Flexible(
+                    child: Text(
+                      _equipmentData.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
