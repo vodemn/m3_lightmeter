@@ -1,6 +1,4 @@
-import 'package:lightmeter/data/models/photography_values/iso_value.dart';
-import 'package:lightmeter/data/models/photography_values/nd_value.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 abstract class MeteringEvent {
   const MeteringEvent();
@@ -10,6 +8,12 @@ class StopTypeChangedEvent extends MeteringEvent {
   final StopType stopType;
 
   const StopTypeChangedEvent(this.stopType);
+}
+
+class EquipmentProfileChangedEvent extends MeteringEvent {
+  final EquipmentProfileData equipmentProfileData;
+
+  const EquipmentProfileChangedEvent(this.equipmentProfileData);
 }
 
 class IsoChangedEvent extends MeteringEvent {

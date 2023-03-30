@@ -77,9 +77,9 @@ class _ReadingValueBuilder extends StatelessWidget {
           reading.value,
           style: textTheme.titleMedium?.copyWith(color: textColor),
           maxLines: 1,
-          overflow: TextOverflow.visible,
+          overflow: TextOverflow.ellipsis,
           softWrap: false,
-        ),
+        )
       ],
     );
   }

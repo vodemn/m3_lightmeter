@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/photography_values/iso_value.dart';
-import 'package:lightmeter/data/models/photography_values/nd_value.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/environment.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/bottom_controls/provider_bottom_controls.dart';
 import 'components/camera_container/provider_container_camera.dart';
@@ -28,6 +27,7 @@ class _MeteringScreenState extends State<MeteringScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _bloc.add(EquipmentProfileChangedEvent(EquipmentProfile.of(context)));
     _bloc.add(StopTypeChangedEvent(context.watch<StopType>()));
   }
 

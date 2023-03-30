@@ -21,6 +21,7 @@
             "name": "dev (ios)",
             "request": "launch",
             "type": "dart",
+            //"flutterMode": "release",
             "args": [
                 "--flavor",
                 "dev",

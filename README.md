@@ -49,9 +49,7 @@ The list of features that the old lightmeter app has and that have to be impleme
 
 ## Build
 
-```
-flutter build apk --flavor dev --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_dev.dart
-```
+As part of this project is private, you will be able to run this app from the _main_dev.dart_ file (i.e. --flavor dev). Also to avoid fatal errors the _main_prod.dart_ file is excluded from analysis.
 
 ## Contribution
 

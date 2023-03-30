@@ -2,19 +2,14 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/data/models/photography_values/aperture_value.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/photography_values/iso_value.dart';
-import 'package:lightmeter/data/models/photography_values/nd_value.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
-import 'package:lightmeter/data/models/photography_values/shutter_speed_value.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
     as communication_states;
-import 'package:lightmeter/utils/log_2.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'communication/bloc_communication_metering.dart';
 import 'event_metering.dart';
@@ -26,9 +21,12 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   final MeteringInteractor _meteringInteractor;
   late final StreamSubscription<communication_states.ScreenState> _communicationSubscription;
 
-  List<ApertureValue> get _apertureValues => apertureValues.whereStopType(stopType);
-  List<ShutterSpeedValue> get _shutterSpeedValues => shutterSpeedValues.whereStopType(stopType);
+  List<ApertureValue> get _apertureValues =>
+      _equipmentProfileData.apertureValues.whereStopType(stopType);
+  List<ShutterSpeedValue> get _shutterSpeedValues =>
+      _equipmentProfileData.shutterSpeedValues.whereStopType(stopType);
 
+  EquipmentProfileData _equipmentProfileData;
   StopType stopType;
 
   late IsoValue _iso = _userPreferencesService.iso;
@@ -40,6 +38,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     this._communicationBloc,
     this._userPreferencesService,
     this._meteringInteractor,
+    this._equipmentProfileData,
     this.stopType,
   ) : super(
           MeteringEndedState(
@@ -54,6 +53,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
         .map((state) => state as communication_states.ScreenState)
         .listen(_onCommunicationState);
 
+    on<EquipmentProfileChangedEvent>(_onEquipmentProfileChanged);
     on<StopTypeChangedEvent>(_onStopTypeChanged);
     on<IsoChangedEvent>(_onIsoChanged);
     on<NdChangedEvent>(_onNdChanged);
@@ -76,6 +76,27 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   void _onStopTypeChanged(StopTypeChangedEvent event, Emitter emit) {
     stopType = event.stopType;
+    _emitMeasuredState(emit);
+  }
+
+  void _onEquipmentProfileChanged(EquipmentProfileChangedEvent event, Emitter emit) {
+    _equipmentProfileData = event.equipmentProfileData;
+
+    /// Update selected ISO value, if selected equipment profile
+    /// doesn't contain currently selected value
+    if (!event.equipmentProfileData.isoValues.any((v) => _iso.value == v.value)) {
+      _userPreferencesService.iso = event.equipmentProfileData.isoValues.first;
+      _ev = _ev + log2(event.equipmentProfileData.isoValues.first.value / _iso.value);
+      _iso = event.equipmentProfileData.isoValues.first;
+    }
+
+    /// The same for ND filter
+    if (!event.equipmentProfileData.ndValues.any((v) => _nd.value == v.value)) {
+      _userPreferencesService.ndFilter = event.equipmentProfileData.ndValues.first;
+      _ev = _ev - event.equipmentProfileData.ndValues.first.stopReduction + _nd.stopReduction;
+      _nd = event.equipmentProfileData.ndValues.first;
+    }
+
     _emitMeasuredState(emit);
   }
 
@@ -125,8 +146,26 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   List<ExposurePair> _buildExposureValues(double ev) {
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
     final int evSteps = (ev * (stopType.index + 1)).round();
-    final int evOffset =
-        _shutterSpeedValues.indexOf(const ShutterSpeedValue(1, false, StopType.full)) - evSteps;
+
+    /// Basically we use 1" shutter speed as an anchor point for building the exposure pairs list.
+    /// But user can exclude this value from the list using custom equipment profile.
+    /// So we have to restore the index of the anchor value.
+    const ShutterSpeedValue anchorShutterSpeed = ShutterSpeedValue(1, false, StopType.full);
+    int anchorIndex = _shutterSpeedValues.indexOf(anchorShutterSpeed);
+    if (anchorIndex < 0) {
+      final filteredFullList = shutterSpeedValues.whereStopType(stopType);
+      final customListStartIndex = filteredFullList.indexOf(_shutterSpeedValues.first);
+      final fullListAnchor = filteredFullList.indexOf(anchorShutterSpeed);
+      if (customListStartIndex < fullListAnchor) {
+        /// This means, that user excluded anchor value at the end,
+        /// i.e. all shutter speed values are shorter than 1".
+        anchorIndex = fullListAnchor - customListStartIndex;
+      } else {
+        /// In case user excludes anchor value at the start,
+        /// we can do no adjustment.
+      }
+    }
+    final int evOffset = anchorIndex - evSteps;
 
     late final int apertureOffset;
     late final int shutterSpeedOffset;

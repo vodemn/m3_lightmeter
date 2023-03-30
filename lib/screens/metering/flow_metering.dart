@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
 import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc_metering.dart';
@@ -39,6 +40,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
               context.read<MeteringCommunicationBloc>(),
               context.read<UserPreferencesService>(),
               context.read<MeteringInteractor>(),
+              EquipmentProfile.of(context, listen: false),
               context.read<StopType>(),
             ),
           ),

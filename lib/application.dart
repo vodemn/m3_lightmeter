@@ -16,6 +16,7 @@ import 'data/permissions_service.dart';
 import 'data/shared_prefs_service.dart';
 import 'environment.dart';
 import 'generated/l10n.dart';
+import 'providers/equipment_profile_provider.dart';
 import 'providers/ev_source_type_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/metering/flow_metering.dart';
@@ -47,29 +48,31 @@ class Application extends StatelessWidget {
               Provider(create: (_) => const LightSensorService()),
             ],
             child: StopTypeProvider(
-              child: EvSourceTypeProvider(
-                child: SupportedLocaleProvider(
-                  child: ThemeProvider(
-                    builder: (context, _) => _AnnotatedRegionWrapper(
-                      child: MaterialApp(
-                        theme: context.watch<ThemeData>(),
-                        locale: Locale(context.watch<SupportedLocale>().intlName),
-                        localizationsDelegates: const [
-                          S.delegate,
-                          GlobalMaterialLocalizations.delegate,
-                          GlobalWidgetsLocalizations.delegate,
-                          GlobalCupertinoLocalizations.delegate,
-                        ],
-                        supportedLocales: S.delegate.supportedLocales,
-                        builder: (context, child) => MediaQuery(
-                          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                          child: child!,
+              child: EquipmentProfileProvider(
+                child: EvSourceTypeProvider(
+                  child: SupportedLocaleProvider(
+                    child: ThemeProvider(
+                      builder: (context, _) => _AnnotatedRegionWrapper(
+                        child: MaterialApp(
+                          theme: context.watch<ThemeData>(),
+                          locale: Locale(context.watch<SupportedLocale>().intlName),
+                          localizationsDelegates: const [
+                            S.delegate,
+                            GlobalMaterialLocalizations.delegate,
+                            GlobalWidgetsLocalizations.delegate,
+                            GlobalCupertinoLocalizations.delegate,
+                          ],
+                          supportedLocales: S.delegate.supportedLocales,
+                          builder: (context, child) => MediaQuery(
+                            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                            child: child!,
+                          ),
+                          initialRoute: "metering",
+                          routes: {
+                            "metering": (context) => const MeteringFlow(),
+                            "settings": (context) => const SettingsFlow(),
+                          },
                         ),
-                        initialRoute: "metering",
-                        routes: {
-                          "metering": (context) => const MeteringFlow(),
-                          "settings": (context) => const SettingsFlow(),
-                        },
                       ),
                     ),
                   ),

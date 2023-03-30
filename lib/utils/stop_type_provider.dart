@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:provider/provider.dart';
 
 class StopTypeProvider extends StatefulWidget {

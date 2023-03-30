@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/photography_values/iso_value.dart';
-import 'package:lightmeter/data/models/photography_values/nd_value.dart';
 import 'package:lightmeter/platform_config.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_view/widget_camera_view.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/widget_top_bar_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'bloc_container_camera.dart';
 import 'components/camera_controls/widget_camera_controls.dart';
@@ -21,7 +21,9 @@ import 'state_container_camera.dart';
 class CameraContainer extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;
+  final List<IsoValue> isoValues;
   final IsoValue iso;
+  final List<NdValue> ndValues;
   final NdValue nd;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
@@ -30,7 +32,9 @@ class CameraContainer extends StatelessWidget {
   const CameraContainer({
     required this.fastest,
     required this.slowest,
+    required this.isoValues,
     required this.iso,
+    required this.ndValues,
     required this.nd,
     required this.onIsoChanged,
     required this.onNdChanged,
@@ -40,16 +44,25 @@ class CameraContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final topBarOverflow = Dimens.readingContainerHeight -
+    final double cameraViewHeight =
         ((MediaQuery.of(context).size.width - Dimens.grid8 - 2 * Dimens.paddingM) / 2) /
             PlatformConfig.cameraPreviewAspectRatio;
+
+    double topBarOverflow = Dimens.readingContainerDefaultHeight - cameraViewHeight;
+    if (EquipmentProfiles.of(context).isNotEmpty) {
+      topBarOverflow += Dimens.readingContainerSingleValueHeight;
+      topBarOverflow += Dimens.paddingS;
+    }
+
     return Column(
       children: [
         MeteringTopBar(
           readingsContainer: ReadingsContainer(
             fastest: fastest,
             slowest: slowest,
+            isoValues: isoValues,
             iso: iso,
+            ndValues: ndValues,
             nd: nd,
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,

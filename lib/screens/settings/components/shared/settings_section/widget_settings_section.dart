@@ -28,7 +28,7 @@ class SettingsSection extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: Dimens.paddingM),
+                padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
                 child: Text(
                   title,
                   style: Theme.of(context)
