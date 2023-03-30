@@ -22,6 +22,7 @@ jobs:
             github.com/vodemn/m3_lightmeter_iap
             
       - uses: actions/checkout@v3
+        with:
           submodules: recursive
           
       - uses: actions/setup-java@v2
