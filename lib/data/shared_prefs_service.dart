@@ -64,16 +64,13 @@ class UserPreferencesService {
     }
   }
 
-  IsoValue get iso =>
-      isoValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
+  IsoValue get iso => isoValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
   set iso(IsoValue value) => _sharedPreferences.setInt(_isoKey, value.value);
 
-  NdValue get ndFilter =>
-      ndValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_ndFilterKey) ?? 0));
+  NdValue get ndFilter => ndValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_ndFilterKey) ?? 0));
   set ndFilter(NdValue value) => _sharedPreferences.setInt(_ndFilterKey, value.value);
 
-  EvSourceType get evSourceType =>
-      EvSourceType.values[_sharedPreferences.getInt(_evSourceTypeKey) ?? 0];
+  EvSourceType get evSourceType => EvSourceType.values[_sharedPreferences.getInt(_evSourceTypeKey) ?? 0];
   set evSourceType(EvSourceType value) => _sharedPreferences.setInt(_evSourceTypeKey, value.index);
 
   bool get caffeine => _sharedPreferences.getBool(_caffeineKey) ?? false;
@@ -89,13 +86,10 @@ class UserPreferencesService {
   set locale(SupportedLocale value) => _sharedPreferences.setString(_localeKey, value.toString());
 
   double get cameraEvCalibration => _sharedPreferences.getDouble(_cameraEvCalibrationKey) ?? 0.0;
-  set cameraEvCalibration(double value) =>
-      _sharedPreferences.setDouble(_cameraEvCalibrationKey, value);
+  set cameraEvCalibration(double value) => _sharedPreferences.setDouble(_cameraEvCalibrationKey, value);
 
-  double get lightSensorEvCalibration =>
-      _sharedPreferences.getDouble(_lightSensorEvCalibrationKey) ?? 0.0;
-  set lightSensorEvCalibration(double value) =>
-      _sharedPreferences.setDouble(_lightSensorEvCalibrationKey, value);
+  double get lightSensorEvCalibration => _sharedPreferences.getDouble(_lightSensorEvCalibrationKey) ?? 0.0;
+  set lightSensorEvCalibration(double value) => _sharedPreferences.setDouble(_lightSensorEvCalibrationKey, value);
 
   ThemeType get themeType => ThemeType.values[_sharedPreferences.getInt(_themeTypeKey) ?? 0];
   set themeType(ThemeType value) => _sharedPreferences.setInt(_themeTypeKey, value.index);
@@ -110,6 +104,5 @@ class UserPreferencesService {
   set selectedEquipmentProfileId(String id) => _sharedPreferences.selectedEquipmentProfileId = id;
 
   List<EquipmentProfileData> get equipmentProfiles => _sharedPreferences.equipmentProfiles;
-  set equipmentProfiles(List<EquipmentProfileData> profiles) =>
-      _sharedPreferences.equipmentProfiles = profiles;
+  set equipmentProfiles(List<EquipmentProfileData> profiles) => _sharedPreferences.equipmentProfiles = profiles;
 }
