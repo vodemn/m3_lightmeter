@@ -23,7 +23,16 @@ jobs:
     timeout-minutes: 30
 
     steps:
+      - uses: shaunco/ssh-agent@git-repo-mapping
+        with:
+          ssh-private-key: |
+            ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
+          repo-mappings: |
+            github.com/vodemn/m3_lightmeter_iap
+            
       - uses: actions/checkout@v3
+          submodules: recursive
+
       - uses: actions/setup-java@v2
         with:
           distribution: "zulu"
