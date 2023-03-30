@@ -38,7 +38,7 @@ class EquipmentListTiles extends StatelessWidget {
           values: isoValues,
           valuesCount: selectedIsoValues.length == isoValues.length
               ? S.of(context).equipmentProfileAllValues
-              : S.of(context).equipmentProfileValuesCount(selectedIsoValues.length),
+              : selectedIsoValues.length.toString(),
           selectedValues: selectedIsoValues,
           rangeSelect: false,
           onChanged: onIsoValuesSelecred,
@@ -50,7 +50,7 @@ class EquipmentListTiles extends StatelessWidget {
           values: ndValues,
           valuesCount: selectedNdValues.length == ndValues.length
               ? S.of(context).equipmentProfileAllValues
-              : S.of(context).equipmentProfileValuesCount(selectedNdValues.length),
+              : selectedNdValues.length.toString(),
           selectedValues: selectedNdValues,
           rangeSelect: false,
           onChanged: onNdValuesSelected,
@@ -62,7 +62,7 @@ class EquipmentListTiles extends StatelessWidget {
           values: apertureValues,
           valuesCount: selectedApertureValues.length == apertureValues.length
               ? S.of(context).equipmentProfileAllValues
-              : S.of(context).equipmentProfileValuesCount(selectedApertureValues.length),
+              : selectedApertureValues.length.toString(),
           selectedValues: selectedApertureValues,
           rangeSelect: true,
           onChanged: onApertureValuesSelected,
@@ -74,7 +74,7 @@ class EquipmentListTiles extends StatelessWidget {
           values: shutterSpeedValues,
           valuesCount: selectedShutterSpeedValues.length == shutterSpeedValues.length
               ? S.of(context).equipmentProfileAllValues
-              : S.of(context).equipmentProfileValuesCount(selectedShutterSpeedValues.length),
+              : selectedShutterSpeedValues.length.toString(),
           selectedValues: selectedShutterSpeedValues,
           rangeSelect: true,
           onChanged: onShutterSpeedValuesSelected,
