@@ -1,5 +1,6 @@
 name: Crowdin push
 on:
+  workflow_dispatch:
   push:
     paths:
       - lib/l10n/**
