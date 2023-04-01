@@ -15,9 +15,7 @@ import 'components/reading_value_container/widget_container_reading_value.dart';
 class ReadingsContainer extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;
-  final List<IsoValue> isoValues;
   final IsoValue iso;
-  final List<NdValue> ndValues;
   final NdValue nd;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
@@ -25,9 +23,7 @@ class ReadingsContainer extends StatelessWidget {
   const ReadingsContainer({
     required this.fastest,
     required this.slowest,
-    required this.isoValues,
     required this.iso,
-    required this.ndValues,
     required this.nd,
     required this.onIsoChanged,
     required this.onNdChanged,
@@ -63,7 +59,7 @@ class ReadingsContainer extends StatelessWidget {
             Expanded(
               child: _IsoValuePicker(
                 selectedValue: iso,
-                values: isoValues,
+                values: EquipmentProfile.of(context).isoValues,
                 onChanged: onIsoChanged,
               ),
             ),
@@ -71,7 +67,7 @@ class ReadingsContainer extends StatelessWidget {
             Expanded(
               child: _NdValuePicker(
                 selectedValue: nd,
-                values: ndValues,
+                values: EquipmentProfile.of(context).ndValues,
                 onChanged: onNdChanged,
               ),
             ),

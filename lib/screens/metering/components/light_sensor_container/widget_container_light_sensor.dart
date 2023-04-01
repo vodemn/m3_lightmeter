@@ -9,9 +9,7 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 class LightSensorContainer extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;
-  final List<IsoValue> isoValues;
   final IsoValue iso;
-  final List<NdValue> ndValues;
   final NdValue nd;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
@@ -20,9 +18,7 @@ class LightSensorContainer extends StatelessWidget {
   const LightSensorContainer({
     required this.fastest,
     required this.slowest,
-    required this.isoValues,
     required this.iso,
-    required this.ndValues,
     required this.nd,
     required this.onIsoChanged,
     required this.onNdChanged,
@@ -38,9 +34,7 @@ class LightSensorContainer extends StatelessWidget {
           readingsContainer: ReadingsContainer(
             fastest: fastest,
             slowest: slowest,
-            isoValues: isoValues,
             iso: iso,
-            ndValues: ndValues,
             nd: nd,
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
