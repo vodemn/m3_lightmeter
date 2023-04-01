@@ -4,6 +4,7 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/ev_source_type.dart';
+import 'models/film.dart';
 import 'models/theme_type.dart';
 
 class UserPreferencesService {
@@ -13,6 +14,7 @@ class UserPreferencesService {
   static const _evSourceTypeKey = "evSourceType";
   static const _cameraEvCalibrationKey = "cameraEvCalibration";
   static const _lightSensorEvCalibrationKey = "lightSensorEvCalibration";
+  static const _filmKey = "film";
 
   static const _caffeineKey = "caffeine";
   static const _hapticsKey = "haptics";
@@ -104,6 +106,12 @@ class UserPreferencesService {
 
   bool get dynamicColor => _sharedPreferences.getBool(_dynamicColorKey) ?? false;
   set dynamicColor(bool value) => _sharedPreferences.setBool(_dynamicColorKey, value);
+
+  Film get film => Film.values.firstWhere(
+        (e) => e.name == _sharedPreferences.getString(_filmKey),
+        orElse: () => Film.values.first,
+      );
+  set film(Film value) => _sharedPreferences.setString(_filmKey, value.name);
 
   String get selectedEquipmentProfileId => '';
   set selectedEquipmentProfileId(String id) {}

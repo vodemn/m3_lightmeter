@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
@@ -44,8 +45,10 @@ class _MeteringScreenState extends State<MeteringScreen> {
                   ? _MeteringContainerBuidler(
                       fastest: state.fastest,
                       slowest: state.slowest,
+                      film: state.film,
                       iso: state.iso,
                       nd: state.nd,
+                      onFilmChanged: (value) => _bloc.add(FilmChangedEvent(value)),
                       onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
                       onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
                       exposurePairs: state.exposurePairs,
@@ -73,8 +76,10 @@ class _MeteringScreenState extends State<MeteringScreen> {
 class _MeteringContainerBuidler extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;
+  final Film film;
   final IsoValue iso;
   final NdValue nd;
+  final ValueChanged<Film> onFilmChanged;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
   final List<ExposurePair> exposurePairs;
@@ -82,8 +87,10 @@ class _MeteringContainerBuidler extends StatelessWidget {
   const _MeteringContainerBuidler({
     required this.fastest,
     required this.slowest,
+    required this.film,
     required this.iso,
     required this.nd,
+    required this.onFilmChanged,
     required this.onIsoChanged,
     required this.onNdChanged,
     required this.exposurePairs,
@@ -95,8 +102,10 @@ class _MeteringContainerBuidler extends StatelessWidget {
         ? CameraContainerProvider(
             fastest: fastest,
             slowest: slowest,
+            film: film,
             iso: iso,
             nd: nd,
+            onFilmChanged: onFilmChanged,
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,
@@ -104,8 +113,10 @@ class _MeteringContainerBuidler extends StatelessWidget {
         : LightSensorContainerProvider(
             fastest: fastest,
             slowest: slowest,
+            film: film,
             iso: iso,
             nd: nd,
+            onFilmChanged: onFilmChanged,
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,

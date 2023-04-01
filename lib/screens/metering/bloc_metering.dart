@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
@@ -31,6 +32,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   late IsoValue _iso = _userPreferencesService.iso;
   late NdValue _nd = _userPreferencesService.ndFilter;
+  late Film _film = _userPreferencesService.film;
   double _ev = 0.0;
   bool _isMeteringInProgress = false;
 
@@ -42,10 +44,11 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     this.stopType,
   ) : super(
           MeteringEndedState(
-            iso: _userPreferencesService.iso,
             ev: 0.0,
+            film: _userPreferencesService.film,
+            iso: _userPreferencesService.iso,
             nd: _userPreferencesService.ndFilter,
-            exposurePairs: [],
+            exposurePairs: const [],
           ),
         ) {
     _communicationSubscription = _communicationBloc.stream
@@ -55,6 +58,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
     on<EquipmentProfileChangedEvent>(_onEquipmentProfileChanged);
     on<StopTypeChangedEvent>(_onStopTypeChanged);
+    on<FilmChangedEvent>(_onFilmChanged);
     on<IsoChangedEvent>(_onIsoChanged);
     on<NdChangedEvent>(_onNdChanged);
     on<MeasureEvent>(_onMeasure);
@@ -100,7 +104,23 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     _emitMeasuredState(emit);
   }
 
+  void _onFilmChanged(FilmChangedEvent event, Emitter emit) {
+    if (_iso.value != event.data.iso) {
+      final newIso = isoValues.firstWhere(
+        (e) => e.value == event.data.iso,
+        orElse: () => _iso,
+      );
+      add(IsoChangedEvent(newIso));
+    }
+    _film = event.data;
+    _userPreferencesService.film = event.data;
+    _emitMeasuredState(emit);
+  }
+
   void _onIsoChanged(IsoChangedEvent event, Emitter emit) {
+    if (event.isoValue.value != _film.iso) {
+      _film = Film.values.first;
+    }
     _userPreferencesService.iso = event.isoValue;
     _ev = _ev + log2(event.isoValue.value / _iso.value);
     _iso = event.isoValue;
@@ -130,14 +150,16 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   void _emitMeasuredState(Emitter emit) {
     emit(_isMeteringInProgress
         ? MeteringInProgressState(
-            iso: _iso,
             ev: _ev,
+            film: _film,
+            iso: _iso,
             nd: _nd,
             exposurePairs: _buildExposureValues(_ev),
           )
         : MeteringEndedState(
-            iso: _iso,
             ev: _ev,
+            film: _film,
+            iso: _iso,
             nd: _nd,
             exposurePairs: _buildExposureValues(_ev),
           ));
@@ -188,7 +210,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       itemsCount,
       (index) => ExposurePair(
         _apertureValues[index + apertureOffset],
-        _shutterSpeedValues[index + shutterSpeedOffset],
+        _film.reciprocityFailure(_shutterSpeedValues[index + shutterSpeedOffset]),
       ),
       growable: false,
     );

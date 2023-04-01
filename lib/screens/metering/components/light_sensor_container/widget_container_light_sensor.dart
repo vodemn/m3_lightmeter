@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/widget_top_bar_metering.dart';
@@ -9,10 +10,10 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 class LightSensorContainer extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;
-  final List<IsoValue> isoValues;
+  final Film film;
   final IsoValue iso;
-  final List<NdValue> ndValues;
   final NdValue nd;
+  final ValueChanged<Film> onFilmChanged;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
   final List<ExposurePair> exposurePairs;
@@ -20,10 +21,10 @@ class LightSensorContainer extends StatelessWidget {
   const LightSensorContainer({
     required this.fastest,
     required this.slowest,
-    required this.isoValues,
+    required this.film,
     required this.iso,
-    required this.ndValues,
     required this.nd,
+    required this.onFilmChanged,
     required this.onIsoChanged,
     required this.onNdChanged,
     required this.exposurePairs,
@@ -38,10 +39,10 @@ class LightSensorContainer extends StatelessWidget {
           readingsContainer: ReadingsContainer(
             fastest: fastest,
             slowest: slowest,
-            isoValues: isoValues,
+            film: film,
             iso: iso,
-            ndValues: ndValues,
             nd: nd,
+            onFilmChanged: onFilmChanged,
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
           ),

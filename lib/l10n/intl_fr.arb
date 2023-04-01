@@ -34,6 +34,7 @@
     "calibrationMessageCameraOnly": "La précision des lectures mesurées par cette application dépend entièrement de la caméra arrière de l'appareil. Par conséquent, envisagez de tester cette application et de configurer une valeur d'étalonnage EV qui vous donnera les résultats de mesure souhaités.",
     "camera": "Caméra",
     "lightSensor": "Capteur de lumière",
+    "film": "Pellicule",
     "equipment": "Équipement",
     "equipmentProfileName": "Nom du profil de l'équipement",
     "equipmentProfileNameHint": "Praktica MTL5B",

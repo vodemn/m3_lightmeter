@@ -1,3 +1,4 @@
+import 'package:lightmeter/data/models/film.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 abstract class MeteringEvent {
@@ -14,6 +15,12 @@ class EquipmentProfileChangedEvent extends MeteringEvent {
   final EquipmentProfileData equipmentProfileData;
 
   const EquipmentProfileChangedEvent(this.equipmentProfileData);
+}
+
+class FilmChangedEvent extends MeteringEvent {
+  final Film data;
+
+  const FilmChangedEvent(this.data);
 }
 
 class IsoChangedEvent extends MeteringEvent {
