@@ -7,6 +7,7 @@ import 'package:light_sensor/light_sensor.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
+import 'package:lightmeter/providers/film_profile.dart';
 import 'package:lightmeter/providers/supported_locale_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,30 +49,32 @@ class Application extends StatelessWidget {
               Provider(create: (_) => const LightSensorService()),
             ],
             child: StopTypeProvider(
-              child: EquipmentProfileProvider(
-                child: EvSourceTypeProvider(
-                  child: SupportedLocaleProvider(
-                    child: ThemeProvider(
-                      builder: (context, _) => _AnnotatedRegionWrapper(
-                        child: MaterialApp(
-                          theme: context.watch<ThemeData>(),
-                          locale: Locale(context.watch<SupportedLocale>().intlName),
-                          localizationsDelegates: const [
-                            S.delegate,
-                            GlobalMaterialLocalizations.delegate,
-                            GlobalWidgetsLocalizations.delegate,
-                            GlobalCupertinoLocalizations.delegate,
-                          ],
-                          supportedLocales: S.delegate.supportedLocales,
-                          builder: (context, child) => MediaQuery(
-                            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                            child: child!,
+              child: FilmProvider(
+                child: EquipmentProfileProvider(
+                  child: EvSourceTypeProvider(
+                    child: SupportedLocaleProvider(
+                      child: ThemeProvider(
+                        builder: (context, _) => _AnnotatedRegionWrapper(
+                          child: MaterialApp(
+                            theme: context.watch<ThemeData>(),
+                            locale: Locale(context.watch<SupportedLocale>().intlName),
+                            localizationsDelegates: const [
+                              S.delegate,
+                              GlobalMaterialLocalizations.delegate,
+                              GlobalWidgetsLocalizations.delegate,
+                              GlobalCupertinoLocalizations.delegate,
+                            ],
+                            supportedLocales: S.delegate.supportedLocales,
+                            builder: (context, child) => MediaQuery(
+                              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                              child: child!,
+                            ),
+                            initialRoute: "metering",
+                            routes: {
+                              "metering": (context) => const MeteringFlow(),
+                              "settings": (context) => const SettingsFlow(),
+                            },
                           ),
-                          initialRoute: "metering",
-                          routes: {
-                            "metering": (context) => const MeteringFlow(),
-                            "settings": (context) => const SettingsFlow(),
-                          },
                         ),
                       ),
                     ),
