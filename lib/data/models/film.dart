@@ -23,13 +23,13 @@ double log10polynomian(
 /// do not have any reciprocity failure information, as these films are ment to be used in cinema
 /// with appropriate light and pretty short shutter speeds.
 ///
-class FilmData {
+class Film {
   final String name;
   final int iso;
 
-  const FilmData(this.name, this.iso);
+  const Film(this.name, this.iso);
 
-  const FilmData.other()
+  const Film.other()
       : name = 'Other',
         iso = 0;
 
@@ -51,8 +51,8 @@ class FilmData {
   @protected
   double reciprocityFormula(double t) => t;
 
-  static const List<FilmData> values = [
-    FilmData.other(),
+  static const List<Film> values = [
+    Film.other(),
     FomapanFilm.creative100(),
     FomapanFilm.creative200(),
     FomapanFilm.action400(),
@@ -78,7 +78,7 @@ class FilmData {
 /// https://www.tate.org.uk/documents/598/page_6_7_agfa_stocks_0.pdf
 /// https://www.filmwasters.com/forum/index.php?topic=5298.0
 // {{1,1.87},{2,3.73},{3,8.06},{4,13.93},{5,21.28},{6,23.00},{7,30.12},{8,38.05},{9,44.75},{10,50.12},{20,117},{30,202},{40,293},{50,413},{60,547},{70,694},{80,853},{90,1022},{100,1202}};
-class AgfaFilm extends FilmData {
+class AgfaFilm extends Film {
   final double a;
   final double b;
   final double c;
@@ -99,7 +99,7 @@ class AgfaFilm extends FilmData {
   double reciprocityFormula(double t) => t * log10polynomian(t, a, b, c);
 }
 
-class FomapanFilm extends FilmData {
+class FomapanFilm extends Film {
   final double a;
   final double b;
   final double c;
@@ -126,7 +126,7 @@ class FomapanFilm extends FilmData {
         super('Fomapan ACTION 400', 400);
 }
 
-class IlfordFilm extends FilmData {
+class IlfordFilm extends Film {
   final double reciprocityPower;
 
   /// https://www.ilfordphoto.com/amfile/file/download/file/1948/product/1650/
@@ -188,7 +188,7 @@ class IlfordFilm extends FilmData {
   double reciprocityFormula(double t) => pow(t, reciprocityPower).toDouble();
 }
 
-class KodakFilm extends FilmData {
+class KodakFilm extends Film {
   final double a;
   final double b;
   final double c;

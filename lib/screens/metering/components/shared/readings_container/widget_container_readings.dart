@@ -4,7 +4,6 @@ import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/features.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
-import 'package:lightmeter/providers/film_profile.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -15,16 +14,20 @@ import 'components/reading_value_container/widget_container_reading_value.dart';
 class ReadingsContainer extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;
+  final Film film;
   final IsoValue iso;
   final NdValue nd;
+  final ValueChanged<Film> onFilmChanged;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
 
   const ReadingsContainer({
     required this.fastest,
     required this.slowest,
+    required this.film,
     required this.iso,
     required this.nd,
+    required this.onFilmChanged,
     required this.onIsoChanged,
     required this.onNdChanged,
     super.key,
@@ -52,7 +55,11 @@ class ReadingsContainer extends StatelessWidget {
           ],
         ),
         const _InnerPadding(),
-        const _FilmPicker(),
+        _FilmPicker(
+          values: Film.values,
+          selectedValue: film,
+          onChanged: onFilmChanged,
+        ),
         const _InnerPadding(),
         Row(
           children: [
@@ -106,20 +113,28 @@ class _EquipmentProfilePicker extends StatelessWidget {
 }
 
 class _FilmPicker extends StatelessWidget {
-  const _FilmPicker();
+  final List<Film> values;
+  final Film selectedValue;
+  final ValueChanged<Film> onChanged;
+
+  const _FilmPicker({
+    required this.values,
+    required this.selectedValue,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedDialogPicker<FilmData>(
+    return AnimatedDialogPicker<Film>(
       title: S.of(context).film,
-      selectedValue: Film.of(context),
-      values: FilmData.values,
+      selectedValue: selectedValue,
+      values: values,
       itemTitleBuilder: (_, value) => Text(value.name.isEmpty ? S.of(context).none : value.name),
-      onChanged: FilmProvider.of(context).setFilm,
+      onChanged: onChanged,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: S.of(context).film,
-          value: Film.of(context).name.isEmpty ? S.of(context).none : Film.of(context).name,
+          value: selectedValue.name.isEmpty ? S.of(context).none : selectedValue.name,
         ),
       ),
     );
