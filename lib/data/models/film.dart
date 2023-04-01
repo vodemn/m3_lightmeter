@@ -30,7 +30,7 @@ class Film {
   const Film(this.name, this.iso);
 
   const Film.other()
-      : name = 'Other',
+      : name = '',
         iso = 0;
 
   @override
