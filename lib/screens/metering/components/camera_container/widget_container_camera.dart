@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/features.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
@@ -49,7 +50,7 @@ class CameraContainer extends StatelessWidget {
             PlatformConfig.cameraPreviewAspectRatio;
 
     double topBarOverflow = Dimens.readingContainerDefaultHeight - cameraViewHeight;
-    if (EquipmentProfiles.of(context).isNotEmpty) {
+    if (FeaturesConfig.equipmentProfilesEnabled) {
       topBarOverflow += Dimens.readingContainerSingleValueHeight;
       topBarOverflow += Dimens.paddingS;
     }

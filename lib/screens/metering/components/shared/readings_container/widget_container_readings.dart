@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/data/models/film.dart';
+import 'package:lightmeter/features.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/film_profile.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -36,12 +39,8 @@ class ReadingsContainer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (EquipmentProfiles.of(context).isNotEmpty) ...[
-          _EquipmentProfilePicker(
-            selectedValue: EquipmentProfile.of(context),
-            values: EquipmentProfiles.of(context),
-            onChanged: EquipmentProfileProvider.of(context).setProfile,
-          ),
+        if (FeaturesConfig.equipmentProfilesEnabled) ...[
+          const _EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
         ReadingValueContainer(
@@ -56,6 +55,8 @@ class ReadingsContainer extends StatelessWidget {
             ),
           ],
         ),
+        const _InnerPadding(),
+        const _FilmPicker(),
         const _InnerPadding(),
         Row(
           children: [
@@ -86,28 +87,43 @@ class _InnerPadding extends SizedBox {
 }
 
 class _EquipmentProfilePicker extends StatelessWidget {
-  final List<EquipmentProfileData> values;
-  final EquipmentProfileData selectedValue;
-  final ValueChanged<EquipmentProfileData> onChanged;
-
-  const _EquipmentProfilePicker({
-    required this.selectedValue,
-    required this.values,
-    required this.onChanged,
-  });
+  const _EquipmentProfilePicker();
 
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<EquipmentProfileData>(
       title: S.of(context).equipmentProfile,
-      selectedValue: selectedValue,
-      values: values,
+      selectedValue: EquipmentProfile.of(context),
+      values: EquipmentProfiles.of(context),
       itemTitleBuilder: (_, value) => Text(value.id.isEmpty ? S.of(context).none : value.name),
-      onChanged: onChanged,
+      onChanged: EquipmentProfileProvider.of(context).setProfile,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: S.of(context).equipmentProfile,
-          value: selectedValue.id.isEmpty ? S.of(context).none : selectedValue.name,
+          value: EquipmentProfile.of(context).id.isEmpty
+              ? S.of(context).none
+              : EquipmentProfile.of(context).name,
+        ),
+      ),
+    );
+  }
+}
+
+class _FilmPicker extends StatelessWidget {
+  const _FilmPicker();
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedDialogPicker<FilmData>(
+      title: S.of(context).film,
+      selectedValue: Film.of(context),
+      values: FilmData.values,
+      itemTitleBuilder: (_, value) => Text(value.name.isEmpty ? S.of(context).none : value.name),
+      onChanged: FilmProvider.of(context).setFilm,
+      closedChild: ReadingValueContainer.singleValue(
+        value: ReadingValue(
+          label: S.of(context).film,
+          value: Film.of(context).name.isEmpty ? S.of(context).none : Film.of(context).name,
         ),
       ),
     );
