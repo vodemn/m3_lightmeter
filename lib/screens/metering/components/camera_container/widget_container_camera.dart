@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/features.dart';
 import 'package:lightmeter/platform_config.dart';
-import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_view/widget_camera_view.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
