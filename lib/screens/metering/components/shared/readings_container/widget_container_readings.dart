@@ -4,6 +4,7 @@ import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/features.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/features_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -42,25 +43,29 @@ class ReadingsContainer extends StatelessWidget {
           const _EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
-        ReadingValueContainer(
-          values: [
-            ReadingValue(
-              label: S.of(context).fastestExposurePair,
-              value: fastest != null ? fastest!.toString() : '-',
-            ),
-            ReadingValue(
-              label: S.of(context).slowestExposurePair,
-              value: fastest != null ? slowest!.toString() : '-',
-            ),
-          ],
-        ),
-        const _InnerPadding(),
-        _FilmPicker(
-          values: Film.values,
-          selectedValue: film,
-          onChanged: onFilmChanged,
-        ),
-        const _InnerPadding(),
+        if (MeteringScreenLayout.of(context, MeteringScreenLayoutFeature.extremeExposurePairs)) ...[
+          ReadingValueContainer(
+            values: [
+              ReadingValue(
+                label: S.of(context).fastestExposurePair,
+                value: fastest != null ? fastest!.toString() : '-',
+              ),
+              ReadingValue(
+                label: S.of(context).slowestExposurePair,
+                value: fastest != null ? slowest!.toString() : '-',
+              ),
+            ],
+          ),
+          const _InnerPadding(),
+        ],
+        if (MeteringScreenLayout.of(context, MeteringScreenLayoutFeature.reciprocity)) ...[
+          _FilmPicker(
+            values: Film.values,
+            selectedValue: film,
+            onChanged: onFilmChanged,
+          ),
+          const _InnerPadding(),
+        ],
         Row(
           children: [
             Expanded(

@@ -30,9 +30,8 @@ class Dimens {
   static const double disabledOpacity = 0.38;
 
   // TopBar
-  /// Probably this is a bad practice, but with text size locked, the height is always 212
+  static const double readingContainerDoubleValueHeight = 128;
   static const double readingContainerSingleValueHeight = 76;
-  static const double readingContainerDefaultHeight = 288;
 
   // `CenteredSlider`
   static const double cameraSliderTrackHeight = grid4;

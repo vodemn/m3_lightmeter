@@ -4,6 +4,7 @@ import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/features.dart';
 import 'package:lightmeter/platform_config.dart';
+import 'package:lightmeter/providers/features_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_view/widget_camera_view.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
@@ -49,8 +50,17 @@ class CameraContainer extends StatelessWidget {
         ((MediaQuery.of(context).size.width - Dimens.grid8 - 2 * Dimens.paddingM) / 2) /
             PlatformConfig.cameraPreviewAspectRatio;
 
-    double topBarOverflow = Dimens.readingContainerDefaultHeight - cameraViewHeight;
+    double topBarOverflow = Dimens.readingContainerSingleValueHeight + // ISO & ND
+        -cameraViewHeight;
     if (FeaturesConfig.equipmentProfilesEnabled) {
+      topBarOverflow += Dimens.readingContainerSingleValueHeight;
+      topBarOverflow += Dimens.paddingS;
+    }
+    if (MeteringScreenLayout.of(context, MeteringScreenLayoutFeature.extremeExposurePairs)) {
+      topBarOverflow += Dimens.readingContainerDoubleValueHeight;
+      topBarOverflow += Dimens.paddingS;
+    }
+    if (MeteringScreenLayout.of(context, MeteringScreenLayoutFeature.reciprocity)) {
       topBarOverflow += Dimens.readingContainerSingleValueHeight;
       topBarOverflow += Dimens.paddingS;
     }
