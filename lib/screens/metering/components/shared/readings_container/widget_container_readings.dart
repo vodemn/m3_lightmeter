@@ -43,7 +43,10 @@ class ReadingsContainer extends StatelessWidget {
           const _EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
-        if (MeteringScreenLayout.of(context, MeteringScreenLayoutFeature.extremeExposurePairs)) ...[
+        if (MeteringScreenLayout.featureStatusOf(
+          context,
+          MeteringScreenLayoutFeature.extremeExposurePairs,
+        )) ...[
           ReadingValueContainer(
             values: [
               ReadingValue(
@@ -58,7 +61,10 @@ class ReadingsContainer extends StatelessWidget {
           ),
           const _InnerPadding(),
         ],
-        if (MeteringScreenLayout.of(context, MeteringScreenLayoutFeature.reciprocity)) ...[
+        if (MeteringScreenLayout.featureStatusOf(
+          context,
+          MeteringScreenLayoutFeature.filmPicker,
+        )) ...[
           _FilmPicker(
             values: Film.values,
             selectedValue: film,

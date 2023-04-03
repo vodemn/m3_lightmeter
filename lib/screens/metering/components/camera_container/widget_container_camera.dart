@@ -56,11 +56,17 @@ class CameraContainer extends StatelessWidget {
       topBarOverflow += Dimens.readingContainerSingleValueHeight;
       topBarOverflow += Dimens.paddingS;
     }
-    if (MeteringScreenLayout.of(context, MeteringScreenLayoutFeature.extremeExposurePairs)) {
+    if (MeteringScreenLayout.featureStatusOf(
+      context,
+      MeteringScreenLayoutFeature.extremeExposurePairs,
+    )) {
       topBarOverflow += Dimens.readingContainerDoubleValueHeight;
       topBarOverflow += Dimens.paddingS;
     }
-    if (MeteringScreenLayout.of(context, MeteringScreenLayoutFeature.reciprocity)) {
+    if (MeteringScreenLayout.featureStatusOf(
+      context,
+      MeteringScreenLayoutFeature.filmPicker,
+    )) {
       topBarOverflow += Dimens.readingContainerSingleValueHeight;
       topBarOverflow += Dimens.paddingS;
     }

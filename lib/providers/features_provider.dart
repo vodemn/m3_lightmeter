@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum MeteringScreenLayoutFeature { extremeExposurePairs, reciprocity }
+enum MeteringScreenLayoutFeature { extremeExposurePairs, filmPicker }
 
 class MeteringScreenLayoutProvider extends StatefulWidget {
   final Widget child;
@@ -18,24 +18,26 @@ class MeteringScreenLayoutProvider extends StatefulWidget {
 class MeteringScreenLayoutProviderState extends State<MeteringScreenLayoutProvider> {
   final Map<MeteringScreenLayoutFeature, bool> _features = {
     MeteringScreenLayoutFeature.extremeExposurePairs: true,
-    MeteringScreenLayoutFeature.reciprocity: true,
+    MeteringScreenLayoutFeature.filmPicker: true,
   };
 
   @override
   Widget build(BuildContext context) {
     return MeteringScreenLayout(
-      features: _features,
+      features: Map<MeteringScreenLayoutFeature, bool>.from(_features),
       child: widget.child,
     );
   }
 
-  void setFeature(MeteringScreenLayoutFeature feature, {required bool enabled}) {
+  void updateFeatures(Map<MeteringScreenLayoutFeature, bool> features) {
     setState(() {
-      _features.update(
-        feature,
-        (_) => enabled,
-        ifAbsent: () => enabled,
-      );
+      features.forEach((key, value) {
+        _features.update(
+          key,
+          (_) => value,
+          ifAbsent: () => value,
+        );
+      });
     });
   }
 }
@@ -49,12 +51,17 @@ class MeteringScreenLayout extends InheritedModel<MeteringScreenLayoutFeature> {
     super.key,
   });
 
-  static bool of(BuildContext context, MeteringScreenLayoutFeature feature, {bool listen = true}) {
+  static Map<MeteringScreenLayoutFeature, bool> of(BuildContext context, {bool listen = true}) {
     if (listen) {
-      return context.dependOnInheritedWidgetOfExactType<MeteringScreenLayout>()!.features[feature]!;
+      return context.dependOnInheritedWidgetOfExactType<MeteringScreenLayout>()!.features;
     } else {
-      return context.findAncestorWidgetOfExactType<MeteringScreenLayout>()!.features[feature]!;
+      return context.findAncestorWidgetOfExactType<MeteringScreenLayout>()!.features;
     }
+  }
+
+  static bool featureStatusOf(BuildContext context, MeteringScreenLayoutFeature feature) {
+    return InheritedModel.inheritFrom<MeteringScreenLayout>(context, aspect: feature)!
+        .features[feature]!;
   }
 
   @override
