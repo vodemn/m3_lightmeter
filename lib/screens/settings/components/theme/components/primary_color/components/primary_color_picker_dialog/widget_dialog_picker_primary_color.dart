@@ -24,7 +24,8 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titlePadding: Dimens.dialogTitlePadding,
+      icon: const Icon(Icons.palette),
+      titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(S.of(context).choosePrimaryColor),
       content: SizedBox(
           height: Dimens.grid48,

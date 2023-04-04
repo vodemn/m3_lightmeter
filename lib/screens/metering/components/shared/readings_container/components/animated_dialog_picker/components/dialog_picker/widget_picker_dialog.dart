@@ -6,6 +6,7 @@ typedef DialogPickerItemTitleBuilder<T> = Widget Function(BuildContext context, 
 typedef DialogPickerItemTrailingBuilder<T> = Widget? Function(T selected, T value);
 
 class DialogPicker<T> extends StatefulWidget {
+  final IconData icon;
   final String title;
   final String? subtitle;
   final T initialValue;
@@ -16,6 +17,7 @@ class DialogPicker<T> extends StatefulWidget {
   final ValueChanged onSelect;
 
   const DialogPicker({
+    required this.icon,
     required this.title,
     this.subtitle,
     required this.initialValue,
@@ -47,25 +49,36 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: Dimens.dialogTitlePadding,
-          child: Column(
-            children: [
-              Text(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: Dimens.dialogTitlePadding,
+              child: Icon(widget.icon),
+            ),
+            Padding(
+              padding: Dimens.dialogIconTitlePadding,
+              child: Text(
                 widget.title,
                 style: Theme.of(context).textTheme.headlineSmall!,
                 textAlign: TextAlign.center,
               ),
-              if (widget.subtitle != null) ...[
-                const SizedBox(height: Dimens.grid16),
-                Text(
+            ),
+            if (widget.subtitle != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  Dimens.paddingL,
+                  0,
+                  Dimens.paddingL,
+                  Dimens.paddingM,
+                ),
+                child: Text(
                   widget.subtitle!,
                   style: Theme.of(context).textTheme.bodyMedium!,
                   textAlign: TextAlign.center,
                 ),
-              ]
-            ],
-          ),
+              ),
+          ],
         ),
         const Divider(),
         Expanded(

@@ -106,6 +106,7 @@ class _EquipmentProfilePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<EquipmentProfileData>(
+      icon: Icons.camera,
       title: S.of(context).equipmentProfile,
       selectedValue: EquipmentProfile.of(context),
       values: EquipmentProfiles.of(context),
@@ -137,6 +138,7 @@ class _FilmPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<Film>(
+      icon: Icons.camera_roll,
       title: S.of(context).film,
       selectedValue: selectedValue,
       values: values,
@@ -166,6 +168,7 @@ class _IsoValuePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<IsoValue>(
+      icon: Icons.iso,
       title: S.of(context).iso,
       subtitle: S.of(context).filmSpeed,
       selectedValue: selectedValue,
@@ -200,6 +203,7 @@ class _NdValuePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<NdValue>(
+      icon: Icons.filter_b_and_w,
       title: S.of(context).nd,
       subtitle: S.of(context).ndFilterFactor,
       selectedValue: selectedValue,

@@ -18,6 +18,7 @@ class LanguageListTile extends StatelessWidget {
         showDialog<SupportedLocale>(
           context: context,
           builder: (_) => DialogPicker<SupportedLocale>(
+            icon: Icons.language,
             title: S.of(context).chooseLanguage,
             selectedValue: context.read<SupportedLocale>(),
             values: SupportedLocale.values,

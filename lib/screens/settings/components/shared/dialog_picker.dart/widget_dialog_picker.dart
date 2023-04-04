@@ -3,12 +3,14 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 class DialogPicker<T> extends StatefulWidget {
+  final IconData icon;
   final String title;
   final T selectedValue;
   final List<T> values;
   final String Function(BuildContext context, T value) titleAdapter;
 
   const DialogPicker({
+    required this.icon,
     required this.title,
     required this.selectedValue,
     required this.values,
@@ -26,7 +28,8 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titlePadding: Dimens.dialogTitlePadding,
+      icon: Icon(widget.icon),
+      titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(widget.title),
       contentPadding: EdgeInsets.zero,
       content: Column(
