@@ -106,7 +106,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   void _onFilmChanged(FilmChangedEvent event, Emitter emit) {
     if (_iso.value != event.data.iso) {
-      final newIso = isoValues.firstWhere(
+      final newIso = IsoValue.values.firstWhere(
         (e) => e.value == event.data.iso,
         orElse: () => _iso,
       );
@@ -175,7 +175,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     const ShutterSpeedValue anchorShutterSpeed = ShutterSpeedValue(1, false, StopType.full);
     int anchorIndex = _shutterSpeedValues.indexOf(anchorShutterSpeed);
     if (anchorIndex < 0) {
-      final filteredFullList = shutterSpeedValues.whereStopType(stopType);
+      final filteredFullList = ShutterSpeedValue.values.whereStopType(stopType);
       final customListStartIndex = filteredFullList.indexOf(_shutterSpeedValues.first);
       final fullListAnchor = filteredFullList.indexOf(anchorShutterSpeed);
       if (customListStartIndex < fullListAnchor) {

@@ -37,15 +37,15 @@ class UserPreferencesService {
   Future<void> _migrateOldKeys() async {
     final legacyIsoIndex = _sharedPreferences.getInt("curIsoIndex");
     if (legacyIsoIndex != null) {
-      iso = isoValues[legacyIsoIndex];
+      iso = IsoValue.values[legacyIsoIndex];
       await _sharedPreferences.remove("curIsoIndex");
     }
 
     final legacyNdIndex = _sharedPreferences.getInt("curndIndex");
     if (legacyNdIndex != null) {
       /// Legacy ND list has 1 extra value at the end, so this check is needed
-      if (legacyNdIndex < ndValues.length) {
-        ndFilter = ndValues[legacyNdIndex];
+      if (legacyNdIndex < NdValue.values.length) {
+        ndFilter = NdValue.values[legacyNdIndex];
       }
       await _sharedPreferences.remove("curndIndex");
     }
@@ -70,11 +70,11 @@ class UserPreferencesService {
   }
 
   IsoValue get iso =>
-      isoValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
+      IsoValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
   set iso(IsoValue value) => _sharedPreferences.setInt(_isoKey, value.value);
 
   NdValue get ndFilter =>
-      ndValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_ndFilterKey) ?? 0));
+      NdValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(_ndFilterKey) ?? 0));
   set ndFilter(NdValue value) => _sharedPreferences.setInt(_ndFilterKey, value.value);
 
   EvSourceType get evSourceType =>
@@ -95,6 +95,7 @@ class UserPreferencesService {
       };
     }
   }
+
   set meteringScreenLayout(MeteringScreenLayoutConfig value) =>
       _sharedPreferences.setString(_meteringScreenLayoutKey, json.encode(value.toJson()));
 
