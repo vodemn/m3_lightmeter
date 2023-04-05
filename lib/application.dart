@@ -18,7 +18,7 @@ import 'environment.dart';
 import 'generated/l10n.dart';
 import 'providers/equipment_profile_provider.dart';
 import 'providers/ev_source_type_provider.dart';
-import 'providers/features_provider.dart';
+import 'providers/metering_screen_layout_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/metering/flow_metering.dart';
 import 'screens/settings/flow_settings.dart';

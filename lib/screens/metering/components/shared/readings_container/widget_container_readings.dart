@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
+import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/features.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
-import 'package:lightmeter/providers/features_provider.dart';
+import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 

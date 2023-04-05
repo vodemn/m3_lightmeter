@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-enum MeteringScreenLayoutFeature { extremeExposurePairs, filmPicker }
+import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
+import 'package:lightmeter/data/shared_prefs_service.dart';
+import 'package:provider/provider.dart';
 
 class MeteringScreenLayoutProvider extends StatefulWidget {
   final Widget child;
@@ -16,52 +17,51 @@ class MeteringScreenLayoutProvider extends StatefulWidget {
 }
 
 class MeteringScreenLayoutProviderState extends State<MeteringScreenLayoutProvider> {
-  final Map<MeteringScreenLayoutFeature, bool> _features = {
-    MeteringScreenLayoutFeature.extremeExposurePairs: true,
-    MeteringScreenLayoutFeature.filmPicker: true,
-  };
+  late final MeteringScreenLayoutConfig _config =
+      context.read<UserPreferencesService>().meteringScreenLayout;
 
   @override
   Widget build(BuildContext context) {
     return MeteringScreenLayout(
-      features: Map<MeteringScreenLayoutFeature, bool>.from(_features),
+      config: MeteringScreenLayoutConfig.from(_config),
       child: widget.child,
     );
   }
 
-  void updateFeatures(Map<MeteringScreenLayoutFeature, bool> features) {
+  void updateFeatures(MeteringScreenLayoutConfig config) {
     setState(() {
-      features.forEach((key, value) {
-        _features.update(
+      config.forEach((key, value) {
+        _config.update(
           key,
           (_) => value,
           ifAbsent: () => value,
         );
       });
     });
+    context.read<UserPreferencesService>().meteringScreenLayout = _config;
   }
 }
 
 class MeteringScreenLayout extends InheritedModel<MeteringScreenLayoutFeature> {
-  final Map<MeteringScreenLayoutFeature, bool> features;
+  final MeteringScreenLayoutConfig config;
 
   const MeteringScreenLayout({
-    required this.features,
+    required this.config,
     required super.child,
     super.key,
   });
 
-  static Map<MeteringScreenLayoutFeature, bool> of(BuildContext context, {bool listen = true}) {
+  static MeteringScreenLayoutConfig of(BuildContext context, {bool listen = true}) {
     if (listen) {
-      return context.dependOnInheritedWidgetOfExactType<MeteringScreenLayout>()!.features;
+      return context.dependOnInheritedWidgetOfExactType<MeteringScreenLayout>()!.config;
     } else {
-      return context.findAncestorWidgetOfExactType<MeteringScreenLayout>()!.features;
+      return context.findAncestorWidgetOfExactType<MeteringScreenLayout>()!.config;
     }
   }
 
   static bool featureStatusOf(BuildContext context, MeteringScreenLayoutFeature feature) {
     return InheritedModel.inheritFrom<MeteringScreenLayout>(context, aspect: feature)!
-        .features[feature]!;
+        .config[feature]!;
   }
 
   @override
@@ -73,7 +73,7 @@ class MeteringScreenLayout extends InheritedModel<MeteringScreenLayoutFeature> {
     Set<MeteringScreenLayoutFeature> dependencies,
   ) {
     for (final dependecy in dependencies) {
-      if (oldWidget.features[dependecy] != features[dependecy]) {
+      if (oldWidget.config[dependecy] != config[dependecy]) {
         return true;
       }
     }

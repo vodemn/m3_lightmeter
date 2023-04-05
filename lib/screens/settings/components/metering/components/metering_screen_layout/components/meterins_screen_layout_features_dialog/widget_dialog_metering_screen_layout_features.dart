@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/features_provider.dart';
+import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 class MeteringScreenLayoutFeaturesDialog extends StatefulWidget {
@@ -13,7 +14,7 @@ class MeteringScreenLayoutFeaturesDialog extends StatefulWidget {
 
 class _MeteringScreenLayoutFeaturesDialogState extends State<MeteringScreenLayoutFeaturesDialog> {
   late final _features =
-      Map<MeteringScreenLayoutFeature, bool>.from(MeteringScreenLayout.of(context, listen: false));
+      MeteringScreenLayoutConfig.from(MeteringScreenLayout.of(context, listen: false));
 
   @override
   Widget build(BuildContext context) {
