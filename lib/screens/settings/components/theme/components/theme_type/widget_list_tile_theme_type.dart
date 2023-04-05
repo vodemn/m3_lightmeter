@@ -18,6 +18,7 @@ class ThemeTypeListTile extends StatelessWidget {
         showDialog<ThemeType>(
           context: context,
           builder: (_) => DialogPicker<ThemeType>(
+            icon: Icons.brightness_6,
             title: S.of(context).chooseTheme,
             selectedValue: context.read<ThemeType>(),
             values: ThemeType.values,

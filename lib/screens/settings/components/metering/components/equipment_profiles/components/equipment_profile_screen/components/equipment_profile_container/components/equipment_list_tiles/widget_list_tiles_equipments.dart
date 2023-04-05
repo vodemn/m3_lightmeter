@@ -35,8 +35,8 @@ class EquipmentListTiles extends StatelessWidget {
           icon: Icons.iso,
           title: S.of(context).isoValues,
           description: S.of(context).isoValuesFilterDescription,
-          values: isoValues,
-          valuesCount: selectedIsoValues.length == isoValues.length
+          values: IsoValue.values,
+          valuesCount: selectedIsoValues.length == IsoValue.values.length
               ? S.of(context).equipmentProfileAllValues
               : selectedIsoValues.length.toString(),
           selectedValues: selectedIsoValues,
@@ -47,8 +47,8 @@ class EquipmentListTiles extends StatelessWidget {
           icon: Icons.filter_b_and_w,
           title: S.of(context).ndFilters,
           description: S.of(context).ndFiltersFilterDescription,
-          values: ndValues,
-          valuesCount: selectedNdValues.length == ndValues.length
+          values: NdValue.values,
+          valuesCount: selectedNdValues.length == NdValue.values.length
               ? S.of(context).equipmentProfileAllValues
               : selectedNdValues.length.toString(),
           selectedValues: selectedNdValues,
@@ -59,8 +59,8 @@ class EquipmentListTiles extends StatelessWidget {
           icon: Icons.camera,
           title: S.of(context).apertureValues,
           description: S.of(context).apertureValuesFilterDescription,
-          values: apertureValues,
-          valuesCount: selectedApertureValues.length == apertureValues.length
+          values: ApertureValue.values,
+          valuesCount: selectedApertureValues.length == ApertureValue.values.length
               ? S.of(context).equipmentProfileAllValues
               : selectedApertureValues.length.toString(),
           selectedValues: selectedApertureValues,
@@ -71,8 +71,8 @@ class EquipmentListTiles extends StatelessWidget {
           icon: Icons.shutter_speed,
           title: S.of(context).shutterSpeedValues,
           description: S.of(context).shutterSpeedValuesFilterDescription,
-          values: shutterSpeedValues,
-          valuesCount: selectedShutterSpeedValues.length == shutterSpeedValues.length
+          values: ShutterSpeedValue.values,
+          valuesCount: selectedShutterSpeedValues.length == ShutterSpeedValue.values.length
               ? S.of(context).equipmentProfileAllValues
               : selectedShutterSpeedValues.length.toString(),
           selectedValues: selectedShutterSpeedValues,

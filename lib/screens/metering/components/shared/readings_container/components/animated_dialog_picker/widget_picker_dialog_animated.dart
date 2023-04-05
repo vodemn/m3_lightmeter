@@ -5,6 +5,7 @@ import 'components/dialog_picker/widget_picker_dialog.dart';
 
 class AnimatedDialogPicker<T> extends StatelessWidget {
   final _key = GlobalKey<AnimatedDialogState>();
+  final IconData icon;
   final String title;
   final String? subtitle;
   final T selectedValue;
@@ -15,6 +16,7 @@ class AnimatedDialogPicker<T> extends StatelessWidget {
   final Widget closedChild;
 
   AnimatedDialogPicker({
+    required this.icon,
     required this.title,
     this.subtitle,
     required this.selectedValue,
@@ -32,6 +34,7 @@ class AnimatedDialogPicker<T> extends StatelessWidget {
       key: _key,
       closedChild: closedChild,
       openedChild: DialogPicker<T>(
+        icon: icon,
         title: title,
         subtitle: subtitle,
         initialValue: selectedValue,

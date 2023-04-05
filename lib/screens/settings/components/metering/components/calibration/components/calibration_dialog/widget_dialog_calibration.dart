@@ -17,7 +17,8 @@ class CalibrationDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool hasLightSensor = context.read<Environment>().hasLightSensor;
     return AlertDialog(
-      titlePadding: Dimens.dialogTitlePadding,
+      icon: const Icon(Icons.settings_brightness),
+      titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(S.of(context).calibration),
       contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
       content: SingleChildScrollView(

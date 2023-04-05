@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/res/dimens.dart';
 
 class EquipmentProfileNameDialog extends StatefulWidget {
   final String initialValue;
@@ -22,6 +23,8 @@ class _EquipmentProfileNameDialogState extends State<EquipmentProfileNameDialog>
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      icon: const Icon(Icons.edit),
+      titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(S.of(context).equipmentProfileName),
       content: TextField(
         autofocus: true,

@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
+import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
+import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import 'components/bottom_controls/provider_bottom_controls.dart';
@@ -30,6 +32,9 @@ class _MeteringScreenState extends State<MeteringScreen> {
     super.didChangeDependencies();
     _bloc.add(EquipmentProfileChangedEvent(EquipmentProfile.of(context)));
     _bloc.add(StopTypeChangedEvent(context.watch<StopType>()));
+    if (!MeteringScreenLayout.featureStatusOf(context, MeteringScreenLayoutFeature.filmPicker)) {
+      _bloc.add(const FilmChangedEvent(Film.other()));
+    }
   }
 
   @override

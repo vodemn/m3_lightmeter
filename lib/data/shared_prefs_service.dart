@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -5,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/ev_source_type.dart';
 import 'models/film.dart';
+import 'models/metering_screen_layout_config.dart';
 import 'models/theme_type.dart';
 
 class UserPreferencesService {
@@ -14,6 +17,7 @@ class UserPreferencesService {
   static const _evSourceTypeKey = "evSourceType";
   static const _cameraEvCalibrationKey = "cameraEvCalibration";
   static const _lightSensorEvCalibrationKey = "lightSensorEvCalibration";
+  static const _meteringScreenLayoutKey = "meteringScreenLayout";
   static const _filmKey = "film";
 
   static const _caffeineKey = "caffeine";
@@ -33,15 +37,15 @@ class UserPreferencesService {
   Future<void> _migrateOldKeys() async {
     final legacyIsoIndex = _sharedPreferences.getInt("curIsoIndex");
     if (legacyIsoIndex != null) {
-      iso = isoValues[legacyIsoIndex];
+      iso = IsoValue.values[legacyIsoIndex];
       await _sharedPreferences.remove("curIsoIndex");
     }
 
     final legacyNdIndex = _sharedPreferences.getInt("curndIndex");
     if (legacyNdIndex != null) {
       /// Legacy ND list has 1 extra value at the end, so this check is needed
-      if (legacyNdIndex < ndValues.length) {
-        ndFilter = ndValues[legacyNdIndex];
+      if (legacyNdIndex < NdValue.values.length) {
+        ndFilter = NdValue.values[legacyNdIndex];
       }
       await _sharedPreferences.remove("curndIndex");
     }
@@ -66,11 +70,11 @@ class UserPreferencesService {
   }
 
   IsoValue get iso =>
-      isoValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
+      IsoValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
   set iso(IsoValue value) => _sharedPreferences.setInt(_isoKey, value.value);
 
   NdValue get ndFilter =>
-      ndValues.firstWhere((v) => v.value == (_sharedPreferences.getInt(_ndFilterKey) ?? 0));
+      NdValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(_ndFilterKey) ?? 0));
   set ndFilter(NdValue value) => _sharedPreferences.setInt(_ndFilterKey, value.value);
 
   EvSourceType get evSourceType =>
@@ -79,6 +83,21 @@ class UserPreferencesService {
 
   bool get caffeine => _sharedPreferences.getBool(_caffeineKey) ?? false;
   set caffeine(bool value) => _sharedPreferences.setBool(_caffeineKey, value);
+
+  MeteringScreenLayoutConfig get meteringScreenLayout {
+    final configJson = _sharedPreferences.getString(_meteringScreenLayoutKey);
+    if (configJson != null) {
+      return MeteringScreenLayoutConfigJson.fromJson(json.decode(configJson));
+    } else {
+      return {
+        MeteringScreenLayoutFeature.extremeExposurePairs: true,
+        MeteringScreenLayoutFeature.filmPicker: true,
+      };
+    }
+  }
+
+  set meteringScreenLayout(MeteringScreenLayoutConfig value) =>
+      _sharedPreferences.setString(_meteringScreenLayoutKey, json.encode(value.toJson()));
 
   bool get haptics => _sharedPreferences.getBool(_hapticsKey) ?? true;
   set haptics(bool value) => _sharedPreferences.setBool(_hapticsKey, value);

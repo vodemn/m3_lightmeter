@@ -18,6 +18,7 @@ class StopTypeListTile extends StatelessWidget {
         showDialog<StopType>(
           context: context,
           builder: (_) => DialogPicker<StopType>(
+            icon: Icons.straighten,
             title: S.of(context).showFractionalStops,
             selectedValue: context.read<StopType>(),
             values: StopType.values,

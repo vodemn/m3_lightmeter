@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
+import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/features.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -42,25 +44,35 @@ class ReadingsContainer extends StatelessWidget {
           const _EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
-        ReadingValueContainer(
-          values: [
-            ReadingValue(
-              label: S.of(context).fastestExposurePair,
-              value: fastest != null ? fastest!.toString() : '-',
-            ),
-            ReadingValue(
-              label: S.of(context).slowestExposurePair,
-              value: fastest != null ? slowest!.toString() : '-',
-            ),
-          ],
-        ),
-        const _InnerPadding(),
-        _FilmPicker(
-          values: Film.values,
-          selectedValue: film,
-          onChanged: onFilmChanged,
-        ),
-        const _InnerPadding(),
+        if (MeteringScreenLayout.featureStatusOf(
+          context,
+          MeteringScreenLayoutFeature.extremeExposurePairs,
+        )) ...[
+          ReadingValueContainer(
+            values: [
+              ReadingValue(
+                label: S.of(context).fastestExposurePair,
+                value: fastest != null ? fastest!.toString() : '-',
+              ),
+              ReadingValue(
+                label: S.of(context).slowestExposurePair,
+                value: fastest != null ? slowest!.toString() : '-',
+              ),
+            ],
+          ),
+          const _InnerPadding(),
+        ],
+        if (MeteringScreenLayout.featureStatusOf(
+          context,
+          MeteringScreenLayoutFeature.filmPicker,
+        )) ...[
+          _FilmPicker(
+            values: Film.values,
+            selectedValue: film,
+            onChanged: onFilmChanged,
+          ),
+          const _InnerPadding(),
+        ],
         Row(
           children: [
             Expanded(
@@ -95,6 +107,7 @@ class _EquipmentProfilePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<EquipmentProfileData>(
+      icon: Icons.camera,
       title: S.of(context).equipmentProfile,
       selectedValue: EquipmentProfile.of(context),
       values: EquipmentProfiles.of(context),
@@ -126,6 +139,7 @@ class _FilmPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<Film>(
+      icon: Icons.camera_roll,
       title: S.of(context).film,
       selectedValue: selectedValue,
       values: values,
@@ -155,6 +169,7 @@ class _IsoValuePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<IsoValue>(
+      icon: Icons.iso,
       title: S.of(context).iso,
       subtitle: S.of(context).filmSpeed,
       selectedValue: selectedValue,
@@ -189,6 +204,7 @@ class _NdValuePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<NdValue>(
+      icon: Icons.filter_b_and_w,
       title: S.of(context).nd,
       subtitle: S.of(context).ndFilterFactor,
       selectedValue: selectedValue,

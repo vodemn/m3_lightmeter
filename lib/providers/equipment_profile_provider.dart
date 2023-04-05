@@ -21,10 +21,10 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   static const EquipmentProfileData _defaultProfile = EquipmentProfileData(
     id: '',
     name: '',
-    apertureValues: apertureValues,
-    ndValues: ndValues,
-    shutterSpeedValues: shutterSpeedValues,
-    isoValues: isoValues,
+    apertureValues: ApertureValue.values,
+    ndValues: NdValue.values,
+    shutterSpeedValues: ShutterSpeedValue.values,
+    isoValues: IsoValue.values,
   );
 
   List<EquipmentProfileData> _customProfiles = [];
@@ -68,10 +68,10 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     _customProfiles.add(EquipmentProfileData(
       id: const Uuid().v1(),
       name: name,
-      apertureValues: apertureValues,
-      ndValues: ndValues,
-      shutterSpeedValues: shutterSpeedValues,
-      isoValues: isoValues,
+      apertureValues: ApertureValue.values,
+      ndValues: NdValue.values,
+      shutterSpeedValues: ShutterSpeedValue.values,
+      isoValues: IsoValue.values,
     ));
     _refreshSavedProfiles();
   }
