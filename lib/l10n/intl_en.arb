@@ -36,7 +36,7 @@
     "lightSensor": "Light sensor",
     "meteringScreenLayout": "Metering screen layout",
     "meteringScreenLayoutHint": "Hide elements on the metering screen that you don't need so that they don't waste exposure pairs list space.",
-    "meteringScreenFeatureExtremeExposurePairs": "Extreme exposure pairs",
+    "meteringScreenFeatureExtremeExposurePairs": "Fastest & shortest exposure pairs",
     "meteringScreenFeatureFilmPicker": "Film picker",
     "film": "Film",
     "equipment": "Equipment",
