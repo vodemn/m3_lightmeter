@@ -124,6 +124,9 @@ class FomapanFilm extends Film {
         b = 5.75,
         c = 1.5,
         super('Fomapan ACTION 400', 400);
+
+  @override
+  double reciprocityFormula(double t) => t * log10polynomian(t, a, b, c);
 }
 
 class IlfordFilm extends Film {
