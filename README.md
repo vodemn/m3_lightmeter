@@ -27,7 +27,7 @@ The list of features that the old lightmeter app has and that have to be impleme
 
 ### Metering
 - [x] ISO selecting
-- [ ] Reciprocity for different films
+- [x] Reciprocity for different films
 - [x] Reflected light metering
 - [x] Incident light metering
 
