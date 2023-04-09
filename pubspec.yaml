@@ -11,7 +11,6 @@ dependencies:
   camera: 0.10.0+4
   exif: 3.1.2
   dynamic_color: 1.5.4
-  firebase_core: 2.7.0
   flutter:
     sdk: flutter
   flutter_bloc: 8.1.1
