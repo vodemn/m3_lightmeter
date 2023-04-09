@@ -42,13 +42,13 @@ jobs:
           echo -n "$KEYSTORE_PROPERTIES" | base64 --decode --output $KEYSTORE_PROPERTIES_PATH
           cp $KEYSTORE_PROPERTIES_PATH ./android
 
-      # - name: Restore android/app/google-services.json
-      #   env:
-      #     GOOGLE_SERVICES_JSON_ANDROID: ${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}
-      #   run: |
-      #     GOOGLE_SERVICES_JSON_ANDROID_PATH=$RUNNER_TEMP/google-services.json
-      #     echo -n "$GOOGLE_SERVICES_JSON_ANDROID" | base64 --decode --output $GOOGLE_SERVICES_JSON_ANDROID_PATH
-      #     cp $GOOGLE_SERVICES_JSON_ANDROID_PATH ./android/app
+      - name: Restore android/app/google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_ANDROID: ${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}
+        run: |
+          GOOGLE_SERVICES_JSON_ANDROID_PATH=$RUNNER_TEMP/google-services.json
+          echo -n "$GOOGLE_SERVICES_JSON_ANDROID" | base64 --decode --output $GOOGLE_SERVICES_JSON_ANDROID_PATH
+          cp $GOOGLE_SERVICES_JSON_ANDROID_PATH ./android/app
 
       # - name: Restore firebase_options.dart
       #   env:
