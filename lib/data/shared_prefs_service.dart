@@ -95,6 +95,7 @@ class UserPreferencesService {
       );
     } else {
       return {
+        MeteringScreenLayoutFeature.equipmentProfiles: true,
         MeteringScreenLayoutFeature.extremeExposurePairs: true,
         MeteringScreenLayoutFeature.filmPicker: true,
       };

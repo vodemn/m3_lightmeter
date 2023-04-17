@@ -31,28 +31,30 @@ class LightmeterProviders extends StatelessWidget {
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
-          return InheritedWidgetBase<Environment>(
-            data: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
-            child: InheritedWidgetBase<UserPreferencesService>(
-              data: UserPreferencesService(snapshot.data![0] as SharedPreferences),
-              child: InheritedWidgetBase<LightSensorService>(
-                data: const LightSensorService(LocalPlatform()),
-                child: InheritedWidgetBase<CaffeineService>(
-                  data: const CaffeineService(),
-                  child: InheritedWidgetBase<HapticsService>(
-                    data: const HapticsService(),
-                    child: InheritedWidgetBase<VolumeEventsService>(
-                      data: const VolumeEventsService(LocalPlatform()),
-                      child: InheritedWidgetBase<PermissionsService>(
-                        data: const PermissionsService(),
-                        child: MeteringScreenLayoutProvider(
-                          child: StopTypeProvider(
-                            child: EquipmentProfileProvider(
-                              child: EvSourceTypeProvider(
-                                child: SupportedLocaleProvider(
-                                  child: ThemeProvider(
-                                    child: Builder(
-                                      builder: (context) => builder(context, true),
+          return IAPProductsProvider(
+            child: InheritedWidgetBase<Environment>(
+              data: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
+              child: InheritedWidgetBase<UserPreferencesService>(
+                data: UserPreferencesService(snapshot.data![0] as SharedPreferences),
+                child: InheritedWidgetBase<LightSensorService>(
+                  data: const LightSensorService(LocalPlatform()),
+                  child: InheritedWidgetBase<CaffeineService>(
+                    data: const CaffeineService(),
+                    child: InheritedWidgetBase<HapticsService>(
+                      data: const HapticsService(),
+                      child: InheritedWidgetBase<VolumeEventsService>(
+                        data: const VolumeEventsService(LocalPlatform()),
+                        child: InheritedWidgetBase<PermissionsService>(
+                          data: const PermissionsService(),
+                          child: MeteringScreenLayoutProvider(
+                            child: StopTypeProvider(
+                              child: EquipmentProfileProvider(
+                                child: EvSourceTypeProvider(
+                                  child: SupportedLocaleProvider(
+                                    child: ThemeProvider(
+                                      child: Builder(
+                                        builder: (context) => builder(context, true),
+                                      ),
                                     ),
                                   ),
                                 ),

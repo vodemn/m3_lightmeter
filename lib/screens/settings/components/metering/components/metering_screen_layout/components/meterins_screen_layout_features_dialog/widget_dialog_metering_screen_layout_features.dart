@@ -67,6 +67,8 @@ class _MeteringScreenLayoutFeaturesDialogState extends State<MeteringScreenLayou
 
   String _toStringLocalized(BuildContext context, MeteringScreenLayoutFeature feature) {
     switch (feature) {
+      case MeteringScreenLayoutFeature.equipmentProfiles:
+        return S.of(context).equipmentProfiles;
       case MeteringScreenLayoutFeature.extremeExposurePairs:
         return S.of(context).meteringScreenFeatureExtremeExposurePairs;
       case MeteringScreenLayoutFeature.filmPicker:

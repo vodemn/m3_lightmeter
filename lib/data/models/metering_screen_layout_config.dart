@@ -1,4 +1,4 @@
-enum MeteringScreenLayoutFeature { extremeExposurePairs, filmPicker }
+enum MeteringScreenLayoutFeature { equipmentProfiles, extremeExposurePairs, filmPicker }
 
 typedef MeteringScreenLayoutConfig = Map<MeteringScreenLayoutFeature, bool>;
 

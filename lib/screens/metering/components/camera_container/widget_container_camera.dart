@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
-import 'package:lightmeter/features.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
@@ -18,6 +17,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/state_co
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/widget_top_bar_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class CameraContainer extends StatelessWidget {
@@ -52,7 +52,7 @@ class CameraContainer extends StatelessWidget {
 
     double topBarOverflow = Dimens.readingContainerSingleValueHeight + // ISO & ND
         -cameraViewHeight;
-    if (FeaturesConfig.equipmentProfilesEnabled) {
+    if (IAPProducts.isPurchased(context, IAPProductType.equipment)) {
       topBarOverflow += Dimens.readingContainerSingleValueHeight;
       topBarOverflow += Dimens.paddingS;
     }
