@@ -22,7 +22,7 @@ import 'providers/metering_screen_layout_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/metering/flow_metering.dart';
 import 'screens/settings/flow_settings.dart';
-import 'utils/stop_type_provider.dart';
+import 'providers/stop_type_provider.dart';
 
 class Application extends StatelessWidget {
   final Environment env;
