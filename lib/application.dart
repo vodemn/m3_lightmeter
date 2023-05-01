@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:light_sensor/light_sensor.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
@@ -34,7 +33,7 @@ class Application extends StatelessWidget {
     return FutureBuilder(
       future: Future.wait([
         SharedPreferences.getInstance(),
-        Platform.isAndroid ? LightSensor.hasSensor : Future.value(false),
+        Platform.isAndroid ? const LightSensorService().hasSensor() : Future.value(false),
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
@@ -83,8 +82,11 @@ class Application extends StatelessWidget {
               ),
             ),
           );
+        } else if (snapshot.error != null) {
+          return Center(child: Text(snapshot.error!.toString()));
+        } else {
+          return const SizedBox.shrink();
         }
-        return const SizedBox();
       },
     );
   }
