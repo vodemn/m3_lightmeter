@@ -116,7 +116,7 @@ class FomapanFilm extends Film {
       : a = 1.5,
         b = 4.5,
         c = 3,
-        super('Fomapan CREATIVE 200', 400);
+        super('Fomapan CREATIVE 200', 200);
 
   /// https://www.foma.cz/en/fomapan-100
   const FomapanFilm.action400()
@@ -185,7 +185,7 @@ class IlfordFilm extends Film {
   /// https://www.ilfordphoto.com/amfile/file/download/file/1959/product/697/
   const IlfordFilm.pan400()
       : reciprocityPower = 1.30,
-        super('Kentemere 400', 100);
+        super('Kentemere 400', 400);
 
   @override
   double reciprocityFormula(double t) => pow(t, reciprocityPower).toDouble();
