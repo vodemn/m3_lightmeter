@@ -41,7 +41,13 @@ jobs:
       - name: Generate intl
         run: flutter pub run intl_utils:generate
 
+      - name: Restore firebase_options.dart
+        env:
+          FIREBASE_OPTIONS: ${{ secrets.FIREBASE_OPTIONS }}
+        run: |
+          FIREBASE_OPTIONS_PATH=$RUNNER_TEMP/firebase_options.dart
+          echo -n "$FIREBASE_OPTIONS" | base64 --decode --output $FIREBASE_OPTIONS_PATH
+          cp $FIREBASE_OPTIONS_PATH ./lib
+
       - name: Analyze project source
         run: flutter analyze lib --fatal-infos
-#      - name: Run tests
-#        run: flutter test
