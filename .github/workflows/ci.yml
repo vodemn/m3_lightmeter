@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     runs-on: macos-11
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
       - uses: shaunco/ssh-agent@git-repo-mapping
