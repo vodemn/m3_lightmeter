@@ -166,6 +166,10 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   }
 
   List<ExposurePair> _buildExposureValues(double ev) {
+    if (ev.isNaN || ev.isInfinite) {
+      return List.empty(growable: false);
+    }
+
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
     final int evSteps = (ev * (stopType.index + 1)).round();
 
