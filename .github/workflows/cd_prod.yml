@@ -91,6 +91,7 @@ jobs:
         uses: thedoctor0/zip-release@0.7.1
         with:
           type: 'zip'
+          directory: 'build/app/intermediates/merged_native_libs/prodRelease/out/lib/'
           path: 'build/app/intermediates/merged_native_libs/prodRelease/out/lib/'
           filename: 'merged_native_libs.zip'
 
