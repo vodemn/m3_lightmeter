@@ -35,8 +35,8 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
   late final Animation<double> _borderRadiusAnimation;
   late final Animation<double> _closedOpacityAnimation;
   late final Animation<double> _openedOpacityAnimation;
-  late final Animation<Color?> _foregroundColorAnimation;
-  late final Animation<double> _elevationAnimation;
+  late Animation<Color?> _foregroundColorAnimation;
+  late Animation<double> _elevationAnimation;
 
   bool _isDialogShown = false;
 
@@ -185,16 +185,15 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
     _animateForward();
   }
 
-  void _animateForward() {
+  Future<void> _animateForward() async {
     setState(() {
       _isDialogShown = true;
     });
-    _animationController.forward();
+    await _animationController.forward();
   }
 
   Future<void> _animateReverse() async {
-    _animationController.reverse();
-    await Future.delayed(_animationController.reverseDuration! * timeDilation);
+    await _animationController.reverse();
     setState(() {
       _isDialogShown = false;
     });
