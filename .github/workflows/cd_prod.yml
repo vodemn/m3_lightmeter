@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build Prod App Bundle
+name: Build prod .aab & .apk
 
 on:
   workflow_dispatch:
