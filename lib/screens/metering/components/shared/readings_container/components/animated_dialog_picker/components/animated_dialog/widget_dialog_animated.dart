@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 class AnimatedDialog extends StatefulWidget {
