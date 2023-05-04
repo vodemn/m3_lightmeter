@@ -185,16 +185,15 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
     _animateForward();
   }
 
-  void _animateForward() {
+  Future<void> _animateForward() async {
     setState(() {
       _isDialogShown = true;
     });
-    _animationController.forward();
+    await _animationController.forward();
   }
 
   Future<void> _animateReverse() async {
-    _animationController.reverse();
-    await Future.delayed(_animationController.reverseDuration! * timeDilation);
+    await _animationController.reverse();
     setState(() {
       _isDialogShown = false;
     });
