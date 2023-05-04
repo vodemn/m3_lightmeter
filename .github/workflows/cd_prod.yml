@@ -69,6 +69,15 @@ jobs:
           flutter pub get
           flutter pub run intl_utils:generate
 
+      - name: Build apk
+        run: flutter build apk --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
+
+      - name: Upload apk to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: m3_lightmeter_apk
+          path: build/app/outputs/flutter-apk/app-prod-release.apk
+
       - name: Build appbundle
         run: flutter build appbundle --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
 
