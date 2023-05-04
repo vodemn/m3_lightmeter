@@ -88,11 +88,14 @@ jobs:
           path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
 
       - name: Zip merged_native_libs folder
-        uses: montudor/action-zip@v1
+        uses: thedoctor0/zip-release@0.7.1
         with:
-          args: zip -qq -r merged_native_libs.zip build/app/intermediates/merged_native_libs/prodRelease/out/lib/
+          type: 'zip'
+          path: 'build/app/intermediates/merged_native_libs/prodRelease/out/lib/'
+          filename: 'merged_native_libs.zip'
+
       - name: Upload merged_native_libs to artifacts
         uses: actions/upload-artifact@v3
         with:
           name: merged_native_libs
-          path: merged_native_libs.zip
+          path: build/app/intermediates/merged_native_libs/prodRelease/out/lib/merged_native_libs.zip
