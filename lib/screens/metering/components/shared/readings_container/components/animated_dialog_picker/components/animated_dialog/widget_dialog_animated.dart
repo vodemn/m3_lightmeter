@@ -35,8 +35,8 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
   late final Animation<double> _borderRadiusAnimation;
   late final Animation<double> _closedOpacityAnimation;
   late final Animation<double> _openedOpacityAnimation;
-  late final Animation<Color?> _foregroundColorAnimation;
-  late final Animation<double> _elevationAnimation;
+  late Animation<Color?> _foregroundColorAnimation;
+  late Animation<double> _elevationAnimation;
 
   bool _isDialogShown = false;
 
