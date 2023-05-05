@@ -91,11 +91,11 @@ jobs:
         uses: thedoctor0/zip-release@0.7.1
         with:
           type: 'zip'
-          directory: 'build/app/intermediates/merged_native_libs/prodRelease/out/lib/'
+          path: 'build/app/intermediates/merged_native_libs/prodRelease/out/lib/'
           filename: 'merged_native_libs.zip'
 
       - name: Upload merged_native_libs to artifacts
         uses: actions/upload-artifact@v3
         with:
           name: merged_native_libs
-          path: build/app/intermediates/merged_native_libs/prodRelease/out/lib/merged_native_libs.zip
+          path: merged_native_libs.zip
