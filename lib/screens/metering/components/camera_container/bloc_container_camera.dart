@@ -34,7 +34,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   double _exposureStep = 0.0;
   double _currentExposureOffset = 0.0;
 
-  double _ev100 = 0.0;
+  double? _ev100 = 0.0;
 
   CameraContainerBloc(
     this._meteringInteractor,
@@ -67,12 +67,17 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   @override
   void onCommunicationState(communication_states.SourceState communicationState) {
     if (communicationState is communication_states.MeasureState) {
-      _takePhoto().then((ev100Raw) {
-        if (ev100Raw != null) {
-          _ev100 = ev100Raw + _meteringInteractor.cameraEvCalibration;
-          communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
-        }
-      });
+      if (_canTakePhoto) {
+        _takePhoto().then((ev100Raw) {
+          if (ev100Raw != null) {
+            _ev100 = ev100Raw + _meteringInteractor.cameraEvCalibration;
+            communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
+          } else {
+            _ev100 = null;
+            communicationBloc.add(const communication_event.MeteringEndedEvent(null));
+          }
+        });
+      }
     }
   }
 
@@ -172,23 +177,25 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     );
   }
 
-  Future<double?> _takePhoto() async {
-    if (_cameraController == null ||
-        !_cameraController!.value.isInitialized ||
-        _cameraController!.value.isTakingPicture) {
-      return null;
-    }
+  bool get _canTakePhoto => !(_cameraController == null ||
+      !_cameraController!.value.isInitialized ||
+      _cameraController!.value.isTakingPicture);
 
+  Future<double?> _takePhoto() async {
     try {
       final file = await _cameraController!.takePicture();
       final Uint8List bytes = await file.readAsBytes();
       Directory(file.path).deleteSync(recursive: true);
 
       final tags = await readExifFromBytes(bytes);
-      final iso = double.parse("${tags["EXIF ISOSpeedRatings"]}");
-      final apertureValueRatio = (tags["EXIF FNumber"]!.values as IfdRatios).ratios.first;
+      final iso = double.tryParse("${tags["EXIF ISOSpeedRatings"]}");
+      final apertureValueRatio = (tags["EXIF FNumber"]?.values as IfdRatios?)?.ratios.first;
+      final speedValueRatio = (tags["EXIF ExposureTime"]?.values as IfdRatios?)?.ratios.first;
+      if (iso == null || apertureValueRatio == null || speedValueRatio == null) {
+        return null;
+      }
+
       final aperture = apertureValueRatio.numerator / apertureValueRatio.denominator;
-      final speedValueRatio = (tags["EXIF ExposureTime"]!.values as IfdRatios).ratios.first;
       final speed = speedValueRatio.numerator / speedValueRatio.denominator;
 
       return log2(pow(aperture, 2)) - log2(speed) - log2(iso / 100);
