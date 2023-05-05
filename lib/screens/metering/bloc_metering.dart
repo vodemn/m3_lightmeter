@@ -33,7 +33,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   late IsoValue _iso = _userPreferencesService.iso;
   late NdValue _nd = _userPreferencesService.ndFilter;
   late Film _film = _userPreferencesService.film;
-  double _ev = 0.0;
+  double _ev100 = 0.0;
   bool _isMeteringInProgress = false;
 
   MeteringBloc(
@@ -90,14 +90,12 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     /// doesn't contain currently selected value
     if (!event.equipmentProfileData.isoValues.any((v) => _iso.value == v.value)) {
       _userPreferencesService.iso = event.equipmentProfileData.isoValues.first;
-      _ev = _ev + log2(event.equipmentProfileData.isoValues.first.value / _iso.value);
       _iso = event.equipmentProfileData.isoValues.first;
     }
 
     /// The same for ND filter
     if (!event.equipmentProfileData.ndValues.any((v) => _nd.value == v.value)) {
       _userPreferencesService.ndFilter = event.equipmentProfileData.ndValues.first;
-      _ev = _ev - event.equipmentProfileData.ndValues.first.stopReduction + _nd.stopReduction;
       _nd = event.equipmentProfileData.ndValues.first;
     }
 
@@ -122,14 +120,12 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       _film = Film.values.first;
     }
     _userPreferencesService.iso = event.isoValue;
-    _ev = _ev + log2(event.isoValue.value / _iso.value);
     _iso = event.isoValue;
     _emitMeasuredState(emit);
   }
 
   void _onNdChanged(NdChangedEvent event, Emitter emit) {
     _userPreferencesService.ndFilter = event.ndValue;
-    _ev = _ev - event.ndValue.stopReduction + _nd.stopReduction;
     _nd = event.ndValue;
     _emitMeasuredState(emit);
   }
@@ -143,25 +139,26 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   void _onMeasured(MeasuredEvent event, Emitter emit) {
     _meteringInteractor.responseVibration();
-    _ev = event.ev100 + log2(_iso.value / 100);
+    _ev100 = event.ev100;
     _emitMeasuredState(emit);
   }
 
   void _emitMeasuredState(Emitter emit) {
+    final ev = _ev100 + log2(_iso.value / 100) - _nd.stopReduction;
     emit(_isMeteringInProgress
         ? MeteringInProgressState(
-            ev: _ev,
+            ev: ev,
             film: _film,
             iso: _iso,
             nd: _nd,
-            exposurePairs: _buildExposureValues(_ev),
+            exposurePairs: _buildExposureValues(ev),
           )
         : MeteringEndedState(
-            ev: _ev,
+            ev: ev,
             film: _film,
             iso: _iso,
             nd: _nd,
-            exposurePairs: _buildExposureValues(_ev),
+            exposurePairs: _buildExposureValues(ev),
           ));
   }
 
