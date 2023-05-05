@@ -33,13 +33,18 @@ class MeteringInteractor {
   bool get isHapticsEnabled => _userPreferencesService.haptics;
 
   /// Executes vibration if haptics are enabled in settings
-  void quickVibration() {
-    if (_userPreferencesService.haptics) _hapticsService.quickVibration();
+  Future<void> quickVibration() async {
+    if (_userPreferencesService.haptics) await _hapticsService.quickVibration();
   }
 
   /// Executes vibration if haptics are enabled in settings
-  void responseVibration() {
-    if (_userPreferencesService.haptics) _hapticsService.responseVibration();
+  Future<void> responseVibration() async {
+    if (_userPreferencesService.haptics) await _hapticsService.responseVibration();
+  }
+
+  /// Executes vibration if haptics are enabled in settings
+  Future<void> errorVibration() async {
+    if (_userPreferencesService.haptics) await _hapticsService.errorVibration();
   }
 
   Future<bool> checkCameraPermission() async {

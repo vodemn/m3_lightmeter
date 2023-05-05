@@ -6,11 +6,13 @@ import 'package:lightmeter/screens/shared/filled_circle/widget_circle_filled.dar
 class MeteringMeasureButton extends StatefulWidget {
   final double? ev;
   final bool isMetering;
+  final bool hasError;
   final VoidCallback onTap;
 
   const MeteringMeasureButton({
     required this.ev,
     required this.isMetering,
+    required this.hasError,
     required this.onTap,
     super.key,
   });
@@ -63,7 +65,12 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
                     color: Theme.of(context).colorScheme.onSurface,
                     size: Dimens.grid72 - Dimens.grid8,
                     child: Center(
-                      child: widget.ev != null ? _EvValueText(ev: widget.ev!) : null,
+                      child: widget.hasError
+                          ? Icon(
+                              Icons.error,
+                              color: Theme.of(context).colorScheme.surface,
+                            )
+                          : (widget.ev != null ? _EvValueText(ev: widget.ev!) : null),
                     ),
                   ),
                 ),

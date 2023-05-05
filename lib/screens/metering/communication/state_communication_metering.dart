@@ -19,7 +19,7 @@ class MeasureState extends SourceState {
 }
 
 abstract class MeasuredState extends ScreenState {
-  final double ev100;
+  final double? ev100;
 
   const MeasuredState(this.ev100);
 }

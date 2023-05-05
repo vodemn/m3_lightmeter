@@ -15,7 +15,7 @@ class MeasureEvent extends ScreenEvent {
 }
 
 abstract class MeasuredEvent extends SourceEvent {
-  final double ev100;
+  final double? ev100;
 
   const MeasuredEvent(this.ev100);
 }

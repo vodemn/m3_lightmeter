@@ -63,7 +63,9 @@ class _MeteringScreenState extends State<MeteringScreen> {
           BlocBuilder<MeteringBloc, MeteringState>(
             builder: (context, state) => MeteringBottomControlsProvider(
               ev: state is MeteringDataState ? state.ev : null,
-              isMetering: state is LoadingState || state is MeteringInProgressState,
+              isMetering:
+                  state is LoadingState || state is MeteringDataState && state.continuousMetering,
+              hasError: state is MeteringDataState && state.hasError,
               onSwitchEvSourceType: context.read<Environment>().hasLightSensor
                   ? EvSourceTypeProvider.of(context).toggleType
                   : null,
