@@ -31,6 +31,7 @@ class MeteringInteractor {
 
   double get cameraEvCalibration => _userPreferencesService.cameraEvCalibration;
   double get lightSensorEvCalibration => _userPreferencesService.lightSensorEvCalibration;
+  bool get isHapticsEnabled => _userPreferencesService.haptics;
 
   IsoValue get iso => _userPreferencesService.iso;
   set iso(IsoValue value) => _userPreferencesService.iso = value;
