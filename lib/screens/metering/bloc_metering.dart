@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
@@ -58,7 +60,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     on<FilmChangedEvent>(_onFilmChanged);
     on<IsoChangedEvent>(_onIsoChanged);
     on<NdChangedEvent>(_onNdChanged);
-    on<MeasureEvent>(_onMeasure);
+    on<MeasureEvent>(_onMeasure, transformer: droppable());
     on<MeasuredEvent>(_onMeasured);
     on<MeasureErrorEvent>(_onMeasureError);
   }
@@ -89,14 +91,14 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
     /// Update selected ISO value, if selected equipment profile
     /// doesn't contain currently selected value
-    if (!event.equipmentProfileData.isoValues.any((v) => _iso.value == v.value)) {
+    if (!event.equipmentProfileData.isoValues.any((v) => iso.value == v.value)) {
       _meteringInteractor.iso = event.equipmentProfileData.isoValues.first;
       _iso = event.equipmentProfileData.isoValues.first;
       willUpdateMeasurements &= true;
     }
 
     /// The same for ND filter
-    if (!event.equipmentProfileData.ndValues.any((v) => _nd.value == v.value)) {
+    if (!event.equipmentProfileData.ndValues.any((v) => nd.value == v.value)) {
       _meteringInteractor.ndFilter = event.equipmentProfileData.ndValues.first;
       _nd = event.equipmentProfileData.ndValues.first;
       willUpdateMeasurements &= true;
@@ -203,7 +205,20 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     );
   }
 
-  List<ExposurePair> _buildExposureValues(double ev) {
+  void _onMeasureError(MeasureErrorEvent _, Emitter emit) {
+    _meteringInteractor.errorVibration();
+    emit(MeteringDataState(
+      ev: null,
+      film: film,
+      iso: iso,
+      nd: nd,
+      exposurePairs: const [],
+      continuousMetering: isMeteringInProgress,
+    ));
+  }
+
+  @visibleForTesting
+  List<ExposurePair> buildExposureValues(double ev) {
     if (ev.isNaN || ev.isInfinite) {
       return List.empty();
     }
@@ -254,7 +269,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       itemsCount,
       (index) => ExposurePair(
         _apertureValues[index + apertureOffset],
-        _film.reciprocityFailure(_shutterSpeedValues[index + shutterSpeedOffset]),
+        film.reciprocityFailure(_shutterSpeedValues[index + shutterSpeedOffset]),
       ),
       growable: false,
     );

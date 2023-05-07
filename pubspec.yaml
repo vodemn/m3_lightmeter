@@ -35,11 +35,17 @@ dependencies:
   vibration: 1.7.7
 
 dev_dependencies:
+  bloc_test: 9.1.1
+  build_runner: ^2.1.7
   flutter_launcher_icons: 0.11.0
   flutter_native_splash: 2.2.16
   google_fonts: 3.0.1
   lint: 2.1.2
+  mocktail: 0.3.0
   test: 1.24.1
+
+dependency_overrides:
+  test_api: 0.4.16
 
 flutter:
   uses-material-design: true
