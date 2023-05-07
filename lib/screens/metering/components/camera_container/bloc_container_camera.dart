@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
@@ -123,7 +124,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       _zoomRange = await Future.wait<double>([
         _cameraController!.getMinZoomLevel(),
         _cameraController!.getMaxZoomLevel(),
-      ]).then((levels) => RangeValues(levels[0], min(_maxZoom, levels[1])));
+      ]).then((levels) => RangeValues(levels[0], math.min(_maxZoom, levels[1])));
       _currentZoom = _zoomRange!.start;
 
       _exposureOffsetRange = await Future.wait<double>([
@@ -131,8 +132,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
         _cameraController!.getMaxExposureOffset(),
       ]).then(
         (levels) => RangeValues(
-          max(_exposureMaxRange.start, levels[0]),
-          min(_exposureMaxRange.end, levels[1]),
+          math.max(_exposureMaxRange.start, levels[0]),
+          math.min(_exposureMaxRange.end, levels[1]),
         ),
       );
       await _cameraController!.getExposureOffsetStepSize().then((value) {
@@ -192,15 +193,16 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       final apertureValueRatio = (tags["EXIF FNumber"]?.values as IfdRatios?)?.ratios.first;
       final speedValueRatio = (tags["EXIF ExposureTime"]?.values as IfdRatios?)?.ratios.first;
       if (iso == null || apertureValueRatio == null || speedValueRatio == null) {
+        log('Error parsing EXIF: ${tags.keys.toString()}');
         return null;
       }
 
       final aperture = apertureValueRatio.numerator / apertureValueRatio.denominator;
       final speed = speedValueRatio.numerator / speedValueRatio.denominator;
 
-      return log2(pow(aperture, 2)) - log2(speed) - log2(iso / 100);
+      return log2(math.pow(aperture, 2)) - log2(speed) - log2(iso / 100);
     } on CameraException catch (e) {
-      debugPrint('Error: ${e.code}\nError Message: ${e.description}');
+      log('Error: ${e.code}\nError Message: ${e.description}');
       return null;
     }
   }
