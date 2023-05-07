@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
-import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
@@ -17,7 +16,6 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   final MeteringCommunicationBloc _communicationBloc;
-  final UserPreferencesService _userPreferencesService;
   final MeteringInteractor _meteringInteractor;
   late final StreamSubscription<communication_states.ScreenState> _communicationSubscription;
 
@@ -29,24 +27,23 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   EquipmentProfileData _equipmentProfileData;
   StopType stopType;
 
-  late IsoValue _iso = _userPreferencesService.iso;
-  late NdValue _nd = _userPreferencesService.ndFilter;
-  late Film _film = _userPreferencesService.film;
+  late IsoValue _iso = _meteringInteractor.iso;
+  late NdValue _nd = _meteringInteractor.ndFilter;
+  late Film _film = _meteringInteractor.film;
   double? _ev100 = 0.0;
   bool _isMeteringInProgress = false;
 
   MeteringBloc(
     this._communicationBloc,
-    this._userPreferencesService,
     this._meteringInteractor,
     this._equipmentProfileData,
     this.stopType,
   ) : super(
           MeteringDataState(
             ev: 0.0,
-            film: _userPreferencesService.film,
-            iso: _userPreferencesService.iso,
-            nd: _userPreferencesService.ndFilter,
+            film: _meteringInteractor.film,
+            iso: _meteringInteractor.iso,
+            nd: _meteringInteractor.ndFilter,
             exposurePairs: const [],
             continuousMetering: false,
           ),
@@ -90,13 +87,13 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     /// Update selected ISO value, if selected equipment profile
     /// doesn't contain currently selected value
     if (!event.equipmentProfileData.isoValues.any((v) => _iso.value == v.value)) {
-      _userPreferencesService.iso = event.equipmentProfileData.isoValues.first;
+      _meteringInteractor.iso = event.equipmentProfileData.isoValues.first;
       _iso = event.equipmentProfileData.isoValues.first;
     }
 
     /// The same for ND filter
     if (!event.equipmentProfileData.ndValues.any((v) => _nd.value == v.value)) {
-      _userPreferencesService.ndFilter = event.equipmentProfileData.ndValues.first;
+      _meteringInteractor.ndFilter = event.equipmentProfileData.ndValues.first;
       _nd = event.equipmentProfileData.ndValues.first;
     }
 
@@ -112,7 +109,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       add(IsoChangedEvent(newIso));
     }
     _film = event.data;
-    _userPreferencesService.film = event.data;
+    _meteringInteractor.film = event.data;
     _updateMeasurements();
   }
 
@@ -120,13 +117,13 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     if (event.isoValue.value != _film.iso) {
       _film = Film.values.first;
     }
-    _userPreferencesService.iso = event.isoValue;
+    _meteringInteractor.iso = event.isoValue;
     _iso = event.isoValue;
     _updateMeasurements();
   }
 
   void _onNdChanged(NdChangedEvent event, Emitter emit) {
-    _userPreferencesService.ndFilter = event.ndValue;
+    _meteringInteractor.ndFilter = event.ndValue;
     _nd = event.ndValue;
     _updateMeasurements();
   }
