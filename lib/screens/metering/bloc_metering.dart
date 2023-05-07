@@ -135,7 +135,11 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     _meteringInteractor.quickVibration();
     _communicationBloc.add(const communication_events.MeasureEvent());
     _isMeteringInProgress = true;
-    emit(const LoadingState());
+    emit(LoadingState(
+      film: _film,
+      iso: _iso,
+      nd: _nd,
+    ));
   }
 
   void _updateMeasurements() => _handleEv100(_ev100);

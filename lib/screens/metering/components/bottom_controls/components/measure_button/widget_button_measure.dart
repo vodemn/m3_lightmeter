@@ -98,13 +98,6 @@ class _EvValueText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (ev.isNaN || ev.isInfinite) {
-      return Icon(
-        Icons.error,
-        color: Theme.of(context).colorScheme.surface,
-      );
-    }
-
     final theme = Theme.of(context);
     return Text(
       '${ev.toStringAsFixed(1)}\n${S.of(context).ev}',

@@ -5,26 +5,35 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 @immutable
 abstract class MeteringState {
-  const MeteringState();
+  final Film film;
+  final IsoValue iso;
+  final NdValue nd;
+
+  const MeteringState({
+    required this.film,
+    required this.iso,
+    required this.nd,
+  });
 }
 
 class LoadingState extends MeteringState {
-  const LoadingState();
+  const LoadingState({
+    required super.film,
+    required super.iso,
+    required super.nd,
+  });
 }
 
 class MeteringDataState extends MeteringState {
   final double? ev;
-  final Film film;
-  final IsoValue iso;
-  final NdValue nd;
   final List<ExposurePair> exposurePairs;
   final bool continuousMetering;
 
   const MeteringDataState({
     required this.ev,
-    required this.film,
-    required this.iso,
-    required this.nd,
+    required super.film,
+    required super.iso,
+    required super.nd,
     required this.exposurePairs,
     required this.continuousMetering,
   });
