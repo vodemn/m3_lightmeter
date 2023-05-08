@@ -70,6 +70,8 @@
     "sourceCode": "Code source",
     "reportIssue": "Rapporter un problème",
     "writeEmail": "Écrire un email",
+    "youDontHaveMailApp": "Vous n'avez installé aucune application de messagerie.",
+    "copyEmail": "Copier un e-mail",
     "version": "Version",
     "versionNumber": "{version} ({buildNumber})",
     "@versionNumber": {

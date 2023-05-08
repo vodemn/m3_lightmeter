@@ -35,6 +35,14 @@
             android:value="2" />
     </application>
 
+    <queries>    
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:scheme="mailto" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent>
+    </queries>
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="true" />
 
