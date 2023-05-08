@@ -2,6 +2,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/res/dimens.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
