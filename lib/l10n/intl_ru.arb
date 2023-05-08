@@ -70,6 +70,8 @@
     "sourceCode": "Исходный код",
     "reportIssue": "Сообщить о проблеме",
     "writeEmail": "Написать на почту",
+    "youDontHaveMailApp": "У вас не установлено почтовое приложение.",
+    "copyEmail": "Скопировать адрес",
     "version": "Версия",
     "versionNumber": "{version} ({buildNumber})",
     "@versionNumber": {
