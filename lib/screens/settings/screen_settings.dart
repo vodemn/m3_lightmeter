@@ -12,27 +12,29 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverScreen(
-      title: S.of(context).settings,
-      appBarActions: [
-        IconButton(
-          onPressed: Navigator.of(context).pop,
-          icon: const Icon(Icons.close),
-        ),
-      ],
-      slivers: [
-        SliverList(
-          delegate: SliverChildListDelegate(
-            <Widget>[
-              const MeteringSettingsSection(),
-              const GeneralSettingsSection(),
-              const ThemeSettingsSection(),
-              const AboutSettingsSection(),
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
-            ],
+    return ScaffoldMessenger(
+      child: SliverScreen(
+        title: S.of(context).settings,
+        appBarActions: [
+          IconButton(
+            onPressed: Navigator.of(context).pop,
+            icon: const Icon(Icons.close),
           ),
-        ),
-      ],
+        ],
+        slivers: [
+          SliverList(
+            delegate: SliverChildListDelegate(
+              <Widget>[
+                const MeteringSettingsSection(),
+                const GeneralSettingsSection(),
+                const ThemeSettingsSection(),
+                const AboutSettingsSection(),
+                SizedBox(height: MediaQuery.of(context).padding.bottom),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
