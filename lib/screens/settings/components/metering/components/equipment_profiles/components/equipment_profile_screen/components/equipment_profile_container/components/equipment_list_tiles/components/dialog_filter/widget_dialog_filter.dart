@@ -61,7 +61,7 @@ class _DialogFilterState<T extends PhotographyValue> extends State<DialogFilter<
                     controlAffinity: ListTileControlAffinity.leading,
                     title: Text(
                       widget.titleAdapter(context, widget.values[index]),
-                      style: Theme.of(context).textTheme.bodyLarge!,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     onChanged: (value) {
                       if (value != null) {
@@ -96,7 +96,7 @@ class _DialogFilterState<T extends PhotographyValue> extends State<DialogFilter<
                 TextButton(
                   onPressed: _hasAnySelected
                       ? () {
-                          List<T> selectedValues = [];
+                          final List<T> selectedValues = [];
                           for (int i = 0; i < widget.values.length; i++) {
                             if (checkboxValues[i]) {
                               selectedValues.add(widget.values[i]);

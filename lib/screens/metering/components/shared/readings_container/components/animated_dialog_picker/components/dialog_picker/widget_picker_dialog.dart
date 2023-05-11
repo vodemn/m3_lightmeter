@@ -14,7 +14,7 @@ class DialogPicker<T> extends StatefulWidget {
   final DialogPickerItemTitleBuilder<T> itemTitleBuilder;
   final DialogPickerItemTrailingBuilder<T>? itemTrailingBuilder;
   final VoidCallback onCancel;
-  final ValueChanged onSelect;
+  final ValueChanged<T> onSelect;
 
   const DialogPicker({
     required this.icon,
@@ -60,7 +60,7 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
               padding: Dimens.dialogIconTitlePadding,
               child: Text(
                 widget.title,
-                style: Theme.of(context).textTheme.headlineSmall!,
+                style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -74,7 +74,7 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
                 ),
                 child: Text(
                   widget.subtitle!,
-                  style: Theme.of(context).textTheme.bodyMedium!,
+                  style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
               ),

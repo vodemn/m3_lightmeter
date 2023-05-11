@@ -104,7 +104,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
       );
       _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
 
-      final renderBox = _key.currentContext!.findRenderObject() as RenderBox;
+      final renderBox = _key.currentContext!.findRenderObject()! as RenderBox;
       _closedOffset = renderBox.localToGlobal(Offset.zero);
       _offsetAnimation = SizeTween(
         begin: Size(
@@ -129,7 +129,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
 
     _elevationAnimation = Tween<double>(
       begin: 0,
-      end: Theme.of(context).dialogTheme.elevation!,
+      end: Theme.of(context).dialogTheme.elevation,
     ).animate(_defaultCurvedAnimation);
   }
 
