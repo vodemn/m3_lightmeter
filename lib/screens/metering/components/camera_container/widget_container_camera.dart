@@ -154,9 +154,10 @@ class _CameraControlsBuilder extends StatelessWidget {
               error: state.error,
               onReset: () {
                 context.read<CameraContainerBloc>().add(
-                    state.error == CameraErrorType.permissionNotGranted
-                        ? const OpenAppSettingsEvent()
-                        : const InitializeEvent(),);
+                      state.error == CameraErrorType.permissionNotGranted
+                          ? const OpenAppSettingsEvent()
+                          : const InitializeEvent(),
+                    );
               },
             );
           } else {

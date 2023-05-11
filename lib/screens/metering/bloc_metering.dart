@@ -144,21 +144,23 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   void _emitMeasuredState(Emitter emit) {
     final ev = _ev100 + log2(_iso.value / 100) - _nd.stopReduction;
-    emit(_isMeteringInProgress
-        ? MeteringInProgressState(
-            ev: ev,
-            film: _film,
-            iso: _iso,
-            nd: _nd,
-            exposurePairs: _buildExposureValues(ev),
-          )
-        : MeteringEndedState(
-            ev: ev,
-            film: _film,
-            iso: _iso,
-            nd: _nd,
-            exposurePairs: _buildExposureValues(ev),
-          ),);
+    emit(
+      _isMeteringInProgress
+          ? MeteringInProgressState(
+              ev: ev,
+              film: _film,
+              iso: _iso,
+              nd: _nd,
+              exposurePairs: _buildExposureValues(ev),
+            )
+          : MeteringEndedState(
+              ev: ev,
+              film: _film,
+              iso: _iso,
+              nd: _nd,
+              exposurePairs: _buildExposureValues(ev),
+            ),
+    );
   }
 
   List<ExposurePair> _buildExposureValues(double ev) {
@@ -199,8 +201,10 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       shutterSpeedOffset = 0;
     }
 
-    final int itemsCount = min(_apertureValues.length + shutterSpeedOffset,
-            _shutterSpeedValues.length + apertureOffset,) -
+    final int itemsCount = min(
+          _apertureValues.length + shutterSpeedOffset,
+          _shutterSpeedValues.length + apertureOffset,
+        ) -
         max(apertureOffset, shutterSpeedOffset);
 
     if (itemsCount < 0) {

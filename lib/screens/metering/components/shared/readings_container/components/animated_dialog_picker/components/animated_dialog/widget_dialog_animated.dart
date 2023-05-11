@@ -64,25 +64,29 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
     _closedOpacityAnimation = Tween<double>(
       begin: 1,
       end: 0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(
-        0,
-        0.8,
-        curve: Curves.ease,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(
+          0,
+          0.8,
+          curve: Curves.ease,
+        ),
       ),
-    ),);
+    );
     _openedOpacityAnimation = Tween<double>(
       begin: 0,
       end: 1,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(
-        0.8,
-        1.0,
-        curve: Curves.easeInOut,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(
+          0.8,
+          1.0,
+          curve: Curves.easeInOut,
+        ),
       ),
-    ),);
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final mediaQuery = MediaQuery.of(context);

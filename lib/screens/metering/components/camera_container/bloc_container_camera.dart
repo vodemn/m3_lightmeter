@@ -161,13 +161,15 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   void _emitActiveState(Emitter emit) {
-    emit(CameraActiveState(
-      zoomRange: _zoomRange!,
-      currentZoom: _currentZoom,
-      exposureOffsetRange: _exposureOffsetRange!,
-      exposureOffsetStep: _exposureStep,
-      currentExposureOffset: _currentExposureOffset,
-    ),);
+    emit(
+      CameraActiveState(
+        zoomRange: _zoomRange!,
+        currentZoom: _currentZoom,
+        exposureOffsetRange: _exposureOffsetRange!,
+        exposureOffsetStep: _exposureStep,
+        currentExposureOffset: _currentExposureOffset,
+      ),
+    );
   }
 
   Future<double?> _takePhoto() async {

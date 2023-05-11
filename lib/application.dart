@@ -40,7 +40,8 @@ class Application extends StatelessWidget {
             providers: [
               Provider.value(value: env.copyWith(hasLightSensor: snapshot.data![1] as bool)),
               Provider(
-                  create: (_) => UserPreferencesService(snapshot.data![0] as SharedPreferences),),
+                create: (_) => UserPreferencesService(snapshot.data![0] as SharedPreferences),
+              ),
               Provider(create: (_) => const CaffeineService()),
               Provider(create: (_) => const HapticsService()),
               Provider(create: (_) => PermissionsService()),

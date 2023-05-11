@@ -41,9 +41,11 @@ class MeteringBottomControls extends StatelessWidget {
                     child: Center(
                       child: IconButton(
                         onPressed: onSwitchEvSourceType,
-                        icon: Icon(context.watch<EvSourceType>() != EvSourceType.camera
-                            ? Icons.camera_rear
-                            : Icons.wb_incandescent,),
+                        icon: Icon(
+                          context.watch<EvSourceType>() != EvSourceType.camera
+                              ? Icons.camera_rear
+                              : Icons.wb_incandescent,
+                        ),
                       ),
                     ),
                   )

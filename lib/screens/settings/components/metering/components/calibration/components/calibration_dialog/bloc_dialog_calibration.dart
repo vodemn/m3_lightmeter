@@ -36,7 +36,9 @@ class CalibrationDialogBloc extends Bloc<CalibrationDialogEvent, CalibrationDial
   }
 
   void _onLightSensorEvCalibrationChanged(
-      LightSensorEvCalibrationChangedEvent event, Emitter emit,) {
+    LightSensorEvCalibrationChangedEvent event,
+    Emitter emit,
+  ) {
     _lightSensorEvCalibration = event.value;
     emit(CalibrationDialogState(_cameraEvCalibration, _lightSensorEvCalibration));
   }
