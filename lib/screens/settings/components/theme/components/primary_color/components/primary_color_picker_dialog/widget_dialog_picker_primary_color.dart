@@ -57,9 +57,9 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
                   ),
                 ),
               ),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   _Cutout(),
                   RotatedBox(
                     quarterTurns: 2,

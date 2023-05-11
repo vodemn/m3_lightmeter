@@ -1,15 +1,15 @@
 import 'dart:async';
+
 import 'package:lightmeter/interactors/metering_interactor.dart';
-import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_event;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
     as communication_states;
+import 'package:lightmeter/screens/metering/components/light_sensor_container/event_container_light_sensor.dart';
+import 'package:lightmeter/screens/metering/components/light_sensor_container/state_container_light_sensor.dart';
+import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
 import 'package:lightmeter/utils/log_2.dart';
-
-import 'event_container_light_sensor.dart';
-import 'state_container_light_sensor.dart';
 
 class LightSensorContainerBloc
     extends EvSourceBlocBase<LightSensorContainerEvent, LightSensorContainerState> {

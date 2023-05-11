@@ -5,23 +5,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
+import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
+import 'package:lightmeter/data/permissions_service.dart';
+import 'package:lightmeter/data/shared_prefs_service.dart';
+import 'package:lightmeter/environment.dart';
+import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/ev_source_type_provider.dart';
+import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
+import 'package:lightmeter/providers/stop_type_provider.dart';
 import 'package:lightmeter/providers/supported_locale_provider.dart';
+import 'package:lightmeter/providers/theme_provider.dart';
+import 'package:lightmeter/screens/metering/flow_metering.dart';
+import 'package:lightmeter/screens/settings/flow_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'data/light_sensor_service.dart';
-import 'data/permissions_service.dart';
-import 'data/shared_prefs_service.dart';
-import 'environment.dart';
-import 'generated/l10n.dart';
-import 'providers/equipment_profile_provider.dart';
-import 'providers/ev_source_type_provider.dart';
-import 'providers/metering_screen_layout_provider.dart';
-import 'providers/theme_provider.dart';
-import 'screens/metering/flow_metering.dart';
-import 'screens/settings/flow_settings.dart';
-import 'providers/stop_type_provider.dart';
 
 class Application extends StatelessWidget {
   final Environment env;

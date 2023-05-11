@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:provider/provider.dart';
-
-import 'components/measure_button/widget_button_measure.dart';
 
 class MeteringBottomControls extends StatelessWidget {
   final double? ev;

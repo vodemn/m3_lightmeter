@@ -5,7 +5,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/theme_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-import 'components/primary_color_picker_dialog/widget_dialog_picker_primary_color.dart';
+import 'package:lightmeter/screens/settings/components/theme/components/primary_color/components/primary_color_picker_dialog/widget_dialog_picker_primary_color.dart';
 
 class PrimaryColorListTile extends StatelessWidget {
   const PrimaryColorListTile({super.key});

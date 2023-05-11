@@ -2,22 +2,22 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+
 import 'package:camera/camera.dart';
 import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
-import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
-import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_event;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
     as communication_states;
+import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
+import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
 import 'package:lightmeter/utils/log_2.dart';
-
-import 'event_container_camera.dart';
-import 'state_container_camera.dart';
 
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;

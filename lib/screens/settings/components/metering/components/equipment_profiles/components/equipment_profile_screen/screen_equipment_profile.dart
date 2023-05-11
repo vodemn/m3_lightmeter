@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-
-import 'components/equipment_profile_container/widget_container_equipment_profile.dart';
-import 'components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
 
 class EquipmentProfilesScreen extends StatefulWidget {
   const EquipmentProfilesScreen({super.key});

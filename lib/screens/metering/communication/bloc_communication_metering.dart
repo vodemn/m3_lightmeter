@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'event_communication_metering.dart';
-import 'state_communication_metering.dart';
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart';
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart';
 
 class MeteringCommunicationBloc
     extends Bloc<MeteringCommunicationEvent, MeteringCommunicationState> {

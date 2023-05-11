@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/settings_interactor.dart';
 
-import 'event_dialog_calibration.dart';
-import 'state_dialog_calibration.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/event_dialog_calibration.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/state_dialog_calibration.dart';
 
 class CalibrationDialogBloc extends Bloc<CalibrationDialogEvent, CalibrationDialogState> {
   final SettingsInteractor _settingsInteractor;
