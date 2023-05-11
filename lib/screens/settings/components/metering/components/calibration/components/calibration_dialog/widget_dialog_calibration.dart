@@ -3,12 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/bloc_dialog_calibration.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/event_dialog_calibration.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/state_dialog_calibration.dart';
 import 'package:lightmeter/screens/shared/centered_slider/widget_slider_centered.dart';
 import 'package:lightmeter/utils/to_string_signed.dart';
-
-import 'bloc_dialog_calibration.dart';
-import 'event_dialog_calibration.dart';
-import 'state_dialog_calibration.dart';
 
 class CalibrationDialog extends StatelessWidget {
   const CalibrationDialog({super.key});

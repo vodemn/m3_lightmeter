@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/shape_top_bar_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';
-
-import 'shape_top_bar_metering.dart';
 
 class MeteringTopBar extends StatelessWidget {
   final ReadingsContainer readingsContainer;

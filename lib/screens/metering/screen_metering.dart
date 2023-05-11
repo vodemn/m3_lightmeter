@@ -8,14 +8,13 @@ import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
 import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
+import 'package:lightmeter/screens/metering/bloc_metering.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/provider_bottom_controls.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/provider_container_camera.dart';
+import 'package:lightmeter/screens/metering/components/light_sensor_container/provider_container_light_sensor.dart';
+import 'package:lightmeter/screens/metering/event_metering.dart';
+import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-
-import 'components/bottom_controls/provider_bottom_controls.dart';
-import 'components/camera_container/provider_container_camera.dart';
-import 'components/light_sensor_container/provider_container_light_sensor.dart';
-import 'bloc_metering.dart';
-import 'event_metering.dart';
-import 'state_metering.dart';
 
 class MeteringScreen extends StatefulWidget {
   const MeteringScreen({super.key});

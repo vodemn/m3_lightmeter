@@ -64,25 +64,29 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
     _closedOpacityAnimation = Tween<double>(
       begin: 1,
       end: 0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(
-        0,
-        0.8,
-        curve: Curves.ease,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(
+          0,
+          0.8,
+          curve: Curves.ease,
+        ),
       ),
-    ));
+    );
     _openedOpacityAnimation = Tween<double>(
       begin: 0,
       end: 1,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(
-        0.8,
-        1.0,
-        curve: Curves.easeInOut,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(
+          0.8,
+          1.0,
+          curve: Curves.easeInOut,
+        ),
       ),
-    ));
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final mediaQuery = MediaQuery.of(context);
@@ -100,7 +104,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
       );
       _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
 
-      final renderBox = _key.currentContext!.findRenderObject() as RenderBox;
+      final renderBox = _key.currentContext!.findRenderObject()! as RenderBox;
       _closedOffset = renderBox.localToGlobal(Offset.zero);
       _offsetAnimation = SizeTween(
         begin: Size(
@@ -125,7 +129,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
 
     _elevationAnimation = Tween<double>(
       begin: 0,
-      end: Theme.of(context).dialogTheme.elevation!,
+      end: Theme.of(context).dialogTheme.elevation,
     ).animate(_defaultCurvedAnimation);
   }
 

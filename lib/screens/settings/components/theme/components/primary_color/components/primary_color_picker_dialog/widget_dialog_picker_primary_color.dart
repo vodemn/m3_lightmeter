@@ -28,47 +28,48 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
       titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(S.of(context).choosePrimaryColor),
       content: SizedBox(
-          height: Dimens.grid48,
-          width: double.maxFinite,
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                controller: _scrollController,
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.zero,
-                child: Row(
-                  children: List.generate(
-                    ThemeProvider.primaryColorsList.length,
-                    (index) {
-                      final color = ThemeProvider.primaryColorsList[index];
-                      return Padding(
-                        padding: EdgeInsets.only(left: index == 0 ? 0 : Dimens.paddingS),
-                        child: _SelectableColorItem(
-                          color: color,
-                          selected: color.value == _selected.value,
-                          onTap: () {
-                            setState(() {
-                              _selected = color;
-                            });
-                          },
-                        ),
-                      );
-                    },
-                  ),
+        height: Dimens.grid48,
+        width: double.maxFinite,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.zero,
+              child: Row(
+                children: List.generate(
+                  ThemeProvider.primaryColorsList.length,
+                  (index) {
+                    final color = ThemeProvider.primaryColorsList[index];
+                    return Padding(
+                      padding: EdgeInsets.only(left: index == 0 ? 0 : Dimens.paddingS),
+                      child: _SelectableColorItem(
+                        color: color,
+                        selected: color.value == _selected.value,
+                        onTap: () {
+                          setState(() {
+                            _selected = color;
+                          });
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  _Cutout(),
-                  RotatedBox(
-                    quarterTurns: 2,
-                    child: _Cutout(),
-                  ),
-                ],
-              ),
-            ],
-          )),
+            ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _Cutout(),
+                RotatedBox(
+                  quarterTurns: 2,
+                  child: _Cutout(),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
       actionsPadding: Dimens.dialogActionsPadding,
       actions: [
         TextButton(

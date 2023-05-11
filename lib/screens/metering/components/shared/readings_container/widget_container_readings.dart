@@ -7,10 +7,9 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/animated_dialog_picker/widget_picker_dialog_animated.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/reading_value_container/widget_container_reading_value.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-
-import 'components/animated_dialog_picker/widget_picker_dialog_animated.dart';
-import 'components/reading_value_container/widget_container_reading_value.dart';
 
 /// Contains a column of fastest & slowest exposure pairs + a row of ISO and ND pickers
 class ReadingsContainer extends StatelessWidget {

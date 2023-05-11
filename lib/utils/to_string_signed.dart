@@ -9,7 +9,7 @@ extension SignedString on num {
 }
 
 extension SignedStringDouble on double {
-  String toStringSignedAsFixed(fractionDigits) {
+  String toStringSignedAsFixed(int fractionDigits) {
     if (this > 0) {
       return "+${toStringAsFixed(fractionDigits)}";
     } else {

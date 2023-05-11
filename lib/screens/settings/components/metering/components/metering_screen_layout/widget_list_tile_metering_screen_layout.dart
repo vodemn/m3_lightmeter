@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 
-import 'components/meterins_screen_layout_features_dialog/widget_dialog_metering_screen_layout_features.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/metering_screen_layout/components/meterins_screen_layout_features_dialog/widget_dialog_metering_screen_layout_features.dart';
 
 class MeteringScreenLayoutListTile extends StatelessWidget {
   const MeteringScreenLayoutListTile({super.key});

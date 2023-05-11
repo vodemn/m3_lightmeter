@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/interactors/settings_interactor.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/provider_dialog_calibration.dart';
 import 'package:provider/provider.dart';
-
-import 'components/calibration_dialog/provider_dialog_calibration.dart';
 
 class CalibrationListTile extends StatelessWidget {
   const CalibrationListTile({super.key});

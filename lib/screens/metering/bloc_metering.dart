@@ -6,15 +6,14 @@ import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
     as communication_states;
+import 'package:lightmeter/screens/metering/event_metering.dart';
+import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-
-import 'communication/bloc_communication_metering.dart';
-import 'event_metering.dart';
-import 'state_metering.dart';
 
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   final MeteringCommunicationBloc _communicationBloc;
@@ -145,26 +144,28 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   void _emitMeasuredState(Emitter emit) {
     final ev = _ev100 + log2(_iso.value / 100) - _nd.stopReduction;
-    emit(_isMeteringInProgress
-        ? MeteringInProgressState(
-            ev: ev,
-            film: _film,
-            iso: _iso,
-            nd: _nd,
-            exposurePairs: _buildExposureValues(ev),
-          )
-        : MeteringEndedState(
-            ev: ev,
-            film: _film,
-            iso: _iso,
-            nd: _nd,
-            exposurePairs: _buildExposureValues(ev),
-          ));
+    emit(
+      _isMeteringInProgress
+          ? MeteringInProgressState(
+              ev: ev,
+              film: _film,
+              iso: _iso,
+              nd: _nd,
+              exposurePairs: _buildExposureValues(ev),
+            )
+          : MeteringEndedState(
+              ev: ev,
+              film: _film,
+              iso: _iso,
+              nd: _nd,
+              exposurePairs: _buildExposureValues(ev),
+            ),
+    );
   }
 
   List<ExposurePair> _buildExposureValues(double ev) {
     if (ev.isNaN || ev.isInfinite) {
-      return List.empty(growable: false);
+      return List.empty();
     }
 
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
@@ -200,12 +201,14 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       shutterSpeedOffset = 0;
     }
 
-    final int itemsCount = min(_apertureValues.length + shutterSpeedOffset,
-            _shutterSpeedValues.length + apertureOffset) -
+    final int itemsCount = min(
+          _apertureValues.length + shutterSpeedOffset,
+          _shutterSpeedValues.length + apertureOffset,
+        ) -
         max(apertureOffset, shutterSpeedOffset);
 
     if (itemsCount < 0) {
-      return List.empty(growable: false);
+      return List.empty();
     }
     return List.generate(
       itemsCount,

@@ -7,19 +7,18 @@ import 'package:lightmeter/features.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls/widget_camera_controls.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls_placeholder/widget_placeholder_camera_controls.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_view/widget_camera_view.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/components/camera_view_placeholder/widget_placeholder_camera_view.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/widget_top_bar_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-
-import 'bloc_container_camera.dart';
-import 'components/camera_controls/widget_camera_controls.dart';
-import 'components/camera_controls_placeholder/widget_placeholder_camera_controls.dart';
-import 'components/camera_view_placeholder/widget_placeholder_camera_view.dart';
-import 'event_container_camera.dart';
-import 'state_container_camera.dart';
 
 class CameraContainer extends StatelessWidget {
   final ExposurePair? fastest;
@@ -104,7 +103,7 @@ class CameraContainer extends StatelessWidget {
 }
 
 class _CameraViewBuilder extends StatelessWidget {
-  const _CameraViewBuilder({Key? key}) : super(key: key);
+  const _CameraViewBuilder();
 
   @override
   Widget build(BuildContext context) {
@@ -155,9 +154,10 @@ class _CameraControlsBuilder extends StatelessWidget {
               error: state.error,
               onReset: () {
                 context.read<CameraContainerBloc>().add(
-                    state.error == CameraErrorType.permissionNotGranted
-                        ? const OpenAppSettingsEvent()
-                        : const InitializeEvent());
+                      state.error == CameraErrorType.permissionNotGranted
+                          ? const OpenAppSettingsEvent()
+                          : const InitializeEvent(),
+                    );
               },
             );
           } else {

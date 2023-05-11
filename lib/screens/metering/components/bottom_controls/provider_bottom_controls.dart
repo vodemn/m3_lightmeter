@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-import 'widget_bottom_controls.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/widget_bottom_controls.dart';
 
 class MeteringBottomControlsProvider extends StatelessWidget {
   final double? ev;

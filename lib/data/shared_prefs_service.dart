@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/models/ev_source_type.dart';
+import 'package:lightmeter/data/models/film.dart';
+import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
+import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'models/ev_source_type.dart';
-import 'models/film.dart';
-import 'models/metering_screen_layout_config.dart';
-import 'models/theme_type.dart';
 
 class UserPreferencesService {
   static const _isoKey = "iso";
@@ -87,7 +86,9 @@ class UserPreferencesService {
   MeteringScreenLayoutConfig get meteringScreenLayout {
     final configJson = _sharedPreferences.getString(_meteringScreenLayoutKey);
     if (configJson != null) {
-      return MeteringScreenLayoutConfigJson.fromJson(json.decode(configJson));
+      return MeteringScreenLayoutConfigJson.fromJson(
+        json.decode(configJson) as Map<String, dynamic>,
+      );
     } else {
       return {
         MeteringScreenLayoutFeature.extremeExposurePairs: true,

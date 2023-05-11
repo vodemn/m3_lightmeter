@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/application.dart';
 import 'package:lightmeter/environment.dart';
-
-import 'application.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -65,14 +65,16 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
 
   /// Creates a default equipment profile
   void addProfile(String name) {
-    _customProfiles.add(EquipmentProfileData(
-      id: const Uuid().v1(),
-      name: name,
-      apertureValues: ApertureValue.values,
-      ndValues: NdValue.values,
-      shutterSpeedValues: ShutterSpeedValue.values,
-      isoValues: IsoValue.values,
-    ));
+    _customProfiles.add(
+      EquipmentProfileData(
+        id: const Uuid().v1(),
+        name: name,
+        apertureValues: ApertureValue.values,
+        ndValues: NdValue.values,
+        shutterSpeedValues: ShutterSpeedValue.values,
+        isoValues: IsoValue.values,
+      ),
+    );
     _refreshSavedProfiles();
   }
 

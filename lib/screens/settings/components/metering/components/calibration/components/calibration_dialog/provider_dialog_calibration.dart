@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/settings_interactor.dart';
 
-import 'bloc_dialog_calibration.dart';
-import 'widget_dialog_calibration.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/bloc_dialog_calibration.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/widget_dialog_calibration.dart';
 
 class CalibrationDialogProvider extends StatelessWidget {
   const CalibrationDialogProvider({super.key});

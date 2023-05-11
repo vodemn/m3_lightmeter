@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 class CameraView extends StatelessWidget {
   final CameraController controller;
 
-  const CameraView({required this.controller, Key? key}) : super(key: key);
+  const CameraView({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {

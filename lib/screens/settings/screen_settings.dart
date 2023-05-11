@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/screens/settings/components/about/widget_settings_section_about.dart';
+import 'package:lightmeter/screens/settings/components/general/widget_settings_section_general.dart';
+import 'package:lightmeter/screens/settings/components/metering/widget_settings_section_metering.dart';
+import 'package:lightmeter/screens/settings/components/theme/widget_settings_section_theme.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
-
-import 'components/about/widget_settings_section_about.dart';
-import 'components/general/widget_settings_section_general.dart';
-import 'components/metering/widget_settings_section_metering.dart';
-import 'components/theme/widget_settings_section_theme.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

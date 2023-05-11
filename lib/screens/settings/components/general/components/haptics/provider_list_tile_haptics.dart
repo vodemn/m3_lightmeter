@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/settings_interactor.dart';
 
-import 'bloc_list_tile_haptics.dart';
-import 'widget_list_tile_haptics.dart';
+import 'package:lightmeter/screens/settings/components/general/components/haptics/bloc_list_tile_haptics.dart';
+import 'package:lightmeter/screens/settings/components/general/components/haptics/widget_list_tile_haptics.dart';
 
 class HapticsListTileProvider extends StatelessWidget {
   const HapticsListTileProvider({super.key});

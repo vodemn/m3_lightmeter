@@ -29,4 +29,3 @@ extension SupportedLocaleExtension on SupportedLocale {
     }
   }
 }
-
