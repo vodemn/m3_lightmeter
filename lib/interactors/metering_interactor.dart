@@ -58,8 +58,6 @@ class MeteringInteractor {
     AppSettings.openAppSettings();
   }
 
-  void enableHaptics(bool enable) => _userPreferencesService.haptics = enable;
-
   Future<bool> hasAmbientLightSensor() async {
     if (Platform.isAndroid) {
       return _lightSensorService.hasSensor();

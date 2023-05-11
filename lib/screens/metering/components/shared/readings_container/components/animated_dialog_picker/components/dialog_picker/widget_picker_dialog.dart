@@ -110,7 +110,6 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
           padding: Dimens.dialogActionsPadding,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.max,
             children: [
               const Spacer(),
               TextButton(

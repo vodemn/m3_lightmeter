@@ -86,7 +86,9 @@ class UserPreferencesService {
   MeteringScreenLayoutConfig get meteringScreenLayout {
     final configJson = _sharedPreferences.getString(_meteringScreenLayoutKey);
     if (configJson != null) {
-      return MeteringScreenLayoutConfigJson.fromJson(json.decode(configJson));
+      return MeteringScreenLayoutConfigJson.fromJson(
+        json.decode(configJson) as Map<String, dynamic>,
+      );
     } else {
       return {
         MeteringScreenLayoutFeature.extremeExposurePairs: true,

@@ -167,7 +167,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       exposureOffsetRange: _exposureOffsetRange!,
       exposureOffsetStep: _exposureStep,
       currentExposureOffset: _currentExposureOffset,
-    ));
+    ),);
   }
 
   Future<double?> _takePhoto() async {

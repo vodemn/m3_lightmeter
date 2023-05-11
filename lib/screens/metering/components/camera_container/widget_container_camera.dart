@@ -103,7 +103,7 @@ class CameraContainer extends StatelessWidget {
 }
 
 class _CameraViewBuilder extends StatelessWidget {
-  const _CameraViewBuilder({Key? key}) : super(key: key);
+  const _CameraViewBuilder();
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +156,7 @@ class _CameraControlsBuilder extends StatelessWidget {
                 context.read<CameraContainerBloc>().add(
                     state.error == CameraErrorType.permissionNotGranted
                         ? const OpenAppSettingsEvent()
-                        : const InitializeEvent());
+                        : const InitializeEvent(),);
               },
             );
           } else {

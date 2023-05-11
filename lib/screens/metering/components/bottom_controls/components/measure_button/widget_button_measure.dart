@@ -73,7 +73,6 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
                   /// This key is needed to make indicator start from the same point every time
                   key: ValueKey(widget.isMetering),
                   color: Theme.of(context).colorScheme.onSurface,
-                  strokeWidth: Dimens.grid4,
                   value: widget.isMetering ? null : 1,
                 ),
               ),

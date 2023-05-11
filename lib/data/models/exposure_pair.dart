@@ -7,5 +7,5 @@ class ExposurePair {
   const ExposurePair(this.aperture, this.shutterSpeed);
 
   @override
-  String toString() => '${aperture.toString()} - ${shutterSpeed.toString()}';
+  String toString() => '$aperture - $shutterSpeed';
 }

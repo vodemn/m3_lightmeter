@@ -158,12 +158,12 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
             iso: _iso,
             nd: _nd,
             exposurePairs: _buildExposureValues(ev),
-          ));
+          ),);
   }
 
   List<ExposurePair> _buildExposureValues(double ev) {
     if (ev.isNaN || ev.isInfinite) {
-      return List.empty(growable: false);
+      return List.empty();
     }
 
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
@@ -200,11 +200,11 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     }
 
     final int itemsCount = min(_apertureValues.length + shutterSpeedOffset,
-            _shutterSpeedValues.length + apertureOffset) -
+            _shutterSpeedValues.length + apertureOffset,) -
         max(apertureOffset, shutterSpeedOffset);
 
     if (itemsCount < 0) {
-      return List.empty(growable: false);
+      return List.empty();
     }
     return List.generate(
       itemsCount,

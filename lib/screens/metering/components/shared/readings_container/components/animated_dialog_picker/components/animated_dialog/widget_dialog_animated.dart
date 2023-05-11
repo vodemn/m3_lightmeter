@@ -71,7 +71,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         0.8,
         curve: Curves.ease,
       ),
-    ));
+    ),);
     _openedOpacityAnimation = Tween<double>(
       begin: 0,
       end: 1,
@@ -82,7 +82,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         1.0,
         curve: Curves.easeInOut,
       ),
-    ));
+    ),);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final mediaQuery = MediaQuery.of(context);

@@ -64,7 +64,6 @@ class _DialogRangePickerState<T extends PhotographyValue> extends State<DialogRa
                     _start.toDouble(),
                     _end.toDouble(),
                   ),
-                  min: 0,
                   max: widget.values.length.toDouble() - 1,
                   divisions: widget.values.length - 1,
                   onChanged: (value) {

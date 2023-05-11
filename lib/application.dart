@@ -32,7 +32,7 @@ class Application extends StatelessWidget {
     return FutureBuilder(
       future: Future.wait([
         SharedPreferences.getInstance(),
-        Platform.isAndroid ? const LightSensorService().hasSensor() : Future.value(false),
+        if (Platform.isAndroid) const LightSensorService().hasSensor() else Future.value(false),
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
@@ -40,7 +40,7 @@ class Application extends StatelessWidget {
             providers: [
               Provider.value(value: env.copyWith(hasLightSensor: snapshot.data![1] as bool)),
               Provider(
-                  create: (_) => UserPreferencesService(snapshot.data![0] as SharedPreferences)),
+                  create: (_) => UserPreferencesService(snapshot.data![0] as SharedPreferences),),
               Provider(create: (_) => const CaffeineService()),
               Provider(create: (_) => const HapticsService()),
               Provider(create: (_) => PermissionsService()),

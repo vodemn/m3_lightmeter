@@ -68,7 +68,7 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
                 ],
               ),
             ],
-          )),
+          ),),
       actionsPadding: Dimens.dialogActionsPadding,
       actions: [
         TextButton(

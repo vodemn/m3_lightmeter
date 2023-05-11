@@ -59,7 +59,6 @@ class MeteringTopBarShape extends CustomPainter {
       path.arcToPoint(
         Offset(appendixWidth, size.height + appendixHeight + allowedRadius),
         radius: circularRadius,
-        clockwise: true,
       );
       path.lineTo(appendixWidth, size.height - allowedRadius);
       path.arcToPoint(
@@ -98,7 +97,6 @@ class MeteringTopBarShape extends CustomPainter {
         Offset(allowedRadius, -allowedRadius),
         radius: Radius.circular(allowedRadius),
         rotation: 90,
-        clockwise: true,
       );
 
       // Right side with bottom corner

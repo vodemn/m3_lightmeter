@@ -72,7 +72,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
       ndValues: NdValue.values,
       shutterSpeedValues: ShutterSpeedValue.values,
       isoValues: IsoValue.values,
-    ));
+    ),);
     _refreshSavedProfiles();
   }
 

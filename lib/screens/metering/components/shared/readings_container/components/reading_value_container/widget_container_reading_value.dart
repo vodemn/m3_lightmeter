@@ -42,7 +42,6 @@ class ReadingValueContainer extends StatelessWidget {
           padding: const EdgeInsets.all(Dimens.paddingM),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: _items,
           ),
