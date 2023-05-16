@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
-import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
@@ -17,7 +16,6 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   final MeteringCommunicationBloc _communicationBloc;
-  final UserPreferencesService _userPreferencesService;
   final MeteringInteractor _meteringInteractor;
   late final StreamSubscription<communication_states.ScreenState> _communicationSubscription;
 
@@ -29,25 +27,25 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   EquipmentProfileData _equipmentProfileData;
   StopType stopType;
 
-  late IsoValue _iso = _userPreferencesService.iso;
-  late NdValue _nd = _userPreferencesService.ndFilter;
-  late Film _film = _userPreferencesService.film;
-  double _ev100 = 0.0;
+  late IsoValue _iso = _meteringInteractor.iso;
+  late NdValue _nd = _meteringInteractor.ndFilter;
+  late Film _film = _meteringInteractor.film;
+  double? _ev100 = 0.0;
   bool _isMeteringInProgress = false;
 
   MeteringBloc(
     this._communicationBloc,
-    this._userPreferencesService,
     this._meteringInteractor,
     this._equipmentProfileData,
     this.stopType,
   ) : super(
-          MeteringEndedState(
+          MeteringDataState(
             ev: 0.0,
-            film: _userPreferencesService.film,
-            iso: _userPreferencesService.iso,
-            nd: _userPreferencesService.ndFilter,
+            film: _meteringInteractor.film,
+            iso: _meteringInteractor.iso,
+            nd: _meteringInteractor.ndFilter,
             exposurePairs: const [],
+            continuousMetering: false,
           ),
         ) {
     _communicationSubscription = _communicationBloc.stream
@@ -62,6 +60,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     on<NdChangedEvent>(_onNdChanged);
     on<MeasureEvent>(_onMeasure);
     on<MeasuredEvent>(_onMeasured);
+    on<MeasureErrorEvent>(_onMeasureError);
   }
 
   @override
@@ -73,13 +72,13 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   void _onCommunicationState(communication_states.ScreenState communicationState) {
     if (communicationState is communication_states.MeasuredState) {
       _isMeteringInProgress = communicationState is communication_states.MeteringInProgressState;
-      add(MeasuredEvent(communicationState.ev100));
+      _handleEv100(communicationState.ev100);
     }
   }
 
   void _onStopTypeChanged(StopTypeChangedEvent event, Emitter emit) {
     stopType = event.stopType;
-    _emitMeasuredState(emit);
+    _updateMeasurements();
   }
 
   void _onEquipmentProfileChanged(EquipmentProfileChangedEvent event, Emitter emit) {
@@ -88,17 +87,17 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     /// Update selected ISO value, if selected equipment profile
     /// doesn't contain currently selected value
     if (!event.equipmentProfileData.isoValues.any((v) => _iso.value == v.value)) {
-      _userPreferencesService.iso = event.equipmentProfileData.isoValues.first;
+      _meteringInteractor.iso = event.equipmentProfileData.isoValues.first;
       _iso = event.equipmentProfileData.isoValues.first;
     }
 
     /// The same for ND filter
     if (!event.equipmentProfileData.ndValues.any((v) => _nd.value == v.value)) {
-      _userPreferencesService.ndFilter = event.equipmentProfileData.ndValues.first;
+      _meteringInteractor.ndFilter = event.equipmentProfileData.ndValues.first;
       _nd = event.equipmentProfileData.ndValues.first;
     }
 
-    _emitMeasuredState(emit);
+    _updateMeasurements();
   }
 
   void _onFilmChanged(FilmChangedEvent event, Emitter emit) {
@@ -110,56 +109,76 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       add(IsoChangedEvent(newIso));
     }
     _film = event.data;
-    _userPreferencesService.film = event.data;
-    _emitMeasuredState(emit);
+    _meteringInteractor.film = event.data;
+    _updateMeasurements();
   }
 
   void _onIsoChanged(IsoChangedEvent event, Emitter emit) {
     if (event.isoValue.value != _film.iso) {
       _film = Film.values.first;
     }
-    _userPreferencesService.iso = event.isoValue;
+    _meteringInteractor.iso = event.isoValue;
     _iso = event.isoValue;
-    _emitMeasuredState(emit);
+    _updateMeasurements();
   }
 
   void _onNdChanged(NdChangedEvent event, Emitter emit) {
-    _userPreferencesService.ndFilter = event.ndValue;
+    _meteringInteractor.ndFilter = event.ndValue;
     _nd = event.ndValue;
-    _emitMeasuredState(emit);
+    _updateMeasurements();
   }
 
-  void _onMeasure(_, Emitter emit) {
+  void _onMeasure(MeasureEvent _, Emitter emit) {
     _meteringInteractor.quickVibration();
     _communicationBloc.add(const communication_events.MeasureEvent());
     _isMeteringInProgress = true;
-    emit(const LoadingState());
+    emit(
+      LoadingState(
+        film: _film,
+        iso: _iso,
+        nd: _nd,
+      ),
+    );
+  }
+
+  void _updateMeasurements() => _handleEv100(_ev100);
+
+  void _handleEv100(double? ev100) {
+    if (ev100 == null || ev100.isNaN || ev100.isInfinite) {
+      add(const MeasureErrorEvent());
+    } else {
+      add(MeasuredEvent(ev100));
+    }
   }
 
   void _onMeasured(MeasuredEvent event, Emitter emit) {
     _meteringInteractor.responseVibration();
     _ev100 = event.ev100;
-    _emitMeasuredState(emit);
+    final ev = event.ev100 + log2(_iso.value / 100) - _nd.stopReduction;
+    emit(
+      MeteringDataState(
+        ev: ev,
+        film: _film,
+        iso: _iso,
+        nd: _nd,
+        exposurePairs: _buildExposureValues(ev),
+        continuousMetering: _isMeteringInProgress,
+      ),
+    );
   }
 
-  void _emitMeasuredState(Emitter emit) {
-    final ev = _ev100 + log2(_iso.value / 100) - _nd.stopReduction;
+  void _onMeasureError(MeasureErrorEvent _, Emitter emit) {
+    _meteringInteractor.errorVibration();
+    _ev100 = null;
     emit(
-      _isMeteringInProgress
-          ? MeteringInProgressState(
-              ev: ev,
-              film: _film,
-              iso: _iso,
-              nd: _nd,
-              exposurePairs: _buildExposureValues(ev),
-            )
-          : MeteringEndedState(
-              ev: ev,
-              film: _film,
-              iso: _iso,
-              nd: _nd,
-              exposurePairs: _buildExposureValues(ev),
-            ),
+      MeteringDataState(
+        ev: null,
+        film: _film,
+        iso: _iso,
+        nd: _nd,
+        exposurePairs: const [],
+        continuousMetering: _isMeteringInProgress,
+      ),
     );
   }
 

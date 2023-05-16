@@ -6,11 +6,13 @@ import 'package:lightmeter/screens/shared/filled_circle/widget_circle_filled.dar
 class MeteringMeasureButton extends StatefulWidget {
   final double? ev;
   final bool isMetering;
+  final bool hasError;
   final VoidCallback onTap;
 
   const MeteringMeasureButton({
     required this.ev,
     required this.isMetering,
+    required this.hasError,
     required this.onTap,
     super.key,
   });
@@ -33,7 +35,7 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      ignoring: widget.isMetering && widget.ev == null,
+      ignoring: widget.isMetering && widget.ev == null && !widget.hasError,
       child: GestureDetector(
         onTap: widget.onTap,
         onTapDown: (_) {
@@ -63,7 +65,13 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
                     color: Theme.of(context).colorScheme.onSurface,
                     size: Dimens.grid72 - Dimens.grid8,
                     child: Center(
-                      child: widget.ev != null ? _EvValueText(ev: widget.ev!) : null,
+                      child: widget.hasError
+                          ? Icon(
+                              Icons.error_outline,
+                              color: Theme.of(context).colorScheme.surface,
+                              size: Dimens.grid24,
+                            )
+                          : (widget.ev != null ? _EvValueText(ev: widget.ev!) : null),
                     ),
                   ),
                 ),
@@ -91,13 +99,6 @@ class _EvValueText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (ev.isNaN || ev.isInfinite) {
-      return Icon(
-        Icons.error,
-        color: Theme.of(context).colorScheme.surface,
-      );
-    }
-
     final theme = Theme.of(context);
     return Text(
       '${ev.toStringAsFixed(1)}\n${S.of(context).ev}',

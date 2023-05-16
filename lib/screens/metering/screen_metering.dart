@@ -44,26 +44,25 @@ class _MeteringScreenState extends State<MeteringScreen> {
         children: [
           Expanded(
             child: BlocBuilder<MeteringBloc, MeteringState>(
-              buildWhen: (_, current) => current is MeteringDataState,
-              builder: (_, state) => state is MeteringDataState
-                  ? _MeteringContainerBuidler(
-                      fastest: state.fastest,
-                      slowest: state.slowest,
-                      film: state.film,
-                      iso: state.iso,
-                      nd: state.nd,
-                      onFilmChanged: (value) => _bloc.add(FilmChangedEvent(value)),
-                      onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
-                      onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
-                      exposurePairs: state.exposurePairs,
-                    )
-                  : const SizedBox.shrink(),
+              builder: (_, state) => _MeteringContainerBuidler(
+                fastest: state is MeteringDataState ? state.fastest : null,
+                slowest: state is MeteringDataState ? state.slowest : null,
+                exposurePairs: state is MeteringDataState ? state.exposurePairs : [],
+                film: state.film,
+                iso: state.iso,
+                nd: state.nd,
+                onFilmChanged: (value) => _bloc.add(FilmChangedEvent(value)),
+                onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
+                onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
+              ),
             ),
           ),
           BlocBuilder<MeteringBloc, MeteringState>(
             builder: (context, state) => MeteringBottomControlsProvider(
               ev: state is MeteringDataState ? state.ev : null,
-              isMetering: state is LoadingState || state is MeteringInProgressState,
+              isMetering:
+                  state is LoadingState || state is MeteringDataState && state.continuousMetering,
+              hasError: state is MeteringDataState && state.hasError,
               onSwitchEvSourceType: context.read<Environment>().hasLightSensor
                   ? EvSourceTypeProvider.of(context).toggleType
                   : null,

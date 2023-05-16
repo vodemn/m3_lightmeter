@@ -44,3 +44,7 @@ class MeasuredEvent extends MeteringEvent {
 
   const MeasuredEvent(this.ev100);
 }
+
+class MeasureErrorEvent extends MeteringEvent {
+  const MeasureErrorEvent();
+}
