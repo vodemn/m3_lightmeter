@@ -11,7 +11,6 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/reading_value_container/widget_container_reading_value.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-/// Contains a column of fastest & slowest exposure pairs + a row of ISO and ND pickers
 class ReadingsContainer extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;

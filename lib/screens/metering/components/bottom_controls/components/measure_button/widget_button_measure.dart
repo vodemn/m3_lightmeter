@@ -35,7 +35,7 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      ignoring: widget.isMetering && widget.ev == null,
+      ignoring: widget.isMetering && widget.ev == null && !widget.hasError,
       child: GestureDetector(
         onTap: widget.onTap,
         onTapDown: (_) {
@@ -67,8 +67,9 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
                     child: Center(
                       child: widget.hasError
                           ? Icon(
-                              Icons.error,
+                              Icons.error_outline,
                               color: Theme.of(context).colorScheme.surface,
+                              size: Dimens.grid24,
                             )
                           : (widget.ev != null ? _EvValueText(ev: widget.ev!) : null),
                     ),
