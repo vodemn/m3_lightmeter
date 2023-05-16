@@ -98,30 +98,6 @@ android {
             ndk.abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
     }
-
-    // Instead, use the bundle block to control which types of configuration APKs
-    // you want your app bundle to support.
-    bundle {
-        language {
-            // This property is set to true by default.
-            // You can specify `false` to turn off
-            // generating configuration APKs for language resources.
-            // These resources are instead packaged with each base and
-            // feature APK.
-            // Continue reading below to learn about situations when an app
-            // might change setting to `false`, otherwise consider leaving
-            // the default on for more optimized downloads.
-            enableSplit = false
-        }
-        density {
-            // This property is set to true by default.
-            enableSplit = true
-        }
-        abi {
-            // This property is set to true by default.
-            enableSplit = true
-        }
-    }
 }
 
 flutter {
