@@ -132,11 +132,13 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     _meteringInteractor.quickVibration();
     _communicationBloc.add(const communication_events.MeasureEvent());
     _isMeteringInProgress = true;
-    emit(LoadingState(
-      film: _film,
-      iso: _iso,
-      nd: _nd,
-    ));
+    emit(
+      LoadingState(
+        film: _film,
+        iso: _iso,
+        nd: _nd,
+      ),
+    );
   }
 
   void _updateMeasurements() => _handleEv100(_ev100);
@@ -153,27 +155,31 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     _meteringInteractor.responseVibration();
     _ev100 = event.ev100;
     final ev = event.ev100 + log2(_iso.value / 100) - _nd.stopReduction;
-    emit(MeteringDataState(
-      ev: ev,
-      film: _film,
-      iso: _iso,
-      nd: _nd,
-      exposurePairs: _buildExposureValues(ev),
-      continuousMetering: _isMeteringInProgress,
-    ));
+    emit(
+      MeteringDataState(
+        ev: ev,
+        film: _film,
+        iso: _iso,
+        nd: _nd,
+        exposurePairs: _buildExposureValues(ev),
+        continuousMetering: _isMeteringInProgress,
+      ),
+    );
   }
 
   void _onMeasureError(MeasureErrorEvent _, Emitter emit) {
     _meteringInteractor.errorVibration();
     _ev100 = null;
-    emit(MeteringDataState(
-      ev: null,
-      film: _film,
-      iso: _iso,
-      nd: _nd,
-      exposurePairs: const [],
-      continuousMetering: _isMeteringInProgress,
-    ));
+    emit(
+      MeteringDataState(
+        ev: null,
+        film: _film,
+        iso: _iso,
+        nd: _nd,
+        exposurePairs: const [],
+        continuousMetering: _isMeteringInProgress,
+      ),
+    );
   }
 
   List<ExposurePair> _buildExposureValues(double ev) {

@@ -193,7 +193,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       final apertureValueRatio = (tags["EXIF FNumber"]?.values as IfdRatios?)?.ratios.first;
       final speedValueRatio = (tags["EXIF ExposureTime"]?.values as IfdRatios?)?.ratios.first;
       if (iso == null || apertureValueRatio == null || speedValueRatio == null) {
-        log('Error parsing EXIF: ${tags.keys.toString()}');
+        log('Error parsing EXIF: ${tags.keys}');
         return null;
       }
 
