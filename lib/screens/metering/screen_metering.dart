@@ -7,7 +7,6 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
-import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/provider_bottom_controls.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/provider_container_camera.dart';
@@ -31,17 +30,11 @@ class _MeteringScreenState extends State<MeteringScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _bloc.add(EquipmentProfileChangedEvent(EquipmentProfile.of(context)));
-    if (!MeteringScreenLayout.featureStatusOf(context, MeteringScreenLayoutFeature.filmPicker)) {
-      _bloc.add(const FilmChangedEvent(Film.other()));
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return InheritedWidgetListener<StopType>(
-      onDidChangeDependencies: (value) {
-        context.read<MeteringBloc>().add(StopTypeChangedEvent(value));
-      },
+    return _InheritedListeners(
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         body: Column(
@@ -64,8 +57,8 @@ class _MeteringScreenState extends State<MeteringScreen> {
             BlocBuilder<MeteringBloc, MeteringState>(
               builder: (context, state) => MeteringBottomControlsProvider(
                 ev: state is MeteringDataState ? state.ev : null,
-                isMetering:
-                    state is LoadingState || state is MeteringDataState && state.continuousMetering,
+                isMetering: state is LoadingState ||
+                    state is MeteringDataState && state.continuousMetering,
                 hasError: state is MeteringDataState && state.hasError,
                 onSwitchEvSourceType: context.read<Environment>().hasLightSensor
                     ? EvSourceTypeProvider.of(context).toggleType
@@ -76,6 +69,28 @@ class _MeteringScreenState extends State<MeteringScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _InheritedListeners extends StatelessWidget {
+  final Widget child;
+
+  const _InheritedListeners({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return InheritedWidgetListener<StopType>(
+      onDidChangeDependencies: (value) {
+        context.read<MeteringBloc>().add(StopTypeChangedEvent(value));
+      },
+      child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
+        aspect: MeteringScreenLayoutFeature.filmPicker,
+        onDidChangeDependencies: (value) {
+          if (!value) context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
+        },
+        child: child,
       ),
     );
   }

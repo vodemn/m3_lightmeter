@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:provider/provider.dart';
+
+typedef MeteringScreenLayout = InheritedModelBase<MeteringScreenLayoutFeature, bool>;
 
 class MeteringScreenLayoutProvider extends StatefulWidget {
   final Widget child;
@@ -22,8 +25,8 @@ class MeteringScreenLayoutProviderState extends State<MeteringScreenLayoutProvid
 
   @override
   Widget build(BuildContext context) {
-    return MeteringScreenLayout(
-      config: MeteringScreenLayoutConfig.from(_config),
+    return InheritedModelBase<MeteringScreenLayoutFeature, bool>(
+      data: MeteringScreenLayoutConfig.from(_config),
       child: widget.child,
     );
   }
@@ -39,44 +42,5 @@ class MeteringScreenLayoutProviderState extends State<MeteringScreenLayoutProvid
       });
     });
     context.read<UserPreferencesService>().meteringScreenLayout = _config;
-  }
-}
-
-class MeteringScreenLayout extends InheritedModel<MeteringScreenLayoutFeature> {
-  final MeteringScreenLayoutConfig config;
-
-  const MeteringScreenLayout({
-    required this.config,
-    required super.child,
-    super.key,
-  });
-
-  static MeteringScreenLayoutConfig of(BuildContext context, {bool listen = true}) {
-    if (listen) {
-      return context.dependOnInheritedWidgetOfExactType<MeteringScreenLayout>()!.config;
-    } else {
-      return context.findAncestorWidgetOfExactType<MeteringScreenLayout>()!.config;
-    }
-  }
-
-  static bool featureStatusOf(BuildContext context, MeteringScreenLayoutFeature feature) {
-    return InheritedModel.inheritFrom<MeteringScreenLayout>(context, aspect: feature)!
-        .config[feature]!;
-  }
-
-  @override
-  bool updateShouldNotify(MeteringScreenLayout oldWidget) => true;
-
-  @override
-  bool updateShouldNotifyDependent(
-    MeteringScreenLayout oldWidget,
-    Set<MeteringScreenLayoutFeature> dependencies,
-  ) {
-    for (final dependecy in dependencies) {
-      if (oldWidget.config[dependecy] != config[dependecy]) {
-        return true;
-      }
-    }
-    return false;
   }
 }

@@ -42,7 +42,7 @@ class ReadingsContainer extends StatelessWidget {
           const _EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
-        if (MeteringScreenLayout.featureStatusOf(
+        if (MeteringScreenLayout.featureOf(
           context,
           MeteringScreenLayoutFeature.extremeExposurePairs,
         )) ...[
@@ -60,7 +60,7 @@ class ReadingsContainer extends StatelessWidget {
           ),
           const _InnerPadding(),
         ],
-        if (MeteringScreenLayout.featureStatusOf(
+        if (MeteringScreenLayout.featureOf(
           context,
           MeteringScreenLayoutFeature.filmPicker,
         )) ...[
