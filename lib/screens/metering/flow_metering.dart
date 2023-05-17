@@ -10,6 +10,7 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +40,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
               context.read<MeteringCommunicationBloc>(),
               context.read<MeteringInteractor>(),
               EquipmentProfile.of(context, listen: false),
-              context.read<StopType>(),
+              context.get<StopType>(),
             ),
           ),
         ],

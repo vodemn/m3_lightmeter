@@ -14,6 +14,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/provider
 import 'package:lightmeter/screens/metering/components/light_sensor_container/provider_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreen extends StatefulWidget {
@@ -30,7 +31,6 @@ class _MeteringScreenState extends State<MeteringScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _bloc.add(EquipmentProfileChangedEvent(EquipmentProfile.of(context)));
-    _bloc.add(StopTypeChangedEvent(context.watch<StopType>()));
     if (!MeteringScreenLayout.featureStatusOf(context, MeteringScreenLayoutFeature.filmPicker)) {
       _bloc.add(const FilmChangedEvent(Film.other()));
     }
@@ -38,39 +38,44 @@ class _MeteringScreenState extends State<MeteringScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      body: Column(
-        children: [
-          Expanded(
-            child: BlocBuilder<MeteringBloc, MeteringState>(
-              builder: (_, state) => _MeteringContainerBuidler(
-                fastest: state is MeteringDataState ? state.fastest : null,
-                slowest: state is MeteringDataState ? state.slowest : null,
-                exposurePairs: state is MeteringDataState ? state.exposurePairs : [],
-                film: state.film,
-                iso: state.iso,
-                nd: state.nd,
-                onFilmChanged: (value) => _bloc.add(FilmChangedEvent(value)),
-                onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
-                onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
+    return InheritedWidgetListener<StopType>(
+      onDidChangeDependencies: (value) {
+        context.read<MeteringBloc>().add(StopTypeChangedEvent(value));
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        body: Column(
+          children: [
+            Expanded(
+              child: BlocBuilder<MeteringBloc, MeteringState>(
+                builder: (_, state) => _MeteringContainerBuidler(
+                  fastest: state is MeteringDataState ? state.fastest : null,
+                  slowest: state is MeteringDataState ? state.slowest : null,
+                  exposurePairs: state is MeteringDataState ? state.exposurePairs : [],
+                  film: state.film,
+                  iso: state.iso,
+                  nd: state.nd,
+                  onFilmChanged: (value) => _bloc.add(FilmChangedEvent(value)),
+                  onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
+                  onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
+                ),
               ),
             ),
-          ),
-          BlocBuilder<MeteringBloc, MeteringState>(
-            builder: (context, state) => MeteringBottomControlsProvider(
-              ev: state is MeteringDataState ? state.ev : null,
-              isMetering:
-                  state is LoadingState || state is MeteringDataState && state.continuousMetering,
-              hasError: state is MeteringDataState && state.hasError,
-              onSwitchEvSourceType: context.read<Environment>().hasLightSensor
-                  ? EvSourceTypeProvider.of(context).toggleType
-                  : null,
-              onMeasure: () => _bloc.add(const MeasureEvent()),
-              onSettings: () => Navigator.pushNamed(context, 'settings'),
+            BlocBuilder<MeteringBloc, MeteringState>(
+              builder: (context, state) => MeteringBottomControlsProvider(
+                ev: state is MeteringDataState ? state.ev : null,
+                isMetering:
+                    state is LoadingState || state is MeteringDataState && state.continuousMetering,
+                hasError: state is MeteringDataState && state.hasError,
+                onSwitchEvSourceType: context.read<Environment>().hasLightSensor
+                    ? EvSourceTypeProvider.of(context).toggleType
+                    : null,
+                onMeasure: () => _bloc.add(const MeasureEvent()),
+                onSettings: () => Navigator.pushNamed(context, 'settings'),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
