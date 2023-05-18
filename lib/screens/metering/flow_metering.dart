@@ -12,7 +12,6 @@ import 'package:lightmeter/screens/metering/communication/bloc_communication_met
 import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-import 'package:provider/provider.dart';
 
 class MeteringFlow extends StatefulWidget {
   const MeteringFlow({super.key});
@@ -26,10 +25,10 @@ class _MeteringFlowState extends State<MeteringFlow> {
   Widget build(BuildContext context) {
     return Provider(
       create: (context) => MeteringInteractor(
-        context.read<UserPreferencesService>(),
-        context.read<CaffeineService>(),
-        context.read<HapticsService>(),
-        context.read<PermissionsService>(),
+        context.get<UserPreferencesService>(),
+        context.get<CaffeineService>(),
+        context.get<HapticsService>(),
+        context.get<PermissionsService>(),
         context.read<LightSensorService>(),
       ),
       child: MultiBlocProvider(

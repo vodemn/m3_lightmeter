@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 typedef EquipmentProfiles = List<EquipmentProfileData>;
@@ -37,7 +36,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   EquipmentProfileData get _selectedProfile => _customProfiles.firstWhere(
         (e) => e.id == _selectedId,
         orElse: () {
-          context.read<UserPreferencesService>().selectedEquipmentProfileId = _defaultProfile.id;
+          context.get<UserPreferencesService>().selectedEquipmentProfileId = _defaultProfile.id;
           return _defaultProfile;
         },
       );
@@ -45,8 +44,8 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   @override
   void initState() {
     super.initState();
-    _selectedId = context.read<UserPreferencesService>().selectedEquipmentProfileId;
-    _customProfiles = context.read<UserPreferencesService>().equipmentProfiles;
+    _selectedId = context.get<UserPreferencesService>().selectedEquipmentProfileId;
+    _customProfiles = context.get<UserPreferencesService>().equipmentProfiles;
   }
 
   @override
@@ -64,7 +63,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     setState(() {
       _selectedId = data.id;
     });
-    context.read<UserPreferencesService>().selectedEquipmentProfileId = _selectedProfile.id;
+    context.get<UserPreferencesService>().selectedEquipmentProfileId = _selectedProfile.id;
   }
 
   /// Creates a default equipment profile
@@ -96,7 +95,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   }
 
   void _refreshSavedProfiles() {
-    context.read<UserPreferencesService>().equipmentProfiles = _customProfiles;
+    context.get<UserPreferencesService>().equipmentProfiles = _customProfiles;
     setState(() {});
   }
 }

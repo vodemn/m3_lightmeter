@@ -14,7 +14,7 @@ class CalibrationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasLightSensor = context.read<Environment>().hasLightSensor;
+    final bool hasLightSensor = context.get<Environment>().hasLightSensor;
     return AlertDialog(
       icon: const Icon(Icons.settings_brightness),
       titlePadding: Dimens.dialogIconTitlePadding,

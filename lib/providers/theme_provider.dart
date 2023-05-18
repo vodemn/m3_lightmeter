@@ -8,8 +8,6 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
-import 'package:provider/provider.dart';
-
 class ThemeProvider extends StatefulWidget {
   final Widget child;
 
@@ -46,7 +44,7 @@ class ThemeProvider extends StatefulWidget {
 }
 
 class ThemeProviderState extends State<ThemeProvider> with WidgetsBindingObserver {
-  UserPreferencesService get _prefs => context.read<UserPreferencesService>();
+  UserPreferencesService get _prefs => context.get<UserPreferencesService>();
 
   late final _themeTypeNotifier = ValueNotifier<ThemeType>(_prefs.themeType);
   late final _dynamicColorNotifier = ValueNotifier<bool>(_prefs.dynamicColor);

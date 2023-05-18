@@ -48,7 +48,7 @@ class MeteringScreen extends StatelessWidget {
                 isMetering:
                     state is LoadingState || state is MeteringDataState && state.continuousMetering,
                 hasError: state is MeteringDataState && state.hasError,
-                onSwitchEvSourceType: context.read<Environment>().hasLightSensor
+                onSwitchEvSourceType: context.get<Environment>().hasLightSensor
                     ? EvSourceTypeProvider.of(context).toggleType
                     : null,
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
