@@ -16,21 +16,8 @@ import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-class MeteringScreen extends StatefulWidget {
+class MeteringScreen extends StatelessWidget {
   const MeteringScreen({super.key});
-
-  @override
-  State<MeteringScreen> createState() => _MeteringScreenState();
-}
-
-class _MeteringScreenState extends State<MeteringScreen> {
-  MeteringBloc get _bloc => context.read<MeteringBloc>();
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _bloc.add(EquipmentProfileChangedEvent(EquipmentProfile.of(context)));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,22 +35,23 @@ class _MeteringScreenState extends State<MeteringScreen> {
                   film: state.film,
                   iso: state.iso,
                   nd: state.nd,
-                  onFilmChanged: (value) => _bloc.add(FilmChangedEvent(value)),
-                  onIsoChanged: (value) => _bloc.add(IsoChangedEvent(value)),
-                  onNdChanged: (value) => _bloc.add(NdChangedEvent(value)),
+                  onFilmChanged: (value) =>
+                      context.read<MeteringBloc>().add(FilmChangedEvent(value)),
+                  onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
+                  onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
                 ),
               ),
             ),
             BlocBuilder<MeteringBloc, MeteringState>(
               builder: (context, state) => MeteringBottomControlsProvider(
                 ev: state is MeteringDataState ? state.ev : null,
-                isMetering: state is LoadingState ||
-                    state is MeteringDataState && state.continuousMetering,
+                isMetering:
+                    state is LoadingState || state is MeteringDataState && state.continuousMetering,
                 hasError: state is MeteringDataState && state.hasError,
                 onSwitchEvSourceType: context.read<Environment>().hasLightSensor
                     ? EvSourceTypeProvider.of(context).toggleType
                     : null,
-                onMeasure: () => _bloc.add(const MeasureEvent()),
+                onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
                 onSettings: () => Navigator.pushNamed(context, 'settings'),
               ),
             ),
@@ -81,16 +69,21 @@ class _InheritedListeners extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InheritedWidgetListener<StopType>(
+    return InheritedWidgetListener<EquipmentProfile>(
       onDidChangeDependencies: (value) {
-        context.read<MeteringBloc>().add(StopTypeChangedEvent(value));
+        context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
       },
-      child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
-        aspect: MeteringScreenLayoutFeature.filmPicker,
+      child: InheritedWidgetListener<StopType>(
         onDidChangeDependencies: (value) {
-          if (!value) context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
+          context.read<MeteringBloc>().add(StopTypeChangedEvent(value));
         },
-        child: child,
+        child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
+          aspect: MeteringScreenLayoutFeature.filmPicker,
+          onDidChangeDependencies: (value) {
+            if (!value) context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
+          },
+          child: child,
+        ),
       ),
     );
   }
@@ -121,7 +114,7 @@ class _MeteringContainerBuidler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return context.watch<EvSourceType>() == EvSourceType.camera
+    return context.listen<EvSourceType>() == EvSourceType.camera
         ? CameraContainerProvider(
             fastest: fastest,
             slowest: slowest,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:provider/provider.dart';
 
 class SupportedLocaleProvider extends StatefulWidget {
@@ -36,9 +37,9 @@ class SupportedLocaleProviderState extends State<SupportedLocaleProvider> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: valueListenable,
-      builder: (_, value, child) => Provider.value(
-        value: value,
-        child: child,
+      builder: (_, value, child) => InheritedWidgetBase<SupportedLocale>(
+        data: value,
+        child: child!,
       ),
       child: widget.child,
     );

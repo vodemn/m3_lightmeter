@@ -39,7 +39,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
             create: (context) => MeteringBloc(
               context.read<MeteringCommunicationBloc>(),
               context.read<MeteringInteractor>(),
-              EquipmentProfile.of(context, listen: false),
+              context.get<EquipmentProfile>(),
               context.get<StopType>(),
             ),
           ),

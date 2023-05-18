@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/environment.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:provider/provider.dart';
 
 class EvSourceTypeProvider extends StatefulWidget {
@@ -41,9 +42,9 @@ class EvSourceTypeProviderState extends State<EvSourceTypeProvider> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: valueListenable,
-      builder: (_, value, child) => Provider.value(
-        value: value,
-        child: child,
+      builder: (_, value, child) => InheritedWidgetBase<EvSourceType>(
+        data: value,
+        child: child!,
       ),
       child: widget.child,
     );

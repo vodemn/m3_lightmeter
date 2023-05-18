@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/theme_provider.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 
 class DynamicColorListTile extends StatelessWidget {
   const DynamicColorListTile({super.key});
@@ -12,7 +12,7 @@ class DynamicColorListTile extends StatelessWidget {
     return SwitchListTile(
       secondary: const Icon(Icons.colorize),
       title: Text(S.of(context).dynamicColor),
-      value: context.watch<DynamicColorState>() == DynamicColorState.enabled,
+      value: context.listen<DynamicColorState>() == DynamicColorState.enabled,
       onChanged: ThemeProvider.of(context).enableDynamicColor,
     );
   }
