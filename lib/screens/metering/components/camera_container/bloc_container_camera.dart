@@ -150,7 +150,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _onDeinitialize(DeinitializeEvent _, Emitter emit) async {
-    emit(const CameraInitState());
+    emit(const CameraLoadingState());
     unawaited(_cameraController.dispose());
   }
 
