@@ -211,12 +211,10 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     switch (state) {
       case AppLifecycleState.resumed:
         add(const InitializeEvent());
-        break;
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         _cameraController?.dispose();
         _cameraController = null;
-        break;
       default:
     }
   }

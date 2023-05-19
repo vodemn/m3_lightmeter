@@ -8,3 +8,4 @@ linter:
 analyzer:
   exclude:
     - "**/generated/**"
+    - lib/firebase_options.dart

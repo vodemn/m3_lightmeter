@@ -55,10 +55,8 @@ class EvSourceTypeProviderState extends State<EvSourceTypeProvider> {
         if (context.read<Environment>().hasLightSensor) {
           valueListenable.value = EvSourceType.sensor;
         }
-        break;
       case EvSourceType.sensor:
         valueListenable.value = EvSourceType.camera;
-        break;
     }
     context.read<UserPreferencesService>().evSourceType = valueListenable.value;
   }
