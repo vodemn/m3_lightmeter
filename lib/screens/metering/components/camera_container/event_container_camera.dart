@@ -14,8 +14,8 @@ class InitializeEvent extends CameraContainerEvent {
   const InitializeEvent();
 }
 
-class ReinitializeEvent extends CameraContainerEvent {
-  const ReinitializeEvent();
+class DeinitializeEvent extends CameraContainerEvent {
+  const DeinitializeEvent();
 }
 
 class ZoomChangedEvent extends CameraContainerEvent {
