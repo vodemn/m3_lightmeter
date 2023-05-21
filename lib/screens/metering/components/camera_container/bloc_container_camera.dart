@@ -23,7 +23,7 @@ import 'package:lightmeter/utils/log_2.dart';
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;
   late final _WidgetsBindingObserver _observer;
-  late CameraController _cameraController;
+  CameraController? _cameraController;
 
   static const _maxZoom = 7.0;
   RangeValues? _zoomRange;
@@ -60,7 +60,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   @override
   Future<void> close() async {
     WidgetsBinding.instance.removeObserver(_observer);
-    unawaited(_cameraController.dispose());
+    unawaited(_cameraController?.dispose());
     communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
     return super.close();
   }
@@ -118,30 +118,30 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
         enableAudio: false,
       );
 
-      await _cameraController.initialize();
-      await _cameraController.setFlashMode(FlashMode.off);
+      await _cameraController!.initialize();
+      await _cameraController!.setFlashMode(FlashMode.off);
 
       _zoomRange = await Future.wait<double>([
-        _cameraController.getMinZoomLevel(),
-        _cameraController.getMaxZoomLevel(),
+        _cameraController!.getMinZoomLevel(),
+        _cameraController!.getMaxZoomLevel(),
       ]).then((levels) => RangeValues(levels[0], math.min(_maxZoom, levels[1])));
       _currentZoom = _zoomRange!.start;
 
       _exposureOffsetRange = await Future.wait<double>([
-        _cameraController.getMinExposureOffset(),
-        _cameraController.getMaxExposureOffset(),
+        _cameraController!.getMinExposureOffset(),
+        _cameraController!.getMaxExposureOffset(),
       ]).then(
         (levels) => RangeValues(
           math.max(_exposureMaxRange.start, levels[0]),
           math.min(_exposureMaxRange.end, levels[1]),
         ),
       );
-      await _cameraController.getExposureOffsetStepSize().then((value) {
+      await _cameraController!.getExposureOffsetStepSize().then((value) {
         _exposureStep = value == 0 ? 0.1 : value;
       });
       _currentExposureOffset = 0.0;
 
-      emit(CameraInitializedState(_cameraController));
+      emit(CameraInitializedState(_cameraController!));
 
       _emitActiveState(emit);
     } catch (e) {
@@ -151,19 +151,23 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
   Future<void> _onDeinitialize(DeinitializeEvent _, Emitter emit) async {
     emit(const CameraLoadingState());
-    unawaited(_cameraController.dispose());
+    unawaited(_cameraController?.dispose());
   }
 
   Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
-    _cameraController.setZoomLevel(event.value);
-    _currentZoom = event.value;
-    _emitActiveState(emit);
+    if (_cameraController != null) {
+      _cameraController!.setZoomLevel(event.value);
+      _currentZoom = event.value;
+      _emitActiveState(emit);
+    }
   }
 
   Future<void> _onExposureOffsetChanged(ExposureOffsetChangedEvent event, Emitter emit) async {
-    _cameraController.setExposureOffset(event.value);
-    _currentExposureOffset = event.value;
-    _emitActiveState(emit);
+    if (_cameraController != null) {
+      _cameraController!.setExposureOffset(event.value);
+      _currentExposureOffset = event.value;
+      _emitActiveState(emit);
+    }
   }
 
   Future<void> _onExposureOffsetResetEvent(ExposureOffsetResetEvent event, Emitter emit) async {
@@ -183,12 +187,13 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     );
   }
 
-  bool get _canTakePhoto =>
-      !(!_cameraController.value.isInitialized || _cameraController.value.isTakingPicture);
+  bool get _canTakePhoto => !(_cameraController == null ||
+      !_cameraController!.value.isInitialized ||
+      _cameraController!.value.isTakingPicture);
 
   Future<double?> _takePhoto() async {
     try {
-      final file = await _cameraController.takePicture();
+      final file = await _cameraController!.takePicture();
       final Uint8List bytes = await file.readAsBytes();
       Directory(file.path).deleteSync(recursive: true);
 
