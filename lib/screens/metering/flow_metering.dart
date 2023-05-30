@@ -23,8 +23,8 @@ class MeteringFlow extends StatefulWidget {
 class _MeteringFlowState extends State<MeteringFlow> {
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (context) => MeteringInteractor(
+    return InheritedWidgetBase<MeteringInteractor>(
+      data: MeteringInteractor(
         context.get<UserPreferencesService>(),
         context.get<CaffeineService>(),
         context.get<HapticsService>(),
@@ -37,7 +37,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
           BlocProvider(
             create: (context) => MeteringBloc(
               context.read<MeteringCommunicationBloc>(),
-              context.read<MeteringInteractor>(),
+              context.get<MeteringInteractor>(),
               context.get<EquipmentProfile>(),
               context.get<StopType>(),
             ),

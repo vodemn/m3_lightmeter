@@ -6,6 +6,7 @@ import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/widget_container_camera.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class CameraContainerProvider extends StatelessWidget {
@@ -37,7 +38,7 @@ class CameraContainerProvider extends StatelessWidget {
     return BlocProvider(
       lazy: false,
       create: (context) => CameraContainerBloc(
-        context.read<MeteringInteractor>(),
+        context.get<MeteringInteractor>(),
         context.read<MeteringCommunicationBloc>(),
       ),
       child: CameraContainer(
