@@ -4,6 +4,7 @@ import 'package:lightmeter/interactors/settings_interactor.dart';
 
 import 'package:lightmeter/screens/settings/components/general/components/haptics/bloc_list_tile_haptics.dart';
 import 'package:lightmeter/screens/settings/components/general/components/haptics/widget_list_tile_haptics.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 
 class HapticsListTileProvider extends StatelessWidget {
   const HapticsListTileProvider({super.key});
@@ -11,7 +12,7 @@ class HapticsListTileProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HapticsListTileBloc(context.read<SettingsInteractor>()),
+      create: (context) => HapticsListTileBloc(context.get<SettingsInteractor>()),
       child: const HapticsListTile(),
     );
   }

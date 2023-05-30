@@ -11,8 +11,8 @@ class SettingsFlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (context) => SettingsInteractor(
+    return InheritedWidgetBase<SettingsInteractor>(
+      data: SettingsInteractor(
         context.get<UserPreferencesService>(),
         context.get<CaffeineService>(),
         context.get<HapticsService>(),
