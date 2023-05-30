@@ -7,6 +7,7 @@ import 'package:lightmeter/screens/settings/components/metering/components/calib
 import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/event_dialog_calibration.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/state_dialog_calibration.dart';
 import 'package:lightmeter/screens/shared/centered_slider/widget_slider_centered.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:lightmeter/utils/to_string_signed.dart';
 
 class CalibrationDialog extends StatelessWidget {

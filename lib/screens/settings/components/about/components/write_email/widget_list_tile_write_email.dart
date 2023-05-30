@@ -2,6 +2,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WriteEmailListTile extends StatelessWidget {
