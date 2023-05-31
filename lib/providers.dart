@@ -49,7 +49,9 @@ class LightmeterProviders extends StatelessWidget {
                             child: EvSourceTypeProvider(
                               child: SupportedLocaleProvider(
                                 child: ThemeProvider(
-                                  child: builder(context, true),
+                                  child: Builder(
+                                    builder: (context) => builder(context, true),
+                                  ),
                                 ),
                               ),
                             ),

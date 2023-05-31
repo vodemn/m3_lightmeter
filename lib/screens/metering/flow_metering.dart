@@ -29,7 +29,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
         context.get<CaffeineService>(),
         context.get<HapticsService>(),
         context.get<PermissionsService>(),
-        context.read<LightSensorService>(),
+        context.get<LightSensorService>(),
       ),
       child: MultiBlocProvider(
         providers: [
