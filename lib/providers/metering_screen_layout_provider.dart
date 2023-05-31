@@ -3,7 +3,34 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 
-typedef MeteringScreenLayout = InheritedModelBase<MeteringScreenLayoutFeature, bool>;
+class MeteringScreenLayout extends InheritedModelBase<MeteringScreenLayoutFeature, bool> {
+  const MeteringScreenLayout({
+    required super.data,
+    required super.child,
+    super.key,
+  });
+
+  static MeteringScreenLayoutConfig of(BuildContext context, {bool listen = true}) {
+    if (listen) {
+      return context
+          .dependOnInheritedWidgetOfExactType<
+              InheritedModelBase<MeteringScreenLayoutFeature, bool>>()!
+          .data;
+    } else {
+      return context
+          .findAncestorWidgetOfExactType<InheritedModelBase<MeteringScreenLayoutFeature, bool>>()!
+          .data;
+    }
+  }
+
+  static bool featureOf(BuildContext context, MeteringScreenLayoutFeature aspect) {
+    return InheritedModel.inheritFrom<InheritedModelBase<MeteringScreenLayoutFeature, bool>>(
+      context,
+      aspect: aspect,
+    )!
+        .data[aspect]!;
+  }
+}
 
 class MeteringScreenLayoutProvider extends StatefulWidget {
   final Widget child;
