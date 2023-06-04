@@ -5,6 +5,7 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfilesScreen extends StatefulWidget {
@@ -18,12 +19,13 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   static const maxProfiles = 5 + 1; // replace with a constant from iap
 
   late List<GlobalKey<EquipmentProfileContainerState>> profileContainersKeys = [];
-  int get profilesCount => EquipmentProfiles.of(context).length;
+  int get profilesCount => context.listen<EquipmentProfiles>().length;
 
   @override
   void initState() {
     super.initState();
-    profileContainersKeys = EquipmentProfiles.of(context, listen: false)
+    profileContainersKeys = context
+        .get<EquipmentProfiles>()
         .map((e) => GlobalKey<EquipmentProfileContainerState>(debugLabel: e.id))
         .toList();
   }
@@ -56,7 +58,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
                     ),
                     child: EquipmentProfileContainer(
                       key: profileContainersKeys[index],
-                      data: EquipmentProfiles.of(context)[index],
+                      data: context.listen<EquipmentProfiles>()[index],
                       onExpand: () => _keepExpandedAt(index),
                       onUpdate: (profileData) => _updateProfileAt(profileData, index),
                       onDelete: () => _removeProfileAt(index),
@@ -87,7 +89,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   }
 
   void _removeProfileAt(int index) {
-    EquipmentProfileProvider.of(context).deleteProfile(EquipmentProfiles.of(context)[index]);
+    EquipmentProfileProvider.of(context).deleteProfile(context.listen<EquipmentProfiles>()[index]);
     profileContainersKeys.removeAt(index);
   }
 

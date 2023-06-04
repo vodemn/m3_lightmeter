@@ -40,7 +40,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     this.stopType,
   ) : super(
           MeteringDataState(
-            ev: 0.0,
+            ev: null,
             film: _meteringInteractor.film,
             iso: _meteringInteractor.iso,
             nd: _meteringInteractor.ndFilter,
@@ -77,55 +77,75 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   }
 
   void _onStopTypeChanged(StopTypeChangedEvent event, Emitter emit) {
-    stopType = event.stopType;
-    _updateMeasurements();
+    if (stopType != event.stopType) {
+      stopType = event.stopType;
+      _updateMeasurements();
+    }
   }
 
   void _onEquipmentProfileChanged(EquipmentProfileChangedEvent event, Emitter emit) {
     _equipmentProfileData = event.equipmentProfileData;
+    bool willUpdateMeasurements = false;
 
     /// Update selected ISO value, if selected equipment profile
     /// doesn't contain currently selected value
     if (!event.equipmentProfileData.isoValues.any((v) => _iso.value == v.value)) {
       _meteringInteractor.iso = event.equipmentProfileData.isoValues.first;
       _iso = event.equipmentProfileData.isoValues.first;
+      willUpdateMeasurements &= true;
     }
 
     /// The same for ND filter
     if (!event.equipmentProfileData.ndValues.any((v) => _nd.value == v.value)) {
       _meteringInteractor.ndFilter = event.equipmentProfileData.ndValues.first;
       _nd = event.equipmentProfileData.ndValues.first;
+      willUpdateMeasurements &= true;
     }
 
-    _updateMeasurements();
+    if (willUpdateMeasurements) {
+      _updateMeasurements();
+    }
   }
 
   void _onFilmChanged(FilmChangedEvent event, Emitter emit) {
-    if (_iso.value != event.data.iso) {
-      final newIso = IsoValue.values.firstWhere(
-        (e) => e.value == event.data.iso,
-        orElse: () => _iso,
-      );
-      add(IsoChangedEvent(newIso));
+    if (_film.name != event.data.name) {
+      _film = event.data;
+      _meteringInteractor.film = event.data;
+
+      /// If user selects 'Other' film we preserve currently selected ISO
+      /// and therefore only discard reciprocity formula
+      if (_iso.value != event.data.iso && event.data != const Film.other()) {
+        final newIso = IsoValue.values.firstWhere(
+          (e) => e.value == event.data.iso,
+          orElse: () => _iso,
+        );
+        _meteringInteractor.iso = newIso;
+        _iso = newIso;
+      }
+
+      _updateMeasurements();
     }
-    _film = event.data;
-    _meteringInteractor.film = event.data;
-    _updateMeasurements();
   }
 
   void _onIsoChanged(IsoChangedEvent event, Emitter emit) {
-    if (event.isoValue.value != _film.iso) {
-      _film = Film.values.first;
+    /// Discard currently selected film even if ISO is the same,
+    /// because, for example, Fomapan 400 and any Ilford 400
+    /// have different reciprocity formulas
+    _film = Film.values.first;
+
+    if (_iso != event.isoValue) {
+      _meteringInteractor.iso = event.isoValue;
+      _iso = event.isoValue;
+      _updateMeasurements();
     }
-    _meteringInteractor.iso = event.isoValue;
-    _iso = event.isoValue;
-    _updateMeasurements();
   }
 
   void _onNdChanged(NdChangedEvent event, Emitter emit) {
-    _meteringInteractor.ndFilter = event.ndValue;
-    _nd = event.ndValue;
-    _updateMeasurements();
+    if (_nd != event.ndValue) {
+      _meteringInteractor.ndFilter = event.ndValue;
+      _nd = event.ndValue;
+      _updateMeasurements();
+    }
   }
 
   void _onMeasure(MeasureEvent _, Emitter emit) {

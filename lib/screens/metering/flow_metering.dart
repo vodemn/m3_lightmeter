@@ -10,8 +10,8 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-import 'package:provider/provider.dart';
 
 class MeteringFlow extends StatefulWidget {
   const MeteringFlow({super.key});
@@ -23,13 +23,13 @@ class MeteringFlow extends StatefulWidget {
 class _MeteringFlowState extends State<MeteringFlow> {
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (context) => MeteringInteractor(
-        context.read<UserPreferencesService>(),
-        context.read<CaffeineService>(),
-        context.read<HapticsService>(),
-        context.read<PermissionsService>(),
-        context.read<LightSensorService>(),
+    return InheritedWidgetBase<MeteringInteractor>(
+      data: MeteringInteractor(
+        context.get<UserPreferencesService>(),
+        context.get<CaffeineService>(),
+        context.get<HapticsService>(),
+        context.get<PermissionsService>(),
+        context.get<LightSensorService>(),
       ),
       child: MultiBlocProvider(
         providers: [
@@ -37,9 +37,9 @@ class _MeteringFlowState extends State<MeteringFlow> {
           BlocProvider(
             create: (context) => MeteringBloc(
               context.read<MeteringCommunicationBloc>(),
-              context.read<MeteringInteractor>(),
-              EquipmentProfile.of(context, listen: false),
-              context.read<StopType>(),
+              context.get<MeteringInteractor>(),
+              context.get<EquipmentProfile>(),
+              context.get<StopType>(),
             ),
           ),
         ],

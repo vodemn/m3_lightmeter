@@ -3,7 +3,7 @@ import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/theme_provider.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_picker.dart/widget_dialog_picker.dart';
-import 'package:provider/provider.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 
 class ThemeTypeListTile extends StatelessWidget {
   const ThemeTypeListTile({super.key});
@@ -13,14 +13,14 @@ class ThemeTypeListTile extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.brightness_6),
       title: Text(S.of(context).theme),
-      trailing: Text(_typeToString(context, context.watch<ThemeType>())),
+      trailing: Text(_typeToString(context, context.listen<ThemeType>())),
       onTap: () {
         showDialog<ThemeType>(
           context: context,
           builder: (_) => DialogPicker<ThemeType>(
             icon: Icons.brightness_6,
             title: S.of(context).chooseTheme,
-            selectedValue: context.read<ThemeType>(),
+            selectedValue: context.get<ThemeType>(),
             values: ThemeType.values,
             titleAdapter: _typeToString,
           ),

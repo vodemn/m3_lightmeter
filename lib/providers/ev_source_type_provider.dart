@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/environment.dart';
-import 'package:provider/provider.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 
 class EvSourceTypeProvider extends StatefulWidget {
   final Widget child;
@@ -23,9 +23,9 @@ class EvSourceTypeProviderState extends State<EvSourceTypeProvider> {
   @override
   void initState() {
     super.initState();
-    final evSourceType = context.read<UserPreferencesService>().evSourceType;
+    final evSourceType = context.get<UserPreferencesService>().evSourceType;
     valueListenable = ValueNotifier(
-      evSourceType == EvSourceType.sensor && !context.read<Environment>().hasLightSensor
+      evSourceType == EvSourceType.sensor && !context.get<Environment>().hasLightSensor
           ? EvSourceType.camera
           : evSourceType,
     );
@@ -41,9 +41,9 @@ class EvSourceTypeProviderState extends State<EvSourceTypeProvider> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: valueListenable,
-      builder: (_, value, child) => Provider.value(
-        value: value,
-        child: child,
+      builder: (_, value, child) => InheritedWidgetBase<EvSourceType>(
+        data: value,
+        child: child!,
       ),
       child: widget.child,
     );
@@ -52,12 +52,12 @@ class EvSourceTypeProviderState extends State<EvSourceTypeProvider> {
   void toggleType() {
     switch (valueListenable.value) {
       case EvSourceType.camera:
-        if (context.read<Environment>().hasLightSensor) {
+        if (context.get<Environment>().hasLightSensor) {
           valueListenable.value = EvSourceType.sensor;
         }
       case EvSourceType.sensor:
         valueListenable.value = EvSourceType.camera;
     }
-    context.read<UserPreferencesService>().evSourceType = valueListenable.value;
+    context.get<UserPreferencesService>().evSourceType = valueListenable.value;
   }
 }

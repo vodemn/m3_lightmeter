@@ -9,6 +9,7 @@ import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/animated_dialog_picker/widget_picker_dialog_animated.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/reading_value_container/widget_container_reading_value.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class ReadingsContainer extends StatelessWidget {
@@ -42,7 +43,7 @@ class ReadingsContainer extends StatelessWidget {
           const _EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
-        if (MeteringScreenLayout.featureStatusOf(
+        if (MeteringScreenLayout.featureOf(
           context,
           MeteringScreenLayoutFeature.extremeExposurePairs,
         )) ...[
@@ -60,7 +61,7 @@ class ReadingsContainer extends StatelessWidget {
           ),
           const _InnerPadding(),
         ],
-        if (MeteringScreenLayout.featureStatusOf(
+        if (MeteringScreenLayout.featureOf(
           context,
           MeteringScreenLayoutFeature.filmPicker,
         )) ...[
@@ -76,7 +77,7 @@ class ReadingsContainer extends StatelessWidget {
             Expanded(
               child: _IsoValuePicker(
                 selectedValue: iso,
-                values: EquipmentProfile.of(context).isoValues,
+                values: context.listen<EquipmentProfile>().isoValues,
                 onChanged: onIsoChanged,
               ),
             ),
@@ -84,7 +85,7 @@ class ReadingsContainer extends StatelessWidget {
             Expanded(
               child: _NdValuePicker(
                 selectedValue: nd,
-                values: EquipmentProfile.of(context).ndValues,
+                values: context.listen<EquipmentProfile>().ndValues,
                 onChanged: onNdChanged,
               ),
             ),
@@ -107,16 +108,16 @@ class _EquipmentProfilePicker extends StatelessWidget {
     return AnimatedDialogPicker<EquipmentProfileData>(
       icon: Icons.camera,
       title: S.of(context).equipmentProfile,
-      selectedValue: EquipmentProfile.of(context),
-      values: EquipmentProfiles.of(context),
+      selectedValue: context.listen<EquipmentProfile>(),
+      values: context.listen<EquipmentProfiles>(),
       itemTitleBuilder: (_, value) => Text(value.id.isEmpty ? S.of(context).none : value.name),
       onChanged: EquipmentProfileProvider.of(context).setProfile,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: S.of(context).equipmentProfile,
-          value: EquipmentProfile.of(context).id.isEmpty
+          value: context.listen<EquipmentProfile>().id.isEmpty
               ? S.of(context).none
-              : EquipmentProfile.of(context).name,
+              : context.listen<EquipmentProfile>().name,
         ),
       ),
     );

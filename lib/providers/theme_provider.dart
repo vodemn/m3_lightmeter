@@ -5,15 +5,14 @@ import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
-import 'package:provider/provider.dart';
-
 class ThemeProvider extends StatefulWidget {
-  final TransitionBuilder? builder;
+  final Widget child;
 
   const ThemeProvider({
-    this.builder,
+    required this.child,
     super.key,
   });
 
@@ -45,7 +44,7 @@ class ThemeProvider extends StatefulWidget {
 }
 
 class ThemeProviderState extends State<ThemeProvider> with WidgetsBindingObserver {
-  UserPreferencesService get _prefs => context.read<UserPreferencesService>();
+  UserPreferencesService get _prefs => context.get<UserPreferencesService>();
 
   late final _themeTypeNotifier = ValueNotifier<ThemeType>(_prefs.themeType);
   late final _dynamicColorNotifier = ValueNotifier<bool>(_prefs.dynamicColor);
@@ -76,8 +75,8 @@ class ThemeProviderState extends State<ThemeProvider> with WidgetsBindingObserve
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: _themeTypeNotifier,
-      builder: (_, themeType, __) => Provider.value(
-        value: themeType,
+      builder: (_, themeType, __) => InheritedWidgetBase<ThemeType>(
+        data: themeType,
         child: ValueListenableBuilder(
           valueListenable: _dynamicColorNotifier,
           builder: (_, useDynamicColor, __) => _DynamicColorProvider(
@@ -88,7 +87,7 @@ class ThemeProviderState extends State<ThemeProvider> with WidgetsBindingObserve
               builder: (_, primaryColor, __) => _ThemeDataProvider(
                 primaryColor: dynamicPrimaryColor ?? primaryColor,
                 brightness: _themeBrightness,
-                builder: widget.builder,
+                child: widget.child,
               ),
             ),
           ),
@@ -154,8 +153,8 @@ class _DynamicColorProvider extends StatelessWidget {
           dynamicPrimaryColor = null;
           state = DynamicColorState.unavailable;
         }
-        return Provider.value(
-          value: state,
+        return InheritedWidgetBase<DynamicColorState>(
+          data: state,
           child: builder(context, dynamicPrimaryColor),
         );
       },
@@ -166,19 +165,19 @@ class _DynamicColorProvider extends StatelessWidget {
 class _ThemeDataProvider extends StatelessWidget {
   final Color primaryColor;
   final Brightness brightness;
-  final TransitionBuilder? builder;
+  final Widget child;
 
   const _ThemeDataProvider({
     required this.primaryColor,
     required this.brightness,
-    required this.builder,
+    required this.child,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Provider.value(
-      value: _themeFromColorScheme(_colorSchemeFromColor()),
-      builder: builder,
+    return InheritedWidgetBase<ThemeData>(
+      data: _themeFromColorScheme(_colorSchemeFromColor()),
+      child: child,
     );
   }
 

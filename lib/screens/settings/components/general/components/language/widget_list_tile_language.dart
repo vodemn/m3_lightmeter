@@ -3,7 +3,7 @@ import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/supported_locale_provider.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_picker.dart/widget_dialog_picker.dart';
-import 'package:provider/provider.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 
 class LanguageListTile extends StatelessWidget {
   const LanguageListTile({super.key});
@@ -13,14 +13,14 @@ class LanguageListTile extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.language),
       title: Text(S.of(context).language),
-      trailing: Text(context.watch<SupportedLocale>().localizedName),
+      trailing: Text(context.listen<SupportedLocale>().localizedName),
       onTap: () {
         showDialog<SupportedLocale>(
           context: context,
           builder: (_) => DialogPicker<SupportedLocale>(
             icon: Icons.language,
             title: S.of(context).chooseLanguage,
-            selectedValue: context.read<SupportedLocale>(),
+            selectedValue: context.get<SupportedLocale>(),
             values: SupportedLocale.values,
             titleAdapter: (context, value) => value.localizedName,
           ),

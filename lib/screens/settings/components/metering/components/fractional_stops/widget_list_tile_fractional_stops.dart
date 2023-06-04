@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/stop_type_provider.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_picker.dart/widget_dialog_picker.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-import 'package:provider/provider.dart';
 
 class StopTypeListTile extends StatelessWidget {
   const StopTypeListTile({super.key});
@@ -13,14 +13,14 @@ class StopTypeListTile extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.straighten),
       title: Text(S.of(context).fractionalStops),
-      trailing: Text(_typeToString(context, context.watch<StopType>())),
+      trailing: Text(_typeToString(context, context.listen<StopType>())),
       onTap: () {
         showDialog<StopType>(
           context: context,
           builder: (_) => DialogPicker<StopType>(
             icon: Icons.straighten,
             title: S.of(context).showFractionalStops,
-            selectedValue: context.read<StopType>(),
+            selectedValue: context.get<StopType>(),
             values: StopType.values,
             titleAdapter: _typeToString,
           ),
