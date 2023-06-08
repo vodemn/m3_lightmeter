@@ -109,8 +109,8 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   void _onFilmChanged(FilmChangedEvent event, Emitter emit) {
     if (_film.name != event.data.name) {
-      _film = event.data;
       _meteringInteractor.film = event.data;
+      _film = event.data;
 
       /// If user selects 'Other' film we preserve currently selected ISO
       /// and therefore only discard reciprocity formula
@@ -131,6 +131,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     /// Discard currently selected film even if ISO is the same,
     /// because, for example, Fomapan 400 and any Ilford 400
     /// have different reciprocity formulas
+    _meteringInteractor.film = Film.values.first;
     _film = Film.values.first;
 
     if (_iso != event.isoValue) {
