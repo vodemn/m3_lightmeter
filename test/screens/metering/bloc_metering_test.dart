@@ -59,7 +59,7 @@ void main() {
     bloc.close();
   });
 
-  group('MeteringBloc test:', () {
+  group('Initial state test', () {
     test('Initial state', () {
       expect(
         bloc.state,
@@ -73,93 +73,97 @@ void main() {
     });
   });
 
-  group('`MeasureEvent` tests', () {
-    blocTest<MeteringBloc, MeteringState>(
-      '`MeasureEvent` -> success',
-      build: () => bloc,
-      act: (bloc) async {
-        bloc.add(const MeasureEvent());
-        bloc.onCommunicationState(const communication_states.MeteringEndedState(2));
-      },
-      verify: (_) {
-        verify(() => meteringInteractor.quickVibration()).called(1);
-        verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(1);
-        verify(() => meteringInteractor.responseVibration()).called(1);
-      },
-      expect: () => [
-        isA<LoadingState>(),
-        isA<MeteringDataState>()
-            .having((state) => state.continuousMetering, 'continuousMetering', false)
-            .having((state) => state.ev, 'ev', 2),
-      ],
-    );
+  group(
+    '`MeasureEvent` tests',
+    () {
+      blocTest<MeteringBloc, MeteringState>(
+        '`MeasureEvent` -> success',
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const MeasureEvent());
+          bloc.onCommunicationState(const communication_states.MeteringEndedState(2));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.quickVibration()).called(1);
+          verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(1);
+          verify(() => meteringInteractor.responseVibration()).called(1);
+        },
+        expect: () => [
+          isA<LoadingState>(),
+          isA<MeteringDataState>()
+              .having((state) => state.continuousMetering, 'continuousMetering', false)
+              .having((state) => state.ev, 'ev', 2),
+        ],
+      );
 
-    blocTest<MeteringBloc, MeteringState>(
-      '`MeasureEvent` -> error',
-      build: () => bloc,
-      act: (bloc) async {
-        bloc.add(const MeasureEvent());
-        bloc.onCommunicationState(const communication_states.MeteringEndedState(null));
-      },
-      verify: (_) {
-        verify(() => meteringInteractor.quickVibration()).called(1);
-        verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(1);
-        verify(() => meteringInteractor.errorVibration()).called(1);
-      },
-      expect: () => [
-        isA<LoadingState>(),
-        isA<MeteringDataState>()
-            .having((state) => state.continuousMetering, 'continuousMetering', false)
-            .having((_) => bloc.ev100, 'ev100', null)
-            .having((state) => state.ev, 'ev', null),
-      ],
-    );
+      blocTest<MeteringBloc, MeteringState>(
+        '`MeasureEvent` -> error',
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const MeasureEvent());
+          bloc.onCommunicationState(const communication_states.MeteringEndedState(null));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.quickVibration()).called(1);
+          verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(1);
+          verify(() => meteringInteractor.errorVibration()).called(1);
+        },
+        expect: () => [
+          isA<LoadingState>(),
+          isA<MeteringDataState>()
+              .having((state) => state.continuousMetering, 'continuousMetering', false)
+              .having((_) => bloc.ev100, 'ev100', null)
+              .having((state) => state.ev, 'ev', null),
+        ],
+      );
 
-    blocTest<MeteringBloc, MeteringState>(
-      '`MeasureEvent` -> continuous metering',
-      build: () => bloc,
-      act: (bloc) async { 
-        // delays here simulate light sensor behaviour
-        // when sensor does not fire new LUX events when value is not changed
-        bloc.add(const MeasureEvent());
-        bloc.onCommunicationState(const communication_states.MeteringInProgressState(null));
-        await Future.delayed(const Duration(seconds: 1));
-        bloc.onCommunicationState(const communication_states.MeteringInProgressState(2));
-        bloc.onCommunicationState(const communication_states.MeteringInProgressState(5.5));
-        await Future.delayed(const Duration(seconds: 2));
-        bloc.onCommunicationState(const communication_states.MeteringInProgressState(null));
-        bloc.onCommunicationState(const communication_states.MeteringInProgressState(4));
-        bloc.add(const MeasureEvent());
-        bloc.onCommunicationState(const communication_states.MeteringEndedState(4));
-      },
-      verify: (_) {
-        verify(() => meteringInteractor.quickVibration()).called(2);
-        verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(2);
-        verify(() => meteringInteractor.responseVibration()).called(4);
-        verify(() => meteringInteractor.errorVibration()).called(2);
-      },
-      expect: () => [
-        isA<LoadingState>(),
-        isA<MeteringDataState>()
-            .having((state) => state.continuousMetering, 'continuousMetering', true)
-            .having((state) => state.ev, 'ev', null),
-        isA<MeteringDataState>()
-            .having((state) => state.continuousMetering, 'continuousMetering', true)
-            .having((state) => state.ev, 'ev', 2),
-        isA<MeteringDataState>()
-            .having((state) => state.continuousMetering, 'continuousMetering', true)
-            .having((state) => state.ev, 'ev', 5.5),
-        isA<MeteringDataState>()
-            .having((state) => state.continuousMetering, 'continuousMetering', true)
-            .having((state) => state.ev, 'ev', null),
-        isA<MeteringDataState>()
-            .having((state) => state.continuousMetering, 'continuousMetering', true)
-            .having((state) => state.ev, 'ev', 4),
-        isA<LoadingState>(),
-        isA<MeteringDataState>()
-            .having((state) => state.continuousMetering, 'continuousMetering', false)
-            .having((state) => state.ev, 'ev', 4),
-      ],
-    );
-  });
+      blocTest<MeteringBloc, MeteringState>(
+        '`MeasureEvent` -> continuous metering',
+        build: () => bloc,
+        act: (bloc) async {
+          // delays here simulate light sensor behaviour
+          // when sensor does not fire new LUX events when value is not changed
+          bloc.add(const MeasureEvent());
+          bloc.onCommunicationState(const communication_states.MeteringInProgressState(null));
+          await Future.delayed(const Duration(seconds: 1));
+          bloc.onCommunicationState(const communication_states.MeteringInProgressState(2));
+          bloc.onCommunicationState(const communication_states.MeteringInProgressState(5.5));
+          await Future.delayed(const Duration(seconds: 2));
+          bloc.onCommunicationState(const communication_states.MeteringInProgressState(null));
+          bloc.onCommunicationState(const communication_states.MeteringInProgressState(4));
+          bloc.add(const MeasureEvent());
+          bloc.onCommunicationState(const communication_states.MeteringEndedState(4));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.quickVibration()).called(2);
+          verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(2);
+          verify(() => meteringInteractor.responseVibration()).called(4);
+          verify(() => meteringInteractor.errorVibration()).called(2);
+        },
+        expect: () => [
+          isA<LoadingState>(),
+          isA<MeteringDataState>()
+              .having((state) => state.continuousMetering, 'continuousMetering', true)
+              .having((state) => state.ev, 'ev', null),
+          isA<MeteringDataState>()
+              .having((state) => state.continuousMetering, 'continuousMetering', true)
+              .having((state) => state.ev, 'ev', 2),
+          isA<MeteringDataState>()
+              .having((state) => state.continuousMetering, 'continuousMetering', true)
+              .having((state) => state.ev, 'ev', 5.5),
+          isA<MeteringDataState>()
+              .having((state) => state.continuousMetering, 'continuousMetering', true)
+              .having((state) => state.ev, 'ev', null),
+          isA<MeteringDataState>()
+              .having((state) => state.continuousMetering, 'continuousMetering', true)
+              .having((state) => state.ev, 'ev', 4),
+          isA<LoadingState>(),
+          isA<MeteringDataState>()
+              .having((state) => state.continuousMetering, 'continuousMetering', false)
+              .having((state) => state.ev, 'ev', 4),
+        ],
+      );
+    },
+    timeout: const Timeout(Duration(seconds: 4)),
+  );
 }
