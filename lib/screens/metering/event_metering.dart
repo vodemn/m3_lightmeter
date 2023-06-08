@@ -41,10 +41,13 @@ class MeasureEvent extends MeteringEvent {
 
 class MeasuredEvent extends MeteringEvent {
   final double ev100;
+  final bool continuousMetering;
 
-  const MeasuredEvent(this.ev100);
+  const MeasuredEvent(this.ev100, {required this.continuousMetering});
 }
 
 class MeasureErrorEvent extends MeteringEvent {
-  const MeasureErrorEvent();
+  final bool continuousMetering;
+
+  const MeasureErrorEvent({required this.continuousMetering});
 }

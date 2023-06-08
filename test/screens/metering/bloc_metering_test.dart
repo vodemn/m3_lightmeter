@@ -1,7 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
-import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
@@ -26,7 +25,6 @@ void main() {
   late EquipmentProfileData equipmentProfileData;
   late MeteringBloc bloc;
   const iso100 = IsoValue(100, StopType.full);
-  double initEV = 0.0;
 
   setUpAll(() {
     communicationBloc = _MockMeteringCommunicationBloc();
@@ -45,6 +43,7 @@ void main() {
     when<Film>(() => meteringInteractor.film).thenReturn(Film.values.first);
     when(meteringInteractor.quickVibration).thenAnswer((_) async {});
     when(meteringInteractor.responseVibration).thenAnswer((_) async {});
+    when(meteringInteractor.errorVibration).thenAnswer((_) async {});
   });
 
   setUp(() {
@@ -69,74 +68,14 @@ void main() {
             .having((state) => state.film, 'film', bloc.film)
             .having((state) => state.iso, 'iso', bloc.iso)
             .having((state) => state.nd, 'nd', bloc.nd)
-            .having((state) => state.exposurePairs, 'exposurePairs', const []).having(
-          (state) => state.continuousMetering,
-          'continuousMetering',
-          bloc.isMeteringInProgress,
-        ),
+            .having((state) => state.exposurePairs, 'exposurePairs', const []),
       );
     });
-
-    blocTest<MeteringBloc, MeteringState>(
-      'Measured',
-      build: () => bloc,
-      act: (bloc) => bloc.add(const MeasuredEvent(2)),
-      verify: (_) {
-        verify(() => meteringInteractor.responseVibration()).called(1);
-      },
-      expect: () => [
-        isA<MeteringDataState>()
-            .having((_) => bloc.ev100, 'ev100', 2)
-            .having((state) => state.ev, 'ev', 2)
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', iso100)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
-      ],
-    );
-
-    blocTest<MeteringBloc, MeteringState>(
-      'Measured',
-      build: () => bloc,
-      setUp: () {
-        when<IsoValue>(() => meteringInteractor.iso).thenReturn(iso100);
-      },
-      act: (bloc) {
-        bloc.add(const MeasuredEvent(3));
-        bloc.add(const MeasuredEvent(7));
-        bloc.add(const MeasuredEvent(2));
-      },
-      verify: (_) {
-        //verify(() => meteringInteractor.responseVibration()).called(1);
-      },
-      expect: () => [
-        isA<MeteringDataState>()
-            .having((_) => bloc.ev100, 'ev100', 3)
-            .having((_) => bloc.iso, 'blocIso', iso100)
-            .having((state) => state.ev, 'ev', 4)
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', iso100)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
-        isA<MeteringDataState>()
-            .having((_) => bloc.ev100, 'ev100', 7)
-            .having((_) => bloc.iso, 'blocIso', iso100)
-            .having((state) => state.ev, 'ev', 8)
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', iso100)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
-        isA<MeteringDataState>()
-            .having((_) => bloc.ev100, 'ev100', 2)
-            .having((_) => bloc.iso, 'blocIso', iso100)
-            .having((state) => state.ev, 'ev', 3)
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', iso100)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
-      ],
-    );
   });
 
   group('`MeasureEvent` tests', () {
     blocTest<MeteringBloc, MeteringState>(
-      '`MeasureEvent` -> `MeteringEndedState`',
+      '`MeasureEvent` -> success',
       build: () => bloc,
       act: (bloc) async {
         bloc.add(const MeasureEvent());
@@ -148,93 +87,78 @@ void main() {
         verify(() => meteringInteractor.responseVibration()).called(1);
       },
       expect: () => [
-        isA<LoadingState>()
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', iso100)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
+        isA<LoadingState>(),
         isA<MeteringDataState>()
-            .having((_) => bloc.isMeteringInProgress, 'isMeteringInProgress', false)
-            .having((_) => bloc.ev100, 'ev100', 2)
-            .having((state) => state.ev, 'ev', 2)
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', iso100)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
+            .having((state) => state.continuousMetering, 'continuousMetering', false)
+            .having((state) => state.ev, 'ev', 2),
       ],
     );
 
     blocTest<MeteringBloc, MeteringState>(
-      '`MeasureEvent` -> `MeteringInProgressState`',
+      '`MeasureEvent` -> error',
       build: () => bloc,
       act: (bloc) async {
         bloc.add(const MeasureEvent());
-        bloc.onCommunicationState(const communication_states.MeteringInProgressState(2));
+        bloc.onCommunicationState(const communication_states.MeteringEndedState(null));
       },
       verify: (_) {
         verify(() => meteringInteractor.quickVibration()).called(1);
         verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(1);
-        verify(() => meteringInteractor.responseVibration()).called(1);
+        verify(() => meteringInteractor.errorVibration()).called(1);
       },
       expect: () => [
-        isA<LoadingState>()
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', iso100)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
+        isA<LoadingState>(),
         isA<MeteringDataState>()
-            .having((_) => bloc.isMeteringInProgress, 'isMeteringInProgress', true)
-            .having((_) => bloc.ev100, 'ev100', 2)
-            .having((state) => state.ev, 'ev', 2)
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', iso100)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
+            .having((state) => state.continuousMetering, 'continuousMetering', false)
+            .having((_) => bloc.ev100, 'ev100', null)
+            .having((state) => state.ev, 'ev', null),
       ],
     );
-  });
 
-  group('MeteringBloc `IsoChangedEvent` tests:', () {
-    const isoValueToSet = IsoValue(200, StopType.full);
     blocTest<MeteringBloc, MeteringState>(
-      'ISO change',
-      setUp: () {
-        when<void>(() => meteringInteractor.iso = isoValueToSet);
-      },
+      '`MeasureEvent` -> continuous metering',
       build: () => bloc,
-      act: (bloc) async {
-        bloc.add(const MeasuredEvent(1));
-        bloc.add(const IsoChangedEvent(isoValueToSet));
-        await Future.delayed(Dimens.durationS);
+      act: (bloc) async { 
+        // delays here simulate light sensor behaviour
+        // when sensor does not fire new LUX events when value is not changed
         bloc.add(const MeasureEvent());
-        await Future.delayed(Dimens.durationS);
-        bloc.add(const MeasuredEvent(3));
-        await Future.delayed(Dimens.durationS);
+        bloc.onCommunicationState(const communication_states.MeteringInProgressState(null));
+        await Future.delayed(const Duration(seconds: 1));
+        bloc.onCommunicationState(const communication_states.MeteringInProgressState(2));
+        bloc.onCommunicationState(const communication_states.MeteringInProgressState(5.5));
+        await Future.delayed(const Duration(seconds: 2));
+        bloc.onCommunicationState(const communication_states.MeteringInProgressState(null));
+        bloc.onCommunicationState(const communication_states.MeteringInProgressState(4));
+        bloc.add(const MeasureEvent());
+        bloc.onCommunicationState(const communication_states.MeteringEndedState(4));
       },
       verify: (_) {
-        verify(() => meteringInteractor.iso = isoValueToSet).called(1);
+        verify(() => meteringInteractor.quickVibration()).called(2);
+        verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(2);
+        verify(() => meteringInteractor.responseVibration()).called(4);
+        verify(() => meteringInteractor.errorVibration()).called(2);
       },
       expect: () => [
+        isA<LoadingState>(),
         isA<MeteringDataState>()
-            .having((_) => bloc.ev100, 'ev100', 1)
-            .having((state) => state.ev, 'ev', 1)
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', iso100)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
+            .having((state) => state.continuousMetering, 'continuousMetering', true)
+            .having((state) => state.ev, 'ev', null),
         isA<MeteringDataState>()
-            .having((_) => bloc.ev100, 'ev100', 1)
-            .having((_) => bloc.iso, 'blocIso', isoValueToSet)
-            .having((state) => state.ev, 'ev', 2)
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', isoValueToSet)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
-        isA<LoadingState>()
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', isoValueToSet)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
+            .having((state) => state.continuousMetering, 'continuousMetering', true)
+            .having((state) => state.ev, 'ev', 2),
         isA<MeteringDataState>()
-            //.having((_) => bloc.ev100, 'ev100', 3)
-            .having((_) => bloc.iso, 'blocIso', isoValueToSet)
-            //.having((state) => state.ev, 'ev', 4)
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', isoValueToSet)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
+            .having((state) => state.continuousMetering, 'continuousMetering', true)
+            .having((state) => state.ev, 'ev', 5.5),
+        isA<MeteringDataState>()
+            .having((state) => state.continuousMetering, 'continuousMetering', true)
+            .having((state) => state.ev, 'ev', null),
+        isA<MeteringDataState>()
+            .having((state) => state.continuousMetering, 'continuousMetering', true)
+            .having((state) => state.ev, 'ev', 4),
+        isA<LoadingState>(),
+        isA<MeteringDataState>()
+            .having((state) => state.continuousMetering, 'continuousMetering', false)
+            .having((state) => state.ev, 'ev', 4),
       ],
     );
   });

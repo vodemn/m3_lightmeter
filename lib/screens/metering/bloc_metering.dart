@@ -41,9 +41,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   @visibleForTesting
   double? ev100;
 
-  @visibleForTesting
-  bool isMeteringInProgress = false;
-
   MeteringBloc(
     this._communicationBloc,
     this._meteringInteractor,
@@ -83,8 +80,10 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   @visibleForTesting
   void onCommunicationState(communication_states.ScreenState communicationState) {
     if (communicationState is communication_states.MeasuredState) {
-      isMeteringInProgress = communicationState is communication_states.MeteringInProgressState;
-      handleEv100(communicationState.ev100);
+      _handleEv100(
+        communicationState.ev100,
+        continuousMetering: communicationState is communication_states.MeteringInProgressState,
+      );
     }
   }
 
@@ -174,14 +173,13 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     );
   }
 
-  void _updateMeasurements() => handleEv100(ev100);
+  void _updateMeasurements() => _handleEv100(ev100, continuousMetering: false);
 
-  @visibleForTesting
-  void handleEv100(double? ev100) {
+  void _handleEv100(double? ev100, {required bool continuousMetering}) {
     if (ev100 == null || ev100.isNaN || ev100.isInfinite) {
-      add(const MeasureErrorEvent());
+      add(MeasureErrorEvent(continuousMetering: continuousMetering));
     } else {
-      add(MeasuredEvent(ev100));
+      add(MeasuredEvent(ev100, continuousMetering: continuousMetering));
     }
   }
 
@@ -196,12 +194,12 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
         iso: iso,
         nd: nd,
         exposurePairs: buildExposureValues(ev),
-        continuousMetering: isMeteringInProgress,
+        continuousMetering: event.continuousMetering,
       ),
     );
   }
 
-  void _onMeasureError(MeasureErrorEvent _, Emitter emit) {
+  void _onMeasureError(MeasureErrorEvent event, Emitter emit) {
     _meteringInteractor.errorVibration();
     ev100 = null;
     emit(
@@ -211,7 +209,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
         iso: iso,
         nd: nd,
         exposurePairs: const [],
-        continuousMetering: isMeteringInProgress,
+        continuousMetering: event.continuousMetering,
       ),
     );
   }
