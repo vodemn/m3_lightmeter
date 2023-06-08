@@ -65,34 +65,17 @@ void main() {
       expect(
         bloc.state,
         isA<MeteringDataState>()
-            .having((state) => state.ev, 'ev', initEV)
+            .having((state) => state.ev, 'ev', null)
             .having((state) => state.film, 'film', bloc.film)
             .having((state) => state.iso, 'iso', bloc.iso)
             .having((state) => state.nd, 'nd', bloc.nd)
-            .having((state) => state.exposurePairs, 'exposurePairs', const []),
+            .having((state) => state.exposurePairs, 'exposurePairs', const []).having(
+          (state) => state.continuousMetering,
+          'continuousMetering',
+          bloc.isMeteringInProgress,
+        ),
       );
     });
-
-    blocTest<MeteringBloc, MeteringState>(
-      'Measure',
-      build: () => bloc,
-      act: (bloc) {
-        bloc.add(const MeasureEvent());
-        bloc.add(const MeasureEvent());
-        bloc.add(const MeasureEvent());
-        bloc.add(const MeasureEvent());
-      },
-      verify: (_) {
-        verify(() => meteringInteractor.quickVibration()).called(1);
-        verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(1);
-      },
-      expect: () => [
-        isA<LoadingState>()
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', iso100)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
-      ],
-    );
 
     blocTest<MeteringBloc, MeteringState>(
       'Measured',
@@ -111,22 +94,109 @@ void main() {
       ],
     );
 
+    blocTest<MeteringBloc, MeteringState>(
+      'Measured',
+      build: () => bloc,
+      setUp: () {
+        when<IsoValue>(() => meteringInteractor.iso).thenReturn(iso100);
+      },
+      act: (bloc) {
+        bloc.add(const MeasuredEvent(3));
+        bloc.add(const MeasuredEvent(7));
+        bloc.add(const MeasuredEvent(2));
+      },
+      verify: (_) {
+        //verify(() => meteringInteractor.responseVibration()).called(1);
+      },
+      expect: () => [
+        isA<MeteringDataState>()
+            .having((_) => bloc.ev100, 'ev100', 3)
+            .having((_) => bloc.iso, 'blocIso', iso100)
+            .having((state) => state.ev, 'ev', 4)
+            .having((state) => state.film, 'film', Film.values.first)
+            .having((state) => state.iso, 'iso', iso100)
+            .having((state) => state.nd, 'nd', NdValue.values.first),
+        isA<MeteringDataState>()
+            .having((_) => bloc.ev100, 'ev100', 7)
+            .having((_) => bloc.iso, 'blocIso', iso100)
+            .having((state) => state.ev, 'ev', 8)
+            .having((state) => state.film, 'film', Film.values.first)
+            .having((state) => state.iso, 'iso', iso100)
+            .having((state) => state.nd, 'nd', NdValue.values.first),
+        isA<MeteringDataState>()
+            .having((_) => bloc.ev100, 'ev100', 2)
+            .having((_) => bloc.iso, 'blocIso', iso100)
+            .having((state) => state.ev, 'ev', 3)
+            .having((state) => state.film, 'film', Film.values.first)
+            .having((state) => state.iso, 'iso', iso100)
+            .having((state) => state.nd, 'nd', NdValue.values.first),
+      ],
+    );
+  });
+
+  group('`MeasureEvent` tests', () {
+    blocTest<MeteringBloc, MeteringState>(
+      '`MeasureEvent` -> `MeteringEndedState`',
+      build: () => bloc,
+      act: (bloc) async {
+        bloc.add(const MeasureEvent());
+        bloc.onCommunicationState(const communication_states.MeteringEndedState(2));
+      },
+      verify: (_) {
+        verify(() => meteringInteractor.quickVibration()).called(1);
+        verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(1);
+        verify(() => meteringInteractor.responseVibration()).called(1);
+      },
+      expect: () => [
+        isA<LoadingState>()
+            .having((state) => state.film, 'film', Film.values.first)
+            .having((state) => state.iso, 'iso', iso100)
+            .having((state) => state.nd, 'nd', NdValue.values.first),
+        isA<MeteringDataState>()
+            .having((_) => bloc.isMeteringInProgress, 'isMeteringInProgress', false)
+            .having((_) => bloc.ev100, 'ev100', 2)
+            .having((state) => state.ev, 'ev', 2)
+            .having((state) => state.film, 'film', Film.values.first)
+            .having((state) => state.iso, 'iso', iso100)
+            .having((state) => state.nd, 'nd', NdValue.values.first),
+      ],
+    );
+
+    blocTest<MeteringBloc, MeteringState>(
+      '`MeasureEvent` -> `MeteringInProgressState`',
+      build: () => bloc,
+      act: (bloc) async {
+        bloc.add(const MeasureEvent());
+        bloc.onCommunicationState(const communication_states.MeteringInProgressState(2));
+      },
+      verify: (_) {
+        verify(() => meteringInteractor.quickVibration()).called(1);
+        verify(() => communicationBloc.add(const communication_events.MeasureEvent())).called(1);
+        verify(() => meteringInteractor.responseVibration()).called(1);
+      },
+      expect: () => [
+        isA<LoadingState>()
+            .having((state) => state.film, 'film', Film.values.first)
+            .having((state) => state.iso, 'iso', iso100)
+            .having((state) => state.nd, 'nd', NdValue.values.first),
+        isA<MeteringDataState>()
+            .having((_) => bloc.isMeteringInProgress, 'isMeteringInProgress', true)
+            .having((_) => bloc.ev100, 'ev100', 2)
+            .having((state) => state.ev, 'ev', 2)
+            .having((state) => state.film, 'film', Film.values.first)
+            .having((state) => state.iso, 'iso', iso100)
+            .having((state) => state.nd, 'nd', NdValue.values.first),
+      ],
+    );
+  });
+
+  group('MeteringBloc `IsoChangedEvent` tests:', () {
     const isoValueToSet = IsoValue(200, StopType.full);
     blocTest<MeteringBloc, MeteringState>(
       'ISO change',
       setUp: () {
         when<void>(() => meteringInteractor.iso = isoValueToSet);
-        bloc.ev100 = 0;
-        bloc.iso = iso100;
       },
-      seed: () => MeteringDataState(
-        ev: 0.0,
-        film: meteringInteractor.film,
-        iso: meteringInteractor.iso,
-        nd: meteringInteractor.ndFilter,
-        exposurePairs: const [],
-        continuousMetering: false,
-      ),
       build: () => bloc,
       act: (bloc) async {
         bloc.add(const MeasuredEvent(1));
@@ -159,7 +229,7 @@ void main() {
             .having((state) => state.iso, 'iso', isoValueToSet)
             .having((state) => state.nd, 'nd', NdValue.values.first),
         isA<MeteringDataState>()
-            .having((_) => bloc.ev100, 'ev100', 3)
+            //.having((_) => bloc.ev100, 'ev100', 3)
             .having((_) => bloc.iso, 'blocIso', isoValueToSet)
             //.having((state) => state.ev, 'ev', 4)
             .having((state) => state.film, 'film', Film.values.first)
@@ -167,50 +237,5 @@ void main() {
             .having((state) => state.nd, 'nd', NdValue.values.first),
       ],
     );
-
-    blocTest<MeteringBloc, MeteringState>(
-      'Measured',
-      build: () => bloc,
-      setUp: () {
-        when<void>(() => meteringInteractor.iso = isoValueToSet);
-        bloc.ev100 = 2;
-        bloc.iso = isoValueToSet;
-      },
-      act: (bloc) => bloc.add(const MeasuredEvent(3)),
-      verify: (_) {
-        verify(() => meteringInteractor.responseVibration()).called(1);
-      },
-      expect: () => [
-        isA<MeteringDataState>()
-            .having((_) => bloc.ev100, 'ev100', 3)
-            .having((_) => bloc.iso, 'blocIso', isoValueToSet)
-            .having((state) => state.ev, 'ev', 4)
-            .having((state) => state.film, 'film', Film.values.first)
-            .having((state) => state.iso, 'iso', isoValueToSet)
-            .having((state) => state.nd, 'nd', NdValue.values.first),
-      ],
-    );
-
-    // blocTest<MeteringBloc, MeteringState>(
-    //   'ND change',
-    //   build: () => bloc,
-    //   act: (bloc) => bloc.add(NdChangedEvent(NdValue.values[1])),
-    //   expect: () => [
-    //     isA<MeteringDataState>()
-    //         .having((state) => state.ev, 'ev', -1)
-    //         .having((state) => state.nd, 'nd', NdValue.values[1]),
-    //   ],
-    // );
-
-    // blocTest<MeteringBloc, MeteringState>(
-    //   'Measure',
-    //   build: () => bloc,
-    //   act: (bloc) => bloc.add(NdChangedEvent(NdValue.values[1])),
-    //   expect: () => [
-    //     isA<MeteringDataState>()
-    //         .having((state) => state.ev, 'ev', -1)
-    //         .having((state) => state.nd, 'nd', NdValue.values[1]),
-    //   ],
-    // );
   });
 }

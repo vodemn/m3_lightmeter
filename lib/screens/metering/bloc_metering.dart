@@ -39,9 +39,10 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   late Film film = _meteringInteractor.film;
 
   @visibleForTesting
-  double? ev100 = 0.0;
+  double? ev100;
 
-  bool _isMeteringInProgress = false;
+  @visibleForTesting
+  bool isMeteringInProgress = false;
 
   MeteringBloc(
     this._communicationBloc,
@@ -61,7 +62,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     _communicationSubscription = _communicationBloc.stream
         .where((state) => state is communication_states.ScreenState)
         .map((state) => state as communication_states.ScreenState)
-        .listen(_onCommunicationState);
+        .listen(onCommunicationState);
 
     on<EquipmentProfileChangedEvent>(_onEquipmentProfileChanged);
     on<StopTypeChangedEvent>(_onStopTypeChanged);
@@ -79,10 +80,11 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     return super.close();
   }
 
-  void _onCommunicationState(communication_states.ScreenState communicationState) {
+  @visibleForTesting
+  void onCommunicationState(communication_states.ScreenState communicationState) {
     if (communicationState is communication_states.MeasuredState) {
-      _isMeteringInProgress = communicationState is communication_states.MeteringInProgressState;
-      _handleEv100(communicationState.ev100);
+      isMeteringInProgress = communicationState is communication_states.MeteringInProgressState;
+      handleEv100(communicationState.ev100);
     }
   }
 
@@ -163,7 +165,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   void _onMeasure(MeasureEvent _, Emitter emit) {
     _meteringInteractor.quickVibration();
     _communicationBloc.add(const communication_events.MeasureEvent());
-    _isMeteringInProgress = true;
     emit(
       LoadingState(
         film: film,
@@ -173,9 +174,10 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     );
   }
 
-  void _updateMeasurements() => _handleEv100(ev100);
+  void _updateMeasurements() => handleEv100(ev100);
 
-  void _handleEv100(double? ev100) {
+  @visibleForTesting
+  void handleEv100(double? ev100) {
     if (ev100 == null || ev100.isNaN || ev100.isInfinite) {
       add(const MeasureErrorEvent());
     } else {
@@ -194,7 +196,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
         iso: iso,
         nd: nd,
         exposurePairs: buildExposureValues(ev),
-        continuousMetering: _isMeteringInProgress,
+        continuousMetering: isMeteringInProgress,
       ),
     );
   }
@@ -209,7 +211,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
         iso: iso,
         nd: nd,
         exposurePairs: const [],
-        continuousMetering: _isMeteringInProgress,
+        continuousMetering: isMeteringInProgress,
       ),
     );
   }
