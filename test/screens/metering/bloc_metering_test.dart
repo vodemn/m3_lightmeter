@@ -166,4 +166,39 @@ void main() {
     },
     timeout: const Timeout(Duration(seconds: 4)),
   );
+
+  group(
+    '`IsoChangedEvent` tests',
+    () {
+      //
+    },
+  );
+
+  group(
+    '`NdChangedEvent` tests',
+    () {
+      //
+    },
+  );
+
+  group(
+    '`FilmChangedEvent` tests',
+    () {
+      //
+    },
+  );
+
+  group(
+    '`StopTypeChangedEvent` tests',
+    () {
+      //
+    },
+  );
+
+  group(
+    '`EquipmentProfileChangedEvent` tests',
+    () {
+      //
+    },
+  );
 }
