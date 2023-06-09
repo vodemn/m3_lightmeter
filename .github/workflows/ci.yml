@@ -51,3 +51,6 @@ jobs:
 
       - name: Analyze project source
         run: flutter analyze lib --fatal-infos
+
+      - name: Run tests
+        run: flutter test
