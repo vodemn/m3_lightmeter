@@ -380,21 +380,116 @@ void main() {
   group(
     '`FilmChangedEvent` tests',
     () {
-      //
+      blocTest<MeteringBloc, MeteringState>(
+        'Pick different film with different ISO',
+        build: () => bloc,
+        seed: () => MeteringDataState(
+          ev100: 1.0,
+          film: const FomapanFilm.creative100(),
+          iso: const IsoValue(100, StopType.full),
+          nd: NdValue.values.first,
+          isMetering: false,
+        ),
+        act: (bloc) async {
+          bloc.add(const FilmChangedEvent(FomapanFilm.creative200()));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.film = const FomapanFilm.creative200()).called(1);
+          verify(() => meteringInteractor.iso = const IsoValue(200, StopType.full)).called(1);
+        },
+        expect: () => [
+          isA<MeteringDataState>()
+              .having((state) => state.ev100, 'ev100', 1.0)
+              .having((state) => state.ev, 'ev', 2.0)
+              .having((state) => state.film, 'film', const FomapanFilm.creative200())
+              .having((state) => state.iso, 'iso', const IsoValue(200, StopType.full))
+              .having((state) => state.nd, 'nd', NdValue.values.first)
+              .having((state) => state.isMetering, 'isMetering', false),
+        ],
+      );
+
+      blocTest<MeteringBloc, MeteringState>(
+        'Pick different film with same ISO',
+        build: () => bloc,
+        seed: () => MeteringDataState(
+          ev100: 1.0,
+          film: const FomapanFilm.creative100(),
+          iso: const IsoValue(100, StopType.full),
+          nd: NdValue.values.first,
+          isMetering: false,
+        ),
+        act: (bloc) async {
+          bloc.add(const FilmChangedEvent(IlfordFilm.delta100()));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.film = const IlfordFilm.delta100()).called(1);
+          verifyNever(() => meteringInteractor.iso = const IsoValue(100, StopType.full));
+        },
+        expect: () => [
+          isA<MeteringDataState>()
+              .having((state) => state.ev100, 'ev100', 1.0)
+              .having((state) => state.ev, 'ev', 1.0)
+              .having((state) => state.film, 'film', const IlfordFilm.delta100())
+              .having((state) => state.iso, 'iso', const IsoValue(100, StopType.full))
+              .having((state) => state.nd, 'nd', NdValue.values.first)
+              .having((state) => state.isMetering, 'isMetering', false),
+        ],
+      );
+
+      blocTest<MeteringBloc, MeteringState>(
+        'Pick same film',
+        build: () => bloc,
+        seed: () => MeteringDataState(
+          ev100: 1.0,
+          film: const FomapanFilm.creative100(),
+          iso: const IsoValue(100, StopType.full),
+          nd: NdValue.values.first,
+          isMetering: false,
+        ),
+        act: (bloc) async {
+          bloc.add(const FilmChangedEvent(FomapanFilm.creative100()));
+        },
+        verify: (_) {
+          verifyNever(() => meteringInteractor.film = const FomapanFilm.creative100());
+        },
+        expect: () => [],
+      );
+
+      blocTest<MeteringBloc, MeteringState>(
+        'Pick `Film.other()`',
+        build: () => bloc,
+        seed: () => MeteringDataState(
+          ev100: 1.0,
+          film: const FomapanFilm.creative100(),
+          iso: const IsoValue(100, StopType.full),
+          nd: NdValue.values.first,
+          isMetering: false,
+        ),
+        act: (bloc) async {
+          bloc.add(const FilmChangedEvent(Film.other()));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.film = const Film.other()).called(1);
+          verifyNever(() => meteringInteractor.iso = const IsoValue(0, StopType.full));
+        },
+        expect: () => [
+          isA<MeteringDataState>()
+              .having((state) => state.ev100, 'ev100', 1.0)
+              .having((state) => state.ev, 'ev', 1.0)
+              .having((state) => state.film, 'film', const Film.other())
+              .having((state) => state.iso, 'iso', const IsoValue(100, StopType.full))
+              .having((state) => state.nd, 'nd', NdValue.values.first)
+              .having((state) => state.isMetering, 'isMetering', false),
+        ],
+      );
     },
   );
 
-  group(
-    '`StopTypeChangedEvent` tests',
-    () {
-      //
-    },
-  );
-
-  group(
-    '`EquipmentProfileChangedEvent` tests',
-    () {
-      //
-    },
-  );
+  // TODO(vodemn): when this feautre is enabled
+  // group(
+  //   '`EquipmentProfileChangedEvent` tests',
+  //   () {
+  //
+  //   },
+  // );
 }
