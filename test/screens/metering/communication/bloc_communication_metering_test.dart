@@ -68,13 +68,14 @@ void main() {
         build: () => bloc,
         act: (bloc) async {
           bloc.add(const MeteringInProgressEvent(1));
+          bloc.add(const MeteringInProgressEvent(1));
+          bloc.add(const MeteringInProgressEvent(1));
           bloc.add(const MeteringInProgressEvent(null));
           bloc.add(const MeteringInProgressEvent(null));
           bloc.add(const MeteringInProgressEvent(2));
         },
         expect: () => [
           isA<MeteringInProgressState>().having((state) => state.ev100, 'ev100', 1),
-          isA<MeteringInProgressState>().having((state) => state.ev100, 'ev100', null),
           isA<MeteringInProgressState>().having((state) => state.ev100, 'ev100', null),
           isA<MeteringInProgressState>().having((state) => state.ev100, 'ev100', 2),
         ],
