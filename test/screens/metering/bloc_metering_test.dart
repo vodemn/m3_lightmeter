@@ -22,25 +22,17 @@ class _MockMeteringInteractor extends Mock implements MeteringInteractor {}
 void main() {
   late _MockMeteringCommunicationBloc communicationBloc;
   late _MockMeteringInteractor meteringInteractor;
-  late EquipmentProfileData equipmentProfileData;
   late MeteringBloc bloc;
   const iso100 = IsoValue(100, StopType.full);
 
   setUpAll(() {
     communicationBloc = _MockMeteringCommunicationBloc();
     meteringInteractor = _MockMeteringInteractor();
-    equipmentProfileData = const EquipmentProfileData(
-      id: '0',
-      name: 'Test equipment',
-      apertureValues: ApertureValue.values,
-      ndValues: NdValue.values,
-      shutterSpeedValues: ShutterSpeedValue.values,
-      isoValues: IsoValue.values,
-    );
 
     when<IsoValue>(() => meteringInteractor.iso).thenReturn(iso100);
     when<NdValue>(() => meteringInteractor.ndFilter).thenReturn(NdValue.values.first);
     when<Film>(() => meteringInteractor.film).thenReturn(Film.values.first);
+
     when(meteringInteractor.quickVibration).thenAnswer((_) async {});
     when(meteringInteractor.responseVibration).thenAnswer((_) async {});
     when(meteringInteractor.errorVibration).thenAnswer((_) async {});
@@ -50,27 +42,11 @@ void main() {
     bloc = MeteringBloc(
       communicationBloc,
       meteringInteractor,
-      equipmentProfileData,
-      StopType.third,
     );
   });
 
   tearDown(() {
     bloc.close();
-  });
-
-  group('Initial state test', () {
-    test('Initial state', () {
-      expect(
-        bloc.state,
-        isA<MeteringDataState>()
-            .having((state) => state.ev, 'ev', null)
-            .having((state) => state.film, 'film', bloc.film)
-            .having((state) => state.iso, 'iso', bloc.iso)
-            .having((state) => state.nd, 'nd', bloc.nd)
-            .having((state) => state.exposurePairs, 'exposurePairs', const []),
-      );
-    });
   });
 
   group(
@@ -91,7 +67,7 @@ void main() {
         expect: () => [
           isA<LoadingState>(),
           isA<MeteringDataState>()
-              .having((state) => state.continuousMetering, 'continuousMetering', false)
+              .having((state) => state.isMetering, 'isMetering', false)
               .having((state) => state.ev, 'ev', 2),
         ],
       );
@@ -111,8 +87,8 @@ void main() {
         expect: () => [
           isA<LoadingState>(),
           isA<MeteringDataState>()
-              .having((state) => state.continuousMetering, 'continuousMetering', false)
-              .having((_) => bloc.ev100, 'ev100', null)
+              .having((state) => state.isMetering, 'isMetering', false)
+              .having((state) => state.ev100, 'ev100', null)
               .having((state) => state.ev, 'ev', null),
         ],
       );
@@ -143,23 +119,23 @@ void main() {
         expect: () => [
           isA<LoadingState>(),
           isA<MeteringDataState>()
-              .having((state) => state.continuousMetering, 'continuousMetering', true)
+              .having((state) => state.isMetering, 'isMetering', true)
               .having((state) => state.ev, 'ev', null),
           isA<MeteringDataState>()
-              .having((state) => state.continuousMetering, 'continuousMetering', true)
+              .having((state) => state.isMetering, 'isMetering', true)
               .having((state) => state.ev, 'ev', 2),
           isA<MeteringDataState>()
-              .having((state) => state.continuousMetering, 'continuousMetering', true)
+              .having((state) => state.isMetering, 'isMetering', true)
               .having((state) => state.ev, 'ev', 5.5),
           isA<MeteringDataState>()
-              .having((state) => state.continuousMetering, 'continuousMetering', true)
+              .having((state) => state.isMetering, 'isMetering', true)
               .having((state) => state.ev, 'ev', null),
           isA<MeteringDataState>()
-              .having((state) => state.continuousMetering, 'continuousMetering', true)
+              .having((state) => state.isMetering, 'isMetering', true)
               .having((state) => state.ev, 'ev', 4),
           isA<LoadingState>(),
           isA<MeteringDataState>()
-              .having((state) => state.continuousMetering, 'continuousMetering', false)
+              .having((state) => state.isMetering, 'isMetering', false)
               .having((state) => state.ev, 'ev', 4),
         ],
       );
@@ -170,7 +146,51 @@ void main() {
   group(
     '`IsoChangedEvent` tests',
     () {
-      //
+      blocTest<MeteringBloc, MeteringState>(
+        '`IsoChangedEvent` -> success',
+        build: () => bloc,
+        seed: () => MeteringDataState(
+          ev100: 1.0,
+          film: Film.values[1],
+          iso: const IsoValue(100, StopType.full),
+          nd: NdValue.values.first,
+          isMetering: false,
+        ),
+        act: (bloc) async {
+          bloc.add(const IsoChangedEvent(IsoValue(200, StopType.full)));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.film = Film.values.first).called(1);
+          verify(() => meteringInteractor.iso = const IsoValue(200, StopType.full)).called(1);
+        },
+        expect: () => [
+          isA<MeteringDataState>()
+              .having((state) => state.ev100, 'ev100', 1.0)
+              .having((state) => state.ev, 'ev', 2.0)
+              .having((state) => state.iso, 'iso', const IsoValue(200, StopType.full))
+              .having((state) => state.isMetering, 'isMetering', false),
+        ],
+      );
+
+      blocTest<MeteringBloc, MeteringState>(
+        '`IsoChangedEvent` -> same ISO picked',
+        build: () => bloc,
+        seed: () => MeteringDataState(
+          ev100: 1.0,
+          film: Film.values[1],
+          iso: const IsoValue(100, StopType.full),
+          nd: NdValue.values.first,
+          isMetering: false,
+        ),
+        act: (bloc) async {
+          bloc.add(const IsoChangedEvent(IsoValue(100, StopType.full)));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.film = Film.values.first).called(1);
+          verifyNever(() => meteringInteractor.iso = const IsoValue(100, StopType.full));
+        },
+        expect: () => [],
+      );
     },
   );
 
