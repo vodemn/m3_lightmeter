@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
@@ -28,26 +30,30 @@ class MeteringScreen extends StatelessWidget {
           children: [
             Expanded(
               child: BlocBuilder<MeteringBloc, MeteringState>(
-                builder: (_, state) => _MeteringContainerBuidler(
-                  fastest: state is MeteringDataState ? state.fastest : null,
-                  slowest: state is MeteringDataState ? state.slowest : null,
-                  exposurePairs: state is MeteringDataState ? state.exposurePairs : [],
-                  film: state.film,
-                  iso: state.iso,
-                  nd: state.nd,
-                  onFilmChanged: (value) =>
-                      context.read<MeteringBloc>().add(FilmChangedEvent(value)),
-                  onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
-                  onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
-                ),
+                builder: (_, state) {
+                  final exposurePairs = state is MeteringDataState && state.ev != null
+                      ? buildExposureValues(context, state.ev!, state.film)
+                      : <ExposurePair>[];
+                  return _MeteringContainerBuidler(
+                    fastest: exposurePairs.isNotEmpty ? exposurePairs.first : null,
+                    slowest: exposurePairs.isNotEmpty ? exposurePairs.last : null,
+                    exposurePairs: exposurePairs,
+                    film: state.film,
+                    iso: state.iso,
+                    nd: state.nd,
+                    onFilmChanged: (value) =>
+                        context.read<MeteringBloc>().add(FilmChangedEvent(value)),
+                    onIsoChanged: (value) =>
+                        context.read<MeteringBloc>().add(IsoChangedEvent(value)),
+                    onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
+                  );
+                },
               ),
             ),
             BlocBuilder<MeteringBloc, MeteringState>(
               builder: (context, state) => MeteringBottomControlsProvider(
                 ev: state is MeteringDataState ? state.ev : null,
-                isMetering:
-                    state is LoadingState || state is MeteringDataState && state.continuousMetering,
-                hasError: state is MeteringDataState && state.hasError,
+                isMetering: state.isMetering,
                 onSwitchEvSourceType: context.get<Environment>().hasLightSensor
                     ? EvSourceTypeProvider.of(context).toggleType
                     : null,
@@ -58,6 +64,70 @@ class MeteringScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  List<ExposurePair> buildExposureValues(BuildContext context, double ev, Film film) {
+    if (ev.isNaN || ev.isInfinite) {
+      return List.empty();
+    }
+
+    /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
+    final StopType stopType = context.listen<StopType>();
+    final int evSteps = (ev * (stopType.index + 1)).round();
+
+    final EquipmentProfile equipmentProfile = context.listen<EquipmentProfile>();
+    final List<ApertureValue> apertureValues =
+        equipmentProfile.apertureValues.whereStopType(stopType);
+    final List<ShutterSpeedValue> shutterSpeedValues =
+        equipmentProfile.shutterSpeedValues.whereStopType(stopType);
+
+    /// Basically we use 1" shutter speed as an anchor point for building the exposure pairs list.
+    /// But user can exclude this value from the list using custom equipment profile.
+    /// So we have to restore the index of the anchor value.
+    const ShutterSpeedValue anchorShutterSpeed = ShutterSpeedValue(1, false, StopType.full);
+    int anchorIndex = shutterSpeedValues.indexOf(anchorShutterSpeed);
+    if (anchorIndex < 0) {
+      final filteredFullList = ShutterSpeedValue.values.whereStopType(stopType);
+      final customListStartIndex = filteredFullList.indexOf(shutterSpeedValues.first);
+      final fullListAnchor = filteredFullList.indexOf(anchorShutterSpeed);
+      if (customListStartIndex < fullListAnchor) {
+        /// This means, that user excluded anchor value at the end,
+        /// i.e. all shutter speed values are shorter than 1".
+        anchorIndex = fullListAnchor - customListStartIndex;
+      } else {
+        /// In case user excludes anchor value at the start,
+        /// we can do no adjustment.
+      }
+    }
+    final int evOffset = anchorIndex - evSteps;
+
+    late final int apertureOffset;
+    late final int shutterSpeedOffset;
+    if (evOffset >= 0) {
+      apertureOffset = 0;
+      shutterSpeedOffset = evOffset;
+    } else {
+      apertureOffset = -evOffset;
+      shutterSpeedOffset = 0;
+    }
+
+    final int itemsCount = min(
+          apertureValues.length + shutterSpeedOffset,
+          shutterSpeedValues.length + apertureOffset,
+        ) -
+        max(apertureOffset, shutterSpeedOffset);
+
+    if (itemsCount < 0) {
+      return List.empty();
+    }
+    return List.generate(
+      itemsCount,
+      (index) => ExposurePair(
+        apertureValues[index + apertureOffset],
+        film.reciprocityFailure(shutterSpeedValues[index + shutterSpeedOffset]),
+      ),
+      growable: false,
     );
   }
 }
@@ -73,17 +143,12 @@ class _InheritedListeners extends StatelessWidget {
       onDidChangeDependencies: (value) {
         context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
       },
-      child: InheritedWidgetListener<StopType>(
+      child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
+        aspect: MeteringScreenLayoutFeature.filmPicker,
         onDidChangeDependencies: (value) {
-          context.read<MeteringBloc>().add(StopTypeChangedEvent(value));
+          if (!value) context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
         },
-        child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
-          aspect: MeteringScreenLayoutFeature.filmPicker,
-          onDidChangeDependencies: (value) {
-            if (!value) context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
-          },
-          child: child,
-        ),
+        child: child,
       ),
     );
   }
