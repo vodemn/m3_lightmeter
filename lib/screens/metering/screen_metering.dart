@@ -30,24 +30,16 @@ class MeteringScreen extends StatelessWidget {
           children: [
             Expanded(
               child: BlocBuilder<MeteringBloc, MeteringState>(
-                builder: (_, state) {
-                  final exposurePairs = state is MeteringDataState && state.ev != null
-                      ? buildExposureValues(context, state.ev!, state.film)
-                      : <ExposurePair>[];
-                  return _MeteringContainerBuidler(
-                    fastest: exposurePairs.isNotEmpty ? exposurePairs.first : null,
-                    slowest: exposurePairs.isNotEmpty ? exposurePairs.last : null,
-                    exposurePairs: exposurePairs,
-                    film: state.film,
-                    iso: state.iso,
-                    nd: state.nd,
-                    onFilmChanged: (value) =>
-                        context.read<MeteringBloc>().add(FilmChangedEvent(value)),
-                    onIsoChanged: (value) =>
-                        context.read<MeteringBloc>().add(IsoChangedEvent(value)),
-                    onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
-                  );
-                },
+                builder: (_, state) => _MeteringContainerBuidler(
+                  ev: state is MeteringDataState ? state.ev : null,
+                  film: state.film,
+                  iso: state.iso,
+                  nd: state.nd,
+                  onFilmChanged: (value) =>
+                      context.read<MeteringBloc>().add(FilmChangedEvent(value)),
+                  onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
+                  onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
+                ),
               ),
             ),
             BlocBuilder<MeteringBloc, MeteringState>(
@@ -65,6 +57,78 @@ class MeteringScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _InheritedListeners extends StatelessWidget {
+  final Widget child;
+
+  const _InheritedListeners({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return InheritedWidgetListener<EquipmentProfile>(
+      onDidChangeDependencies: (value) {
+        context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
+      },
+      child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
+        aspect: MeteringScreenLayoutFeature.filmPicker,
+        onDidChangeDependencies: (value) {
+          if (!value) context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
+        },
+        child: child,
+      ),
+    );
+  }
+}
+
+class _MeteringContainerBuidler extends StatelessWidget {
+  final double? ev;
+  final Film film;
+  final IsoValue iso;
+  final NdValue nd;
+  final ValueChanged<Film> onFilmChanged;
+  final ValueChanged<IsoValue> onIsoChanged;
+  final ValueChanged<NdValue> onNdChanged;
+
+  const _MeteringContainerBuidler({
+    required this.ev,
+    required this.film,
+    required this.iso,
+    required this.nd,
+    required this.onFilmChanged,
+    required this.onIsoChanged,
+    required this.onNdChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final exposurePairs = ev != null ? buildExposureValues(context, ev!, film) : <ExposurePair>[];
+    final fastest = exposurePairs.isNotEmpty ? exposurePairs.first : null;
+    final slowest = exposurePairs.isNotEmpty ? exposurePairs.last : null;
+    return context.listen<EvSourceType>() == EvSourceType.camera
+        ? CameraContainerProvider(
+            fastest: fastest,
+            slowest: slowest,
+            film: film,
+            iso: iso,
+            nd: nd,
+            onFilmChanged: onFilmChanged,
+            onIsoChanged: onIsoChanged,
+            onNdChanged: onNdChanged,
+            exposurePairs: exposurePairs,
+          )
+        : LightSensorContainerProvider(
+            fastest: fastest,
+            slowest: slowest,
+            film: film,
+            iso: iso,
+            nd: nd,
+            onFilmChanged: onFilmChanged,
+            onIsoChanged: onIsoChanged,
+            onNdChanged: onNdChanged,
+            exposurePairs: exposurePairs,
+          );
   }
 
   List<ExposurePair> buildExposureValues(BuildContext context, double ev, Film film) {
@@ -129,78 +193,5 @@ class MeteringScreen extends StatelessWidget {
       ),
       growable: false,
     );
-  }
-}
-
-class _InheritedListeners extends StatelessWidget {
-  final Widget child;
-
-  const _InheritedListeners({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return InheritedWidgetListener<EquipmentProfile>(
-      onDidChangeDependencies: (value) {
-        context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
-      },
-      child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
-        aspect: MeteringScreenLayoutFeature.filmPicker,
-        onDidChangeDependencies: (value) {
-          if (!value) context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
-        },
-        child: child,
-      ),
-    );
-  }
-}
-
-class _MeteringContainerBuidler extends StatelessWidget {
-  final ExposurePair? fastest;
-  final ExposurePair? slowest;
-  final Film film;
-  final IsoValue iso;
-  final NdValue nd;
-  final ValueChanged<Film> onFilmChanged;
-  final ValueChanged<IsoValue> onIsoChanged;
-  final ValueChanged<NdValue> onNdChanged;
-  final List<ExposurePair> exposurePairs;
-
-  const _MeteringContainerBuidler({
-    required this.fastest,
-    required this.slowest,
-    required this.film,
-    required this.iso,
-    required this.nd,
-    required this.onFilmChanged,
-    required this.onIsoChanged,
-    required this.onNdChanged,
-    required this.exposurePairs,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return context.listen<EvSourceType>() == EvSourceType.camera
-        ? CameraContainerProvider(
-            fastest: fastest,
-            slowest: slowest,
-            film: film,
-            iso: iso,
-            nd: nd,
-            onFilmChanged: onFilmChanged,
-            onIsoChanged: onIsoChanged,
-            onNdChanged: onNdChanged,
-            exposurePairs: exposurePairs,
-          )
-        : LightSensorContainerProvider(
-            fastest: fastest,
-            slowest: slowest,
-            film: film,
-            iso: iso,
-            nd: nd,
-            onFilmChanged: onFilmChanged,
-            onIsoChanged: onIsoChanged,
-            onNdChanged: onNdChanged,
-            exposurePairs: exposurePairs,
-          );
   }
 }
