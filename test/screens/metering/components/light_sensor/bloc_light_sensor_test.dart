@@ -41,7 +41,7 @@ void main() {
   group(
     '`LuxMeteringEvent` tests',
     () {
-      const List<int> luxIterable = [1, 2, 3];
+      const List<int> luxIterable = [1, 2, 2, 2, 3];
       final List<double> resultList = luxIterable.map((lux) => log2(lux / 2.5)).toList();
       blocTest<LightSensorContainerBloc, LightSensorContainerState>(
         'Turn measuring on/off',
@@ -58,25 +58,23 @@ void main() {
         },
         verify: (_) {
           verify(() => meteringInteractor.luxStream().listen((_) {})).called(1);
-          verify(() => meteringInteractor.lightSensorEvCalibration).called(3);
+          verify(() => meteringInteractor.lightSensorEvCalibration).called(5);
           verify(() {
-            communicationBloc.add(communication_events.MeteringInProgressEvent(resultList[0]));
+            communicationBloc.add(communication_events.MeteringInProgressEvent(resultList.first));
           }).called(1);
           verify(() {
             communicationBloc.add(communication_events.MeteringInProgressEvent(resultList[1]));
+          }).called(3);
+          verify(() {
+            communicationBloc.add(communication_events.MeteringInProgressEvent(resultList.last));
           }).called(1);
           verify(() {
-            communicationBloc.add(communication_events.MeteringInProgressEvent(resultList[2]));
-          }).called(1);
-          verify(() {
-            communicationBloc.add(communication_events.MeteringEndedEvent(resultList[2]));
+            communicationBloc.add(communication_events.MeteringEndedEvent(resultList.last));
           }).called(2); // +1 from dispose
         },
-        expect: () => [
-          isA<LightSensorContainerState>().having((state) => state.ev100, 'ev100', resultList[0]),
-          isA<LightSensorContainerState>().having((state) => state.ev100, 'ev100', resultList[1]),
-          isA<LightSensorContainerState>().having((state) => state.ev100, 'ev100', resultList[2]),
-        ],
+        expect: () => resultList.map(
+          (e) => isA<LightSensorContainerState>().having((state) => state.ev100, 'ev100', e),
+        ),
       );
     },
   );
