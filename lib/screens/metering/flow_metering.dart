@@ -34,8 +34,8 @@ class _MeteringFlowState extends State<MeteringFlow> {
           BlocProvider(create: (_) => MeteringCommunicationBloc()),
           BlocProvider(
             create: (context) => MeteringBloc(
-              context.read<MeteringCommunicationBloc>(),
               context.get<MeteringInteractor>(),
+              context.read<MeteringCommunicationBloc>(),
             ),
           ),
         ],

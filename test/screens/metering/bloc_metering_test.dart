@@ -20,14 +20,14 @@ class _MockMeteringCommunicationBloc extends MockBloc<
 class _MockMeteringInteractor extends Mock implements MeteringInteractor {}
 
 void main() {
-  late _MockMeteringCommunicationBloc communicationBloc;
   late _MockMeteringInteractor meteringInteractor;
+  late _MockMeteringCommunicationBloc communicationBloc;
   late MeteringBloc bloc;
   const iso100 = IsoValue(100, StopType.full);
 
   setUpAll(() {
-    communicationBloc = _MockMeteringCommunicationBloc();
     meteringInteractor = _MockMeteringInteractor();
+    communicationBloc = _MockMeteringCommunicationBloc();
 
     when<IsoValue>(() => meteringInteractor.iso).thenReturn(iso100);
     when<NdValue>(() => meteringInteractor.ndFilter).thenReturn(NdValue.values.first);
@@ -40,8 +40,8 @@ void main() {
 
   setUp(() {
     bloc = MeteringBloc(
-      communicationBloc,
       meteringInteractor,
+      communicationBloc,
     );
   });
 

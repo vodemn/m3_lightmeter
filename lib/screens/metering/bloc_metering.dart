@@ -15,13 +15,13 @@ import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
-  final MeteringCommunicationBloc _communicationBloc;
   final MeteringInteractor _meteringInteractor;
+  final MeteringCommunicationBloc _communicationBloc;
   late final StreamSubscription<communication_states.ScreenState> _communicationSubscription;
 
   MeteringBloc(
-    this._communicationBloc,
     this._meteringInteractor,
+    this._communicationBloc,
   ) : super(
           MeteringDataState(
             ev100: null,
