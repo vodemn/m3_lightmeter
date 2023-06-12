@@ -79,6 +79,24 @@ void main() {
               .having((state) => state.error, "error", CameraErrorType.permissionNotGranted),
         ],
       );
+
+      blocTest<CameraContainerBloc, CameraContainerState>(
+        'Request granted -> check granted',
+        build: () => bloc,
+        setUp: () {
+          when(() => meteringInteractor.requestPermission()).thenAnswer((_) async => true);
+          when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
+        },
+        act: (bloc) => bloc.add(const RequestPermissionEvent()),
+        verify: (_) {
+          verify(() => meteringInteractor.requestPermission()).called(1);
+          verify(() => meteringInteractor.checkCameraPermission()).called(1);
+        },
+        expect: () => [
+          isA<CameraLoadingState>(),
+          // Proceed to `InitializeEvent` tests from here
+        ],
+      );
     },
   );
 
@@ -101,7 +119,7 @@ void main() {
       ];
 
       blocTest<CameraContainerBloc, CameraContainerState>(
-        'No cameras detected',
+        'No cameras detected error',
         setUp: () {
           when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
