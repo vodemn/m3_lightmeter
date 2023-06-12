@@ -18,13 +18,13 @@ class _MockMeteringCommunicationBloc extends MockBloc<
 class _MockMeteringInteractor extends Mock implements MeteringInteractor {}
 
 void main() {
-  late _MockMeteringCommunicationBloc communicationBloc;
   late _MockMeteringInteractor meteringInteractor;
+  late _MockMeteringCommunicationBloc communicationBloc;
   late LightSensorContainerBloc bloc;
 
   setUpAll(() {
-    communicationBloc = _MockMeteringCommunicationBloc();
     meteringInteractor = _MockMeteringInteractor();
+    communicationBloc = _MockMeteringCommunicationBloc();
   });
 
   setUp(() {
