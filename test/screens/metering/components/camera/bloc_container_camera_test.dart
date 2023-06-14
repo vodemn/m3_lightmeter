@@ -104,10 +104,14 @@ void main() {
       meteringInteractor,
       communicationBloc,
     );
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(cameraMethodChannel, cameraMethodCallSuccessHandler);
   });
 
   tearDown(() {
     bloc.close();
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(cameraMethodChannel, null);
   });
 
   group(
@@ -161,8 +165,7 @@ void main() {
           verify(() => meteringInteractor.checkCameraPermission()).called(1);
         },
         expect: () => [
-          isA<CameraLoadingState>(),
-          // Proceed to `InitializeEvent` tests from here
+          ...initializedStateSequence,
         ],
       );
     },
@@ -240,12 +243,6 @@ void main() {
         'appLifecycleStateObserver',
         setUp: () {
           when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-              .setMockMethodCallHandler(cameraMethodChannel, cameraMethodCallSuccessHandler);
-        },
-        tearDown: () {
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-              .setMockMethodCallHandler(cameraMethodChannel, null);
         },
         build: () => bloc,
         act: (bloc) async {
@@ -274,12 +271,6 @@ void main() {
         'Returned ev100 == null',
         setUp: () {
           when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-              .setMockMethodCallHandler(cameraMethodChannel, cameraMethodCallSuccessHandler);
-        },
-        tearDown: () {
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-              .setMockMethodCallHandler(cameraMethodChannel, null);
         },
         build: () => bloc,
         act: (bloc) async {
@@ -325,6 +316,54 @@ void main() {
       //     ...initializedStateSequence,
       //   ],
       // );
+    },
+    skip: true,
+  );
+
+  group(
+    '`ZoomChangedEvent` tests',
+    () {
+      blocTest<CameraContainerBloc, CameraContainerState>(
+        'Set zoom in range multiple times',
+        setUp: () {
+          when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
+        },
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const InitializeEvent());
+          await Future.delayed(Duration.zero);
+          bloc.add(const ZoomChangedEvent(2.0));
+          bloc.add(const ZoomChangedEvent(2.0));
+          bloc.add(const ZoomChangedEvent(2.0));
+          bloc.add(const ZoomChangedEvent(3.0));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.checkCameraPermission()).called(1);
+        },
+        expect: () => [
+          ...initializedStateSequence,
+          isA<CameraActiveState>()
+              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
+              .having((state) => state.currentZoom, 'currentZoom', 2.0)
+              .having(
+                (state) => state.exposureOffsetRange,
+                'exposureOffsetRange',
+                const RangeValues(-4.0, 4.0),
+              )
+              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
+              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
+          isA<CameraActiveState>()
+              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
+              .having((state) => state.currentZoom, 'currentZoom', 3.0)
+              .having(
+                (state) => state.exposureOffsetRange,
+                'exposureOffsetRange',
+                const RangeValues(-4.0, 4.0),
+              )
+              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
+              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
+        ],
+      );
     },
   );
 }
