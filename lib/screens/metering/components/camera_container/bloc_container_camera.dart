@@ -122,7 +122,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       _zoomRange = await Future.wait<double>([
         _cameraController!.getMinZoomLevel(),
         _cameraController!.getMaxZoomLevel(),
-      ]).then((levels) => RangeValues(levels[0], math.min(_maxZoom, levels[1])));
+      ]).then((levels) => RangeValues(math.max(1.0, levels[0]), math.min(_maxZoom, levels[1])));
       _currentZoom = _zoomRange!.start;
 
       _exposureOffsetRange = await Future.wait<double>([
