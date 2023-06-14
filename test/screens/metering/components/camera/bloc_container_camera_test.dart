@@ -72,6 +72,9 @@ void main() {
         return 0.1666666;
       case "takePicture":
         return "";
+      case "setExposureOffset":
+        // ignore: avoid_dynamic_calls
+        return methodCall.arguments["offset"];
       default:
         return null;
     }
@@ -97,6 +100,7 @@ void main() {
     communicationBloc = _MockMeteringCommunicationBloc();
 
     when(() => meteringInteractor.cameraEvCalibration).thenReturn(0.0);
+    when(meteringInteractor.quickVibration).thenAnswer((_) async {});
   });
 
   setUp(() {
@@ -324,7 +328,7 @@ void main() {
     '`ZoomChangedEvent` tests',
     () {
       blocTest<CameraContainerBloc, CameraContainerState>(
-        'Set zoom in range multiple times',
+        'Set zoom multiple times',
         setUp: () {
           when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
         },
@@ -355,6 +359,64 @@ void main() {
           isA<CameraActiveState>()
               .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
               .having((state) => state.currentZoom, 'currentZoom', 3.0)
+              .having(
+                (state) => state.exposureOffsetRange,
+                'exposureOffsetRange',
+                const RangeValues(-4.0, 4.0),
+              )
+              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
+              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
+        ],
+      );
+    },
+  );
+
+  group(
+    '`ExposureOffsetChangedEvent`/`ExposureOffsetResetEvent` tests',
+    () {
+      blocTest<CameraContainerBloc, CameraContainerState>(
+        'Set exposure offset multiple times and reset',
+        setUp: () {
+          when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
+        },
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const InitializeEvent());
+          await Future.delayed(Duration.zero);
+          bloc.add(const ExposureOffsetChangedEvent(2.0));
+          bloc.add(const ExposureOffsetChangedEvent(2.0));
+          bloc.add(const ExposureOffsetChangedEvent(2.0));
+          bloc.add(const ExposureOffsetChangedEvent(3.0));
+          bloc.add(const ExposureOffsetResetEvent());
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.checkCameraPermission()).called(1);
+        },
+        expect: () => [
+          ...initializedStateSequence,
+          isA<CameraActiveState>()
+              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
+              .having((state) => state.currentZoom, 'currentZoom', 1.0)
+              .having(
+                (state) => state.exposureOffsetRange,
+                'exposureOffsetRange',
+                const RangeValues(-4.0, 4.0),
+              )
+              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
+              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 2.0),
+          isA<CameraActiveState>()
+              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
+              .having((state) => state.currentZoom, 'currentZoom', 1.0)
+              .having(
+                (state) => state.exposureOffsetRange,
+                'exposureOffsetRange',
+                const RangeValues(-4.0, 4.0),
+              )
+              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
+              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 3.0),
+          isA<CameraActiveState>()
+              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
+              .having((state) => state.currentZoom, 'currentZoom', 1.0)
               .having(
                 (state) => state.exposureOffsetRange,
                 'exposureOffsetRange',
