@@ -51,7 +51,6 @@ void main() {
           isA<MeasureState>(),
           isA<MeteringInProgressState>().having((state) => state.ev100, 'ev100', 1),
           isA<MeteringInProgressState>().having((state) => state.ev100, 'ev100', null),
-          isA<MeteringInProgressState>().having((state) => state.ev100, 'ev100', null),
           isA<MeteringInProgressState>().having((state) => state.ev100, 'ev100', 2),
           isA<MeasureState>(),
           isA<MeteringEndedState>().having((state) => state.ev100, 'ev100', 2),
