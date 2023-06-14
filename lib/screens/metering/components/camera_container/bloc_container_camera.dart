@@ -208,8 +208,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       final speed = speedValueRatio.numerator / speedValueRatio.denominator;
 
       return log2(math.pow(aperture, 2)) - log2(speed) - log2(iso / 100);
-    } on CameraException catch (e) {
-      log('Error: ${e.code}\nError Message: ${e.description}');
+    } catch (e) {
+      log(e.toString());
       return null;
     }
   }

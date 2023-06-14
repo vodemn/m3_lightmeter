@@ -70,14 +70,33 @@ void main() {
         return 4.0;
       case "getExposureOffsetStepSize":
         return 0.1666666;
+      case "takePicture":
+        return "";
       default:
         return null;
     }
   }
 
+  final initializedStateSequence = [
+    isA<CameraLoadingState>(),
+    isA<CameraInitializedState>(),
+    isA<CameraActiveState>()
+        .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
+        .having((state) => state.currentZoom, 'currentZoom', 1.0)
+        .having(
+          (state) => state.exposureOffsetRange,
+          'exposureOffsetRange',
+          const RangeValues(-4.0, 4.0),
+        )
+        .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
+        .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
+  ];
+
   setUpAll(() {
     meteringInteractor = _MockMeteringInteractor();
     communicationBloc = _MockMeteringCommunicationBloc();
+
+    when(() => meteringInteractor.cameraEvCalibration).thenReturn(0.0);
   });
 
   setUp(() {
@@ -216,7 +235,7 @@ void main() {
           isA<CameraErrorState>().having((state) => state.error, "error", CameraErrorType.other),
         ],
       );
-      
+
       blocTest<CameraContainerBloc, CameraContainerState>(
         'appLifecycleStateObserver',
         setUp: () {
@@ -227,8 +246,6 @@ void main() {
         tearDown: () {
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
               .setMockMethodCallHandler(cameraMethodChannel, null);
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-              .setMockMethodCallHandler(cameraIdMethodChannel, null);
         },
         build: () => bloc,
         act: (bloc) async {
@@ -243,32 +260,71 @@ void main() {
           verify(() => meteringInteractor.checkCameraPermission()).called(2);
         },
         expect: () => [
-          isA<CameraLoadingState>(),
-          isA<CameraInitializedState>(),
-          isA<CameraActiveState>()
-              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
-              .having((state) => state.currentZoom, 'currentZoom', 1.0)
-              .having(
-                (state) => state.exposureOffsetRange,
-                'exposureOffsetRange',
-                const RangeValues(-4.0, 4.0),
-              )
-              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
-              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
-          isA<CameraLoadingState>(),
-          isA<CameraInitializedState>(),
-          isA<CameraActiveState>()
-              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
-              .having((state) => state.currentZoom, 'currentZoom', 1.0)
-              .having(
-                (state) => state.exposureOffsetRange,
-                'exposureOffsetRange',
-                const RangeValues(-4.0, 4.0),
-              )
-              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
-              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
+          ...initializedStateSequence,
+          ...initializedStateSequence,
         ],
       );
+    },
+  );
+
+  group(
+    '`_takePicture()` tests',
+    () {
+      blocTest<CameraContainerBloc, CameraContainerState>(
+        'Returned ev100 == null',
+        setUp: () {
+          when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+              .setMockMethodCallHandler(cameraMethodChannel, cameraMethodCallSuccessHandler);
+        },
+        tearDown: () {
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+              .setMockMethodCallHandler(cameraMethodChannel, null);
+        },
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const InitializeEvent());
+          await Future.delayed(Duration.zero);
+          bloc.onCommunicationState(const communication_states.MeasureState());
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.checkCameraPermission()).called(1);
+          verifyNever(() => meteringInteractor.cameraEvCalibration);
+        },
+        expect: () => [
+          ...initializedStateSequence,
+        ],
+      );
+
+      // TODO(vodemn): figure out how to mock `_file.readAsBytes()`
+      // blocTest<CameraContainerBloc, CameraContainerState>(
+      //   'Returned non-null ev100',
+      //   setUp: () {
+      //     when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
+      //     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      //         .setMockMethodCallHandler(cameraMethodChannel, cameraMethodCallSuccessHandler);
+      //   },
+      //   tearDown: () {
+      //     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      //         .setMockMethodCallHandler(cameraMethodChannel, null);
+      //   },
+      //   build: () => bloc,
+      //   act: (bloc) async {
+      //     bloc.add(const InitializeEvent());
+      //     await Future.delayed(Duration.zero);
+      //     bloc.onCommunicationState(const communication_states.MeasureState());
+      //   },
+      //   verify: (_) {
+      //     verify(() => meteringInteractor.checkCameraPermission()).called(1);
+      //     verifyNever(() => meteringInteractor.cameraEvCalibration);
+      //     verify(() {
+      //       communicationBloc.add(const communication_events.MeteringEndedEvent(null));
+      //     }).called(2);
+      //   },
+      //   expect: () => [
+      //     ...initializedStateSequence,
+      //   ],
+      // );
     },
   );
 }
