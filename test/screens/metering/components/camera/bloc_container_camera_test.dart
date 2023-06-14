@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
@@ -25,6 +26,54 @@ void main() {
   late _MockMeteringInteractor meteringInteractor;
   late _MockMeteringCommunicationBloc communicationBloc;
   late CameraContainerBloc bloc;
+
+  const cameraMethodChannel = MethodChannel('plugins.flutter.io/camera');
+  const cameraIdMethodChannel = MethodChannel('flutter.io/cameraPlugin/camera1');
+  const availableCameras = [
+    {
+      "name": "front",
+      "lensFacing": "front",
+      "sensorOrientation": 0,
+    },
+    {
+      "name": "back",
+      "lensFacing": "back",
+      "sensorOrientation": 0,
+    },
+  ];
+  Future<Object?>? cameraMethodCallSuccessHandler(MethodCall methodCall) async {
+    switch (methodCall.method) {
+      case "availableCameras":
+        return availableCameras;
+      case "create":
+        return {"cameraId": 1};
+      case "initialize":
+        await cameraIdMethodChannel.invokeMockMethod("initialized", {
+          'cameraId': 1,
+          'previewWidth': 2160.0,
+          'previewHeight': 3840.0,
+          'exposureMode': 'auto',
+          'exposurePointSupported': true,
+          'focusMode': 'auto',
+          'focusPointSupported': true,
+        });
+        return {};
+      case "setFlashMode":
+        return null;
+      case "getMinZoomLevel":
+        return 0.67;
+      case "getMaxZoomLevel":
+        return 7.0;
+      case "getMinExposureOffset":
+        return -4.0;
+      case "getMaxExposureOffset":
+        return 4.0;
+      case "getExposureOffsetStepSize":
+        return 0.1666666;
+      default:
+        return null;
+    }
+  }
 
   setUpAll(() {
     meteringInteractor = _MockMeteringInteractor();
@@ -101,23 +150,8 @@ void main() {
   );
 
   group(
-    '`InitializeEvent` tests',
+    '`InitializeEvent`/`DeinitializeEvent` tests',
     () {
-      const cameraMethodChannel = MethodChannel('plugins.flutter.io/camera');
-      const cameraIdMethodChannel = MethodChannel('flutter.io/cameraPlugin/camera1');
-      const availableCameras = [
-        {
-          "name": "front",
-          "lensFacing": "front",
-          "sensorOrientation": 0,
-        },
-        {
-          "name": "back",
-          "lensFacing": "back",
-          "sensorOrientation": 0,
-        },
-      ];
-
       blocTest<CameraContainerBloc, CameraContainerState>(
         'No cameras detected error',
         setUp: () {
@@ -182,39 +216,13 @@ void main() {
           isA<CameraErrorState>().having((state) => state.error, "error", CameraErrorType.other),
         ],
       );
-
+      
       blocTest<CameraContainerBloc, CameraContainerState>(
-        'Successful initialization',
+        'appLifecycleStateObserver',
         setUp: () {
           when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-              .setMockMethodCallHandler(
-            cameraMethodChannel,
-            (methodCall) async {
-              switch (methodCall.method) {
-                case "availableCameras":
-                  return availableCameras;
-                case "create":
-                  return {"cameraId": 1};
-                case "initialize":
-                  await cameraIdMethodChannel.invokeMockMethod("initialized", {
-                    'cameraId': 1,
-                    'previewWidth': 2160.0,
-                    'previewHeight': 3840.0,
-                    'exposureMode': 'auto',
-                    'exposurePointSupported': true,
-                    'focusMode': 'auto',
-                    'focusPointSupported': true,
-                  });
-                  return {};
-                case "setFlashMode":
-                  return '';
-                // TODO: implement responses for other methods used initialization
-                default:
-                  return null;
-              }
-            },
-          );
+              .setMockMethodCallHandler(cameraMethodChannel, cameraMethodCallSuccessHandler);
         },
         tearDown: () {
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -223,14 +231,42 @@ void main() {
               .setMockMethodCallHandler(cameraIdMethodChannel, null);
         },
         build: () => bloc,
-        act: (bloc) => bloc.add(const InitializeEvent()),
+        act: (bloc) async {
+          bloc.add(const InitializeEvent());
+          await Future.delayed(Duration.zero);
+          TestWidgetsFlutterBinding.instance
+              .handleAppLifecycleStateChanged(AppLifecycleState.detached);
+          TestWidgetsFlutterBinding.instance
+              .handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+        },
         verify: (_) {
-          verify(() => meteringInteractor.checkCameraPermission()).called(1);
+          verify(() => meteringInteractor.checkCameraPermission()).called(2);
         },
         expect: () => [
           isA<CameraLoadingState>(),
           isA<CameraInitializedState>(),
-          isA<CameraActiveState>(),
+          isA<CameraActiveState>()
+              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
+              .having((state) => state.currentZoom, 'currentZoom', 1.0)
+              .having(
+                (state) => state.exposureOffsetRange,
+                'exposureOffsetRange',
+                const RangeValues(-4.0, 4.0),
+              )
+              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
+              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
+          isA<CameraLoadingState>(),
+          isA<CameraInitializedState>(),
+          isA<CameraActiveState>()
+              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
+              .having((state) => state.currentZoom, 'currentZoom', 1.0)
+              .having(
+                (state) => state.exposureOffsetRange,
+                'exposureOffsetRange',
+                const RangeValues(-4.0, 4.0),
+              )
+              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
+              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
         ],
       );
     },
