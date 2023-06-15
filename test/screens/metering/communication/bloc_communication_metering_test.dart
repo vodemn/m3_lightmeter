@@ -46,6 +46,7 @@ void main() {
           bloc.add(const MeteringInProgressEvent(2));
           bloc.add(const MeasureEvent());
           bloc.add(const MeteringEndedEvent(2));
+          bloc.add(const MeteringEndedEvent(2));
         },
         expect: () => [
           isA<MeasureState>(),
