@@ -25,20 +25,17 @@ void main() {
   late MeteringBloc bloc;
   const iso100 = IsoValue(100, StopType.full);
 
-  setUpAll(() {
+  setUp(() {
     meteringInteractor = _MockMeteringInteractor();
-    communicationBloc = _MockMeteringCommunicationBloc();
-
     when<IsoValue>(() => meteringInteractor.iso).thenReturn(iso100);
     when<NdValue>(() => meteringInteractor.ndFilter).thenReturn(NdValue.values.first);
     when<Film>(() => meteringInteractor.film).thenReturn(Film.values.first);
-
     when(meteringInteractor.quickVibration).thenAnswer((_) async {});
     when(meteringInteractor.responseVibration).thenAnswer((_) async {});
     when(meteringInteractor.errorVibration).thenAnswer((_) async {});
-  });
 
-  setUp(() {
+    communicationBloc = _MockMeteringCommunicationBloc();
+    
     bloc = MeteringBloc(
       meteringInteractor,
       communicationBloc,
@@ -47,6 +44,7 @@ void main() {
 
   tearDown(() {
     bloc.close();
+    communicationBloc.close();
   });
 
   group(
