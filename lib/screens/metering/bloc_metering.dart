@@ -90,7 +90,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       iso = event.equipmentProfileData.isoValues.first;
       _meteringInteractor.film = Film.values.first;
       film = Film.values.first;
-      willUpdateMeasurements &= true;
+      willUpdateMeasurements = true;
     }
 
     /// The same for ND filter
@@ -98,7 +98,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     if (!event.equipmentProfileData.ndValues.any((v) => state.nd.value == v.value)) {
       _meteringInteractor.ndFilter = event.equipmentProfileData.ndValues.first;
       nd = event.equipmentProfileData.ndValues.first;
-      willUpdateMeasurements &= true;
+      willUpdateMeasurements = true;
     }
 
     if (willUpdateMeasurements) {

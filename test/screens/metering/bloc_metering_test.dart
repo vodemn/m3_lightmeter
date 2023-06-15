@@ -485,11 +485,126 @@ void main() {
     },
   );
 
-  // TODO(vodemn): when this feautre is enabled
-  // group(
-  //   '`EquipmentProfileChangedEvent`',
-  //   () {
-  //
-  //   },
-  // );
+  group(
+    '`EquipmentProfileChangedEvent`',
+    () {
+      final reducedProfile = EquipmentProfileData(
+        id: '0',
+        name: 'Reduced',
+        apertureValues: ApertureValue.values,
+        ndValues: NdValue.values.getRange(0, 3).toList(),
+        shutterSpeedValues: ShutterSpeedValue.values,
+        isoValues: IsoValue.values.getRange(4, 23).toList(),
+      );
+
+      blocTest<MeteringBloc, MeteringState>(
+        'New profile has current ISO & ND',
+        build: () => bloc,
+        seed: () => MeteringDataState(
+          ev100: 1.0,
+          film: Film.values[1],
+          iso: const IsoValue(100, StopType.full),
+          nd: NdValue.values.first,
+          isMetering: false,
+        ),
+        act: (bloc) async {
+          bloc.add(EquipmentProfileChangedEvent(reducedProfile));
+        },
+        verify: (_) {
+          verifyNever(() => meteringInteractor.film = const Film.other());
+          verifyNever(() => meteringInteractor.iso = reducedProfile.isoValues.first);
+          verifyNever(() => meteringInteractor.ndFilter = reducedProfile.ndValues.first);
+          verifyNever(() => meteringInteractor.responseVibration());
+        },
+        expect: () => [],
+      );
+
+      blocTest<MeteringBloc, MeteringState>(
+        'New profile has new ISO & current ND',
+        build: () => bloc,
+        seed: () => MeteringDataState(
+          ev100: 1.0,
+          film: Film.values[1],
+          iso: IsoValue.values[2],
+          nd: NdValue.values.first,
+          isMetering: false,
+        ),
+        act: (bloc) async {
+          bloc.add(EquipmentProfileChangedEvent(reducedProfile));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.film = const Film.other()).called(1);
+          verify(() => meteringInteractor.iso = reducedProfile.isoValues.first).called(1);
+          verifyNever(() => meteringInteractor.ndFilter = reducedProfile.ndValues.first);
+          verify(() => meteringInteractor.responseVibration()).called(1);
+        },
+        expect: () => [
+          isA<MeteringDataState>()
+              .having((state) => state.ev100, 'ev100', 1.0)
+              .having((state) => state.film, 'film', const Film.other())
+              .having((state) => state.iso, 'iso', reducedProfile.isoValues.first)
+              .having((state) => state.nd, 'nd', NdValue.values.first)
+              .having((state) => state.isMetering, 'isMetering', false),
+        ],
+      );
+
+      blocTest<MeteringBloc, MeteringState>(
+        'New profile has current ISO & new ND',
+        build: () => bloc,
+        seed: () => MeteringDataState(
+          ev100: 1.0,
+          film: Film.values[1],
+          iso: const IsoValue(100, StopType.full),
+          nd: NdValue.values[4],
+          isMetering: false,
+        ),
+        act: (bloc) async {
+          bloc.add(EquipmentProfileChangedEvent(reducedProfile));
+        },
+        verify: (_) {
+          verifyNever(() => meteringInteractor.film = const Film.other());
+          verifyNever(() => meteringInteractor.iso = reducedProfile.isoValues.first);
+          verify(() => meteringInteractor.ndFilter = reducedProfile.ndValues.first).called(1);
+          verify(() => meteringInteractor.responseVibration()).called(1);
+        },
+        expect: () => [
+          isA<MeteringDataState>()
+              .having((state) => state.ev100, 'ev100', 1.0)
+              .having((state) => state.film, 'film', Film.values[1])
+              .having((state) => state.iso, 'iso', const IsoValue(100, StopType.full))
+              .having((state) => state.nd, 'nd', reducedProfile.ndValues.first)
+              .having((state) => state.isMetering, 'isMetering', false),
+        ],
+      );
+
+      blocTest<MeteringBloc, MeteringState>(
+        'New profile has new ISO & new ND',
+        build: () => bloc,
+        seed: () => MeteringDataState(
+          ev100: 1.0,
+          film: Film.values[1],
+          iso: IsoValue.values[2],
+          nd: NdValue.values[4],
+          isMetering: false,
+        ),
+        act: (bloc) async {
+          bloc.add(EquipmentProfileChangedEvent(reducedProfile));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.film = const Film.other()).called(1);
+          verify(() => meteringInteractor.iso = reducedProfile.isoValues.first).called(1);
+          verify(() => meteringInteractor.ndFilter = reducedProfile.ndValues.first).called(1);
+          verify(() => meteringInteractor.responseVibration()).called(1);
+        },
+        expect: () => [
+          isA<MeteringDataState>()
+              .having((state) => state.ev100, 'ev100', 1.0)
+              .having((state) => state.film, 'film', const Film.other())
+              .having((state) => state.iso, 'iso', reducedProfile.isoValues.first)
+              .having((state) => state.nd, 'nd', reducedProfile.ndValues.first)
+              .having((state) => state.isMetering, 'isMetering', false),
+        ],
+      );
+    },
+  );
 }
