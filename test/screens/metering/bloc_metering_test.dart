@@ -471,6 +471,7 @@ void main() {
         verify: (_) {
           verify(() => meteringInteractor.film = const Film.other()).called(1);
           verifyNever(() => meteringInteractor.iso = const IsoValue(0, StopType.full));
+          verifyNever(() => meteringInteractor.responseVibration());
         },
         expect: () => [
           isA<MeteringDataState>()
