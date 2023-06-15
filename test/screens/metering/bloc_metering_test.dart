@@ -50,7 +50,7 @@ void main() {
   });
 
   group(
-    '`MeasureEvent` tests',
+    '`MeasureEvent`',
     () {
       blocTest<MeteringBloc, MeteringState>(
         '`MeasureEvent` -> success',
@@ -144,7 +144,7 @@ void main() {
   );
 
   group(
-    '`IsoChangedEvent` tests',
+    '`IsoChangedEvent`',
     () {
       blocTest<MeteringBloc, MeteringState>(
         'Pick different ISO (ev100 != null)',
@@ -263,7 +263,7 @@ void main() {
   );
 
   group(
-    '`NdChangedEvent` tests',
+    '`NdChangedEvent`',
     () {
       blocTest<MeteringBloc, MeteringState>(
         'Pick different ND (ev100 != null)',
@@ -378,7 +378,7 @@ void main() {
   );
 
   group(
-    '`FilmChangedEvent` tests',
+    '`FilmChangedEvent`',
     () {
       blocTest<MeteringBloc, MeteringState>(
         'Pick different film with different ISO',
@@ -487,7 +487,7 @@ void main() {
 
   // TODO(vodemn): when this feautre is enabled
   // group(
-  //   '`EquipmentProfileChangedEvent` tests',
+  //   '`EquipmentProfileChangedEvent`',
   //   () {
   //
   //   },

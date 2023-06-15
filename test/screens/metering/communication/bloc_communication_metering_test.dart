@@ -16,7 +16,7 @@ void main() {
   });
 
   group(
-    '`MeasureEvent` tests',
+    '`MeasureEvent`',
     () {
       blocTest<MeteringCommunicationBloc, MeteringCommunicationState>(
         'Multiple consequtive measure events',
@@ -60,7 +60,7 @@ void main() {
   );
 
   group(
-    '`MeteringInProgressEvent` tests',
+    '`MeteringInProgressEvent`',
     () {
       blocTest<MeteringCommunicationBloc, MeteringCommunicationState>(
         'Multiple consequtive in progress events',
@@ -83,7 +83,7 @@ void main() {
   );
 
   group(
-    '`MeteringEndedEvent` tests',
+    '`MeteringEndedEvent`',
     () {
       blocTest<MeteringCommunicationBloc, MeteringCommunicationState>(
         'Multiple consequtive ended events',

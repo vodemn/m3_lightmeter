@@ -119,7 +119,7 @@ void main() {
   });
 
   group(
-    '`RequestPermissionEvent` tests',
+    '`RequestPermissionEvent`',
     () {
       blocTest<CameraContainerBloc, CameraContainerState>(
         'Request denied',
@@ -176,7 +176,7 @@ void main() {
   );
 
   group(
-    '`InitializeEvent`/`DeinitializeEvent` tests',
+    '`InitializeEvent`/`DeinitializeEvent`',
     () {
       blocTest<CameraContainerBloc, CameraContainerState>(
         'No cameras detected error',
@@ -269,7 +269,7 @@ void main() {
   );
 
   group(
-    '`_takePicture()` tests',
+    '`_takePicture()`',
     () {
       blocTest<CameraContainerBloc, CameraContainerState>(
         'Returned ev100 == null',
@@ -325,7 +325,7 @@ void main() {
   );
 
   group(
-    '`ZoomChangedEvent` tests',
+    '`ZoomChangedEvent`',
     () {
       blocTest<CameraContainerBloc, CameraContainerState>(
         'Set zoom multiple times',
@@ -372,7 +372,7 @@ void main() {
   );
 
   group(
-    '`ExposureOffsetChangedEvent`/`ExposureOffsetResetEvent` tests',
+    '`ExposureOffsetChangedEvent`/`ExposureOffsetResetEvent`',
     () {
       blocTest<CameraContainerBloc, CameraContainerState>(
         'Set exposure offset multiple times and reset',

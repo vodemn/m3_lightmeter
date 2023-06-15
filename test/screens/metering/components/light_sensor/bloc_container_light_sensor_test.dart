@@ -39,7 +39,7 @@ void main() {
   });
 
   group(
-    '`LuxMeteringEvent` tests',
+    '`LuxMeteringEvent`',
     () {
       const List<int> luxIterable = [1, 2, 2, 2, 3];
       final List<double> resultList = luxIterable.map((lux) => log2(lux / 2.5)).toList();
