@@ -41,10 +41,25 @@ void main() {
       "sensorOrientation": 0,
     },
   ];
-  Future<Object?>? cameraMethodCallSuccessHandler(MethodCall methodCall) async {
+  const frontCameras = [
+    {
+      "name": "front",
+      "lensFacing": "front",
+      "sensorOrientation": 0,
+    },
+    {
+      "name": "front2",
+      "lensFacing": "front",
+      "sensorOrientation": 0,
+    },
+  ];
+  Future<Object?>? cameraMethodCallSuccessHandler(
+    MethodCall methodCall, {
+    List<Map<String, Object>> cameras = availableCameras,
+  }) async {
     switch (methodCall.method) {
       case "availableCameras":
-        return availableCameras;
+        return cameras;
       case "create":
         return {"cameraId": 1};
       case "initialize":
@@ -168,9 +183,27 @@ void main() {
           verify(() => meteringInteractor.requestPermission()).called(1);
           verify(() => meteringInteractor.checkCameraPermission()).called(1);
         },
-        expect: () => [
-          ...initializedStateSequence,
-        ],
+        expect: () => initializedStateSequence,
+      );
+    },
+  );
+
+  group(
+    '`OpenAppSettingsEvent`',
+    () {
+      blocTest<CameraContainerBloc, CameraContainerState>(
+        'App settings opened',
+        setUp: () {
+          when(() => meteringInteractor.openAppSettings()).thenAnswer((_) {});
+        },
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const OpenAppSettingsEvent());
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.openAppSettings()).called(1);
+        },
+        expect: () => [],
       );
     },
   );
@@ -185,14 +218,7 @@ void main() {
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
               .setMockMethodCallHandler(
             cameraMethodChannel,
-            (methodCall) async {
-              switch (methodCall.method) {
-                case "availableCameras":
-                  return const [];
-                default:
-                  return null;
-              }
-            },
+            (methodCall) async => cameraMethodCallSuccessHandler(methodCall, cameras: const []),
           );
         },
         tearDown: () {
@@ -209,6 +235,28 @@ void main() {
           isA<CameraErrorState>()
               .having((state) => state.error, "error", CameraErrorType.noCamerasDetected),
         ],
+      );
+
+      blocTest<CameraContainerBloc, CameraContainerState>(
+        'No back facing cameras available',
+        setUp: () {
+          when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+              .setMockMethodCallHandler(
+            cameraMethodChannel,
+            (methodCall) async => cameraMethodCallSuccessHandler(methodCall, cameras: frontCameras),
+          );
+        },
+        tearDown: () {
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+              .setMockMethodCallHandler(cameraMethodChannel, null);
+        },
+        build: () => bloc,
+        act: (bloc) => bloc.add(const InitializeEvent()),
+        verify: (_) {
+          verify(() => meteringInteractor.checkCameraPermission()).called(1);
+        },
+        expect: () => initializedStateSequence,
       );
 
       blocTest<CameraContainerBloc, CameraContainerState>(
@@ -281,14 +329,15 @@ void main() {
           bloc.add(const InitializeEvent());
           await Future.delayed(Duration.zero);
           bloc.onCommunicationState(const communication_states.MeasureState());
+          bloc.onCommunicationState(const communication_states.MeasureState());
+          bloc.onCommunicationState(const communication_states.MeasureState());
+          bloc.onCommunicationState(const communication_states.MeasureState());
         },
         verify: (_) {
           verify(() => meteringInteractor.checkCameraPermission()).called(1);
           verifyNever(() => meteringInteractor.cameraEvCalibration);
         },
-        expect: () => [
-          ...initializedStateSequence,
-        ],
+        expect: () => initializedStateSequence,
       );
 
       // TODO(vodemn): figure out how to mock `_file.readAsBytes()`
@@ -321,7 +370,6 @@ void main() {
       //   ],
       // );
     },
-    skip: true,
   );
 
   group(
