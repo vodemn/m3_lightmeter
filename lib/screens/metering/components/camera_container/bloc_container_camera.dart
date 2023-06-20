@@ -53,8 +53,6 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     on<ZoomChangedEvent>(_onZoomChanged);
     on<ExposureOffsetChangedEvent>(_onExposureOffsetChanged);
     on<ExposureOffsetResetEvent>(_onExposureOffsetResetEvent);
-
-    add(const RequestPermissionEvent());
   }
 
   @override
@@ -124,7 +122,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       _zoomRange = await Future.wait<double>([
         _cameraController!.getMinZoomLevel(),
         _cameraController!.getMaxZoomLevel(),
-      ]).then((levels) => RangeValues(levels[0], math.min(_maxZoom, levels[1])));
+      ]).then((levels) => RangeValues(math.max(1.0, levels[0]), math.min(_maxZoom, levels[1])));
       _currentZoom = _zoomRange!.start;
 
       _exposureOffsetRange = await Future.wait<double>([
@@ -210,8 +208,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       final speed = speedValueRatio.numerator / speedValueRatio.denominator;
 
       return log2(math.pow(aperture, 2)) - log2(speed) - log2(iso / 100);
-    } on CameraException catch (e) {
-      log('Error: ${e.code}\nError Message: ${e.description}');
+    } catch (e) {
+      log(e.toString());
       return null;
     }
   }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
@@ -16,35 +17,46 @@ class LightSensorContainerBloc
   final MeteringInteractor _meteringInteractor;
 
   StreamSubscription<int>? _luxSubscriptions;
-  double _ev100 = 0.0;
 
   LightSensorContainerBloc(
     this._meteringInteractor,
     MeteringCommunicationBloc communicationBloc,
   ) : super(
           communicationBloc,
-          const LightSensorInitState(),
-        );
+          const LightSensorContainerState(null),
+        ) {
+    on<LuxMeteringEvent>(_onLuxMeteringEvent);
+  }
 
   @override
   void onCommunicationState(communication_states.SourceState communicationState) {
     if (communicationState is communication_states.MeasureState) {
       if (_luxSubscriptions == null) {
-        _luxSubscriptions = _meteringInteractor.luxStream().listen((event) {
-          _ev100 = log2(event.toDouble() / 2.5) + _meteringInteractor.lightSensorEvCalibration;
-          communicationBloc.add(communication_event.MeteringInProgressEvent(_ev100));
-        });
+        _startMetering();
       } else {
-        communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
-        _luxSubscriptions?.cancel().then((_) => _luxSubscriptions = null);
+        _cancelMetering();
       }
     }
   }
 
   @override
   Future<void> close() async {
-    communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
-    _luxSubscriptions?.cancel().then((_) => _luxSubscriptions = null);
+    _cancelMetering();
     return super.close();
+  }
+
+  void _onLuxMeteringEvent(LuxMeteringEvent event, Emitter<LightSensorContainerState> emit) {
+    final ev100 = log2(event.lux.toDouble() / 2.5) + _meteringInteractor.lightSensorEvCalibration;
+    emit(LightSensorContainerState(ev100));
+    communicationBloc.add(communication_event.MeteringInProgressEvent(ev100));
+  }
+
+  void _startMetering() {
+    _luxSubscriptions = _meteringInteractor.luxStream().listen((lux) => add(LuxMeteringEvent(lux)));
+  }
+
+  void _cancelMetering() {
+    communicationBloc.add(communication_event.MeteringEndedEvent(state.ev100));
+    _luxSubscriptions?.cancel().then((_) => _luxSubscriptions = null);
   }
 }

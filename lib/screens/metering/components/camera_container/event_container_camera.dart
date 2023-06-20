@@ -22,12 +22,32 @@ class ZoomChangedEvent extends CameraContainerEvent {
   final double value;
 
   const ZoomChangedEvent(this.value);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is ZoomChangedEvent && other.value == value;
+  }
+
+  @override
+  int get hashCode => Object.hash(value, runtimeType);
 }
 
 class ExposureOffsetChangedEvent extends CameraContainerEvent {
   final double value;
 
   const ExposureOffsetChangedEvent(this.value);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is ExposureOffsetChangedEvent && other.value == value;
+  }
+
+  @override
+  int get hashCode => Object.hash(value, runtimeType);
 }
 
 class ExposureOffsetResetEvent extends CameraContainerEvent {

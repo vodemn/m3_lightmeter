@@ -1,4 +1,4 @@
-abstract class MeteringCommunicationState {
+sealed class MeteringCommunicationState {
   const MeteringCommunicationState();
 }
 
@@ -6,11 +6,11 @@ class InitState extends MeteringCommunicationState {
   const InitState();
 }
 
-abstract class SourceState extends MeteringCommunicationState {
+sealed class SourceState extends MeteringCommunicationState {
   const SourceState();
 }
 
-abstract class ScreenState extends MeteringCommunicationState {
+sealed class ScreenState extends MeteringCommunicationState {
   const ScreenState();
 }
 
@@ -18,7 +18,7 @@ class MeasureState extends SourceState {
   const MeasureState();
 }
 
-abstract class MeasuredState extends ScreenState {
+sealed class MeasuredState extends ScreenState {
   final double? ev100;
 
   const MeasuredState(this.ev100);
@@ -26,8 +26,28 @@ abstract class MeasuredState extends ScreenState {
 
 class MeteringInProgressState extends MeasuredState {
   const MeteringInProgressState(super.ev100);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is MeteringInProgressState && other.ev100 == ev100;
+  }
+
+  @override
+  int get hashCode => Object.hash(ev100, runtimeType);
 }
 
 class MeteringEndedState extends MeasuredState {
   const MeteringEndedState(super.ev100);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is MeteringEndedState && other.ev100 == ev100;
+  }
+
+  @override
+  int get hashCode => Object.hash(ev100, runtimeType);
 }
