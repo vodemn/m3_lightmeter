@@ -89,18 +89,3 @@ jobs:
         with:
           name: m3_lightmeter_bundle
           path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
-
-      - name: Zip merged_native_libs folder
-        uses: vimtor/action-zip@v1.1
-        env:
-          PATH_TO_LIBS: build/app/intermediates/merged_native_libs/prodRelease/out/lib
-        with:
-          files: build/app/intermediates/merged_native_libs/prodRelease/out/lib/arm64-v8a/ build/app/intermediates/merged_native_libs/prodRelease/out/lib/armeabi-v7a/
-          dest: merged_native_libs.zip
-          recursive: false
-
-      - name: Upload merged_native_libs to artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: merged_native_libs
-          path: merged_native_libs.zip
