@@ -90,7 +90,7 @@ jobs:
       - name: Zip merged_native_libs folder
         uses: vimtor/action-zip@v1.1
         with:
-          files: build/app/intermediates/merged_native_libs/prodRelease/out/lib/arm64-v8a build/app/intermediates/merged_native_libs/prodRelease/out/lib/armeabi-v7a
+          files: build/app/intermediates/merged_native_libs/prodRelease/out/lib/arm64-v8a/ build/app/intermediates/merged_native_libs/prodRelease/out/lib/armeabi-v7a/
           dest: merged_native_libs.zip
 
       - name: Upload merged_native_libs to artifacts
