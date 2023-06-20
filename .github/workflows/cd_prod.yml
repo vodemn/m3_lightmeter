@@ -96,7 +96,9 @@ jobs:
         env:
           PATH_TO_LIBS: build/app/intermediates/merged_native_libs/prodRelease/out/lib
         with:
-          files: $PATH_TO_LIBS/arm64-v8a/ $PATH_TO_LIBS/armeabi-v7a/
+          files: | 
+            build/app/intermediates/merged_native_libs/prodRelease/out/lib/arm64-v8a/
+            build/app/intermediates/merged_native_libs/prodRelease/out/lib/armeabi-v7a/
           dest: merged_native_libs.zip
           recursive: false
 
