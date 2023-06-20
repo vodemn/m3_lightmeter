@@ -8,6 +8,9 @@ name: Build prod .aab & .apk
 on:
   workflow_dispatch:
 
+env:
+  BUILD_ARGS: --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
+
 jobs:
   build:
     runs-on: macos-11
@@ -70,7 +73,7 @@ jobs:
           flutter pub run intl_utils:generate
 
       - name: Build apk
-        run: flutter build apk --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
+        run: flutter build apk $BUILD_ARGS
 
       - name: Upload apk to artifacts
         uses: actions/upload-artifact@v3
@@ -79,23 +82,10 @@ jobs:
           path: build/app/outputs/flutter-apk/app-prod-release.apk
 
       - name: Build appbundle
-        run: flutter build appbundle --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
+        run: flutter build appbundle $BUILD_ARGS
 
       - name: Upload app bundle to artifacts
         uses: actions/upload-artifact@v3
         with:
           name: m3_lightmeter_bundle
           path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
-
-      - name: Zip merged_native_libs folder
-        uses: thedoctor0/zip-release@0.7.1
-        with:
-          type: 'zip'
-          path: 'build/app/intermediates/merged_native_libs/prodRelease/out/lib/'
-          filename: 'merged_native_libs.zip'
-
-      - name: Upload merged_native_libs to artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: merged_native_libs
-          path: merged_native_libs.zip
