@@ -22,6 +22,68 @@ void main() {
     service = UserPreferencesService(sharedPreferences);
   });
 
+  group('migrateOldKeys()', () {
+    test('no legacy keys', () async {
+      when(() => sharedPreferences.getInt("curIsoIndex")).thenReturn(null);
+      when(() => sharedPreferences.getInt("curndIndex")).thenReturn(null);
+      when(() => sharedPreferences.getDouble("cameraCalibr")).thenReturn(null);
+      when(() => sharedPreferences.getDouble("sensorCalibr")).thenReturn(null);
+      when(() => sharedPreferences.getBool("vibrate")).thenReturn(null);
+
+      when(() => sharedPreferences.remove("curIsoIndex")).thenAnswer((_) async => true);
+      when(() => sharedPreferences.remove("curndIndex")).thenAnswer((_) async => true);
+      when(() => sharedPreferences.remove("cameraCalibr")).thenAnswer((_) async => true);
+      when(() => sharedPreferences.remove("sensorCalibr")).thenAnswer((_) async => true);
+      when(() => sharedPreferences.remove("vibrate")).thenAnswer((_) async => true);
+
+      await service.migrateOldKeys();
+
+      verifyNever(() => sharedPreferences.remove("curIsoIndex"));
+      verifyNever(() => sharedPreferences.remove("curndIndex"));
+      verifyNever(() => sharedPreferences.remove("cameraCalibr"));
+      verifyNever(() => sharedPreferences.remove("sensorCalibr"));
+      verifyNever(() => sharedPreferences.remove("vibrate"));
+    });
+
+    test('migrate all keys', () async {
+      when(() => sharedPreferences.getInt("curIsoIndex")).thenReturn(1);
+      when(() => sharedPreferences.getInt("curndIndex")).thenReturn(0);
+      when(() => sharedPreferences.getDouble("cameraCalibr")).thenReturn(1.0);
+      when(() => sharedPreferences.getDouble("sensorCalibr")).thenReturn(-1.0);
+      when(() => sharedPreferences.getBool("vibrate")).thenReturn(false);
+
+      when(
+        () => sharedPreferences.setInt(UserPreferencesService.isoKey, IsoValue.values[1].value),
+      ).thenAnswer((_) => Future.value(true));
+      when(
+        () => sharedPreferences.setInt(UserPreferencesService.ndFilterKey, NdValue.values[0].value),
+      ).thenAnswer((_) => Future.value(true));
+      when(
+        () => sharedPreferences.setDouble(UserPreferencesService.cameraEvCalibrationKey, 1.0),
+      ).thenAnswer((_) => Future.value(true));
+      when(
+        () => sharedPreferences.setDouble(UserPreferencesService.lightSensorEvCalibrationKey, -1.0),
+      ).thenAnswer((_) => Future.value(true));
+      when(
+        () => sharedPreferences.setBool(UserPreferencesService.hapticsKey, false),
+      ).thenAnswer((_) => Future.value(true));
+
+      when(() => sharedPreferences.remove("curIsoIndex")).thenAnswer((_) async => true);
+      when(() => sharedPreferences.remove("curndIndex")).thenAnswer((_) async => true);
+      when(() => sharedPreferences.remove("cameraCalibr")).thenAnswer((_) async => true);
+      when(() => sharedPreferences.remove("sensorCalibr")).thenAnswer((_) async => true);
+      when(() => sharedPreferences.remove("vibrate")).thenAnswer((_) async => true);
+
+      await service.migrateOldKeys();
+
+      verify(() => sharedPreferences.remove("curIsoIndex")).called(1);
+      verify(() => sharedPreferences.remove("curndIndex")).called(1);
+      verify(() => sharedPreferences.remove("cameraCalibr")).called(1);
+      verify(() => sharedPreferences.remove("sensorCalibr")).called(1);
+      verify(() => sharedPreferences.remove("vibrate")).called(1);
+    });
+  });
+
   group('iso', () {
     test('get default', () {
       when(() => sharedPreferences.getInt(UserPreferencesService.isoKey)).thenReturn(null);

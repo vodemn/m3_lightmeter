@@ -30,10 +30,11 @@ class UserPreferencesService {
   final SharedPreferences _sharedPreferences;
 
   UserPreferencesService(this._sharedPreferences) {
-    _migrateOldKeys();
+    migrateOldKeys();
   }
 
-  Future<void> _migrateOldKeys() async {
+  @visibleForTesting
+  Future<void> migrateOldKeys() async {
     final legacyIsoIndex = _sharedPreferences.getInt("curIsoIndex");
     if (legacyIsoIndex != null) {
       iso = IsoValue.values[legacyIsoIndex];
