@@ -134,9 +134,9 @@ class UserPreferencesService {
       );
   set film(Film value) => _sharedPreferences.setString(filmKey, value.name);
 
-  String get selectedEquipmentProfileId => '';
-  set selectedEquipmentProfileId(String id) {}
+  String get selectedEquipmentProfileId => ''; // coverage:ignore-line
+  set selectedEquipmentProfileId(String id) {} // coverage:ignore-line
 
-  List<EquipmentProfileData> get equipmentProfiles => [];
-  set equipmentProfiles(List<EquipmentProfileData> profiles) {}
+  List<EquipmentProfileData> get equipmentProfiles => []; // coverage:ignore-line
+  set equipmentProfiles(List<EquipmentProfileData> profiles) {} // coverage:ignore-line
 }
