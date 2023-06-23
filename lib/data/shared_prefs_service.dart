@@ -14,6 +14,7 @@ class UserPreferencesService {
   static const ndFilterKey = "ndFilter";
 
   static const evSourceTypeKey = "evSourceType";
+  static const stopTypeKey = "stopType";
   static const cameraEvCalibrationKey = "cameraEvCalibration";
   static const lightSensorEvCalibrationKey = "lightSensorEvCalibration";
   static const meteringScreenLayoutKey = "meteringScreenLayout";
@@ -83,6 +84,9 @@ class UserPreferencesService {
 
   bool get caffeine => _sharedPreferences.getBool(caffeineKey) ?? false;
   set caffeine(bool value) => _sharedPreferences.setBool(caffeineKey, value);
+
+  StopType get stopType => StopType.values[_sharedPreferences.getInt(stopTypeKey) ?? 2];
+  set stopType(StopType value) => _sharedPreferences.setInt(stopTypeKey, value.index);
 
   MeteringScreenLayoutConfig get meteringScreenLayout {
     final configJson = _sharedPreferences.getString(meteringScreenLayoutKey);

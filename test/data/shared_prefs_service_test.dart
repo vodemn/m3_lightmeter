@@ -164,6 +164,25 @@ void main() {
     });
   });
 
+  group('stopType', () {
+    test('get default', () {
+      when(() => sharedPreferences.getInt(UserPreferencesService.stopTypeKey)).thenReturn(null);
+      expect(service.stopType, StopType.third);
+    });
+
+    test('get', () {
+      when(() => sharedPreferences.getInt(UserPreferencesService.stopTypeKey)).thenReturn(1);
+      expect(service.stopType, StopType.half);
+    });
+
+    test('set', () {
+      when(() => sharedPreferences.setInt(UserPreferencesService.stopTypeKey, 0))
+          .thenAnswer((_) => Future.value(true));
+      service.stopType = StopType.full;
+      verify(() => sharedPreferences.setInt(UserPreferencesService.stopTypeKey, 0)).called(1);
+    });
+  });
+
   group('meteringScreenLayout', () {
     test('get default', () {
       when(
