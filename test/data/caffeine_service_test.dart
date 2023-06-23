@@ -8,7 +8,7 @@ void main() {
   late CaffeineService service;
 
   const methodChannel = MethodChannel('com.vodemn.lightmeter/keepScreenOn');
-  Future<Object?>? cameraMethodCallSuccessHandler(MethodCall methodCall) async {
+  Future<Object?>? methodCallSuccessHandler(MethodCall methodCall) async {
     switch (methodCall.method) {
       case "isKeepScreenOn":
         return true;
@@ -22,7 +22,7 @@ void main() {
   setUp(() {
     service = const CaffeineService();
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(methodChannel, cameraMethodCallSuccessHandler);
+        .setMockMethodCallHandler(methodChannel, methodCallSuccessHandler);
   });
 
   tearDown(() {
