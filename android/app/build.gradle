@@ -33,10 +33,6 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
-gradle.beforeProject({ project->
-    project.setProperty("target-platform", "android-arm,android-arm64")
-})
-
 android {
     compileSdkVersion 33
     ndkVersion flutter.ndkVersion
@@ -112,5 +108,5 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.android.billingclient:billing-ktx:5.1.0"
+    implementation "com.android.billingclient:billing-ktx:6.0.0"
 }
