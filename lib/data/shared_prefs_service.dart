@@ -10,30 +10,31 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPreferencesService {
-  static const _isoKey = "iso";
-  static const _ndFilterKey = "ndFilter";
+  static const isoKey = "iso";
+  static const ndFilterKey = "ndFilter";
 
-  static const _evSourceTypeKey = "evSourceType";
-  static const _cameraEvCalibrationKey = "cameraEvCalibration";
-  static const _lightSensorEvCalibrationKey = "lightSensorEvCalibration";
-  static const _meteringScreenLayoutKey = "meteringScreenLayout";
-  static const _filmKey = "film";
+  static const evSourceTypeKey = "evSourceType";
+  static const cameraEvCalibrationKey = "cameraEvCalibration";
+  static const lightSensorEvCalibrationKey = "lightSensorEvCalibration";
+  static const meteringScreenLayoutKey = "meteringScreenLayout";
+  static const filmKey = "film";
 
-  static const _caffeineKey = "caffeine";
-  static const _hapticsKey = "haptics";
-  static const _localeKey = "locale";
+  static const caffeineKey = "caffeine";
+  static const hapticsKey = "haptics";
+  static const localeKey = "locale";
 
-  static const _themeTypeKey = "themeType";
-  static const _primaryColorKey = "primaryColor";
-  static const _dynamicColorKey = "dynamicColor";
+  static const themeTypeKey = "themeType";
+  static const primaryColorKey = "primaryColor";
+  static const dynamicColorKey = "dynamicColor";
 
   final SharedPreferences _sharedPreferences;
 
   UserPreferencesService(this._sharedPreferences) {
-    _migrateOldKeys();
+    migrateOldKeys();
   }
 
-  Future<void> _migrateOldKeys() async {
+  @visibleForTesting
+  Future<void> migrateOldKeys() async {
     final legacyIsoIndex = _sharedPreferences.getInt("curIsoIndex");
     if (legacyIsoIndex != null) {
       iso = IsoValue.values[legacyIsoIndex];
@@ -69,22 +70,22 @@ class UserPreferencesService {
   }
 
   IsoValue get iso =>
-      IsoValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(_isoKey) ?? 100));
-  set iso(IsoValue value) => _sharedPreferences.setInt(_isoKey, value.value);
+      IsoValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(isoKey) ?? 100));
+  set iso(IsoValue value) => _sharedPreferences.setInt(isoKey, value.value);
 
   NdValue get ndFilter =>
-      NdValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(_ndFilterKey) ?? 0));
-  set ndFilter(NdValue value) => _sharedPreferences.setInt(_ndFilterKey, value.value);
+      NdValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(ndFilterKey) ?? 0));
+  set ndFilter(NdValue value) => _sharedPreferences.setInt(ndFilterKey, value.value);
 
   EvSourceType get evSourceType =>
-      EvSourceType.values[_sharedPreferences.getInt(_evSourceTypeKey) ?? 0];
-  set evSourceType(EvSourceType value) => _sharedPreferences.setInt(_evSourceTypeKey, value.index);
+      EvSourceType.values[_sharedPreferences.getInt(evSourceTypeKey) ?? 0];
+  set evSourceType(EvSourceType value) => _sharedPreferences.setInt(evSourceTypeKey, value.index);
 
-  bool get caffeine => _sharedPreferences.getBool(_caffeineKey) ?? false;
-  set caffeine(bool value) => _sharedPreferences.setBool(_caffeineKey, value);
+  bool get caffeine => _sharedPreferences.getBool(caffeineKey) ?? false;
+  set caffeine(bool value) => _sharedPreferences.setBool(caffeineKey, value);
 
   MeteringScreenLayoutConfig get meteringScreenLayout {
-    final configJson = _sharedPreferences.getString(_meteringScreenLayoutKey);
+    final configJson = _sharedPreferences.getString(meteringScreenLayoutKey);
     if (configJson != null) {
       return MeteringScreenLayoutConfigJson.fromJson(
         json.decode(configJson) as Map<String, dynamic>,
@@ -98,44 +99,44 @@ class UserPreferencesService {
   }
 
   set meteringScreenLayout(MeteringScreenLayoutConfig value) =>
-      _sharedPreferences.setString(_meteringScreenLayoutKey, json.encode(value.toJson()));
+      _sharedPreferences.setString(meteringScreenLayoutKey, json.encode(value.toJson()));
 
-  bool get haptics => _sharedPreferences.getBool(_hapticsKey) ?? true;
-  set haptics(bool value) => _sharedPreferences.setBool(_hapticsKey, value);
+  bool get haptics => _sharedPreferences.getBool(hapticsKey) ?? true;
+  set haptics(bool value) => _sharedPreferences.setBool(hapticsKey, value);
 
   SupportedLocale get locale => SupportedLocale.values.firstWhere(
-        (e) => e.toString() == _sharedPreferences.getString(_localeKey),
+        (e) => e.toString() == _sharedPreferences.getString(localeKey),
         orElse: () => SupportedLocale.en,
       );
-  set locale(SupportedLocale value) => _sharedPreferences.setString(_localeKey, value.toString());
+  set locale(SupportedLocale value) => _sharedPreferences.setString(localeKey, value.toString());
 
-  double get cameraEvCalibration => _sharedPreferences.getDouble(_cameraEvCalibrationKey) ?? 0.0;
+  double get cameraEvCalibration => _sharedPreferences.getDouble(cameraEvCalibrationKey) ?? 0.0;
   set cameraEvCalibration(double value) =>
-      _sharedPreferences.setDouble(_cameraEvCalibrationKey, value);
+      _sharedPreferences.setDouble(cameraEvCalibrationKey, value);
 
   double get lightSensorEvCalibration =>
-      _sharedPreferences.getDouble(_lightSensorEvCalibrationKey) ?? 0.0;
+      _sharedPreferences.getDouble(lightSensorEvCalibrationKey) ?? 0.0;
   set lightSensorEvCalibration(double value) =>
-      _sharedPreferences.setDouble(_lightSensorEvCalibrationKey, value);
+      _sharedPreferences.setDouble(lightSensorEvCalibrationKey, value);
 
-  ThemeType get themeType => ThemeType.values[_sharedPreferences.getInt(_themeTypeKey) ?? 0];
-  set themeType(ThemeType value) => _sharedPreferences.setInt(_themeTypeKey, value.index);
+  ThemeType get themeType => ThemeType.values[_sharedPreferences.getInt(themeTypeKey) ?? 0];
+  set themeType(ThemeType value) => _sharedPreferences.setInt(themeTypeKey, value.index);
 
-  Color get primaryColor => Color(_sharedPreferences.getInt(_primaryColorKey) ?? 0xff2196f3);
-  set primaryColor(Color value) => _sharedPreferences.setInt(_primaryColorKey, value.value);
+  Color get primaryColor => Color(_sharedPreferences.getInt(primaryColorKey) ?? 0xff2196f3);
+  set primaryColor(Color value) => _sharedPreferences.setInt(primaryColorKey, value.value);
 
-  bool get dynamicColor => _sharedPreferences.getBool(_dynamicColorKey) ?? false;
-  set dynamicColor(bool value) => _sharedPreferences.setBool(_dynamicColorKey, value);
+  bool get dynamicColor => _sharedPreferences.getBool(dynamicColorKey) ?? false;
+  set dynamicColor(bool value) => _sharedPreferences.setBool(dynamicColorKey, value);
 
   Film get film => Film.values.firstWhere(
-        (e) => e.name == _sharedPreferences.getString(_filmKey),
+        (e) => e.name == _sharedPreferences.getString(filmKey),
         orElse: () => Film.values.first,
       );
-  set film(Film value) => _sharedPreferences.setString(_filmKey, value.name);
+  set film(Film value) => _sharedPreferences.setString(filmKey, value.name);
 
-  String get selectedEquipmentProfileId => '';
-  set selectedEquipmentProfileId(String id) {}
+  String get selectedEquipmentProfileId => ''; // coverage:ignore-line
+  set selectedEquipmentProfileId(String id) {} // coverage:ignore-line
 
-  List<EquipmentProfileData> get equipmentProfiles => [];
-  set equipmentProfiles(List<EquipmentProfileData> profiles) {}
+  List<EquipmentProfileData> get equipmentProfiles => []; // coverage:ignore-line
+  set equipmentProfiles(List<EquipmentProfileData> profiles) {} // coverage:ignore-line
 }
