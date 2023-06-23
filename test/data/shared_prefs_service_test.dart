@@ -22,6 +22,10 @@ void main() {
     service = UserPreferencesService(sharedPreferences);
   });
 
+  tearDown(() {
+    reset(sharedPreferences);
+  });
+
   group('migrateOldKeys()', () {
     test('no legacy keys', () async {
       when(() => sharedPreferences.getInt("curIsoIndex")).thenReturn(null);
