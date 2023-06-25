@@ -12,10 +12,6 @@ on:
         description: "Version"
         required: true
         type: string
-      changelog:
-        description: "Changelog"
-        required: true
-        type: string
 
 env:
   BUILD_ARGS: --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
@@ -123,11 +119,14 @@ jobs:
   create-release:
     name: Create Github release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "m3_lightmeter_apk.apk, m3_lightmeter_bundle.aab"
-          body: "${{ github.event.inputs.changelog }}"
           skipIfReleaseExists: true
           tag: "v${{ github.event.inputs.version }}"
