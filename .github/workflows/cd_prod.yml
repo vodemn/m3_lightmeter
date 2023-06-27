@@ -146,7 +146,15 @@ jobs:
       - name: LS
         run: ls
 
-      # - uses: ncipollo/release-action@v1
+      - name: Rename artifacts
+        run: |
+          mv app-prod-release.apk m3_lightmeter.apk
+          mv app-prod-release.aab m3_lightmeter.aab
+
+      - name: LS
+        run: ls
+
+      # - uses: ncipollo/release-action@v1.12.0
       #   with:
       #     artifacts: "/home/runner/work/m3_lightmeter/m3_lightmeter/m3_lightmeter_apk, /home/runner/work/m3_lightmeter/m3_lightmeter/m3_lightmeter_bundle"
       #     skipIfReleaseExists: true
