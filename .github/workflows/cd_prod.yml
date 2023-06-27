@@ -130,6 +130,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: LS
+        run: ls
+
       - name: Download apk
         uses: actions/download-artifact@v3
         with:
@@ -140,8 +143,11 @@ jobs:
         with:
           name: m3_lightmeter_bundle
 
-      - uses: ncipollo/release-action@v1
-        with:
-          artifacts: "/home/runner/work/m3_lightmeter/m3_lightmeter/m3_lightmeter_apk, /home/runner/work/m3_lightmeter/m3_lightmeter/m3_lightmeter_bundle"
-          skipIfReleaseExists: true
-          tag: "v${{ github.event.inputs.version }}"
+      - name: LS
+        run: ls
+
+      # - uses: ncipollo/release-action@v1
+      #   with:
+      #     artifacts: "/home/runner/work/m3_lightmeter/m3_lightmeter/m3_lightmeter_apk, /home/runner/work/m3_lightmeter/m3_lightmeter/m3_lightmeter_bundle"
+      #     skipIfReleaseExists: true
+      #     tag: "v${{ github.event.inputs.version }}"
