@@ -15,93 +15,92 @@ on:
 
 env:
   BUILD_ARGS: --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
-  #UPDATE_VERSION_SCRIPT: perl -i -pe 's/^(version:\s+)(\d+\.\d+\.\d+)(\+)(\d+)$/$1."${{ github.event.inputs.version }}"".$3.($4+1)/e' pubspec.yaml
 
 jobs:
-  # build:
-  #   name: Build .apk & .aab
-  #   runs-on: macos-11
-  #   timeout-minutes: 30
-  #   steps:
-  #     # - uses: shaunco/ssh-agent@git-repo-mapping
-  #     #   with:
-  #     #     ssh-private-key: |
-  #     #       ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
-  #     #     repo-mappings: |
-  #     #       github.com/vodemn/m3_lightmeter_iap
+  build:
+    name: Build .apk & .aab
+    runs-on: macos-11
+    timeout-minutes: 30
+    steps:
+      # - uses: shaunco/ssh-agent@git-repo-mapping
+      #   with:
+      #     ssh-private-key: |
+      #       ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
+      #     repo-mappings: |
+      #       github.com/vodemn/m3_lightmeter_iap
 
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         submodules: recursive
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
-  #     - uses: actions/setup-java@v2
-  #       with:
-  #         distribution: "zulu"
-  #         java-version: "11"
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: "11"
 
-  #     - name: Restore Android keystore .jsk and .properties files
-  #       env:
-  #         KEYSTORE: ${{ secrets.KEYSTORE }}
-  #         KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
-  #       run: |
-  #         KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
-  #         echo -n "$KEYSTORE" | base64 --decode --output $KEYSTORE_PATH
-  #         cp $KEYSTORE_PATH ./android/app
-  #         KEYSTORE_PROPERTIES_PATH=$RUNNER_TEMP/key.properties
-  #         echo -n "$KEYSTORE_PROPERTIES" | base64 --decode --output $KEYSTORE_PROPERTIES_PATH
-  #         cp $KEYSTORE_PROPERTIES_PATH ./android
+      - name: Restore Android keystore .jsk and .properties files
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
+        run: |
+          KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
+          echo -n "$KEYSTORE" | base64 --decode --output $KEYSTORE_PATH
+          cp $KEYSTORE_PATH ./android/app
+          KEYSTORE_PROPERTIES_PATH=$RUNNER_TEMP/key.properties
+          echo -n "$KEYSTORE_PROPERTIES" | base64 --decode --output $KEYSTORE_PROPERTIES_PATH
+          cp $KEYSTORE_PROPERTIES_PATH ./android
 
-  #     - name: Restore android/app/google-services.json
-  #       env:
-  #         GOOGLE_SERVICES_JSON_ANDROID: ${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}
-  #       run: |
-  #         GOOGLE_SERVICES_JSON_ANDROID_PATH=$RUNNER_TEMP/google-services.json
-  #         echo -n "$GOOGLE_SERVICES_JSON_ANDROID" | base64 --decode --output $GOOGLE_SERVICES_JSON_ANDROID_PATH
-  #         cp $GOOGLE_SERVICES_JSON_ANDROID_PATH ./android/app
+      - name: Restore android/app/google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_ANDROID: ${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}
+        run: |
+          GOOGLE_SERVICES_JSON_ANDROID_PATH=$RUNNER_TEMP/google-services.json
+          echo -n "$GOOGLE_SERVICES_JSON_ANDROID" | base64 --decode --output $GOOGLE_SERVICES_JSON_ANDROID_PATH
+          cp $GOOGLE_SERVICES_JSON_ANDROID_PATH ./android/app
 
-  #     - name: Restore firebase_options.dart
-  #       env:
-  #         FIREBASE_OPTIONS: ${{ secrets.FIREBASE_OPTIONS }}
-  #       run: |
-  #         FIREBASE_OPTIONS_PATH=$RUNNER_TEMP/firebase_options.dart
-  #         echo -n "$FIREBASE_OPTIONS" | base64 --decode --output $FIREBASE_OPTIONS_PATH
-  #         cp $FIREBASE_OPTIONS_PATH ./lib
+      - name: Restore firebase_options.dart
+        env:
+          FIREBASE_OPTIONS: ${{ secrets.FIREBASE_OPTIONS }}
+        run: |
+          FIREBASE_OPTIONS_PATH=$RUNNER_TEMP/firebase_options.dart
+          echo -n "$FIREBASE_OPTIONS" | base64 --decode --output $FIREBASE_OPTIONS_PATH
+          cp $FIREBASE_OPTIONS_PATH ./lib
 
-  #     - name: Increment build number & replace version number
-  #       run: perl -i -pe 's/^(version:\s+)(\d+\.\d+\.\d+)(\+)(\d+)$/$1."${{ github.event.inputs.version }}".$3.($4+1)/e' pubspec.yaml
+      - name: Increment build number & replace version number
+        run: perl -i -pe 's/^(version:\s+)(\d+\.\d+\.\d+)(\+)(\d+)$/$1."${{ github.event.inputs.version }}".$3.($4+1)/e' pubspec.yaml
 
-  #     - name: Install Flutter
-  #       uses: subosito/flutter-action@v2
-  #       with:
-  #         channel: "stable"
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
 
-  #     - name: Prepare flutter project
-  #       run: |
-  #         flutter --version
-  #         flutter pub get
-  #         flutter pub run intl_utils:generate
+      - name: Prepare flutter project
+        run: |
+          flutter --version
+          flutter pub get
+          flutter pub run intl_utils:generate
 
-  #     - name: Build apk
-  #       run: flutter build apk $BUILD_ARGS
+      - name: Build apk
+        run: flutter build apk $BUILD_ARGS
 
-  #     - name: Upload apk to artifacts
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: m3_lightmeter_apk
-  #         path: build/app/outputs/flutter-apk/app-prod-release.apk
+      - name: Upload apk to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: m3_lightmeter_apk
+          path: build/app/outputs/flutter-apk/app-prod-release.apk
 
-  #     - name: Build appbundle
-  #       run: flutter build appbundle $BUILD_ARGS
+      - name: Build appbundle
+        run: flutter build appbundle $BUILD_ARGS
 
-  #     - name: Upload app bundle to artifacts
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: m3_lightmeter_bundle
-  #         path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
+      - name: Upload app bundle to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: m3_lightmeter_bundle
+          path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
 
   update-version-in-repo:
     name: Update repo version
-    #needs: [build]
+    needs: [build]
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v3
@@ -120,18 +119,29 @@ jobs:
           git commit -m "Version bump"
           git push
 
-  # create-release:
-  #   name: Create Github release
-  #   needs: [build, update-version-in-repo]
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         submodules: recursive
-  #     - uses: ncipollo/release-action@v1
-  #       with:
-  #         artifacts: "m3_lightmeter_apk, m3_lightmeter_bundle"
-  #         skipIfReleaseExists: true
-  #         tag: "v${{ github.event.inputs.version }}"
+  create-release:
+    name: Create Github release
+    needs: [build, update-version-in-repo]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Download apk
+        uses: actions/download-artifact@v3
+        with:
+          name: m3_lightmeter_apk
+
+      - name: Download app bundle
+        uses: actions/download-artifact@v3
+        with:
+          name: m3_lightmeter_bundle
+          
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "m3_lightmeter_apk, m3_lightmeter_bundle"
+          skipIfReleaseExists: true
+          tag: "v${{ github.event.inputs.version }}"
