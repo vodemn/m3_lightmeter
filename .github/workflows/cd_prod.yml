@@ -20,7 +20,7 @@ env:
 jobs:
   # build:
   #   name: Build .apk & .aab
-  #   runs-on: macos-13.4
+  #   runs-on: macos-11
   #   timeout-minutes: 30
   #   steps:
   #     # - uses: shaunco/ssh-agent@git-repo-mapping
@@ -102,7 +102,7 @@ jobs:
   update-version-in-repo:
     name: Update repo version
     #needs: [build]
-    runs-on: macos-13.4
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v3
         with:
