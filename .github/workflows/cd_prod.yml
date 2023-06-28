@@ -101,7 +101,7 @@ jobs:
   update-version-in-repo:
     name: Update repo version
     needs: [build]
-    runs-on: macos-11
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -110,18 +110,24 @@ jobs:
       - name: Increment build number & replace version number
         run: perl -i -pe 's/^(version:\s+)(\d+\.\d+\.\d+)(\+)(\d+)$/$1."${{ github.event.inputs.version }}".$3.($4+1)/e' pubspec.yaml
 
-      - name: Commit and push changes
+      - name: Commit changes
         run: |
           git config --global user.name "vodemn"
           git config --global user.email "vadim.turko@gmail.com"
-
           git add -A
           git commit -m "Version bump"
-          git push
+
+      - name: Push to main
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.PUSH_TO_MAIN_TOKEN }}
+          branch: ${{ github.ref_name }}
+          unprotect_reviews: true
 
   create-release:
     name: Create Github release
     needs: [build, update-version-in-repo]
+    if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
