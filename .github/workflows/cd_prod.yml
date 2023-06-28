@@ -127,7 +127,7 @@ jobs:
   create-release:
     name: Create Github release
     needs: [build, update-version-in-repo]
-    if: ${{ github.ref_name }} == 'main'
+    if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
