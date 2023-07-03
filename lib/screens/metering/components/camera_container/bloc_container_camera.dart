@@ -8,6 +8,7 @@ import 'package:camera/camera.dart';
 import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
@@ -18,6 +19,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/event_co
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
+import 'package:lightmeter/screens/metering/components/shared/volume_keys_listener/listener_volume_keys.dart';
 import 'package:lightmeter/utils/log_2.dart';
 
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
@@ -35,6 +37,19 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   double _currentExposureOffset = 0.0;
 
   double? _ev100 = 0.0;
+
+  late final VolumeKeysListener _volumeKeysListener = VolumeKeysListener(
+    _meteringInteractor,
+    action: VolumeAction.zoom,
+    onKey: (key) {
+      switch (key) {
+        case VolumeKey.up:
+          add(ZoomChangedEvent(_currentZoom + 0.5));
+        case VolumeKey.down:
+          add(ZoomChangedEvent(_currentZoom - 0.5));
+      }
+    },
+  );
 
   CameraContainerBloc(
     this._meteringInteractor,
@@ -58,6 +73,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   @override
   Future<void> close() async {
     WidgetsBinding.instance.removeObserver(_observer);
+    _volumeKeysListener.dispose();
     unawaited(_cameraController?.dispose().then((_) => _cameraController = null));
     communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
     return super.close();

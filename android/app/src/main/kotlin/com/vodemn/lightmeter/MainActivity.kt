@@ -52,7 +52,7 @@ class MainActivity : FlutterActivity() {
             when (call.method) {
                 "setVolumeHandling" -> {
                     handleVolume = call.arguments as Boolean
-                    result.success(true)
+                    result.success(handleVolume)
                 }
                 else -> result.notImplemented()
             }

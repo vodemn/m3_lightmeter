@@ -5,6 +5,7 @@ import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
+import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
@@ -28,6 +29,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
         context.get<HapticsService>(),
         context.get<PermissionsService>(),
         context.get<LightSensorService>(),
+        context.get<VolumeEventsService>(),
       ),
       child: MultiBlocProvider(
         providers: [

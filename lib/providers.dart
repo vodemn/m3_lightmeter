@@ -6,6 +6,7 @@ import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
+import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
@@ -41,16 +42,19 @@ class LightmeterProviders extends StatelessWidget {
                   data: const CaffeineService(),
                   child: InheritedWidgetBase<HapticsService>(
                     data: const HapticsService(),
-                    child: InheritedWidgetBase<PermissionsService>(
-                      data: const PermissionsService(),
-                      child: MeteringScreenLayoutProvider(
-                        child: StopTypeProvider(
-                          child: EquipmentProfileProvider(
-                            child: EvSourceTypeProvider(
-                              child: SupportedLocaleProvider(
-                                child: ThemeProvider(
-                                  child: Builder(
-                                    builder: (context) => builder(context, true),
+                    child: InheritedWidgetBase<VolumeEventsService>(
+                      data: const VolumeEventsService(),
+                      child: InheritedWidgetBase<PermissionsService>(
+                        data: const PermissionsService(),
+                        child: MeteringScreenLayoutProvider(
+                          child: StopTypeProvider(
+                            child: EquipmentProfileProvider(
+                              child: EvSourceTypeProvider(
+                                child: SupportedLocaleProvider(
+                                  child: ThemeProvider(
+                                    child: Builder(
+                                      builder: (context) => builder(context, true),
+                                    ),
                                   ),
                                 ),
                               ),

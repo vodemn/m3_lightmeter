@@ -4,12 +4,14 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/film.dart';
+import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
     as communication_states;
+import 'package:lightmeter/screens/metering/components/shared/volume_keys_listener/listener_volume_keys.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -18,6 +20,12 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   final MeteringInteractor _meteringInteractor;
   final MeteringCommunicationBloc _communicationBloc;
   late final StreamSubscription<communication_states.ScreenState> _communicationSubscription;
+
+  late final VolumeKeysListener _volumeKeysListener = VolumeKeysListener(
+    _meteringInteractor,
+    action: VolumeAction.shutter,
+    onKey: (value) => add(const MeasureEvent()),
+  );
 
   MeteringBloc(
     this._meteringInteractor,
@@ -64,6 +72,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   @override
   Future<void> close() async {
+    await _volumeKeysListener.dispose();
     await _communicationSubscription.cancel();
     return super.close();
   }
