@@ -9,9 +9,9 @@
 
 - [Table of contents](#table-of-contents)
 - [Backstory](#backstory)
-- [Legacy features](#legacy-features)
 - [Build](#build)
 - [Contribution](#contribution)
+- [iOS Limitations](#ios-limitations)
 
 # Backstory
 
@@ -21,38 +21,22 @@ But as the existing repo contained some sensitive data, that I've pushed due to 
 
 Without further delay behold my new Lightmeter app inspired by Material You (a.k.a. M3)
 
-# Legacy features
-
-The list of features that the old lightmeter app has and that have to be implemeneted in the M3 lightmeter.
-
-### Metering
-- [x] ISO selecting
-- [x] Reciprocity for different films
-- [x] Reflected light metering
-- [x] Incident light metering
-
-### Adjust
-- [x] Light sources EV calibration
-- [ ] Customizable aperture range
-- [ ] Customizable shutter speed range
-- [x] ND filter select
-
-### General
-- [x] Caffeine
-- [x] Vibration
-- [ ] Volume button actions
-
-### Theme
-- [x] Dark theme
-- [x] Picking primary color
-- [x] Russian language
-
-## Build
+# Build
 
 As part of this project is private, you will be able to run this app from the _main_dev.dart_ file (i.e. --flavor dev). Also to avoid fatal errors the _main_prod.dart_ file is excluded from analysis.
 
-## Contribution
+# Contribution
 
 To report a bug or suggest a new feature open a new [issue](https://github.com/vodemn/m3_lightmeter/issues).
 
 In case you want to help develop this project you need to follow this [style guide](doc/style_guide.md).
+
+# iOS Limitations
+
+A list of features, that Android version of the app has and that iOS does not.
+
+## Incident light metering
+Apple does not provide API for reading Lux stream form the ambient light sensor. Lux can be calculated based on front camera image stream, but this would be a reflected light. So there is no way incident light metering can be implemented on iOS.
+
+## Volume buttons action
+This can be [implemented](https://stackoverflow.com/questions/70161271/ios-override-hardware-volume-buttons-same-as-zello) but the app will be rejected due to [2.5.9](https://developer.apple.com/app-store/review/guidelines/#software-requirements)
