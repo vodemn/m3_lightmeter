@@ -63,10 +63,10 @@ class MainActivity : FlutterActivity() {
             "com.vodemn.lightmeter/volumeEvents"
         )
         volumeEventChannel.setStreamHandler(object : EventChannel.StreamHandler {
-            override fun onListen(listener: Any, eventSink: EventSink) {
+            override fun onListen(listener: Any?, eventSink: EventSink) {
                 volumeEventsEmitter = eventSink
             }
-            override fun onCancel(listener: Any) {
+            override fun onCancel(listener: Any?) {
                 volumeEventsEmitter = null
             }
         })
