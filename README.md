@@ -17,9 +17,19 @@
 
 Some time ago I've started developing the [Material Lightmeter](https://play.google.com/store/apps/details?id=com.vodemn.lightmeter&hl=en&gl=US) app. Unfortunately, the last update of this app was almost a year prior to creation of this repo. So after reading some positive review on Google Play saying that "this is an excellent app, too bad it is no longer updated", I've decided to make an update and also make this app open source. Maybe someone sometime will decide to contribute to this project.
 
-But as the existing repo contained some sensitive data, that I've pushed due to lack of experience, I had to make a new one. And if creating a new repo, why not rewrite the app from scratch?)
+But as the existing repo contained some sensitive data, that I've pushed due to lack of experience, I had to make a new one. And if creating a new repo, why not rewrite the app from scratch?
 
 Without further delay behold my new Lightmeter app inspired by Material You (a.k.a. M3)
+
+# Features
+
+<p float="center">
+  <img src="https://lh3.googleusercontent.com/8Sd-pmNcQ0xAr5opuTeJKWr2OXeQvCoFSdVDSoKQSHHKeNmqF71hqeAdm3yjunY12zY" width="18.8%" />
+  <img src="https://lh3.googleusercontent.com/rqBv8pT0AdcBy0xEgQY2unV-YEQ5KfUkandAxJ62yYCiSF72HClA_tkb4JT_3UPaIfFP" width="18.8%" />
+  <img src="https://lh3.googleusercontent.com/-SnYbYSugVfdwYi6m_rd9CzpCZMCIfudhnq0zRIlzEtLSXhrwziWVd2hotygfqiSofI" width="18.8%" />
+  <img src="https://lh3.googleusercontent.com/UXxptL_dAIJDtrmpEZuSz39Iq4HuPb3ZPeuANfE9XH0De0uZQT83LNdu1AObBPobpg" width="18.8%" />
+  <img src="https://lh3.googleusercontent.com/15g_SPV8knDLFbz1_-wGNJFsJeyVWZ_y--TGHpk75MaaIdMDyTXY2_TL-Aw8bpOhpw" width="18.8%" />
+</p>
 
 # Build
 
