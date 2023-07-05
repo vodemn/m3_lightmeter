@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 
-class VolumeKeysNotifier extends ChangeNotifier {
+class VolumeKeysNotifier extends ChangeNotifier with RouteAware {
   final VolumeEventsService volumeEventsService;
   late final StreamSubscription<VolumeKey> _volumeKeysSubscription;
   VolumeKey _value = VolumeKey.up;
@@ -13,7 +13,6 @@ class VolumeKeysNotifier extends ChangeNotifier {
     // TODO: add RouteObserver and disable overriden action if SettingScreen is opened
     _volumeKeysSubscription = volumeEventsService
         .volumeButtonsEventStream()
-        .where((event) => event == 24 || event == 25)
         .map((event) => event == 24 ? VolumeKey.up : VolumeKey.down)
         .listen((event) {
       value = event;

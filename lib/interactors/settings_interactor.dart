@@ -31,9 +31,16 @@ class SettingsInteractor {
     });
   }
 
+  Future<void> disableVolumeHandling() async {
+    await _volumeEventsService.setVolumeHandling(false);
+  }
+  Future<void> restoreVolumeHandling() async {
+    await _volumeEventsService
+        .setVolumeHandling(_userPreferencesService.volumeAction != VolumeAction.none);
+  }
+
   VolumeAction get volumeAction => _userPreferencesService.volumeAction;
   Future<void> setVolumeAction(VolumeAction value) async {
-    /// If user selects `VolumeAction.volume` we allow system to handle key events
     await _volumeEventsService.setVolumeHandling(value != VolumeAction.none);
     _userPreferencesService.volumeAction = value;
   }

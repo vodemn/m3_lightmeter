@@ -35,10 +35,4 @@ void main() {
 
     test('false', () async => expectLater(service.setVolumeHandling(false), completion(false)));
   });
-
-  group('volumeButtonsEventStream', () {
-    test('true', () async => expectLater(service.setVolumeHandling(true), completion(true)));
-
-    test('false', () async => expectLater(service.setVolumeHandling(false), completion(false)));
-  });
 }

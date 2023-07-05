@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -10,8 +12,12 @@ class VolumeEventsService {
 
   const VolumeEventsService();
 
-  /// Returns current status of volume handling
+  /// If set to `false` we allow system to handle key events.
+  /// Returns current status of volume handling.
   Future<bool> setVolumeHandling(bool enableHandling) async {
+    if (!Platform.isAndroid) {
+      return false;
+    }
     return volumeHandlingChannel
         .invokeMethod<bool>("setVolumeHandling", enableHandling)
         .then((value) => value!);
@@ -22,6 +28,12 @@ class VolumeEventsService {
   /// KEYCODE_VOLUME_DOWN = 25;
   /// pressed
   Stream<int> volumeButtonsEventStream() {
-    return volumeEventsChannel.receiveBroadcastStream().cast<int>();
+    if (!Platform.isAndroid) {
+      return const Stream.empty();
+    }
+    return volumeEventsChannel
+        .receiveBroadcastStream()
+        .cast<int>()
+        .where((event) => event == 24 || event == 25);
   }
 }
