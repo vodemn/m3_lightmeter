@@ -19,12 +19,14 @@ import 'package:lightmeter/screens/metering/components/camera_container/event_co
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
-import 'package:lightmeter/screens/metering/components/shared/volume_keys_listener/listener_volume_keys.dart';
+import 'package:lightmeter/screens/metering/components/shared/volume_keys_notifier/notifier_volume_keys.dart';
 import 'package:lightmeter/utils/log_2.dart';
 
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;
+  final VolumeKeysNotifier _volumeKeysNotifier;
   late final _WidgetsBindingObserver _observer;
+
   CameraController? _cameraController;
 
   static const _maxZoom = 7.0;
@@ -38,26 +40,15 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
   double? _ev100 = 0.0;
 
-  late final VolumeKeysListener _volumeKeysListener = VolumeKeysListener(
-    _meteringInteractor,
-    action: VolumeAction.zoom,
-    onKey: (key) {
-      switch (key) {
-        case VolumeKey.up:
-          add(ZoomChangedEvent(_currentZoom + 0.5));
-        case VolumeKey.down:
-          add(ZoomChangedEvent(_currentZoom - 0.5));
-      }
-    },
-  );
-
   CameraContainerBloc(
     this._meteringInteractor,
+    this._volumeKeysNotifier,
     MeteringCommunicationBloc communicationBloc,
   ) : super(
           communicationBloc,
           const CameraInitState(),
         ) {
+    _volumeKeysNotifier.addListener(onVolumeKey);
     _observer = _WidgetsBindingObserver(_appLifecycleStateObserver);
     WidgetsBinding.instance.addObserver(_observer);
 
@@ -73,7 +64,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   @override
   Future<void> close() async {
     WidgetsBinding.instance.removeObserver(_observer);
-    _volumeKeysListener.dispose();
+    _volumeKeysNotifier.removeListener(onVolumeKey);
     unawaited(_cameraController?.dispose().then((_) => _cameraController = null));
     communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
     return super.close();
@@ -169,7 +160,9 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
-    if (_cameraController != null) {
+    if (_cameraController != null &&
+        event.value >= _zoomRange!.start &&
+        event.value <= _zoomRange!.end) {
       _cameraController!.setZoomLevel(event.value);
       _currentZoom = event.value;
       _emitActiveState(emit);
@@ -238,6 +231,18 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       case AppLifecycleState.detached:
         add(const DeinitializeEvent());
       default:
+    }
+  }
+
+  @visibleForTesting
+  void onVolumeKey() {
+    if (_meteringInteractor.volumeAction == VolumeAction.zoom) {
+      switch (_volumeKeysNotifier.value) {
+        case VolumeKey.up:
+          add(ZoomChangedEvent(_currentZoom + 0.5));
+        case VolumeKey.down:
+          add(ZoomChangedEvent(_currentZoom - 0.5));
+      }
     }
   }
 }

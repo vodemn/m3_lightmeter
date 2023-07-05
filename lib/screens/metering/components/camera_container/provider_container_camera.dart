@@ -7,6 +7,7 @@ import 'package:lightmeter/screens/metering/communication/bloc_communication_met
 import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/widget_container_camera.dart';
+import 'package:lightmeter/screens/metering/components/shared/volume_keys_notifier/notifier_volume_keys.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -40,6 +41,7 @@ class CameraContainerProvider extends StatelessWidget {
       lazy: false,
       create: (context) => CameraContainerBloc(
         context.get<MeteringInteractor>(),
+        context.get<VolumeKeysNotifier>(),
         context.read<MeteringCommunicationBloc>(),
       )..add(const RequestPermissionEvent()),
       child: CameraContainer(

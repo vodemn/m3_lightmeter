@@ -49,11 +49,7 @@ class MeteringInteractor {
   set film(Film value) => _userPreferencesService.film = value;
 
   VolumeAction get volumeAction => _userPreferencesService.volumeAction;
-  Stream<VolumeKey> volumeKeysStream() => _volumeEventsService
-      .volumeButtonsEventStream()
-      .where((event) => event == 24 || event == 25)
-      .map((event) => event == 24 ? VolumeKey.up : VolumeKey.down);
-
+  
   /// Executes vibration if haptics are enabled in settings
   Future<void> quickVibration() async {
     if (_userPreferencesService.haptics) await _hapticsService.quickVibration();

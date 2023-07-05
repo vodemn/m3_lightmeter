@@ -11,24 +11,20 @@ import 'package:lightmeter/screens/metering/communication/event_communication_me
     as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
     as communication_states;
-import 'package:lightmeter/screens/metering/components/shared/volume_keys_listener/listener_volume_keys.dart';
+import 'package:lightmeter/screens/metering/components/shared/volume_keys_notifier/notifier_volume_keys.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   final MeteringInteractor _meteringInteractor;
+  final VolumeKeysNotifier _volumeKeysNotifier;
   final MeteringCommunicationBloc _communicationBloc;
   late final StreamSubscription<communication_states.ScreenState> _communicationSubscription;
 
-  late final VolumeKeysListener _volumeKeysListener = VolumeKeysListener(
-    _meteringInteractor,
-    action: VolumeAction.shutter,
-    onKey: (value) => add(const MeasureEvent()),
-  );
-
   MeteringBloc(
     this._meteringInteractor,
+    this._volumeKeysNotifier,
     this._communicationBloc,
   ) : super(
           MeteringDataState(
@@ -39,6 +35,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
             isMetering: false,
           ),
         ) {
+    _volumeKeysNotifier.addListener(onVolumeKey);
     _communicationSubscription = _communicationBloc.stream
         .where((state) => state is communication_states.ScreenState)
         .map((state) => state as communication_states.ScreenState)
@@ -72,7 +69,7 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
 
   @override
   Future<void> close() async {
-    await _volumeKeysListener.dispose();
+    _volumeKeysNotifier.removeListener(onVolumeKey);
     await _communicationSubscription.cancel();
     return super.close();
   }
@@ -228,5 +225,12 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
         isMetering: event.isMetering,
       ),
     );
+  }
+
+  @visibleForTesting
+  void onVolumeKey() {
+    if (_meteringInteractor.volumeAction == VolumeAction.shutter) {
+      add(const MeasureEvent());
+    }
   }
 }
