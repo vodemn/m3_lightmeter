@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
@@ -15,6 +13,7 @@ import 'package:lightmeter/providers/stop_type_provider.dart';
 import 'package:lightmeter/providers/supported_locale_provider.dart';
 import 'package:lightmeter/providers/theme_provider.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:platform/platform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LightmeterProviders extends StatelessWidget {
@@ -28,7 +27,7 @@ class LightmeterProviders extends StatelessWidget {
     return FutureBuilder(
       future: Future.wait([
         SharedPreferences.getInstance(),
-        if (Platform.isAndroid) const LightSensorService().hasSensor() else Future.value(false),
+        const LightSensorService(LocalPlatform()).hasSensor(),
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
@@ -37,13 +36,13 @@ class LightmeterProviders extends StatelessWidget {
             child: InheritedWidgetBase<UserPreferencesService>(
               data: UserPreferencesService(snapshot.data![0] as SharedPreferences),
               child: InheritedWidgetBase<LightSensorService>(
-                data: const LightSensorService(),
+                data: const LightSensorService(LocalPlatform()),
                 child: InheritedWidgetBase<CaffeineService>(
                   data: const CaffeineService(),
                   child: InheritedWidgetBase<HapticsService>(
                     data: const HapticsService(),
                     child: InheritedWidgetBase<VolumeEventsService>(
-                      data: const VolumeEventsService(),
+                      data: const VolumeEventsService(LocalPlatform()),
                       child: InheritedWidgetBase<PermissionsService>(
                         data: const PermissionsService(),
                         child: MeteringScreenLayoutProvider(

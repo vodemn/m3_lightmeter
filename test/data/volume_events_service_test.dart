@@ -1,11 +1,17 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:platform/platform.dart';
+
+class _MockLocalPlatform extends Mock implements LocalPlatform {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  late _MockLocalPlatform localPlatform;
   late VolumeEventsService service;
+  
   Future<Object?>? methodCallSuccessHandler(MethodCall methodCall) async {
     switch (methodCall.method) {
       case "setVolumeHandling":
@@ -16,7 +22,8 @@ void main() {
   }
 
   setUp(() {
-    service = const VolumeEventsService();
+    localPlatform = _MockLocalPlatform();
+    service = VolumeEventsService(localPlatform);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
       VolumeEventsService.volumeHandlingChannel,
       methodCallSuccessHandler,
@@ -31,8 +38,24 @@ void main() {
   });
 
   group('setVolumeHandling', () {
-    test('true', () async => expectLater(service.setVolumeHandling(true), completion(true)));
+    test('true - Android', () async {
+      when(() => localPlatform.isAndroid).thenReturn(true);
+      expectLater(service.setVolumeHandling(true), completion(true));
+    });
 
-    test('false', () async => expectLater(service.setVolumeHandling(false), completion(false)));
+    test('true - iOS', () async {
+      when(() => localPlatform.isAndroid).thenReturn(false);
+      expectLater(service.setVolumeHandling(true), completion(false));
+    });
+
+    test('false - Android', () async {
+      when(() => localPlatform.isAndroid).thenReturn(true);
+      expectLater(service.setVolumeHandling(false), completion(false));
+    });
+
+    test('false - iOS', () async {
+      when(() => localPlatform.isAndroid).thenReturn(false);
+      expectLater(service.setVolumeHandling(false), completion(false));
+    });
   });
 }

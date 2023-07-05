@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:app_settings/app_settings.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
@@ -49,7 +47,7 @@ class MeteringInteractor {
   set film(Film value) => _userPreferencesService.film = value;
 
   VolumeAction get volumeAction => _userPreferencesService.volumeAction;
-  
+
   /// Executes vibration if haptics are enabled in settings
   Future<void> quickVibration() async {
     if (_userPreferencesService.haptics) await _hapticsService.quickVibration();
@@ -81,13 +79,7 @@ class MeteringInteractor {
     AppSettings.openAppSettings();
   }
 
-  Future<bool> hasAmbientLightSensor() async {
-    if (Platform.isAndroid) {
-      return _lightSensorService.hasSensor();
-    } else {
-      return false;
-    }
-  }
+  Future<bool> hasAmbientLightSensor() async => _lightSensorService.hasSensor();
 
   Stream<int> luxStream() => _lightSensorService.luxStream();
 }
