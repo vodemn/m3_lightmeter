@@ -7,3 +7,7 @@ class LuxMeteringEvent extends LightSensorContainerEvent {
 
   const LuxMeteringEvent(this.lux);
 }
+
+class CancelLuxMeteringEvent extends LightSensorContainerEvent {
+  const CancelLuxMeteringEvent();
+}

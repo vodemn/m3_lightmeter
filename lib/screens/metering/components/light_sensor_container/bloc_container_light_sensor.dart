@@ -26,6 +26,7 @@ class LightSensorContainerBloc
           const LightSensorContainerState(null),
         ) {
     on<LuxMeteringEvent>(_onLuxMeteringEvent);
+    on<CancelLuxMeteringEvent>(_onCancelLuxMeteringEvent);
   }
 
   @override
@@ -49,6 +50,10 @@ class LightSensorContainerBloc
     final ev100 = log2(event.lux.toDouble() / 2.5) + _meteringInteractor.lightSensorEvCalibration;
     emit(LightSensorContainerState(ev100));
     communicationBloc.add(communication_event.MeteringInProgressEvent(ev100));
+  }
+
+  void _onCancelLuxMeteringEvent(CancelLuxMeteringEvent event, _) {
+    _cancelMetering();
   }
 
   void _startMetering() {

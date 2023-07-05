@@ -18,9 +18,10 @@ import 'package:lightmeter/screens/metering/components/camera_container/state_co
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/widget_top_bar_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';
+import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-class CameraContainer extends StatelessWidget {
+class CameraContainer extends StatefulWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;
   final Film film;
@@ -43,6 +44,29 @@ class CameraContainer extends StatelessWidget {
     required this.exposurePairs,
     super.key,
   });
+
+  @override
+  State<CameraContainer> createState() => _CameraContainerState();
+}
+
+class _CameraContainerState extends State<CameraContainer> with RouteAware {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.get<RouteObserver<ModalRoute>>().subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPushNext() {
+    super.didPushNext();
+    context.read<CameraContainerBloc>().add(const DeinitializeEvent());
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    context.read<CameraContainerBloc>().add(const InitializeEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,14 +99,14 @@ class CameraContainer extends StatelessWidget {
       children: [
         MeteringTopBar(
           readingsContainer: ReadingsContainer(
-            fastest: fastest,
-            slowest: slowest,
-            film: film,
-            iso: iso,
-            nd: nd,
-            onFilmChanged: onFilmChanged,
-            onIsoChanged: onIsoChanged,
-            onNdChanged: onNdChanged,
+            fastest: widget.fastest,
+            slowest: widget.slowest,
+            film: widget.film,
+            iso: widget.iso,
+            nd: widget.nd,
+            onFilmChanged: widget.onFilmChanged,
+            onIsoChanged: widget.onIsoChanged,
+            onNdChanged: widget.onNdChanged,
           ),
           appendixHeight: topBarOverflow,
           preview: const _CameraViewBuilder(),
@@ -92,7 +116,7 @@ class CameraContainer extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
             child: _MiddleContentWrapper(
               topBarOverflow: topBarOverflow,
-              leftContent: ExposurePairsList(exposurePairs),
+              leftContent: ExposurePairsList(widget.exposurePairs),
               rightContent: const _CameraControlsBuilder(),
             ),
           ),
