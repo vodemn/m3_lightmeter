@@ -11,5 +11,7 @@ class MeteringCommunicationBloc
     on<MeasureEvent>((_, emit) => emit(MeasureState()));
     on<MeteringInProgressEvent>((event, emit) => emit(MeteringInProgressState(event.ev100)));
     on<MeteringEndedEvent>((event, emit) => emit(MeteringEndedState(event.ev100)));
+    on<SettingsOpenedEvent>((_, emit) => emit(const SettingsOpenedState()));
+    on<SettingsClosedEvent>((_, emit) => emit(const SettingsClosedState()));
   }
 }

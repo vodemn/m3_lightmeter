@@ -12,9 +12,7 @@ import 'package:lightmeter/utils/inherited_generics.dart';
 class Application extends StatelessWidget {
   final Environment env;
 
-  Application(this.env, {super.key});
-
-  final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+  const Application(this.env, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,19 +30,15 @@ class Application extends StatelessWidget {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 supportedLocales: S.delegate.supportedLocales,
-                builder: (context, child) => InheritedWidgetBase<RouteObserver<ModalRoute>>(
-                  data: routeObserver,
-                  child: MediaQuery(
-                    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                    child: child!,
-                  ),
+                builder: (context, child) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  child: child!,
                 ),
                 initialRoute: "metering",
                 routes: {
                   "metering": (context) => const MeteringFlow(),
                   "settings": (context) => const SettingsFlow(),
                 },
-                navigatorObservers: [routeObserver],
               ),
             )
           : const SizedBox(),

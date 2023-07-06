@@ -48,6 +48,8 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     on<MeasureEvent>(_onMeasure, transformer: droppable());
     on<MeasuredEvent>(_onMeasured);
     on<MeasureErrorEvent>(_onMeasureError);
+    on<SettingsOpenedEvent>(_onSettingsOpened);
+    on<SettingsClosedEvent>(_onSettingsClosed);
   }
 
   @override
@@ -232,5 +234,13 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     if (_meteringInteractor.volumeAction == VolumeAction.shutter) {
       add(const MeasureEvent());
     }
+  }
+
+  void _onSettingsOpened(SettingsOpenedEvent _, Emitter __) {
+    _communicationBloc.add(const communication_events.SettingsOpenedEvent());
+  }
+
+  void _onSettingsClosed(SettingsClosedEvent _, Emitter __) {
+    _communicationBloc.add(const communication_events.SettingsClosedEvent());
   }
 }

@@ -31,12 +31,16 @@ class LightSensorContainerBloc
 
   @override
   void onCommunicationState(communication_states.SourceState communicationState) {
-    if (communicationState is communication_states.MeasureState) {
-      if (_luxSubscriptions == null) {
-        _startMetering();
-      } else {
+    switch (communicationState) {
+      case communication_states.MeasureState():
+        if (_luxSubscriptions == null) {
+          _startMetering();
+        } else {
+          _cancelMetering();
+        }
+      case communication_states.SettingsOpenedState():
         _cancelMetering();
-      }
+      default:
     }
   }
 

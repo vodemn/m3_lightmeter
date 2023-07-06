@@ -45,3 +45,11 @@ class MeasureErrorEvent extends MeteringEvent {
 
   const MeasureErrorEvent({required this.isMetering});
 }
+
+class SettingsOpenedEvent extends MeteringEvent {
+  const SettingsOpenedEvent();
+}
+
+class SettingsClosedEvent extends MeteringEvent {
+  const SettingsClosedEvent();
+}

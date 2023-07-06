@@ -40,6 +40,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
   double? _ev100 = 0.0;
 
+  bool _settingsOpened = false;
+
   CameraContainerBloc(
     this._meteringInteractor,
     this._volumeKeysNotifier,
@@ -72,18 +74,26 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
   @override
   void onCommunicationState(communication_states.SourceState communicationState) {
-    if (communicationState is communication_states.MeasureState) {
-      if (_canTakePhoto) {
-        _takePhoto().then((ev100Raw) {
-          if (ev100Raw != null) {
-            _ev100 = ev100Raw + _meteringInteractor.cameraEvCalibration;
-            communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
-          } else {
-            _ev100 = null;
-            communicationBloc.add(const communication_event.MeteringEndedEvent(null));
-          }
-        });
-      }
+    switch (communicationState) {
+      case communication_states.MeasureState():
+        if (_canTakePhoto) {
+          _takePhoto().then((ev100Raw) {
+            if (ev100Raw != null) {
+              _ev100 = ev100Raw + _meteringInteractor.cameraEvCalibration;
+              communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
+            } else {
+              _ev100 = null;
+              communicationBloc.add(const communication_event.MeteringEndedEvent(null));
+            }
+          });
+        }
+      case communication_states.SettingsOpenedState():
+        _settingsOpened = true;
+        add(const DeinitializeEvent());
+      case communication_states.SettingsClosedState():
+        _settingsOpened = false;
+        add(const InitializeEvent());
+      default:
     }
   }
 
@@ -224,13 +234,15 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _appLifecycleStateObserver(AppLifecycleState state) async {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        add(const InitializeEvent());
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-        add(const DeinitializeEvent());
-      default:
+    if (!_settingsOpened) {
+      switch (state) {
+        case AppLifecycleState.resumed:
+          add(const InitializeEvent());
+        case AppLifecycleState.paused:
+        case AppLifecycleState.detached:
+          add(const DeinitializeEvent());
+        default:
+      }
     }
   }
 
