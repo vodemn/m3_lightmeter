@@ -11,6 +11,10 @@ class VolumeActionsListTileBloc extends Cubit<VolumeAction> {
 
   void onVolumeActionChanged(VolumeAction value) {
     _settingsInteractor.setVolumeAction(value);
+
+    // while in settings we allow system to handle volume
+    // so that volume keys action works only when necessary - on the metering screen
+    _settingsInteractor.disableVolumeHandling();
     emit(value);
   }
 }
