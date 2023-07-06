@@ -6,5 +6,5 @@ import 'package:lightmeter/firebase.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
-  runApp(Application(const Environment.prod()));
+  runApp(const Application(Environment.prod()));
 }

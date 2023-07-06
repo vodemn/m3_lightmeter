@@ -4,5 +4,5 @@ import 'package:lightmeter/environment.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(Application(const Environment.dev()));
+  runApp(const Application(Environment.dev()));
 }
