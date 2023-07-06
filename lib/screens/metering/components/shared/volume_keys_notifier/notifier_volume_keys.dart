@@ -10,7 +10,6 @@ class VolumeKeysNotifier extends ChangeNotifier with RouteAware {
   VolumeKey _value = VolumeKey.up;
 
   VolumeKeysNotifier(this.volumeEventsService) {
-    // TODO: add RouteObserver and disable overriden action if SettingScreen is opened
     _volumeKeysSubscription = volumeEventsService
         .volumeButtonsEventStream()
         .map((event) => event == 24 ? VolumeKey.up : VolumeKey.down)
