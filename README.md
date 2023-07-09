@@ -4,7 +4,7 @@
 
 - [Table of contents](#table-of-contents)
 - [Backstory](#backstory)
-- [Features](#features)
+- [Screenshots](#screenshots)
 - [Build](#build)
 - [Contribution](#contribution)
 - [iOS Limitations](#ios-limitations)
@@ -17,7 +17,7 @@ But as the existing repo contained some sensitive data, that I've pushed due to 
 
 Without further delay behold my new Lightmeter app inspired by Material You (a.k.a. M3)
 
-# Features
+# Screenshots
 
 <p float="center">
   <img src="https://lh3.googleusercontent.com/8Sd-pmNcQ0xAr5opuTeJKWr2OXeQvCoFSdVDSoKQSHHKeNmqF71hqeAdm3yjunY12zY" width="18.8%" />
