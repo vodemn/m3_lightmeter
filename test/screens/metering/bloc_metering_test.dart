@@ -668,4 +668,25 @@ void main() {
       );
     },
   );
+
+  group(
+    '`SettingOpenedEvent`/`SettingsClosedEvent`',
+    () {
+      blocTest<MeteringBloc, MeteringState>(
+        'Settings opened & closed',
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const SettingsOpenedEvent());
+          bloc.add(const SettingsClosedEvent());
+        },
+        verify: (_) {
+          verify(() => communicationBloc.add(const communication_events.SettingsOpenedEvent()))
+              .called(1);
+          verify(() => communicationBloc.add(const communication_events.SettingsClosedEvent()))
+              .called(1);
+        },
+        expect: () => [],
+      );
+    },
+  );
 }

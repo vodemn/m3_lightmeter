@@ -78,4 +78,66 @@ void main() {
       );
     },
   );
+
+  group(
+    '`communication_states.SettingsOpenedState()`',
+    () {
+      const List<int> luxIterable = [1, 2, 2, 2, 3];
+      final List<double> resultList = luxIterable.map((lux) => log2(lux / 2.5)).toList();
+      blocTest<LightSensorContainerBloc, LightSensorContainerState>(
+        'Metering is already canceled',
+        build: () => bloc,
+        setUp: () {
+          when(() => meteringInteractor.luxStream())
+              .thenAnswer((_) => Stream.fromIterable(luxIterable));
+          when(() => meteringInteractor.lightSensorEvCalibration).thenReturn(0.0);
+        },
+        act: (bloc) async {
+          bloc.onCommunicationState(const communication_states.SettingsOpenedState());
+        },
+        verify: (_) {
+          verifyNever(() => meteringInteractor.luxStream().listen((_) {}));
+          verifyNever(() => meteringInteractor.lightSensorEvCalibration);
+          verify(() {
+            communicationBloc.add(const communication_events.MeteringEndedEvent(null));
+          }).called(2); // +1 from dispose
+        },
+        expect: () => [],
+      );
+
+      blocTest<LightSensorContainerBloc, LightSensorContainerState>(
+        'Metering is in progress',
+        build: () => bloc,
+        setUp: () {
+          when(() => meteringInteractor.luxStream())
+              .thenAnswer((_) => Stream.fromIterable(luxIterable));
+          when(() => meteringInteractor.lightSensorEvCalibration).thenReturn(0.0);
+        },
+        act: (bloc) async {
+          bloc.onCommunicationState(const communication_states.MeasureState());
+          await Future.delayed(Duration.zero);
+          bloc.onCommunicationState(const communication_states.SettingsOpenedState());
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.luxStream().listen((_) {})).called(1);
+          verify(() => meteringInteractor.lightSensorEvCalibration).called(5);
+          verify(() {
+            communicationBloc.add(communication_events.MeteringInProgressEvent(resultList.first));
+          }).called(1);
+          verify(() {
+            communicationBloc.add(communication_events.MeteringInProgressEvent(resultList[1]));
+          }).called(3);
+          verify(() {
+            communicationBloc.add(communication_events.MeteringInProgressEvent(resultList.last));
+          }).called(1);
+          verify(() {
+            communicationBloc.add(communication_events.MeteringEndedEvent(resultList.last));
+          }).called(2); // +1 from dispose
+        },
+        expect: () => resultList.map(
+          (e) => isA<LightSensorContainerState>().having((state) => state.ev100, 'ev100', e),
+        ),
+      );
+    },
+  );
 }

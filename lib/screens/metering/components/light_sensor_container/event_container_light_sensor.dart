@@ -2,6 +2,10 @@ abstract class LightSensorContainerEvent {
   const LightSensorContainerEvent();
 }
 
+class StartLuxMeteringEvent extends LightSensorContainerEvent {
+  const StartLuxMeteringEvent();
+}
+
 class LuxMeteringEvent extends LightSensorContainerEvent {
   final int lux;
 
