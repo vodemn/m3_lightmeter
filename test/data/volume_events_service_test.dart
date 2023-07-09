@@ -11,7 +11,7 @@ void main() {
 
   late _MockLocalPlatform localPlatform;
   late VolumeEventsService service;
-  
+
   Future<Object?>? methodCallSuccessHandler(MethodCall methodCall) async {
     switch (methodCall.method) {
       case "setVolumeHandling":
@@ -56,6 +56,18 @@ void main() {
     test('false - iOS', () async {
       when(() => localPlatform.isAndroid).thenReturn(false);
       expectLater(service.setVolumeHandling(false), completion(false));
+    });
+  });
+
+  group('volumeButtonsEventStream', () {
+    // test('Android', () async {
+    //   when(() => localPlatform.isAndroid).thenReturn(true);
+    //   expect(service.volumeButtonsEventStream(), const Stream.empty());
+    // });
+
+    test('iOS', () async {
+      when(() => localPlatform.isAndroid).thenReturn(false);
+      expect(service.volumeButtonsEventStream(), const Stream<int>.empty());
     });
   });
 }

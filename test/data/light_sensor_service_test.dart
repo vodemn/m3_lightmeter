@@ -83,4 +83,16 @@ void main() {
       });
     },
   );
+
+  group('luxStream', () {
+    // test('Android', () async {
+    //   when(() => localPlatform.isAndroid).thenReturn(true);
+    //   expect(service.luxStream(), const Stream.empty());
+    // });
+
+    test('iOS', () async {
+      when(() => localPlatform.isAndroid).thenReturn(false);
+      expect(service.luxStream(), const Stream<int>.empty());
+    });
+  });
 }

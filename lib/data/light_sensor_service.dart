@@ -17,5 +17,10 @@ class LightSensorService {
     }
   }
 
-  Stream<int> luxStream() => LightSensor.lightSensorStream;
+  Stream<int> luxStream() {
+    if (!localPlatform.isAndroid) {
+      return const Stream<int>.empty();
+    }
+    return LightSensor.lightSensorStream;
+  }
 }
