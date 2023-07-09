@@ -50,7 +50,12 @@ class MeteringScreen extends StatelessWidget {
                     ? EvSourceTypeProvider.of(context).toggleType
                     : null,
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
-                onSettings: () => Navigator.pushNamed(context, 'settings'),
+                onSettings: () {
+                  context.read<MeteringBloc>().add(const SettingsOpenedEvent());
+                  Navigator.pushNamed(context, 'settings').then((value) {
+                    context.read<MeteringBloc>().add(const SettingsClosedEvent());
+                  });
+                },
               ),
             ),
           ],

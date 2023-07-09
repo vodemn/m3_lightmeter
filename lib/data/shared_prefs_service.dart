@@ -6,6 +6,7 @@ import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
+import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +23,7 @@ class UserPreferencesService {
 
   static const caffeineKey = "caffeine";
   static const hapticsKey = "haptics";
+  static const volumeActionKey = "volumeAction";
   static const localeKey = "locale";
 
   static const themeTypeKey = "themeType";
@@ -82,9 +84,6 @@ class UserPreferencesService {
       EvSourceType.values[_sharedPreferences.getInt(evSourceTypeKey) ?? 0];
   set evSourceType(EvSourceType value) => _sharedPreferences.setInt(evSourceTypeKey, value.index);
 
-  bool get caffeine => _sharedPreferences.getBool(caffeineKey) ?? false;
-  set caffeine(bool value) => _sharedPreferences.setBool(caffeineKey, value);
-
   StopType get stopType => StopType.values[_sharedPreferences.getInt(stopTypeKey) ?? 2];
   set stopType(StopType value) => _sharedPreferences.setInt(stopTypeKey, value.index);
 
@@ -105,8 +104,18 @@ class UserPreferencesService {
   set meteringScreenLayout(MeteringScreenLayoutConfig value) =>
       _sharedPreferences.setString(meteringScreenLayoutKey, json.encode(value.toJson()));
 
+  bool get caffeine => _sharedPreferences.getBool(caffeineKey) ?? false;
+  set caffeine(bool value) => _sharedPreferences.setBool(caffeineKey, value);
+
   bool get haptics => _sharedPreferences.getBool(hapticsKey) ?? true;
   set haptics(bool value) => _sharedPreferences.setBool(hapticsKey, value);
+
+  VolumeAction get volumeAction => VolumeAction.values.firstWhere(
+        (e) => e.toString() == _sharedPreferences.getString(volumeActionKey),
+        orElse: () => VolumeAction.shutter,
+      );
+  set volumeAction(VolumeAction value) =>
+      _sharedPreferences.setString(volumeActionKey, value.toString());
 
   SupportedLocale get locale => SupportedLocale.values.firstWhere(
         (e) => e.toString() == _sharedPreferences.getString(localeKey),

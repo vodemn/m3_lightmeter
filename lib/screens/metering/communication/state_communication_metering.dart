@@ -51,3 +51,11 @@ class MeteringEndedState extends MeasuredState {
   @override
   int get hashCode => Object.hash(ev100, runtimeType);
 }
+
+class SettingsOpenedState extends SourceState {
+  const SettingsOpenedState();
+}
+
+class SettingsClosedState extends SourceState {
+  const SettingsClosedState();
+}

@@ -25,24 +25,35 @@ class LightSensorContainerBloc
           communicationBloc,
           const LightSensorContainerState(null),
         ) {
+    on<StartLuxMeteringEvent>(_onStartLuxMeteringEvent);
     on<LuxMeteringEvent>(_onLuxMeteringEvent);
+    on<CancelLuxMeteringEvent>(_onCancelLuxMeteringEvent);
   }
 
   @override
   void onCommunicationState(communication_states.SourceState communicationState) {
-    if (communicationState is communication_states.MeasureState) {
-      if (_luxSubscriptions == null) {
-        _startMetering();
-      } else {
-        _cancelMetering();
-      }
+    switch (communicationState) {
+      case communication_states.MeasureState():
+        if (_luxSubscriptions == null) {
+          add(const StartLuxMeteringEvent());
+        } else {
+          add(const CancelLuxMeteringEvent());
+        }
+      case communication_states.SettingsOpenedState():
+        add(const CancelLuxMeteringEvent());
+      default:
     }
   }
 
   @override
   Future<void> close() async {
-    _cancelMetering();
+    communicationBloc.add(communication_event.MeteringEndedEvent(state.ev100));
+    _luxSubscriptions?.cancel().then((_) => _luxSubscriptions = null);
     return super.close();
+  }
+
+  void _onStartLuxMeteringEvent(StartLuxMeteringEvent event, _) {
+    _luxSubscriptions = _meteringInteractor.luxStream().listen((lux) => add(LuxMeteringEvent(lux)));
   }
 
   void _onLuxMeteringEvent(LuxMeteringEvent event, Emitter<LightSensorContainerState> emit) {
@@ -51,11 +62,7 @@ class LightSensorContainerBloc
     communicationBloc.add(communication_event.MeteringInProgressEvent(ev100));
   }
 
-  void _startMetering() {
-    _luxSubscriptions = _meteringInteractor.luxStream().listen((lux) => add(LuxMeteringEvent(lux)));
-  }
-
-  void _cancelMetering() {
+  void _onCancelLuxMeteringEvent(CancelLuxMeteringEvent event, _) {
     communicationBloc.add(communication_event.MeteringEndedEvent(state.ev100));
     _luxSubscriptions?.cancel().then((_) => _luxSubscriptions = null);
   }

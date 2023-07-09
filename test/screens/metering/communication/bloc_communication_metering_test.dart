@@ -98,4 +98,30 @@ void main() {
       );
     },
   );
+
+  group(
+    '`SettingsOpenedEvent`/`SettingsClosedEvent`',
+    () {
+      blocTest<MeteringCommunicationBloc, MeteringCommunicationState>(
+        'Multiple consequtive settings events',
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const SettingsOpenedEvent());
+          bloc.add(const SettingsOpenedEvent());
+          bloc.add(const SettingsOpenedEvent());
+          bloc.add(const SettingsClosedEvent());
+          bloc.add(const SettingsClosedEvent());
+          bloc.add(const SettingsClosedEvent());
+          bloc.add(const SettingsOpenedEvent());
+          bloc.add(const SettingsClosedEvent());
+        },
+        expect: () => [
+          isA<SettingsOpenedState>(),
+          isA<SettingsClosedState>(),
+          isA<SettingsOpenedState>(),
+          isA<SettingsClosedState>(),
+        ],
+      );
+    },
+  );
 }
