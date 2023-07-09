@@ -117,6 +117,7 @@ void main() {
           bloc.onCommunicationState(const communication_states.MeasureState());
           await Future.delayed(Duration.zero);
           bloc.onCommunicationState(const communication_states.SettingsOpenedState());
+          bloc.onCommunicationState(const communication_states.SettingsClosedState());
         },
         verify: (_) {
           verify(() => meteringInteractor.luxStream().listen((_) {})).called(1);
@@ -132,7 +133,7 @@ void main() {
           }).called(1);
           verify(() {
             communicationBloc.add(communication_events.MeteringEndedEvent(resultList.last));
-          }).called(2); // +1 from dispose
+          }).called(3); // +1 from settings closed, +1 from dispose
         },
         expect: () => resultList.map(
           (e) => isA<LightSensorContainerState>().having((state) => state.ev100, 'ev100', e),
