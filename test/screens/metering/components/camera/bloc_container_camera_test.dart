@@ -310,6 +310,30 @@ void main() {
         },
         expect: () => [
           ...initializedStateSequence,
+          const CameraInitState(),
+          ...initializedStateSequence,
+        ],
+      );
+
+      blocTest<CameraContainerBloc, CameraContainerState>(
+        'onCommunicationState',
+        setUp: () {
+          when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
+        },
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const InitializeEvent());
+          await Future.delayed(Duration.zero);
+          bloc.onCommunicationState(const communication_states.SettingsOpenedState());
+          await Future.delayed(Duration.zero);
+          bloc.onCommunicationState(const communication_states.SettingsClosedState());
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.checkCameraPermission()).called(2);
+        },
+        expect: () => [
+          ...initializedStateSequence,
+          const CameraInitState(),
           ...initializedStateSequence,
         ],
       );
