@@ -642,19 +642,6 @@ void main() {
       );
 
       blocTest<MeteringBloc, MeteringState>(
-        'onVolumeKey & VolumeAction.zoom',
-        build: () => bloc,
-        act: (bloc) async {
-          bloc.onVolumeKey();
-        },
-        setUp: () {
-          when(() => meteringInteractor.volumeAction).thenReturn(VolumeAction.zoom);
-        },
-        verify: (_) {},
-        expect: () => [],
-      );
-
-      blocTest<MeteringBloc, MeteringState>(
         'onVolumeKey & VolumeAction.none',
         build: () => bloc,
         act: (bloc) async {

@@ -1,3 +1,3 @@
-enum VolumeAction { shutter, zoom, none }
+enum VolumeAction { shutter, none }
 
 enum VolumeKey { up, down }

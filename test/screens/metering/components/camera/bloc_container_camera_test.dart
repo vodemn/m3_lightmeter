@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
@@ -13,12 +12,9 @@ import 'package:lightmeter/screens/metering/components/camera_container/bloc_con
 import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
-import 'package:lightmeter/screens/metering/components/shared/volume_keys_notifier/notifier_volume_keys.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockMeteringInteractor extends Mock implements MeteringInteractor {}
-
-class _MockVolumeKeysNotifier extends Mock implements VolumeKeysNotifier {}
 
 class _MockMeteringCommunicationBloc extends MockBloc<
     communication_events.MeteringCommunicationEvent,
@@ -28,7 +24,6 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late _MockMeteringInteractor meteringInteractor;
-  late _MockVolumeKeysNotifier volumeKeysNotifier;
   late _MockMeteringCommunicationBloc communicationBloc;
   late CameraContainerBloc bloc;
 
@@ -117,7 +112,6 @@ void main() {
 
   setUpAll(() {
     meteringInteractor = _MockMeteringInteractor();
-    volumeKeysNotifier = _MockVolumeKeysNotifier();
     communicationBloc = _MockMeteringCommunicationBloc();
 
     when(() => meteringInteractor.cameraEvCalibration).thenReturn(0.0);
@@ -127,7 +121,6 @@ void main() {
   setUp(() {
     bloc = CameraContainerBloc(
       meteringInteractor,
-      volumeKeysNotifier,
       communicationBloc,
     );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -480,123 +473,6 @@ void main() {
               .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
               .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
         ],
-      );
-    },
-  );
-
-  group(
-    '`Volume keys shutter action`',
-    () {
-      blocTest<CameraContainerBloc, CameraContainerState>(
-        'Add/remove listener',
-        build: () => bloc,
-        verify: (_) {
-          verify(() => volumeKeysNotifier.addListener(bloc.onVolumeKey)).called(1);
-          verify(() => volumeKeysNotifier.removeListener(bloc.onVolumeKey)).called(1);
-        },
-        expect: () => [],
-      );
-
-      blocTest<CameraContainerBloc, CameraContainerState>(
-        'onVolumeKey & VolumeAction.shutter',
-        build: () => bloc,
-        act: (bloc) async {
-          bloc.onVolumeKey();
-        },
-        setUp: () {
-          when(() => meteringInteractor.volumeAction).thenReturn(VolumeAction.shutter);
-        },
-        verify: (_) {},
-        expect: () => [],
-      );
-
-      blocTest<CameraContainerBloc, CameraContainerState>(
-        'onVolumeKey.up & VolumeAction.zoom',
-        build: () => bloc,
-        act: (bloc) async {
-          bloc.add(const InitializeEvent());
-          await Future.delayed(Duration.zero);
-          bloc.onVolumeKey();
-          await Future.delayed(Duration.zero);
-          bloc.onVolumeKey();
-          await Future.delayed(Duration.zero);
-          bloc.onVolumeKey();
-        },
-        setUp: () {
-          when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
-          when(() => meteringInteractor.volumeAction).thenReturn(VolumeAction.zoom);
-          when(() => volumeKeysNotifier.value).thenReturn(VolumeKey.up);
-        },
-        verify: (_) {},
-        expect: () => [
-          ...initializedStateSequence,
-          isA<CameraActiveState>()
-              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
-              .having((state) => state.currentZoom, 'currentZoom', 1.5)
-              .having(
-                (state) => state.exposureOffsetRange,
-                'exposureOffsetRange',
-                const RangeValues(-4.0, 4.0),
-              )
-              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
-              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
-          isA<CameraActiveState>()
-              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
-              .having((state) => state.currentZoom, 'currentZoom', 2.0)
-              .having(
-                (state) => state.exposureOffsetRange,
-                'exposureOffsetRange',
-                const RangeValues(-4.0, 4.0),
-              )
-              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
-              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
-          isA<CameraActiveState>()
-              .having((state) => state.zoomRange, 'zoomRange', const RangeValues(1.0, 7.0))
-              .having((state) => state.currentZoom, 'currentZoom', 2.5)
-              .having(
-                (state) => state.exposureOffsetRange,
-                'exposureOffsetRange',
-                const RangeValues(-4.0, 4.0),
-              )
-              .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
-              .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
-        ],
-      );
-
-      blocTest<CameraContainerBloc, CameraContainerState>(
-        'onVolumeKey.down & VolumeAction.zoom',
-        build: () => bloc,
-        act: (bloc) async {
-          bloc.add(const InitializeEvent());
-          await Future.delayed(Duration.zero);
-          bloc.onVolumeKey();
-          await Future.delayed(Duration.zero);
-          bloc.onVolumeKey();
-          await Future.delayed(Duration.zero);
-          bloc.onVolumeKey();
-        },
-        setUp: () {
-          when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
-          when(() => meteringInteractor.volumeAction).thenReturn(VolumeAction.zoom);
-          when(() => volumeKeysNotifier.value).thenReturn(VolumeKey.down);
-        },
-        verify: (_) {},
-        expect: () => [
-          ...initializedStateSequence,
-        ],
-      );
-
-      blocTest<CameraContainerBloc, CameraContainerState>(
-        'onVolumeKey & VolumeAction.none',
-        build: () => bloc,
-        act: (bloc) async {
-          bloc.onVolumeKey();
-        },
-        setUp: () {
-          when(() => meteringInteractor.volumeAction).thenReturn(VolumeAction.none);
-        },
-        verify: (_) {},
-        expect: () => [],
       );
     },
   );
