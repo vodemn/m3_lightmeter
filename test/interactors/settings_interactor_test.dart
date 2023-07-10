@@ -1,17 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
-import 'package:lightmeter/data/light_sensor_service.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
-import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
-import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/interactors/settings_interactor.dart';
-import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class _MockUserPreferencesService extends Mock implements UserPreferencesService {}
 
@@ -42,6 +36,54 @@ void main() {
       mockVolumeEventsService,
     );
   });
+
+  group(
+    'Calibration',
+    () {
+      test('cameraEvCalibration - get', () async {
+        when(() => mockUserPreferencesService.cameraEvCalibration).thenReturn(0.0);
+        expect(interactor.cameraEvCalibration, 0.0);
+        verify(() => mockUserPreferencesService.cameraEvCalibration).called(1);
+      });
+
+      test('cameraEvCalibration - set', () async {
+        when(() => mockUserPreferencesService.cameraEvCalibration = 0.0).thenReturn(0.0);
+        interactor.setCameraEvCalibration(0.0);
+        verify(() => mockUserPreferencesService.cameraEvCalibration = 0.0).called(1);
+      });
+
+      test('lightSensorEvCalibration - get', () async {
+        when(() => mockUserPreferencesService.lightSensorEvCalibration).thenReturn(0.0);
+        expect(interactor.lightSensorEvCalibration, 0.0);
+        verify(() => mockUserPreferencesService.lightSensorEvCalibration).called(1);
+      });
+
+      test('lightSensorEvCalibration - set', () async {
+        when(() => mockUserPreferencesService.lightSensorEvCalibration = 0.0).thenReturn(0.0);
+        interactor.setLightSensorEvCalibration(0.0);
+        verify(() => mockUserPreferencesService.lightSensorEvCalibration = 0.0).called(1);
+      });
+    },
+  );
+
+  group(
+    'Caffeine',
+    () {
+      test('isCaffeineEnabled', () async {
+        when(() => mockUserPreferencesService.caffeine).thenReturn(true);
+        expect(interactor.isCaffeineEnabled, true);
+        verify(() => mockUserPreferencesService.caffeine).called(1);
+      });
+
+      test('enableCaffeine(true)', () async {
+        when(() => mockCaffeineService.keepScreenOn(true)).thenAnswer((_) async => true);
+        when(() => mockUserPreferencesService.caffeine = true).thenReturn(true);
+        await interactor.enableCaffeine(true);
+        verify(() => mockCaffeineService.keepScreenOn(true)).called(1);
+        verify(() => mockUserPreferencesService.caffeine = true).called(1);
+      });
+    },
+  );
 
   group(
     'Volume action',
