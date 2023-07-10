@@ -105,11 +105,12 @@ void main() {
         verify(() => mockUserPreferencesService.iso).called(1);
       });
 
-      // test('iso - set', () async {
-      //   when(() => mockUserPreferencesService.iso = IsoValue.values.first);
-      //   interactor.iso = IsoValue.values.first;
-      //   verify(() => mockUserPreferencesService.iso = IsoValue.values.first).called(1);
-      // });
+      test('iso - set', () async {
+        when(() => mockUserPreferencesService.iso = IsoValue.values.first)
+            .thenReturn(IsoValue.values.first);
+        interactor.iso = IsoValue.values.first;
+        verify(() => mockUserPreferencesService.iso = IsoValue.values.first).called(1);
+      });
 
       test('ndFilter - get', () async {
         when(() => mockUserPreferencesService.ndFilter).thenReturn(NdValue.values.first);
@@ -117,11 +118,12 @@ void main() {
         verify(() => mockUserPreferencesService.ndFilter).called(1);
       });
 
-      // test('ndFilter - set', () async {
-      //   when(() => mockUserPreferencesService.ndFilter = NdValue.values.first);
-      //   interactor.ndFilter = NdValue.values.first;
-      //   verify(() => mockUserPreferencesService.ndFilter = NdValue.values.first).called(1);
-      // });
+      test('ndFilter - set', () async {
+        when(() => mockUserPreferencesService.ndFilter = NdValue.values.first)
+            .thenReturn(NdValue.values.first);
+        interactor.ndFilter = NdValue.values.first;
+        verify(() => mockUserPreferencesService.ndFilter = NdValue.values.first).called(1);
+      });
 
       test('film - get', () async {
         when(() => mockUserPreferencesService.film).thenReturn(Film.values.first);
@@ -129,11 +131,12 @@ void main() {
         verify(() => mockUserPreferencesService.film).called(1);
       });
 
-      // test('film - set', () async {
-      //   when(() => mockUserPreferencesService.film = Film.values.first);
-      //   interactor.film = Film.values.first;
-      //   verify(() => mockUserPreferencesService.film = Film.values.first).called(1);
-      // });
+      test('film - set', () async {
+        when(() => mockUserPreferencesService.film = Film.values.first)
+            .thenReturn(Film.values.first);
+        interactor.film = Film.values.first;
+        verify(() => mockUserPreferencesService.film = Film.values.first).called(1);
+      });
     },
   );
 
