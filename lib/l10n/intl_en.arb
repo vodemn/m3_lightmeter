@@ -56,6 +56,7 @@
     "general": "General",
     "keepScreenOn": "Keep screen on",
     "haptics": "Haptics",
+    "volumeKeysAction": "Shutter by volume keys",
     "language": "Language",
     "chooseLanguage": "Choose language",
     "theme": "Theme",

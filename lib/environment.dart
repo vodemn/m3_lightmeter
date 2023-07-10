@@ -19,14 +19,14 @@ class Environment {
   const Environment.dev()
       : buildType = BuildType.dev,
         sourceCodeUrl = 'https://github.com/vodemn/m3_lightmeter',
-        issuesReportUrl = 'https://github.com/vodemn/m3_lightmeter/issues',
+        issuesReportUrl = 'https://github.com/vodemn/m3_lightmeter/issues/new/choose',
         contactEmail = 'contact.vodemn@gmail.com',
         hasLightSensor = false;
 
   const Environment.prod()
       : buildType = BuildType.prod,
         sourceCodeUrl = 'https://github.com/vodemn/m3_lightmeter',
-        issuesReportUrl = 'https://github.com/vodemn/m3_lightmeter/issues',
+        issuesReportUrl = 'https://github.com/vodemn/m3_lightmeter/issues/new/choose',
         contactEmail = 'contact.vodemn@gmail.com',
         hasLightSensor = false;
 

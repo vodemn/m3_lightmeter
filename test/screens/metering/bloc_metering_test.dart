@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:lightmeter/data/models/film.dart';
+import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
@@ -7,20 +8,24 @@ import 'package:lightmeter/screens/metering/communication/event_communication_me
     as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
     as communication_states;
+import 'package:lightmeter/screens/metering/components/shared/volume_keys_notifier/notifier_volume_keys.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
+class _MockMeteringInteractor extends Mock implements MeteringInteractor {}
+
+class _MockVolumeKeysNotifier extends Mock implements VolumeKeysNotifier {}
+
 class _MockMeteringCommunicationBloc extends MockBloc<
     communication_events.MeteringCommunicationEvent,
     communication_states.MeteringCommunicationState> implements MeteringCommunicationBloc {}
 
-class _MockMeteringInteractor extends Mock implements MeteringInteractor {}
-
 void main() {
   late _MockMeteringInteractor meteringInteractor;
+  late _MockVolumeKeysNotifier volumeKeysNotifier;
   late _MockMeteringCommunicationBloc communicationBloc;
   late MeteringBloc bloc;
   const iso100 = IsoValue(100, StopType.full);
@@ -34,16 +39,19 @@ void main() {
     when(meteringInteractor.responseVibration).thenAnswer((_) async {});
     when(meteringInteractor.errorVibration).thenAnswer((_) async {});
 
+    volumeKeysNotifier = _MockVolumeKeysNotifier();
     communicationBloc = _MockMeteringCommunicationBloc();
-    
+
     bloc = MeteringBloc(
       meteringInteractor,
+      volumeKeysNotifier,
       communicationBloc,
     );
   });
 
   tearDown(() {
     bloc.close();
+    //volumeKeysNotifier.dispose();
     communicationBloc.close();
   });
 
@@ -603,6 +611,68 @@ void main() {
               .having((state) => state.nd, 'nd', reducedProfile.ndValues.first)
               .having((state) => state.isMetering, 'isMetering', false),
         ],
+      );
+    },
+  );
+
+  group(
+    '`Volume keys shutter action`',
+    () {
+      blocTest<MeteringBloc, MeteringState>(
+        'Add/remove listener',
+        build: () => bloc,
+        verify: (_) {
+          verify(() => volumeKeysNotifier.addListener(bloc.onVolumeKey)).called(1);
+          verify(() => volumeKeysNotifier.removeListener(bloc.onVolumeKey)).called(1);
+        },
+        expect: () => [],
+      );
+
+      blocTest<MeteringBloc, MeteringState>(
+        'onVolumeKey & VolumeAction.shutter',
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.onVolumeKey();
+        },
+        setUp: () {
+          when(() => meteringInteractor.volumeAction).thenReturn(VolumeAction.shutter);
+        },
+        verify: (_) {},
+        expect: () => [isA<LoadingState>()],
+      );
+
+      blocTest<MeteringBloc, MeteringState>(
+        'onVolumeKey & VolumeAction.none',
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.onVolumeKey();
+        },
+        setUp: () {
+          when(() => meteringInteractor.volumeAction).thenReturn(VolumeAction.none);
+        },
+        verify: (_) {},
+        expect: () => [],
+      );
+    },
+  );
+
+  group(
+    '`SettingOpenedEvent`/`SettingsClosedEvent`',
+    () {
+      blocTest<MeteringBloc, MeteringState>(
+        'Settings opened & closed',
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const SettingsOpenedEvent());
+          bloc.add(const SettingsClosedEvent());
+        },
+        verify: (_) {
+          verify(() => communicationBloc.add(const communication_events.SettingsOpenedEvent()))
+              .called(1);
+          verify(() => communicationBloc.add(const communication_events.SettingsClosedEvent()))
+              .called(1);
+        },
+        expect: () => [],
       );
     },
   );

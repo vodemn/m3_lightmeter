@@ -1,10 +1,15 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:platform/platform.dart';
+
+class _MockLocalPlatform extends Mock implements LocalPlatform {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  late _MockLocalPlatform localPlatform;
   late LightSensorService service;
 
   const methodChannel = MethodChannel('system_feature');
@@ -12,7 +17,8 @@ void main() {
   //const eventChannel = EventChannel('light.eventChannel');
 
   setUp(() {
-    service = const LightSensorService();
+    localPlatform = _MockLocalPlatform();
+    service = LightSensorService(localPlatform);
   });
 
   tearDown(() {
@@ -23,7 +29,8 @@ void main() {
   group(
     'hasSensor()',
     () {
-      test('true', () async {
+      test('true - Android', () async {
+        when(() => localPlatform.isAndroid).thenReturn(true);
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(methodChannel, null);
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -38,7 +45,8 @@ void main() {
         expectLater(service.hasSensor(), completion(true));
       });
 
-      test('false', () async {
+      test('false - Android', () async {
+        when(() => localPlatform.isAndroid).thenReturn(true);
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(methodChannel, null);
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -52,7 +60,9 @@ void main() {
         });
         expectLater(service.hasSensor(), completion(false));
       });
-      test('null', () async {
+
+      test('null - Android', () async {
+        when(() => localPlatform.isAndroid).thenReturn(true);
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(methodChannel, null);
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -66,6 +76,23 @@ void main() {
         });
         expectLater(service.hasSensor(), completion(false));
       });
+
+      test('false - iOS', () async {
+        when(() => localPlatform.isAndroid).thenReturn(false);
+        expectLater(service.hasSensor(), completion(false));
+      });
     },
   );
+
+  group('luxStream', () {
+    // test('Android', () async {
+    //   when(() => localPlatform.isAndroid).thenReturn(true);
+    //   expect(service.luxStream(), const Stream.empty());
+    // });
+
+    test('iOS', () async {
+      when(() => localPlatform.isAndroid).thenReturn(false);
+      expect(service.luxStream(), const Stream<int>.empty());
+    });
+  });
 }
