@@ -56,6 +56,7 @@
     "general": "Общие",
     "keepScreenOn": "Запрет блокировки",
     "haptics": "Вибрация",
+    "volumeKeysAction": "Затвор по кнопкам громкости",
     "language": "Язык",
     "chooseLanguage": "Выберите язык",
     "theme": "Тема",

@@ -14,11 +14,11 @@ import 'package:lightmeter/screens/metering/components/camera_container/models/c
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
 import 'package:mocktail/mocktail.dart';
 
+class _MockMeteringInteractor extends Mock implements MeteringInteractor {}
+
 class _MockMeteringCommunicationBloc extends MockBloc<
     communication_events.MeteringCommunicationEvent,
     communication_states.MeteringCommunicationState> implements MeteringCommunicationBloc {}
-
-class _MockMeteringInteractor extends Mock implements MeteringInteractor {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -310,6 +310,30 @@ void main() {
         },
         expect: () => [
           ...initializedStateSequence,
+          const CameraInitState(),
+          ...initializedStateSequence,
+        ],
+      );
+
+      blocTest<CameraContainerBloc, CameraContainerState>(
+        'onCommunicationState',
+        setUp: () {
+          when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
+        },
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const InitializeEvent());
+          await Future.delayed(Duration.zero);
+          bloc.onCommunicationState(const communication_states.SettingsOpenedState());
+          await Future.delayed(Duration.zero);
+          bloc.onCommunicationState(const communication_states.SettingsClosedState());
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.checkCameraPermission()).called(2);
+        },
+        expect: () => [
+          ...initializedStateSequence,
+          const CameraInitState(),
           ...initializedStateSequence,
         ],
       );

@@ -47,3 +47,11 @@ class MeteringEndedEvent extends MeasuredEvent {
   @override
   int get hashCode => Object.hash(ev100, runtimeType);
 }
+
+class SettingsOpenedEvent extends ScreenEvent {
+  const SettingsOpenedEvent();
+}
+
+class SettingsClosedEvent extends ScreenEvent {
+  const SettingsClosedEvent();
+}
