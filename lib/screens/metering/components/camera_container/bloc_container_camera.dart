@@ -92,7 +92,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _onRequestPermission(_, Emitter emit) async {
-    final hasPermission = await _meteringInteractor.requestPermission();
+    final hasPermission = await _meteringInteractor.requestCameraPermission();
     if (!hasPermission) {
       emit(const CameraErrorState(CameraErrorType.permissionNotGranted));
     } else {
