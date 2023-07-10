@@ -25,7 +25,9 @@ class MeteringInteractor {
     this._permissionsService,
     this._lightSensorService,
     this._volumeEventsService,
-  ) {
+  );
+
+  void initialize() {
     if (_userPreferencesService.caffeine) {
       _caffeineService.keepScreenOn(true);
     }
@@ -69,7 +71,7 @@ class MeteringInteractor {
         .then((value) => value == PermissionStatus.granted);
   }
 
-  Future<bool> requestPermission() async {
+  Future<bool> requestCameraPermission() async {
     return _permissionsService
         .requestCameraPermission()
         .then((value) => value == PermissionStatus.granted);

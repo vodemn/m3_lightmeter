@@ -1,6 +1,5 @@
 include: package:lint/strict.yaml
 
-
 linter:
   rules:
     use_setters_to_change_properties: false
