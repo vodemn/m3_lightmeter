@@ -41,8 +41,8 @@ class SettingsInteractor {
 
   VolumeAction get volumeAction => _userPreferencesService.volumeAction;
   Future<void> setVolumeAction(VolumeAction value) async {
-    await _volumeEventsService.setVolumeHandling(value != VolumeAction.none);
     _userPreferencesService.volumeAction = value;
+    await _volumeEventsService.setVolumeHandling(value != VolumeAction.none);
   }
 
   bool get isHapticsEnabled => _userPreferencesService.haptics;
