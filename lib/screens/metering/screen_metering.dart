@@ -77,11 +77,21 @@ class _InheritedListeners extends StatelessWidget {
         context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
       },
       child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
-        aspect: MeteringScreenLayoutFeature.filmPicker,
+        aspect: MeteringScreenLayoutFeature.equipmentProfiles,
         onDidChangeDependencies: (value) {
-          if (!value) context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
+          if (!value) {
+            EquipmentProfileProvider.of(context).setProfile(context.get<EquipmentProfiles>().first);
+          }
         },
-        child: child,
+        child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
+          aspect: MeteringScreenLayoutFeature.filmPicker,
+          onDidChangeDependencies: (value) {
+            if (!value) {
+              context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
+            }
+          },
+          child: child,
+        ),
       ),
     );
   }
