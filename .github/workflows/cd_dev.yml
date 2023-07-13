@@ -23,12 +23,9 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - uses: shaunco/ssh-agent@git-repo-mapping
+      - uses: webfactory/ssh-agent@v0.8.0
         with:
-          ssh-private-key: |
-            ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
-          repo-mappings: |
-            github.com/vodemn/m3_lightmeter_iap
+          ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
            
       - uses: actions/checkout@v3
         with:
