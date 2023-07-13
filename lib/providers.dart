@@ -13,6 +13,7 @@ import 'package:lightmeter/providers/stop_type_provider.dart';
 import 'package:lightmeter/providers/supported_locale_provider.dart';
 import 'package:lightmeter/providers/theme_provider.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:platform/platform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
