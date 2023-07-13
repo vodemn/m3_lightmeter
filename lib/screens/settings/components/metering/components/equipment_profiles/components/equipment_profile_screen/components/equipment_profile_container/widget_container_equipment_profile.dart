@@ -71,6 +71,7 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
               title: Row(
                 children: [
                   _AnimatedNameLeading(controller: _controller),
@@ -163,7 +164,7 @@ class _AnimatedNameLeading extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(right: _progress.value * Dimens.grid24),
+      padding: EdgeInsets.only(right: _progress.value * Dimens.grid8),
       child: Icon(
         Icons.edit,
         size: _progress.value * Dimens.grid24,
