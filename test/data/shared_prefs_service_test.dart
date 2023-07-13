@@ -193,6 +193,7 @@ void main() {
         {
           MeteringScreenLayoutFeature.extremeExposurePairs: true,
           MeteringScreenLayoutFeature.filmPicker: true,
+          MeteringScreenLayoutFeature.equipmentProfiles: true,
         },
       );
     });
@@ -206,6 +207,7 @@ void main() {
         {
           MeteringScreenLayoutFeature.extremeExposurePairs: false,
           MeteringScreenLayoutFeature.filmPicker: true,
+          MeteringScreenLayoutFeature.equipmentProfiles: true,
         },
       );
     });
