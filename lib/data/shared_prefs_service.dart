@@ -7,6 +7,7 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -148,9 +149,13 @@ class UserPreferencesService {
       );
   set film(Film value) => _sharedPreferences.setString(filmKey, value.name);
 
-  String get selectedEquipmentProfileId => ''; // coverage:ignore-line
-  set selectedEquipmentProfileId(String id) {} // coverage:ignore-line
+  String get selectedEquipmentProfileId => _sharedPreferences.selectedEquipmentProfileId;
+  set selectedEquipmentProfileId(String id) {
+    _sharedPreferences.selectedEquipmentProfileId = id;
+  }
 
-  List<EquipmentProfileData> get equipmentProfiles => []; // coverage:ignore-line
-  set equipmentProfiles(List<EquipmentProfileData> profiles) {} // coverage:ignore-line
+  List<EquipmentProfileData> get equipmentProfiles => _sharedPreferences.equipmentProfiles;
+  set equipmentProfiles(List<EquipmentProfileData> profiles) {
+    _sharedPreferences.equipmentProfiles = profiles;
+  }
 }
