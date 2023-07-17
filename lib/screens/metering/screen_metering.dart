@@ -30,7 +30,7 @@ class MeteringScreen extends StatelessWidget {
           children: [
             Expanded(
               child: BlocBuilder<MeteringBloc, MeteringState>(
-                builder: (_, state) => _MeteringContainerBuidler(
+                builder: (_, state) => MeteringContainerBuidler(
                   ev: state is MeteringDataState ? state.ev : null,
                   film: state.film,
                   iso: state.iso,
@@ -77,17 +77,18 @@ class _InheritedListeners extends StatelessWidget {
         context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
       },
       child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
-        aspect: MeteringScreenLayoutFeature.equipmentProfiles,
+        aspect: MeteringScreenLayoutFeature.filmPicker,
         onDidChangeDependencies: (value) {
           if (!value) {
-            EquipmentProfileProvider.of(context).setProfile(context.get<EquipmentProfiles>().first);
+            context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
           }
         },
         child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
-          aspect: MeteringScreenLayoutFeature.filmPicker,
+          aspect: MeteringScreenLayoutFeature.equipmentProfiles,
           onDidChangeDependencies: (value) {
             if (!value) {
-              context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
+              EquipmentProfileProvider.of(context)
+                  .setProfile(context.get<EquipmentProfiles>().first);
             }
           },
           child: child,
@@ -97,7 +98,7 @@ class _InheritedListeners extends StatelessWidget {
   }
 }
 
-class _MeteringContainerBuidler extends StatelessWidget {
+class MeteringContainerBuidler extends StatelessWidget {
   final double? ev;
   final Film film;
   final IsoValue iso;
@@ -106,7 +107,7 @@ class _MeteringContainerBuidler extends StatelessWidget {
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
 
-  const _MeteringContainerBuidler({
+  const MeteringContainerBuidler({
     required this.ev,
     required this.film,
     required this.iso,
@@ -118,7 +119,14 @@ class _MeteringContainerBuidler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exposurePairs = ev != null ? buildExposureValues(context, ev!, film) : <ExposurePair>[];
+    final exposurePairs = ev != null
+        ? buildExposureValues(
+            ev!,
+            context.listen<StopType>(),
+            context.listen<EquipmentProfile>(),
+            film,
+          )
+        : <ExposurePair>[];
     final fastest = exposurePairs.isNotEmpty ? exposurePairs.first : null;
     final slowest = exposurePairs.isNotEmpty ? exposurePairs.last : null;
     return context.listen<EvSourceType>() == EvSourceType.camera
@@ -146,28 +154,30 @@ class _MeteringContainerBuidler extends StatelessWidget {
           );
   }
 
-  List<ExposurePair> buildExposureValues(BuildContext context, double ev, Film film) {
+  @visibleForTesting
+  static List<ExposurePair> buildExposureValues(
+    double ev,
+    StopType stopType,
+    EquipmentProfile equipmentProfile,
+    Film film,
+  ) {
     if (ev.isNaN || ev.isInfinite) {
       return List.empty();
     }
 
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
-    final StopType stopType = context.listen<StopType>();
     final int evSteps = (ev * (stopType.index + 1)).round();
 
-    final EquipmentProfile equipmentProfile = context.listen<EquipmentProfile>();
-    final List<ApertureValue> apertureValues =
-        equipmentProfile.apertureValues.whereStopType(stopType);
-    final List<ShutterSpeedValue> shutterSpeedValues =
-        equipmentProfile.shutterSpeedValues.whereStopType(stopType);
+    final apertureValues = ApertureValue.whereStopType(stopType);
+    final shutterSpeedValues = ShutterSpeedValue.whereStopType(stopType);
 
     /// Basically we use 1" shutter speed as an anchor point for building the exposure pairs list.
     /// But user can exclude this value from the list using custom equipment profile.
     /// So we have to restore the index of the anchor value.
-    const ShutterSpeedValue anchorShutterSpeed = ShutterSpeedValue(1, false, StopType.full);
+    const anchorShutterSpeed = ShutterSpeedValue(1, false, StopType.full);
     int anchorIndex = shutterSpeedValues.indexOf(anchorShutterSpeed);
     if (anchorIndex < 0) {
-      final filteredFullList = ShutterSpeedValue.values.whereStopType(stopType);
+      final filteredFullList = ShutterSpeedValue.whereStopType(stopType);
       final customListStartIndex = filteredFullList.indexOf(shutterSpeedValues.first);
       final fullListAnchor = filteredFullList.indexOf(anchorShutterSpeed);
       if (customListStartIndex < fullListAnchor) {
@@ -200,7 +210,8 @@ class _MeteringContainerBuidler extends StatelessWidget {
     if (itemsCount < 0) {
       return List.empty();
     }
-    return List.generate(
+
+    final exposurePairs = List.generate(
       itemsCount,
       (index) => ExposurePair(
         apertureValues[index + apertureOffset],
@@ -208,5 +219,30 @@ class _MeteringContainerBuidler extends StatelessWidget {
       ),
       growable: false,
     );
+
+    /// Full equipment profile, nothing to cut
+    if (equipmentProfile.id == "") {
+      return exposurePairs;
+    }
+
+    final equipmentApertureValues = equipmentProfile.apertureValues.whereStopType(stopType);
+    final equipmentShutterSpeedValues = equipmentProfile.shutterSpeedValues.whereStopType(stopType);
+
+    final startCutEV = max(
+      exposurePairs.first.aperture.difference(equipmentApertureValues.first),
+      exposurePairs.first.shutterSpeed.difference(equipmentShutterSpeedValues.first),
+    );
+    final endCutEV = max(
+      equipmentApertureValues.last.difference(exposurePairs.last.aperture),
+      equipmentShutterSpeedValues.last.difference(exposurePairs.last.shutterSpeed),
+    );
+
+    final startCut = (startCutEV * (stopType.index + 1)).round().clamp(0, itemsCount);
+    final endCut = (endCutEV * (stopType.index + 1)).round().clamp(0, itemsCount);
+
+    if (startCut > itemsCount - endCut) {
+      return const [];
+    }
+    return exposurePairs.sublist(startCut, itemsCount - endCut);
   }
 }
