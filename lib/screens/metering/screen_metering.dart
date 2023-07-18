@@ -168,8 +168,8 @@ class MeteringContainerBuidler extends StatelessWidget {
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
     final int evSteps = (ev * (stopType.index + 1)).round();
 
-    final apertureValues = ApertureValue.whereStopType(stopType);
-    final shutterSpeedValues = ShutterSpeedValue.whereStopType(stopType);
+    final apertureValues = ApertureValue.values.whereStopType(stopType);
+    final shutterSpeedValues = ShutterSpeedValue.values.whereStopType(stopType);
 
     /// Basically we use 1" shutter speed as an anchor point for building the exposure pairs list.
     /// But user can exclude this value from the list using custom equipment profile.
@@ -177,7 +177,7 @@ class MeteringContainerBuidler extends StatelessWidget {
     const anchorShutterSpeed = ShutterSpeedValue(1, false, StopType.full);
     int anchorIndex = shutterSpeedValues.indexOf(anchorShutterSpeed);
     if (anchorIndex < 0) {
-      final filteredFullList = ShutterSpeedValue.whereStopType(stopType);
+      final filteredFullList = ShutterSpeedValue.values.whereStopType(stopType);
       final customListStartIndex = filteredFullList.indexOf(shutterSpeedValues.first);
       final fullListAnchor = filteredFullList.indexOf(anchorShutterSpeed);
       if (customListStartIndex < fullListAnchor) {
