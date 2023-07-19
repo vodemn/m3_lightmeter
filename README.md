@@ -29,7 +29,20 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 
 # Build
 
-As part of this project is private, you will be able to run this app from the _main_dev.dart_ file (i.e. --flavor dev). Also to avoid fatal errors the _main_prod.dart_ file is excluded from analysis.
+As part of the app's functionallity is in the private repo, you have to replace this lines in _pubspec.yaml_:
+
+```yaml
+m3_lightmeter_iap:
+  git:
+    url: "https://github.com/vodemn/m3_lightmeter_iap"
+    ref: main
+```
+to this:
+```yaml
+m3_lightmeter_iap:
+  path: iap
+```
+After that run `flutter pub get` as usual.
 
 # Contribution
 
@@ -42,7 +55,9 @@ In case you want to help develop this project you need to follow this [style gui
 A list of features, that Android version of the app has and that iOS does not.
 
 ## Incident light metering
+
 Apple does not provide API for reading Lux stream form the ambient light sensor. Lux can be calculated based on front camera image stream, but this would be a reflected light. So there is no way incident light metering can be implemented on iOS.
 
 ## Volume buttons action
+
 This can be [implemented](https://stackoverflow.com/questions/70161271/ios-override-hardware-volume-buttons-same-as-zello) but the app will be rejected due to [2.5.9](https://developer.apple.com/app-store/review/guidelines/#software-requirements)
