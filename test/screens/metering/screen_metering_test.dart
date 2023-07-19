@@ -5,7 +5,7 @@ import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 void main() {
-  const defaultEquipmentProfile = EquipmentProfileData(
+  const defaultEquipmentProfile = EquipmentProfile(
     id: "",
     name: 'Default',
     apertureValues: ApertureValue.values,
@@ -334,7 +334,7 @@ void main() {
   });
 
   group('Reduced equipment profile', () {
-    final equipmentProfile = EquipmentProfileData(
+    final equipmentProfile = EquipmentProfile(
       id: "1",
       name: 'Test1',
       apertureValues: ApertureValue.values.sublist(4),

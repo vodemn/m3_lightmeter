@@ -17,7 +17,7 @@ class EquipmentProfilesListTile extends StatelessWidget {
       onTap: () {
         if (context.get<Environment>().buildType == BuildType.dev ||
             IAPProducts.isPurchased(context, IAPProductType.paidFeatures)) {
-          Navigator.of(context).push<EquipmentProfileData>(
+          Navigator.of(context).push<EquipmentProfile>(
             MaterialPageRoute(builder: (_) => const EquipmentProfilesScreen()),
           );
         } else {

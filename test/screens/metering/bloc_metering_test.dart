@@ -495,7 +495,7 @@ void main() {
   group(
     '`EquipmentProfileChangedEvent`',
     () {
-      final reducedProfile = EquipmentProfileData(
+      final reducedProfile = EquipmentProfile(
         id: '0',
         name: 'Reduced',
         apertureValues: ApertureValue.values,

@@ -8,8 +8,8 @@ import 'package:lightmeter/screens/settings/components/metering/components/equip
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfileContainer extends StatefulWidget {
-  final EquipmentProfileData data;
-  final ValueChanged<EquipmentProfileData> onUpdate;
+  final EquipmentProfile data;
+  final ValueChanged<EquipmentProfile> onUpdate;
   final VoidCallback onDelete;
   final VoidCallback onExpand;
 
@@ -27,7 +27,7 @@ class EquipmentProfileContainer extends StatefulWidget {
 
 class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
     with TickerProviderStateMixin {
-  late EquipmentProfileData _equipmentData = EquipmentProfileData(
+  late EquipmentProfile _equipmentData = EquipmentProfile(
     id: widget.data.id,
     name: widget.data.name,
     apertureValues: widget.data.apertureValues,
@@ -45,7 +45,7 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
   @override
   void didUpdateWidget(EquipmentProfileContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _equipmentData = EquipmentProfileData(
+    _equipmentData = EquipmentProfile(
       id: widget.data.id,
       name: widget.data.name,
       apertureValues: widget.data.apertureValues,
@@ -196,7 +196,7 @@ class _AnimatedArrowButton extends AnimatedWidget {
 }
 
 class _AnimatedEquipmentListTiles extends AnimatedWidget {
-  final EquipmentProfileData equipmentData;
+  final EquipmentProfile equipmentData;
   final ValueChanged<List<ApertureValue>> onApertureValuesSelected;
   final ValueChanged<List<IsoValue>> onIsoValuesSelecred;
   final ValueChanged<List<NdValue>> onNdValuesSelected;
