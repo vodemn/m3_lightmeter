@@ -48,6 +48,8 @@ m3_lightmeter_iap:
 ```
 After that run `flutter pub get` as usual.
 
+For the first run it will be necessary to open _iap/_ folder and run `flutter pub get` from there.
+
 # Contribution
 
 To report a bug or suggest a new feature open a new [issue](https://github.com/vodemn/m3_lightmeter/issues).
