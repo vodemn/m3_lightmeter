@@ -6,7 +6,7 @@ import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
-import 'package:lightmeter/providers/equipment_profile_provider.dart';
+
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
 import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/providers/stop_type_provider.dart';
@@ -32,11 +32,13 @@ class LightmeterProviders extends StatelessWidget {
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
-          return IAPProductsProvider(
+          final sharedPrefs = snapshot.data![0] as SharedPreferences;
+          return IAPProviders(
+            sharedPreferences: sharedPrefs,
             child: InheritedWidgetBase<Environment>(
               data: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
               child: InheritedWidgetBase<UserPreferencesService>(
-                data: UserPreferencesService(snapshot.data![0] as SharedPreferences),
+                data: UserPreferencesService(sharedPrefs),
                 child: InheritedWidgetBase<LightSensorService>(
                   data: const LightSensorService(LocalPlatform()),
                   child: InheritedWidgetBase<CaffeineService>(
@@ -49,13 +51,11 @@ class LightmeterProviders extends StatelessWidget {
                           data: const PermissionsService(),
                           child: MeteringScreenLayoutProvider(
                             child: StopTypeProvider(
-                              child: EquipmentProfileProvider(
-                                child: EvSourceTypeProvider(
-                                  child: SupportedLocaleProvider(
-                                    child: ThemeProvider(
-                                      child: Builder(
-                                        builder: (context) => builder(context, true),
-                                      ),
+                              child: EvSourceTypeProvider(
+                                child: SupportedLocaleProvider(
+                                  child: ThemeProvider(
+                                    child: Builder(
+                                      builder: (context) => builder(context, true),
                                     ),
                                   ),
                                 ),

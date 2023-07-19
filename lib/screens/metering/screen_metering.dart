@@ -7,7 +7,7 @@ import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/environment.dart';
-import 'package:lightmeter/providers/equipment_profile_provider.dart';
+
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/provider_bottom_controls.dart';
@@ -16,6 +16,7 @@ import 'package:lightmeter/screens/metering/components/light_sensor_container/pr
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreen extends StatelessWidget {
@@ -87,8 +88,7 @@ class _InheritedListeners extends StatelessWidget {
           aspect: MeteringScreenLayoutFeature.equipmentProfiles,
           onDidChangeDependencies: (value) {
             if (!value) {
-              EquipmentProfileProvider.of(context)
-                  .setProfile(context.get<EquipmentProfiles>().first);
+              EquipmentProfileProvider.of(context).setProfile(EquipmentProfiles.of(context).first);
             }
           },
           child: child,
@@ -123,7 +123,7 @@ class MeteringContainerBuidler extends StatelessWidget {
         ? buildExposureValues(
             ev!,
             context.listen<StopType>(),
-            context.listen<EquipmentProfile>(),
+            EquipmentProfiles.selectedOf(context),
             film,
           )
         : <ExposurePair>[];
