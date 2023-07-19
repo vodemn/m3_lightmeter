@@ -29,6 +29,10 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 
 # Build
 
+## Available flavors
+Building with prod flavor requires `DefaultFirebaseOptions` to be present in the _lib/firebase_options.dart_ If you don't want to create your own firebase app, you end up with only dev flavor.
+
+## IAP repo import
 As part of the app's functionallity is in the private repo, you have to replace this lines in _pubspec.yaml_:
 
 ```yaml
