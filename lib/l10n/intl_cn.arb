@@ -1,7 +1,7 @@
 {
     "@@locale": "cn",
-    "fastestExposurePair": "最长",
-    "slowestExposurePair": "最短",
+    "fastestExposurePair": "最快曝光",
+    "slowestExposurePair": "最慢曝光",
     "ev": "EV",
     "evValue": "{value} EV",
     "@evValue": {
@@ -36,7 +36,7 @@
     "lightSensor": "光传感器",
     "meteringScreenLayout": "布局",
     "meteringScreenLayoutHint": "隐藏不需要的元素，以免浪费曝光列表空间",
-    "meteringScreenFeatureExtremeExposurePairs": "最长 & 最短曝光",
+    "meteringScreenFeatureExtremeExposurePairs": "最快 & 最慢曝光",
     "meteringScreenFeatureFilmPicker": "胶片选择",
     "film": "胶片",
     "equipment": "设备",
