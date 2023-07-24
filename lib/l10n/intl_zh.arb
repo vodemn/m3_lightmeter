@@ -1,0 +1,88 @@
+{
+    "@@locale": "zh",
+    "fastestExposurePair": "最快曝光组合",
+    "slowestExposurePair": "最慢曝光组合",
+    "ev": "EV",
+    "evValue": "{value} EV",
+    "@evValue": {
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "iso": "ISO",
+    "filmSpeed": "胶片感光度",
+    "nd": "ND",
+    "ndFilterFactor": "ND 滤镜系数",
+    "noExposurePairs": "所选设置没有曝光配对",
+    "noCamerasDetected": "您的设备似乎没有连接到任何摄像头",
+    "noCameraPermission": "未获得摄像头权限",
+    "otherCameraError": "连接摄像头时发生错误",
+    "none": "无",
+    "cancel": "取消",
+    "select": "选择",
+    "save": "保存",
+    "settings": "设置",
+    "metering": "测量",
+    "fractionalStops": "分数位",
+    "showFractionalStops": "显示分数位",
+    "halfStops": "1/2",
+    "thirdStops": "1/3",
+    "calibration": "校准",
+    "calibrationMessage": "此应用测量读数的准确性完全取决于设备的硬件。因此，请考虑测试此应用并手动设置 EV 校准，以获得准确的测量结果。",
+    "calibrationMessageCameraOnly": "此应用程序测量读数的准确性完全取决于设备的后置摄像头。因此，请考虑测试此应用并手动设置 EV 校准，以获得准确的测量结果。",
+    "camera": "摄像头",
+    "lightSensor": "光传感器",
+    "meteringScreenLayout": "布局",
+    "meteringScreenLayoutHint": "隐藏不需要的元素，以免浪费曝光列表空间",
+    "meteringScreenFeatureExtremeExposurePairs": "最快 & 最慢曝光组合",
+    "meteringScreenFeatureFilmPicker": "胶片选择",
+    "film": "胶片",
+    "equipment": "设备",
+    "equipmentProfileName": "设备配置名称",
+    "equipmentProfileNameHint": "Praktica MTL5B",
+    "equipmentProfileAllValues": "全部",
+    "apertureValues": "光圈值",
+    "apertureValuesFilterDescription": "选择要显示的光圈值范围。这通常由您使用的镜头决定。",
+    "ndFilters": "ND 滤镜",
+    "ndFiltersFilterDescription": "选择要显示的 ND 滤镜。这些可能是您最常用的 ND 滤镜，也可能是适合您镜头的滤光镜。",
+    "shutterSpeedValues": "快门速度",
+    "shutterSpeedValuesFilterDescription": "选择要显示的快门速度范围。这通常由您使用的相机机身决定。",
+    "isoValues": "ISO",
+    "isoValuesFilterDescription": "选择要显示的 ISO。这些值可能是您最常用的值，也可能是相机支持的值。",
+    "equipmentProfile": "设备配置",
+    "equipmentProfiles": "设备配置",
+    "general": "通用",
+    "keepScreenOn": "保持屏幕常亮",
+    "haptics": "震动",
+    "volumeKeysAction": "音量键快门",
+    "language": "语言",
+    "chooseLanguage": "选择语言",
+    "theme": "主题",
+    "chooseTheme": "选择主题",
+    "themeLight": "亮色",
+    "themeDark": "暗色",
+    "themeSystemDefault": "跟随系统",
+    "dynamicColor": "动态颜色",
+    "primaryColor": "主题颜色",
+    "choosePrimaryColor": "选择主题颜色",
+    "about": "关于",
+    "sourceCode": "源代码",
+    "reportIssue": "报告问题",
+    "writeEmail": "Email",
+    "youDontHaveMailApp": "您没有安装任何邮件App。",
+    "copyEmail": "复制电子邮件",
+    "version": "Version",
+    "versionNumber": "{version} ({buildNumber})",
+    "@versionNumber": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            },
+            "buildNumber": {
+                "type": "String"
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-enum SupportedLocale { en, fr, ru, cn }
+enum SupportedLocale { en, fr, ru, zh }
 
 extension SupportedLocaleExtension on SupportedLocale {
   String get intlName => toString().replaceAll("SupportedLocale.", "");
@@ -11,8 +11,8 @@ extension SupportedLocaleExtension on SupportedLocale {
         return 'Français';
       case SupportedLocale.ru:
         return 'Русский';
-      case SupportedLocale.cn:
-        return '<--->';
+      case SupportedLocale.zh:
+        return '简体中文';
     }
   }
 }
