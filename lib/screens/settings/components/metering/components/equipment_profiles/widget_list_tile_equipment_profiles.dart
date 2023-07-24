@@ -12,7 +12,7 @@ class EquipmentProfilesListTile extends StatelessWidget {
       leading: const Icon(Icons.camera),
       title: Text(S.of(context).equipmentProfiles),
       onTap: () {
-        Navigator.of(context).push<EquipmentProfileData>(
+        Navigator.of(context).push<EquipmentProfile>(
           MaterialPageRoute(builder: (_) => const EquipmentProfilesScreen()),
         );
       },
