@@ -6,7 +6,7 @@ sealed class MeteringEvent {
 }
 
 class EquipmentProfileChangedEvent extends MeteringEvent {
-  final EquipmentProfileData equipmentProfileData;
+  final EquipmentProfile equipmentProfileData;
 
   const EquipmentProfileChangedEvent(this.equipmentProfileData);
 }

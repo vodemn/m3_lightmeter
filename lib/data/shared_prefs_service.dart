@@ -150,6 +150,6 @@ class UserPreferencesService {
   String get selectedEquipmentProfileId => ''; // coverage:ignore-line
   set selectedEquipmentProfileId(String id) {} // coverage:ignore-line
 
-  List<EquipmentProfileData> get equipmentProfiles => []; // coverage:ignore-line
-  set equipmentProfiles(List<EquipmentProfileData> profiles) {} // coverage:ignore-line
+  List<EquipmentProfile> get equipmentProfiles => []; // coverage:ignore-line
+  set equipmentProfiles(List<EquipmentProfile> profiles) {} // coverage:ignore-line
 }
