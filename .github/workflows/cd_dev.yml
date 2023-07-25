@@ -63,9 +63,10 @@ jobs:
         env:
           FIREBASE_OPTIONS: ${{ secrets.FIREBASE_OPTIONS }}
         run: |
-          FIREBASE_OPTIONS_PATH=$RUNNER_TEMP/lib/firebase_options.dart
-          rm $FIREBASE_OPTIONS_PATH
+          rm .lib/firebase_options.dart
+          FIREBASE_OPTIONS_PATH=$RUNNER_TEMP/firebase_options.dart
           echo -n "$FIREBASE_OPTIONS" | base64 --decode --output $FIREBASE_OPTIONS_PATH
+          cp $FIREBASE_OPTIONS_PATH ./lib
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
