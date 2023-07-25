@@ -5,7 +5,7 @@
 - [Table of contents](#table-of-contents)
 - [Backstory](#backstory)
 - [Screenshots](#screenshots)
-- [Build](#build)
+- [Development](#development)
 - [Contribution](#contribution)
 - [iOS Limitations](#ios-limitations)
 
@@ -27,7 +27,7 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
   <img src="https://lh3.googleusercontent.com/15g_SPV8knDLFbz1_-wGNJFsJeyVWZ_y--TGHpk75MaaIdMDyTXY2_TL-Aw8bpOhpw" width="18.8%" />
 </p>
 
-# Build
+# Development
 
 ### 1. Install Flutter
 
