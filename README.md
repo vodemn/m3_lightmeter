@@ -5,7 +5,7 @@
 - [Table of contents](#table-of-contents)
 - [Backstory](#backstory)
 - [Screenshots](#screenshots)
-- [Build](#build)
+- [Development](#development)
 - [Contribution](#contribution)
 - [iOS Limitations](#ios-limitations)
 
@@ -27,22 +27,46 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
   <img src="https://lh3.googleusercontent.com/15g_SPV8knDLFbz1_-wGNJFsJeyVWZ_y--TGHpk75MaaIdMDyTXY2_TL-Aw8bpOhpw" width="18.8%" />
 </p>
 
-# Build
+# Development
 
-As part of this project is private, you will be able to run this app from the _main_dev.dart_ file (i.e. --flavor dev). Also to avoid fatal errors the _main_prod.dart_ file is excluded from analysis.
+### 1. Install Flutter
+
+To build this app you need to install Flutter 3.10.0 stable. [How to install](https://docs.flutter.dev/get-started/install).
+
+### 2. (Optional) Install Firebase
+
+Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics to your local build please follow [this guide](https://firebase.google.com/docs/flutter/setup).
+
+### 3. Get packages
+
+Fetch all the neccessary dependencies and generate translation files by running the following commands:
+```console
+flutter pub get
+flutter pub run intl_utils:generate
+```
+
+### 4. Build
+
+You can build an apk by running the following command from the root of the repository:
+```console
+flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_$FLAVOR.dart
+```
+Just replace `$FLAVOR` with `dev` or `prod`.
 
 # Contribution
 
 To report a bug or suggest a new feature open a new [issue](https://github.com/vodemn/m3_lightmeter/issues).
 
-In case you want to help develop this project you need to follow this [style guide](doc/style_guide.md).
+In case you want to help develop this project feel free to open a Pull Request, but you need to follow this [style guide](doc/style_guide.md).
 
 # iOS Limitations
 
 A list of features, that Android version of the app has and that iOS does not.
 
 ## Incident light metering
+
 Apple does not provide API for reading Lux stream form the ambient light sensor. Lux can be calculated based on front camera image stream, but this would be a reflected light. So there is no way incident light metering can be implemented on iOS.
 
 ## Volume buttons action
+
 This can be [implemented](https://stackoverflow.com/questions/70161271/ios-override-hardware-volume-buttons-same-as-zello) but the app will be rejected due to [2.5.9](https://developer.apple.com/app-store/review/guidelines/#software-requirements)
