@@ -62,7 +62,6 @@ jobs:
         env:
           FIREBASE_OPTIONS: ${{ secrets.FIREBASE_OPTIONS }}
         run: |
-          rm .lib/firebase_options.dart
           FIREBASE_OPTIONS_PATH=$RUNNER_TEMP/firebase_options.dart
           echo -n "$FIREBASE_OPTIONS" | base64 --decode --output $FIREBASE_OPTIONS_PATH
           cp $FIREBASE_OPTIONS_PATH ./lib
