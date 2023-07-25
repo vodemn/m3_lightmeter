@@ -12,7 +12,8 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  analyze_and_test:
+    name: Analyze & test
     runs-on: macos-11
     timeout-minutes: 10
 
