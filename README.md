@@ -29,26 +29,6 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 
 # Development
 
-## Available flavors
-Building with prod flavor requires `DefaultFirebaseOptions` to be present in the _lib/firebase_options.dart_ If you don't want to create your own firebase app, you end up with only dev flavor.
-
-## IAP repo import
-As part of the app's functionallity is in the private repo, you have to replace this lines in _pubspec.yaml_:
-
-```yaml
-m3_lightmeter_iap:
-  git:
-    url: "https://github.com/vodemn/m3_lightmeter_iap"
-    ref: main
-```
-to this:
-```yaml
-m3_lightmeter_iap:
-  path: iap
-```
-After that run `flutter pub get` as usual.
-
-For the first run it will be necessary to open _iap/_ folder and run `flutter pub get` from there.
 ### 1. Install Flutter
 
 To build this app you need to install Flutter 3.10.0 stable. [How to install](https://docs.flutter.dev/get-started/install).
@@ -59,7 +39,22 @@ Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics t
 
 ### 3. Get packages
 
-Fetch all the neccessary dependencies and generate translation files by running the following commands:
+As part of the app's functionallity is in the private repo, you have to replace these lines in _pubspec.yaml_:
+
+```yaml
+m3_lightmeter_iap:
+  git:
+    url: "https://github.com/vodemn/m3_lightmeter_iap"
+    ref: main
+```
+with these:
+```yaml
+m3_lightmeter_iap:
+  path: iap
+```
+and run `flutter pub get` from the _iap/_ folder.
+
+Then you can fetch all the neccessary dependencies and generate translation files by running the following commands:
 ```console
 flutter pub get
 flutter pub run intl_utils:generate
