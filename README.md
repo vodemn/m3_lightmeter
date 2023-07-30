@@ -5,7 +5,7 @@
 - [Table of contents](#table-of-contents)
 - [Backstory](#backstory)
 - [Screenshots](#screenshots)
-- [Build](#build)
+- [Development](#development)
 - [Contribution](#contribution)
 - [iOS Limitations](#ios-limitations)
 
@@ -27,7 +27,7 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
   <img src="https://lh3.googleusercontent.com/15g_SPV8knDLFbz1_-wGNJFsJeyVWZ_y--TGHpk75MaaIdMDyTXY2_TL-Aw8bpOhpw" width="18.8%" />
 </p>
 
-# Build
+# Development
 
 ## Available flavors
 Building with prod flavor requires `DefaultFirebaseOptions` to be present in the _lib/firebase_options.dart_ If you don't want to create your own firebase app, you end up with only dev flavor.
@@ -49,12 +49,35 @@ m3_lightmeter_iap:
 After that run `flutter pub get` as usual.
 
 For the first run it will be necessary to open _iap/_ folder and run `flutter pub get` from there.
+### 1. Install Flutter
+
+To build this app you need to install Flutter 3.10.0 stable. [How to install](https://docs.flutter.dev/get-started/install).
+
+### 2. (Optional) Install Firebase
+
+Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics to your local build please follow [this guide](https://firebase.google.com/docs/flutter/setup).
+
+### 3. Get packages
+
+Fetch all the neccessary dependencies and generate translation files by running the following commands:
+```console
+flutter pub get
+flutter pub run intl_utils:generate
+```
+
+### 4. Build
+
+You can build an apk by running the following command from the root of the repository:
+```console
+flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_$FLAVOR.dart
+```
+Just replace `$FLAVOR` with `dev` or `prod`.
 
 # Contribution
 
 To report a bug or suggest a new feature open a new [issue](https://github.com/vodemn/m3_lightmeter/issues).
 
-In case you want to help develop this project you need to follow this [style guide](doc/style_guide.md).
+In case you want to help develop this project feel free to open a Pull Request, but you need to follow this [style guide](doc/style_guide.md).
 
 # iOS Limitations
 
