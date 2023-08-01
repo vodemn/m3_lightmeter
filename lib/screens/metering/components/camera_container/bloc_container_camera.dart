@@ -129,6 +129,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
       await _cameraController!.initialize();
       await _cameraController!.setFlashMode(FlashMode.off);
+      await _cameraController!.setFocusMode(FocusMode.locked);
 
       _zoomRange = await Future.wait<double>([
         _cameraController!.getMinZoomLevel(),
