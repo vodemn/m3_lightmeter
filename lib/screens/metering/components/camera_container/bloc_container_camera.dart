@@ -205,7 +205,13 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
   Future<double?> _takePhoto() async {
     try {
+      // https://github.com/flutter/flutter/issues/84957#issuecomment-1661155095
+      await _cameraController!.setFocusMode(FocusMode.locked);
+      await _cameraController!.setExposureMode(ExposureMode.locked);
       final file = await _cameraController!.takePicture();
+      await _cameraController!.setFocusMode(FocusMode.auto);
+      await _cameraController!.setExposureMode(ExposureMode.auto);
+
       final Uint8List bytes = await file.readAsBytes();
       Directory(file.path).deleteSync(recursive: true);
 
