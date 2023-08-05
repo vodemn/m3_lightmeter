@@ -105,7 +105,7 @@ class _EquipmentProfilePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedDialogPicker<EquipmentProfileData>(
+    return AnimatedDialogPicker<EquipmentProfile>(
       icon: Icons.camera,
       title: S.of(context).equipmentProfile,
       selectedValue: context.listen<EquipmentProfile>(),

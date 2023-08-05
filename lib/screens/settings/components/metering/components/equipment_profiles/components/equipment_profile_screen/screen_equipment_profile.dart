@@ -84,7 +84,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
     });
   }
 
-  void _updateProfileAt(EquipmentProfileData data, int index) {
+  void _updateProfileAt(EquipmentProfile data, int index) {
     EquipmentProfileProvider.of(context).updateProdile(data);
   }
 

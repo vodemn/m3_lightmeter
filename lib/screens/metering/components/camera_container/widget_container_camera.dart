@@ -110,17 +110,17 @@ class _CameraViewBuilder extends StatelessWidget {
     return AspectRatio(
       aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
       child: BlocBuilder<CameraContainerBloc, CameraContainerState>(
-        buildWhen: (previous, current) =>
-            current is CameraLoadingState ||
-            current is CameraInitializedState ||
-            current is CameraErrorState,
-        builder: (context, state) {
-          if (state is CameraInitializedState) {
-            return Center(child: CameraView(controller: state.controller));
-          } else {
-            return CameraViewPlaceholder(error: state is CameraErrorState ? state.error : null);
-          }
-        },
+        buildWhen: (previous, current) => current is! CameraActiveState,
+        builder: (context, state) => Center(
+          child: AnimatedSwitcher(
+            duration: Dimens.durationM,
+            child: switch (state) {
+              CameraInitializedState() => CameraView(controller: state.controller),
+              CameraErrorState() => CameraViewPlaceholder(error: state.error),
+              _ => const CameraViewPlaceholder(error: null),
+            },
+          ),
+        ),
       ),
     );
   }
@@ -161,11 +161,11 @@ class _CameraControlsBuilder extends StatelessWidget {
               },
             );
           } else {
-            child = const SizedBox.shrink();
+            child = const Column(children: [Expanded(child: SizedBox.shrink())],);
           }
 
           return AnimatedSwitcher(
-            duration: Dimens.durationS,
+            duration: Dimens.switchDuration,
             child: child,
           );
         },

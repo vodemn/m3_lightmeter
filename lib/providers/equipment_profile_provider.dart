@@ -4,8 +4,7 @@ import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:uuid/uuid.dart';
 
-typedef EquipmentProfiles = List<EquipmentProfileData>;
-typedef EquipmentProfile = EquipmentProfileData;
+typedef EquipmentProfiles = List<EquipmentProfile>;
 
 class EquipmentProfileProvider extends StatefulWidget {
   final Widget child;
@@ -21,7 +20,7 @@ class EquipmentProfileProvider extends StatefulWidget {
 }
 
 class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
-  static const EquipmentProfileData _defaultProfile = EquipmentProfileData(
+  static const EquipmentProfile _defaultProfile = EquipmentProfile(
     id: '',
     name: '',
     apertureValues: ApertureValue.values,
@@ -30,10 +29,10 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     isoValues: IsoValue.values,
   );
 
-  List<EquipmentProfileData> _customProfiles = [];
+  List<EquipmentProfile> _customProfiles = [];
   String _selectedId = '';
 
-  EquipmentProfileData get _selectedProfile => _customProfiles.firstWhere(
+  EquipmentProfile get _selectedProfile => _customProfiles.firstWhere(
         (e) => e.id == _selectedId,
         orElse: () {
           context.get<UserPreferencesService>().selectedEquipmentProfileId = _defaultProfile.id;
@@ -50,16 +49,16 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
 
   @override
   Widget build(BuildContext context) {
-    return InheritedWidgetBase<List<EquipmentProfileData>>(
+    return InheritedWidgetBase<List<EquipmentProfile>>(
       data: [_defaultProfile] + _customProfiles,
-      child: InheritedWidgetBase<EquipmentProfileData>(
+      child: InheritedWidgetBase<EquipmentProfile>(
         data: _selectedProfile,
         child: widget.child,
       ),
     );
   }
 
-  void setProfile(EquipmentProfileData data) {
+  void setProfile(EquipmentProfile data) {
     setState(() {
       _selectedId = data.id;
     });
@@ -69,7 +68,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   /// Creates a default equipment profile
   void addProfile(String name) {
     _customProfiles.add(
-      EquipmentProfileData(
+      EquipmentProfile(
         id: const Uuid().v1(),
         name: name,
         apertureValues: ApertureValue.values,
@@ -81,7 +80,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     _refreshSavedProfiles();
   }
 
-  void updateProdile(EquipmentProfileData data) {
+  void updateProdile(EquipmentProfile data) {
     final indexToUpdate = _customProfiles.indexWhere((element) => element.id == data.id);
     if (indexToUpdate >= 0) {
       _customProfiles[indexToUpdate] = data;
@@ -89,7 +88,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     }
   }
 
-  void deleteProfile(EquipmentProfileData data) {
+  void deleteProfile(EquipmentProfile data) {
     _customProfiles.remove(data);
     _refreshSavedProfiles();
   }

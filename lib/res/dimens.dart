@@ -25,6 +25,7 @@ class Dimens {
   static const Duration durationM = Duration(milliseconds: 200);
   static const Duration durationML = Duration(milliseconds: 250);
   static const Duration durationL = Duration(milliseconds: 300);
+  static const Duration switchDuration = Duration(milliseconds: 100);
 
   static const double enabledOpacity = 1.0;
   static const double disabledOpacity = 0.38;

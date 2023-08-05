@@ -10,10 +10,9 @@ class CameraViewPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: error != null ? null : Colors.black,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimens.borderRadiusM)),
-      child: Center(
-        child: error != null ? const Icon(Icons.no_photography) : const CircularProgressIndicator(),
-      ),
+      child: Center(child: error != null ? const Icon(Icons.no_photography) : null),
     );
   }
 }

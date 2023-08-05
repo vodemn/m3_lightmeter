@@ -140,11 +140,11 @@ void main() {
         'Request denied',
         build: () => bloc,
         setUp: () {
-          when(() => meteringInteractor.requestPermission()).thenAnswer((_) async => false);
+          when(() => meteringInteractor.requestCameraPermission()).thenAnswer((_) async => false);
         },
         act: (bloc) => bloc.add(const RequestPermissionEvent()),
         verify: (_) {
-          verify(() => meteringInteractor.requestPermission()).called(1);
+          verify(() => meteringInteractor.requestCameraPermission()).called(1);
         },
         expect: () => [
           isA<CameraErrorState>()
@@ -156,12 +156,12 @@ void main() {
         'Request granted -> check denied',
         build: () => bloc,
         setUp: () {
-          when(() => meteringInteractor.requestPermission()).thenAnswer((_) async => true);
+          when(() => meteringInteractor.requestCameraPermission()).thenAnswer((_) async => true);
           when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => false);
         },
         act: (bloc) => bloc.add(const RequestPermissionEvent()),
         verify: (_) {
-          verify(() => meteringInteractor.requestPermission()).called(1);
+          verify(() => meteringInteractor.requestCameraPermission()).called(1);
           verify(() => meteringInteractor.checkCameraPermission()).called(1);
         },
         expect: () => [
@@ -175,12 +175,12 @@ void main() {
         'Request granted -> check granted',
         build: () => bloc,
         setUp: () {
-          when(() => meteringInteractor.requestPermission()).thenAnswer((_) async => true);
+          when(() => meteringInteractor.requestCameraPermission()).thenAnswer((_) async => true);
           when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
         },
         act: (bloc) => bloc.add(const RequestPermissionEvent()),
         verify: (_) {
-          verify(() => meteringInteractor.requestPermission()).called(1);
+          verify(() => meteringInteractor.requestCameraPermission()).called(1);
           verify(() => meteringInteractor.checkCameraPermission()).called(1);
         },
         expect: () => initializedStateSequence,

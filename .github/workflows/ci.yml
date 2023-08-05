@@ -12,18 +12,12 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  analyze_and_test:
+    name: Analyze & test
     runs-on: macos-11
     timeout-minutes: 10
 
     steps:
-      - uses: shaunco/ssh-agent@git-repo-mapping
-        with:
-          ssh-private-key: |
-            ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
-          repo-mappings: |
-            github.com/vodemn/m3_lightmeter_iap
-
       - uses: actions/checkout@v3
         with:
           submodules: recursive
@@ -31,23 +25,13 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+          flutter-version: '3.10.0'
 
-      - name: Check flutter version
-        run: flutter --version
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Generate intl
-        run: flutter pub run intl_utils:generate
-
-      - name: Restore firebase_options.dart
-        env:
-          FIREBASE_OPTIONS: ${{ secrets.FIREBASE_OPTIONS }}
+      - name: Prepare flutter project
         run: |
-          FIREBASE_OPTIONS_PATH=$RUNNER_TEMP/firebase_options.dart
-          echo -n "$FIREBASE_OPTIONS" | base64 --decode --output $FIREBASE_OPTIONS_PATH
-          cp $FIREBASE_OPTIONS_PATH ./lib
+          flutter --version
+          flutter pub get
+          flutter pub run intl_utils:generate
 
       - name: Analyze project source
         run: flutter analyze lib --fatal-infos

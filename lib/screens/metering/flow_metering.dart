@@ -31,7 +31,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
         context.get<PermissionsService>(),
         context.get<LightSensorService>(),
         context.get<VolumeEventsService>(),
-      ),
+      )..initialize(),
       child: InheritedWidgetBase<VolumeKeysNotifier>(
         data: VolumeKeysNotifier(context.get<VolumeEventsService>()),
         child: MultiBlocProvider(
