@@ -5,6 +5,8 @@
 
 name: Build prod .aab & .apk
 
+run-name: Release ${{ inputs.version }}
+
 on:
   workflow_dispatch:
     inputs:
@@ -22,13 +24,6 @@ jobs:
     runs-on: macos-11
     timeout-minutes: 30
     steps:
-      # - uses: shaunco/ssh-agent@git-repo-mapping
-      #   with:
-      #     ssh-private-key: |
-      #       ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
-      #     repo-mappings: |
-      #       github.com/vodemn/m3_lightmeter_iap
-
       - uses: actions/checkout@v3
         with:
           submodules: recursive
