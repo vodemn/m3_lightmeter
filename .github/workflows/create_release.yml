@@ -3,7 +3,9 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build prod .aab & .apk
+name: Create new release
+
+run-name: Release v${{ inputs.version }}
 
 on:
   workflow_dispatch:
@@ -20,15 +22,9 @@ jobs:
   build:
     name: Build .apk & .aab
     runs-on: macos-11
-    timeout-minutes: 30
-    steps:
-      # - uses: shaunco/ssh-agent@git-repo-mapping
-      #   with:
-      #     ssh-private-key: |
-      #       ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
-      #     repo-mappings: |
-      #       github.com/vodemn/m3_lightmeter_iap
+    timeout-minutes: 15
 
+    steps:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
@@ -142,18 +138,66 @@ jobs:
         with:
           name: m3_lightmeter_apk
 
+      - name: Rename apk
+        run: mv app-prod-release.apk m3_lightmeter.apk
+
+      - uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: "m3_lightmeter.apk"
+          skipIfReleaseExists: true
+          tag: "v${{ github.event.inputs.version }}"
+
+      - name: Delete no longer used apk artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: m3_lightmeter_apk
+
+  extract-merged-native-libs:
+    name: Extract merged native libraries
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - name: Download app bundle
         uses: actions/download-artifact@v3
         with:
           name: m3_lightmeter_bundle
 
-      - name: Rename artifacts
+      - name: Extract & zip merged_native_libs
         run: |
-          mv app-prod-release.apk m3_lightmeter.apk
-          mv app-prod-release.aab m3_lightmeter.aab
+          unzip app-prod-release.aab
+          (cd base/lib && zip -r "$OLDPWD/merged_native_libs.zip" .)
 
-      - uses: ncipollo/release-action@v1.12.0
+      - name: Zip app bundle and merged_native_libs
+        run: zip m3_lightmeter_release.zip app-prod-release.aab merged_native_libs.zip
+
+      - name: Upload merged_native_libs.zip to artifacts
+        uses: actions/upload-artifact@v3
         with:
-          artifacts: "m3_lightmeter.apk, m3_lightmeter.aab"
-          skipIfReleaseExists: true
-          tag: "v${{ github.event.inputs.version }}"
+          name: m3_lightmeter_release
+          path: m3_lightmeter_release.zip
+
+      # TODO: this should be moved to `create-google-play-release` step when it is implemented
+      - name: Delete no longer used app bundle artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: m3_lightmeter_bundle
+
+  # TODO: Automate Google Play releases creation
+  create-google-play-release:
+    if: false
+    name: Create Google Play release
+    needs: [build, extract-merged-native-libs]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Download app bundle
+        uses: actions/download-artifact@v3
+        with:
+          name: m3_lightmeter_bundle
