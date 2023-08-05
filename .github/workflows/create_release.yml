@@ -3,9 +3,9 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build prod .aab & .apk
+name: Create new release
 
-run-name: Release ${{ inputs.version }}
+run-name: Release v${{ inputs.version }}
 
 on:
   workflow_dispatch:
