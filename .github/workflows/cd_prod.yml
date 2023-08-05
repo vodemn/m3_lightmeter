@@ -146,6 +146,11 @@ jobs:
           skipIfReleaseExists: true
           tag: "v${{ github.event.inputs.version }}"
 
+      - name: Delete no longer used apk artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: m3_lightmeter_apk
+
   extract-merged-native-libs:
     name: Extract merged native libraries
     needs: [build]
@@ -173,6 +178,12 @@ jobs:
         with:
           name: m3_lightmeter_release
           path: m3_lightmeter_release.zip
+
+      # TODO: this should be moved to `create-google-play-release` step when it is implemented
+      - name: Delete no longer used app bundle artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: m3_lightmeter_bundle
 
   # TODO: Automate Google Play releases creation
   create-google-play-release:
