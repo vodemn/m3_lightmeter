@@ -193,6 +193,7 @@ void main() {
         {
           MeteringScreenLayoutFeature.extremeExposurePairs: true,
           MeteringScreenLayoutFeature.filmPicker: true,
+          MeteringScreenLayoutFeature.histogram: true,
         },
       );
     });
@@ -206,6 +207,7 @@ void main() {
         {
           MeteringScreenLayoutFeature.extremeExposurePairs: false,
           MeteringScreenLayoutFeature.filmPicker: true,
+          MeteringScreenLayoutFeature.histogram: true,
         },
       );
     });
@@ -214,17 +216,18 @@ void main() {
       when(
         () => sharedPreferences.setString(
           UserPreferencesService.meteringScreenLayoutKey,
-          """{"0":false,"1":true}""",
+          """{"0":false,"1":true,"2":true}""",
         ),
       ).thenAnswer((_) => Future.value(true));
       service.meteringScreenLayout = {
         MeteringScreenLayoutFeature.extremeExposurePairs: false,
         MeteringScreenLayoutFeature.filmPicker: true,
+        MeteringScreenLayoutFeature.histogram: true,
       };
       verify(
         () => sharedPreferences.setString(
           UserPreferencesService.meteringScreenLayoutKey,
-          """{"0":false,"1":true}""",
+          """{"0":false,"1":true,"2":true}""",
         ),
       ).called(1);
     });
