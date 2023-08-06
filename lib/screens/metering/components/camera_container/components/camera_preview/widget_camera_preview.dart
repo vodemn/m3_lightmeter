@@ -43,9 +43,9 @@ class _CameraPreviewState extends State<CameraPreview> {
                                   MeteringScreenLayoutFeature.histogram,
                                 ))
                                   Positioned(
-                                    left: 0,
-                                    right: 0,
-                                    bottom: Dimens.borderRadiusM,
+                                    left: Dimens.grid8,
+                                    right: Dimens.grid8,
+                                    bottom: Dimens.grid16,
                                     child: CameraHistogram(controller: widget.controller!),
                                   ),
                               ],
