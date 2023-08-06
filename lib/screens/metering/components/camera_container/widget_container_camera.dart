@@ -10,8 +10,7 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls/widget_camera_controls.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls_placeholder/widget_placeholder_camera_controls.dart';
-import 'package:lightmeter/screens/metering/components/camera_container/components/camera_view/widget_camera_view.dart';
-import 'package:lightmeter/screens/metering/components/camera_container/components/camera_view_placeholder/widget_placeholder_camera_view.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/widget_camera_preview.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
@@ -107,20 +106,11 @@ class _CameraViewBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
-      child: BlocBuilder<CameraContainerBloc, CameraContainerState>(
-        buildWhen: (previous, current) => current is! CameraActiveState,
-        builder: (context, state) => Center(
-          child: AnimatedSwitcher(
-            duration: Dimens.durationM,
-            child: switch (state) {
-              CameraInitializedState() => CameraView(controller: state.controller),
-              CameraErrorState() => CameraViewPlaceholder(error: state.error),
-              _ => const CameraViewPlaceholder(error: null),
-            },
-          ),
-        ),
+    return BlocBuilder<CameraContainerBloc, CameraContainerState>(
+      buildWhen: (previous, current) => current is! CameraActiveState,
+      builder: (context, state) => CameraPreview(
+        controller: state is CameraInitializedState ? state.controller : null,
+        error: state is CameraErrorState ? state.error : null,
       ),
     );
   }
@@ -161,7 +151,9 @@ class _CameraControlsBuilder extends StatelessWidget {
               },
             );
           } else {
-            child = const Column(children: [Expanded(child: SizedBox.shrink())],);
+            child = const Column(
+              children: [Expanded(child: SizedBox.shrink())],
+            );
           }
 
           return AnimatedSwitcher(
