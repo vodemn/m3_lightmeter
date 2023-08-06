@@ -123,7 +123,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
           (camera) => camera.lensDirection == CameraLensDirection.back,
           orElse: () => cameras.last,
         ),
-        ResolutionPreset.medium,
+        ResolutionPreset.low,
         enableAudio: false,
       );
 
