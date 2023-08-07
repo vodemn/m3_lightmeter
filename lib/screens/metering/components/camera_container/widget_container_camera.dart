@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
@@ -45,59 +47,94 @@ class CameraContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double cameraViewHeight =
-        ((MediaQuery.of(context).size.width - Dimens.grid8 - 2 * Dimens.paddingM) / 2) /
-            PlatformConfig.cameraPreviewAspectRatio;
+    final double meteringContainerHeight = _meteringContainerHeight(context);
+    final double cameraPreviewHeight = _cameraPreviewHeight(context);
+    final double topBarOverflow = meteringContainerHeight - cameraPreviewHeight;
 
-    double topBarOverflow = Dimens.readingContainerSingleValueHeight + // ISO & ND
-        -cameraViewHeight;
+    return Stack(
+      children: [
+        Positioned(
+          left: 0,
+          top: 0,
+          right: 0,
+          child: MeteringTopBar(
+            readingsContainer: ReadingsContainer(
+              fastest: fastest,
+              slowest: slowest,
+              film: film,
+              iso: iso,
+              nd: nd,
+              onFilmChanged: onFilmChanged,
+              onIsoChanged: onIsoChanged,
+              onNdChanged: onNdChanged,
+            ),
+            appendixHeight: topBarOverflow,
+            preview: const _CameraViewBuilder(),
+          ),
+        ),
+        SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              SizedBox(
+                height: min(meteringContainerHeight, cameraPreviewHeight) + Dimens.paddingM * 2,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: topBarOverflow >= 0 ? topBarOverflow : 0),
+                          child: ExposurePairsList(exposurePairs),
+                        ),
+                      ),
+                      const SizedBox(width: Dimens.grid8),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: topBarOverflow <= 0 ? -topBarOverflow : 0),
+                          child: const _CameraControlsBuilder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  double _meteringContainerHeight(BuildContext context) {
+    double enabledFeaturesHeight = 0;
     if (FeaturesConfig.equipmentProfilesEnabled) {
-      topBarOverflow += Dimens.readingContainerSingleValueHeight;
-      topBarOverflow += Dimens.paddingS;
+      enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+      enabledFeaturesHeight += Dimens.paddingS;
     }
     if (MeteringScreenLayout.featureOf(
       context,
       MeteringScreenLayoutFeature.extremeExposurePairs,
     )) {
-      topBarOverflow += Dimens.readingContainerDoubleValueHeight;
-      topBarOverflow += Dimens.paddingS;
+      enabledFeaturesHeight += Dimens.readingContainerDoubleValueHeight;
+      enabledFeaturesHeight += Dimens.paddingS;
     }
     if (MeteringScreenLayout.featureOf(
       context,
       MeteringScreenLayoutFeature.filmPicker,
     )) {
-      topBarOverflow += Dimens.readingContainerSingleValueHeight;
-      topBarOverflow += Dimens.paddingS;
+      enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+      enabledFeaturesHeight += Dimens.paddingS;
     }
 
-    return Column(
-      children: [
-        MeteringTopBar(
-          readingsContainer: ReadingsContainer(
-            fastest: fastest,
-            slowest: slowest,
-            film: film,
-            iso: iso,
-            nd: nd,
-            onFilmChanged: onFilmChanged,
-            onIsoChanged: onIsoChanged,
-            onNdChanged: onNdChanged,
-          ),
-          appendixHeight: topBarOverflow,
-          preview: const _CameraViewBuilder(),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
-            child: _MiddleContentWrapper(
-              topBarOverflow: topBarOverflow,
-              leftContent: ExposurePairsList(exposurePairs),
-              rightContent: const _CameraControlsBuilder(),
-            ),
-          ),
-        ),
-      ],
-    );
+    return enabledFeaturesHeight + Dimens.readingContainerSingleValueHeight; // ISO & ND
+  }
+
+  double _cameraPreviewHeight(BuildContext context) {
+    return ((MediaQuery.of(context).size.width - Dimens.grid8 - 2 * Dimens.paddingM) / 2) /
+        PlatformConfig.cameraPreviewAspectRatio;
   }
 }
 
@@ -161,46 +198,6 @@ class _CameraControlsBuilder extends StatelessWidget {
             child: child,
           );
         },
-      ),
-    );
-  }
-}
-
-class _MiddleContentWrapper extends StatelessWidget {
-  final double topBarOverflow;
-  final Widget leftContent;
-  final Widget rightContent;
-
-  const _MiddleContentWrapper({
-    required this.topBarOverflow,
-    required this.leftContent,
-    required this.rightContent,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => OverflowBox(
-        alignment: Alignment.bottomCenter,
-        maxHeight: constraints.maxHeight + topBarOverflow.abs(),
-        maxWidth: constraints.maxWidth,
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(top: topBarOverflow >= 0 ? topBarOverflow : 0),
-                child: leftContent,
-              ),
-            ),
-            const SizedBox(width: Dimens.grid8),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(top: topBarOverflow <= 0 ? -topBarOverflow : 0),
-                child: rightContent,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
