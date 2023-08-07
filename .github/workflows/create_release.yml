@@ -123,7 +123,7 @@ jobs:
 
   create-release:
     name: Create Github release
-    needs: [build, update-version-in-repo]
+    needs: [update-version-in-repo]
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     permissions:
@@ -182,7 +182,7 @@ jobs:
   create-google-play-release:
     if: false
     name: Create Google Play release
-    needs: [build, extract-merged-native-libs]
+    needs: [extract-merged-native-libs]
     runs-on: ubuntu-latest
     steps:
       - name: Download app bundle
