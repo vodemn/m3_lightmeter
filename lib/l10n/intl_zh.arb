@@ -38,6 +38,7 @@
     "meteringScreenLayoutHint": "隐藏不需要的元素，以免浪费曝光列表空间",
     "meteringScreenFeatureExtremeExposurePairs": "最快 & 最慢曝光组合",
     "meteringScreenFeatureFilmPicker": "胶片选择",
+    "meteringScreenFeatureHistogram": "直方图",
     "film": "胶片",
     "equipment": "设备",
     "equipmentProfileName": "设备配置名称",

@@ -16,7 +16,7 @@ on:
         type: string
 
 env:
-  BUILD_ARGS: --release --flavor prod --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_prod.dart
+  BUILD_ARGS: --release --flavor prod --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_prod.dart
 
 jobs:
   build:

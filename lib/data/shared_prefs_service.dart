@@ -97,6 +97,7 @@ class UserPreferencesService {
       return {
         MeteringScreenLayoutFeature.extremeExposurePairs: true,
         MeteringScreenLayoutFeature.filmPicker: true,
+        MeteringScreenLayoutFeature.histogram: true,
       };
     }
   }
