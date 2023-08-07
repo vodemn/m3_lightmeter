@@ -185,7 +185,28 @@ jobs:
     needs: [extract-merged-native-libs]
     runs-on: ubuntu-latest
     steps:
-      - name: Download app bundle
+      - name: Download app bundle & merged native libs
         uses: actions/download-artifact@v3
         with:
-          name: m3_lightmeter_bundle
+          name: |
+            m3_lightmeter_bundle
+            merged_native_libs
+
+      - name: Create Google Play release
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: #TODO:
+          packageName: com.vodemn.lightmeter
+          releaseFiles: app-prod-release.aab
+          track: production
+          status: inProgress
+          userFraction: 1.0
+          whatsNewDirectory: #TODO:
+          debugSymbols: merged_native_libs.zip
+
+      - name: Delete no longer used app bundle & merged native libs artifacts
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: |
+            m3_lightmeter_bundle
+            merged_native_libs
