@@ -163,20 +163,11 @@ jobs:
           unzip app-prod-release.aab
           (cd base/lib && zip -r "$OLDPWD/merged_native_libs.zip" .)
 
-      - name: Zip app bundle and merged_native_libs
-        run: zip m3_lightmeter_release.zip app-prod-release.aab merged_native_libs.zip
-
-      - name: Upload merged_native_libs.zip to artifacts
+      - name: Upload merged native libs to artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: m3_lightmeter_release
-          path: m3_lightmeter_release.zip
-
-      # TODO: this should be moved to `create-google-play-release` step when it is implemented
-      - name: Delete no longer used app bundle artifact
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: m3_lightmeter_bundle
+          name: merged_native_libs
+          path: merged_native_libs.zip
 
   # TODO: Automate Google Play releases creation
   create-google-play-release:
@@ -193,15 +184,14 @@ jobs:
             merged_native_libs
 
       - name: Create Google Play release
-        uses: r0adkll/upload-google-play@v1
+        uses: r0adkll/upload-google-play@v1.1.1
         with:
           serviceAccountJsonPlainText: #TODO:
           packageName: com.vodemn.lightmeter
           releaseFiles: app-prod-release.aab
           track: production
-          status: inProgress
+          status: draft
           userFraction: 1.0
-          whatsNewDirectory: #TODO:
           debugSymbols: merged_native_libs.zip
 
       - name: Delete no longer used app bundle & merged native libs artifacts
