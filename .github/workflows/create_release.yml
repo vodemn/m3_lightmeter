@@ -14,6 +14,10 @@ on:
         description: "Version"
         required: true
         type: string
+      release-notes:
+        description: "Release notes"
+        required: true
+        type: string
 
 env:
   BUILD_ARGS: --release --flavor prod --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_prod.dart
@@ -186,7 +190,7 @@ jobs:
       - name: Create Google Play release
         uses: r0adkll/upload-google-play@v1.1.1
         with:
-          serviceAccountJsonPlainText: #TODO:
+          serviceAccountJsonPlainText: ${{ secrets.GH_ACTIONS_SERVICE_ACCOUNT_JSON }}
           packageName: com.vodemn.lightmeter
           releaseFiles: app-prod-release.aab
           track: production
