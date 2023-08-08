@@ -28,7 +28,9 @@ class _CameraHistogramState extends State<CameraHistogram> {
 
   @override
   void dispose() {
-    widget.controller.stopImageStream();
+    /// There is no need to stop image stream here,
+    /// because this widget will be disposed when CameraController is disposed
+    /// widget.controller.stopImageStream();
     super.dispose();
   }
 
