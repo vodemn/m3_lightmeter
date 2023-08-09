@@ -26,9 +26,11 @@ on:
       github-release-release:
         type: boolean
         description: Create Github release
+        default: true
       google-play-release:
         type: boolean
         description: Create Google Play release
+        default: true
 
 env:
   BUILD_ARGS: --release --flavor prod --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_prod.dart
