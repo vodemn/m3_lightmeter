@@ -209,7 +209,11 @@ jobs:
             merged_native_libs
             whatsnew-en-US
 
-      # TODO: create whatsnew folder and move release notes there
+      - name: Move release notes to a folder
+        run: |
+          mkdir whatsnew
+          mv whatsnew-en-US.md whatsnew
+          
       - name: Create Google Play release
         id: create-google-play-release-step
         uses: r0adkll/upload-google-play@v1.1.1
@@ -223,6 +227,7 @@ jobs:
           debugSymbols: merged_native_libs.zip
           whatsNewDirectory: whatsnew
 
+      # https://docs.github.com/en/actions/learn-github-actions/expressions#failure-with-conditions
       - name: Zip app bundle and merged_native_libs
         if: ${{ failure() && steps.create-google-play-release-step.conclusion == 'failure' }}
         run: zip m3_lightmeter_release.zip app-prod-release.aab merged_native_libs.zip
@@ -235,6 +240,7 @@ jobs:
           path: m3_lightmeter_release.zip
           
       - name: Delete app bundle & merged native libs artifacts
+        if: ${{ always() }}
         uses: geekyeggo/delete-artifact@v2
         with:
           name: |
@@ -243,6 +249,7 @@ jobs:
 
   cleanup:
     name: Cleanup
+    if: ${{ always() }}
     needs: [create-github-release, create-google-play-release]
     runs-on: ubuntu-latest
     steps:
