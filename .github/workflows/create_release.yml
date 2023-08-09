@@ -154,7 +154,7 @@ jobs:
 
   create-github-release:
     name: Create Github release
-    if: github.ref_name == 'main' && ${{ inputs.github-release-release }}
+    if: ${{ inputs.github-release-release }}
     needs: [build, generate-release-notes, update-version-in-repo]
     runs-on: ubuntu-latest
     permissions:
@@ -187,7 +187,7 @@ jobs:
 
   create-google-play-release:
     name: Create Google Play release
-    if: github.ref_name == 'main' && ${{ inputs.google-play-release }}
+    if: ${{ inputs.google-play-release }}
     needs: [build, generate-release-notes]
     runs-on: ubuntu-latest
     steps:
