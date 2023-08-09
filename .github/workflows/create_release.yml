@@ -31,7 +31,7 @@ jobs:
   build:
     name: Build .apk & .aab
     runs-on: macos-11
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v3
         with:
@@ -147,7 +147,7 @@ jobs:
   create-github-release:
     name: Create Github release
     if: github.ref_name == 'main'
-    needs: [generate-release-notes, update-version-in-repo]
+    needs: [build, generate-release-notes, update-version-in-repo]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -180,7 +180,7 @@ jobs:
   create-google-play-release:
     name: Create Google Play release
     if: github.ref_name == 'main'
-    needs: [generate-release-notes]
+    needs: [build, generate-release-notes]
     runs-on: ubuntu-latest
     steps:
       - name: Download app bundle
