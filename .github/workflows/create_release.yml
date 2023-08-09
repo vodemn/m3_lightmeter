@@ -155,9 +155,7 @@ jobs:
       - name: Download apk
         uses: actions/download-artifact@v3
         with:
-          name: |
-            m3_lightmeter_apk
-            whatsnew-en-US
+          name: m3_lightmeter_apk
 
       - name: Rename apk
         run: mv app-prod-release.apk m3_lightmeter.apk
