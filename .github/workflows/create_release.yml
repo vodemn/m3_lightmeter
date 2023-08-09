@@ -222,7 +222,6 @@ jobs:
           releaseFiles: app-prod-release.aab
           track: production
           status: draft
-          userFraction: 1.0
           debugSymbols: merged_native_libs.zip
           whatsNewDirectory: whatsnew
 
