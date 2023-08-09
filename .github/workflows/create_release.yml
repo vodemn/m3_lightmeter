@@ -23,7 +23,7 @@ on:
         description: "Release notes"
         required: true
         type: string
-      github-release-release:
+      github-release:
         type: boolean
         description: Create Github release
         default: true
@@ -38,7 +38,7 @@ env:
 jobs:
   build:
     name: Build .apk & .aab
-    if: ${{ inputs.github-release-release }} || ${{ inputs.google-play-release }}
+    if: ${{ inputs.github-release }} || ${{ inputs.google-play-release }}
     runs-on: macos-11
     timeout-minutes: 30
     steps:
@@ -95,18 +95,22 @@ jobs:
           flutter pub run intl_utils:generate
 
       - name: Build apk
+        if: ${{ inputs.github-release }}
         run: flutter build apk $BUILD_ARGS
 
       - name: Upload apk to artifacts
+        if: ${{ inputs.github-release }}
         uses: actions/upload-artifact@v3
         with:
           name: m3_lightmeter_apk
           path: build/app/outputs/flutter-apk/app-prod-release.apk
 
       - name: Build appbundle
+        if: ${{ inputs.google-play-release }}
         run: flutter build appbundle $BUILD_ARGS
 
       - name: Upload app bundle to artifacts
+        if: ${{ inputs.google-play-release }}
         uses: actions/upload-artifact@v3
         with:
           name: m3_lightmeter_bundle
@@ -129,7 +133,7 @@ jobs:
 
   update-version-in-repo:
     name: Update repo version
-    if: ${{ inputs.github-release-release }}
+    if: ${{ inputs.github-release }}
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -156,7 +160,7 @@ jobs:
 
   create-github-release:
     name: Create Github release
-    if: ${{ inputs.github-release-release }}
+    if: ${{ inputs.github-release }}
     needs: [build, generate-release-notes, update-version-in-repo]
     runs-on: ubuntu-latest
     permissions:
