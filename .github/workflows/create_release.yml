@@ -211,6 +211,7 @@ jobs:
 
       # TODO: create whatsnew folder and move release notes there
       - name: Create Google Play release
+        id: create-google-play-release-step
         uses: r0adkll/upload-google-play@v1.1.1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GH_ACTIONS_SERVICE_ACCOUNT_JSON }}
@@ -221,6 +222,17 @@ jobs:
           userFraction: 1.0
           debugSymbols: merged_native_libs.zip
           whatsNewDirectory: whatsnew
+
+      - name: Zip app bundle and merged_native_libs
+        if: ${{ failure() && steps.create-google-play-release-step.conclusion == 'failure' }}
+        run: zip m3_lightmeter_release.zip app-prod-release.aab merged_native_libs.zip
+
+      - name: Upload release zip to artifacts
+        if: ${{ failure() && steps.create-google-play-release-step.conclusion == 'failure' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: m3_lightmeter_release
+          path: m3_lightmeter_release.zip
           
       - name: Delete app bundle & merged native libs artifacts
         uses: geekyeggo/delete-artifact@v2
