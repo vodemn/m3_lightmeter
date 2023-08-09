@@ -23,6 +23,12 @@ on:
         description: "Release notes"
         required: true
         type: string
+      github-release-release:
+        type: boolean
+        description: Create Github release
+      google-play-release:
+        type: boolean
+        description: Create Google Play release
 
 env:
   BUILD_ARGS: --release --flavor prod --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_prod.dart
@@ -30,6 +36,7 @@ env:
 jobs:
   build:
     name: Build .apk & .aab
+    if: ${{ inputs.github-release-release }} || ${{ inputs.google-play-release }}
     runs-on: macos-11
     timeout-minutes: 30
     steps:
@@ -120,6 +127,7 @@ jobs:
 
   update-version-in-repo:
     name: Update repo version
+    if: ${{ inputs.github-release-release }}
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -146,7 +154,7 @@ jobs:
 
   create-github-release:
     name: Create Github release
-    if: github.ref_name == 'main'
+    if: github.ref_name == 'main' && ${{ inputs.github-release-release }}
     needs: [build, generate-release-notes, update-version-in-repo]
     runs-on: ubuntu-latest
     permissions:
@@ -179,7 +187,7 @@ jobs:
 
   create-google-play-release:
     name: Create Google Play release
-    if: github.ref_name == 'main'
+    if: github.ref_name == 'main' && ${{ inputs.google-play-release }}
     needs: [build, generate-release-notes]
     runs-on: ubuntu-latest
     steps:
