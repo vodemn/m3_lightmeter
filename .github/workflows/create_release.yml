@@ -3,6 +3,11 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
+
+# This workflow uses perl regex. For better syntaxis understading see these docs:
+# https://perldoc.perl.org/perlrequick#Search-and-replace
+# https://perldoc.perl.org/perlre#Other-Modifiers
+
 name: Create new release
 
 run-name: Release v${{ inputs.version }}
@@ -27,7 +32,6 @@ jobs:
     name: Build .apk & .aab
     runs-on: macos-11
     timeout-minutes: 15
-
     steps:
       - uses: actions/checkout@v3
         with:
@@ -99,6 +103,21 @@ jobs:
           name: m3_lightmeter_bundle
           path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
 
+  generate-release-notes:
+    name: Generate release notes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate release notes
+        run: |
+          echo ${{ inputs.release-notes }} > whatsnew-en-US.md
+          perl -i -pe 's/\s{1}(-{1})/\n$1/g' whatsnew-en-US.md
+
+      - name: Upload merged_native_libs.zip to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: whatsnew-en-US
+          path: whatsnew-en-US.md
+
   update-version-in-repo:
     name: Update repo version
     needs: [build]
@@ -125,18 +144,20 @@ jobs:
           branch: ${{ github.ref_name }}
           unprotect_reviews: true
 
-  create-release:
+  create-github-release:
     name: Create Github release
-    needs: [update-version-in-repo]
     if: github.ref_name == 'main'
+    needs: [generate-release-notes, update-version-in-repo]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Download apk
+      - name: Download apk & release notes
         uses: actions/download-artifact@v3
         with:
-          name: m3_lightmeter_apk
+          name: |
+            m3_lightmeter_apk
+            whatsnew-en-US
 
       - name: Rename apk
         run: mv app-prod-release.apk m3_lightmeter.apk
@@ -146,8 +167,9 @@ jobs:
           artifacts: "m3_lightmeter.apk"
           skipIfReleaseExists: true
           tag: "v${{ github.event.inputs.version }}"
+          bodyFile: "whatsnew-en-US.md"
 
-      - name: Delete no longer used apk artifact
+      - name: Delete apk artifact
         uses: geekyeggo/delete-artifact@v2
         with:
           name: m3_lightmeter_apk
@@ -173,11 +195,10 @@ jobs:
           name: merged_native_libs
           path: merged_native_libs.zip
 
-  # TODO: Automate Google Play releases creation
   create-google-play-release:
-    if: false
     name: Create Google Play release
-    needs: [extract-merged-native-libs]
+    if: github.ref_name == 'main'
+    needs: [generate-release-notes, extract-merged-native-libs]
     runs-on: ubuntu-latest
     steps:
       - name: Download app bundle & merged native libs
@@ -186,7 +207,9 @@ jobs:
           name: |
             m3_lightmeter_bundle
             merged_native_libs
+            whatsnew-en-US
 
+      # TODO: create whatsnew folder and move release notes there
       - name: Create Google Play release
         uses: r0adkll/upload-google-play@v1.1.1
         with:
@@ -197,10 +220,21 @@ jobs:
           status: draft
           userFraction: 1.0
           debugSymbols: merged_native_libs.zip
-
-      - name: Delete no longer used app bundle & merged native libs artifacts
+          whatsNewDirectory: whatsnew
+          
+      - name: Delete app bundle & merged native libs artifacts
         uses: geekyeggo/delete-artifact@v2
         with:
           name: |
             m3_lightmeter_bundle
             merged_native_libs
+
+  cleanup:
+    name: Cleanup
+    needs: [create-github-release, create-google-play-release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete release notes artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: whatsnew-en-US
