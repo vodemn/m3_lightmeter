@@ -225,6 +225,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GH_ACTIONS_SERVICE_ACCOUNT_JSON }}
           packageName: com.vodemn.lightmeter
           releaseFiles: app-prod-release.aab
+          releaseName: echo "$(cat pubspec.yaml)" | sed -n -r "s/^version:\s{1}(.*)[+](.*)$/700\2 (\1)/p"
           track: production
           status: draft
           debugSymbols: merged_native_libs.zip
