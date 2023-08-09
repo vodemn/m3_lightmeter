@@ -37,7 +37,7 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         with:
           distribution: "zulu"
           java-version: "11"
@@ -152,15 +152,18 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Download apk & release notes
+      - name: Download apk
         uses: actions/download-artifact@v3
         with:
-          name: |
-            m3_lightmeter_apk
-            whatsnew-en-US
+          name: m3_lightmeter_apk
 
       - name: Rename apk
         run: mv app-prod-release.apk m3_lightmeter.apk
+
+      - name: Download release notes
+        uses: actions/download-artifact@v3
+        with:
+          name: whatsnew-en-US
 
       - uses: ncipollo/release-action@v1.12.0
         with:
@@ -174,9 +177,10 @@ jobs:
         with:
           name: m3_lightmeter_apk
 
-  extract-merged-native-libs:
-    name: Extract merged native libraries
-    needs: [build]
+  create-google-play-release:
+    name: Create Google Play release
+    if: github.ref_name == 'main'
+    needs: [generate-release-notes]
     runs-on: ubuntu-latest
     steps:
       - name: Download app bundle
@@ -189,31 +193,16 @@ jobs:
           unzip app-prod-release.aab
           (cd base/lib && zip -r "$OLDPWD/merged_native_libs.zip" .)
 
-      - name: Upload merged native libs to artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: merged_native_libs
-          path: merged_native_libs.zip
-
-  create-google-play-release:
-    name: Create Google Play release
-    if: github.ref_name == 'main'
-    needs: [generate-release-notes, extract-merged-native-libs]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download app bundle & merged native libs
+      - name: Download release notes
         uses: actions/download-artifact@v3
         with:
-          name: |
-            m3_lightmeter_bundle
-            merged_native_libs
-            whatsnew-en-US
+          name: whatsnew-en-US
 
       - name: Move release notes to a folder
         run: |
           mkdir whatsnew
           mv whatsnew-en-US.md whatsnew
-          
+
       - name: Create Google Play release
         id: create-google-play-release-step
         uses: r0adkll/upload-google-play@v1.1.1
@@ -243,9 +232,7 @@ jobs:
         if: ${{ always() }}
         uses: geekyeggo/delete-artifact@v2
         with:
-          name: |
-            m3_lightmeter_bundle
-            merged_native_libs
+          name: m3_lightmeter_bundle
 
   cleanup:
     name: Cleanup
