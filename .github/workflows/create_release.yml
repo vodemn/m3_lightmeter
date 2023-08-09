@@ -210,8 +210,9 @@ jobs:
 
       - name: Move release notes to a folder
         run: |
+          mv whatsnew-en-US.md whatsnew-en-US
           mkdir whatsnew
-          mv whatsnew-en-US.md whatsnew
+          mv whatsnew-en-US whatsnew
 
       - name: Create Google Play release
         id: create-google-play-release-step
