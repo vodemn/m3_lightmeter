@@ -237,7 +237,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GH_ACTIONS_SERVICE_ACCOUNT_JSON }}
           packageName: com.vodemn.lightmeter
           releaseFiles: app-prod-release.aab
-          releaseName: $release_name
+          releaseName: ${{ env.release_name }}
           track: production
           status: draft
           debugSymbols: merged_native_libs.zip
