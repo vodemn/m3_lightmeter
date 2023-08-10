@@ -242,7 +242,7 @@ jobs:
           releaseFiles: app-prod-release.aab
           releaseName: ${{ env.release_name }}
           track: production
-          status: draft
+          status: complete
           debugSymbols: merged_native_libs.zip
           whatsNewDirectory: whatsnew
 
