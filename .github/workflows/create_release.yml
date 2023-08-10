@@ -218,6 +218,18 @@ jobs:
           mkdir whatsnew
           mv whatsnew-en-US whatsnew
 
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      # https://unix.stackexchange.com/questions/13466/can-grep-output-only-specified-groupings-that-match'
+      # https://stackoverflow.com/questions/74353311/github-workflow-unable-to-process-file-command-env-successfully
+      - name: Create Google Play release name
+        id: release-name
+        run: |
+          RELEASE_NAME=$(echo "$(cat pubspec.yaml)" | sed -n -r "s/^version:\s{1}(.*)[+](.*)$/700\2 (\1)/p")
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_ENV
+
       - name: Create Google Play release
         id: create-google-play-release-step
         uses: r0adkll/upload-google-play@v1.1.1
@@ -225,7 +237,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GH_ACTIONS_SERVICE_ACCOUNT_JSON }}
           packageName: com.vodemn.lightmeter
           releaseFiles: app-prod-release.aab
-          releaseName: echo "$(cat pubspec.yaml)" | sed -n -r "s/^version:\s{1}(.*)[+](.*)$/700\2 (\1)/p"
+          releaseName: $release_name
           track: production
           status: draft
           debugSymbols: merged_native_libs.zip
