@@ -197,6 +197,10 @@ jobs:
     needs: [build, generate-release-notes]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - name: Download app bundle
         uses: actions/download-artifact@v3
         with:
@@ -217,10 +221,6 @@ jobs:
           mv whatsnew-en-US.md whatsnew-en-US
           mkdir whatsnew
           mv whatsnew-en-US whatsnew
-
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
 
       # https://unix.stackexchange.com/questions/13466/can-grep-output-only-specified-groupings-that-match'
       # https://stackoverflow.com/questions/74353311/github-workflow-unable-to-process-file-command-env-successfully
