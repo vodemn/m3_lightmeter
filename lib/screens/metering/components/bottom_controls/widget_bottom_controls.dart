@@ -37,16 +37,12 @@ class MeteringBottomControls extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 if (onSwitchEvSourceType != null)
-                  Expanded(
-                    child: Center(
-                      child: IconButton(
-                        onPressed: onSwitchEvSourceType,
-                        icon: Icon(
-                          context.listen<EvSourceType>() != EvSourceType.camera
-                              ? Icons.camera_rear
-                              : Icons.wb_incandescent,
-                        ),
-                      ),
+                  _SideIcon(
+                    onPressed: onSwitchEvSourceType!,
+                    icon: Icon(
+                      context.listen<EvSourceType>() != EvSourceType.camera
+                          ? Icons.camera_rear
+                          : Icons.wb_incandescent,
                     ),
                   )
                 else
@@ -56,16 +52,36 @@ class MeteringBottomControls extends StatelessWidget {
                   isMetering: isMetering,
                   onTap: onMeasure,
                 ),
-                Expanded(
-                  child: Center(
-                    child: IconButton(
-                      onPressed: onSettings,
-                      icon: const Icon(Icons.settings),
-                    ),
-                  ),
+                _SideIcon(
+                  onPressed: onSettings,
+                  icon: const Icon(Icons.settings),
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SideIcon extends StatelessWidget {
+  final Icon icon;
+  final VoidCallback onPressed;
+
+  const _SideIcon({
+    required this.icon,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Center(
+        child: RepaintBoundary(
+          child: IconButton(
+            onPressed: onPressed,
+            icon: icon,
           ),
         ),
       ),

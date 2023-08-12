@@ -22,39 +22,41 @@ class CameraPreview extends StatefulWidget {
 class _CameraPreviewState extends State<CameraPreview> {
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
-      child: Center(
-        child: Stack(
-          children: [
-            const CameraViewPlaceholder(error: null),
-            AnimatedSwitcher(
-              duration: Dimens.switchDuration,
-              child: widget.controller != null
-                  ? ValueListenableBuilder<CameraValue>(
-                      valueListenable: widget.controller!,
-                      builder: (_, __, ___) => widget.controller!.value.isInitialized
-                          ? Stack(
-                              alignment: Alignment.bottomCenter,
-                              children: [
-                                CameraView(controller: widget.controller!),
-                                if (MeteringScreenLayout.featureOf(
-                                  context,
-                                  MeteringScreenLayoutFeature.histogram,
-                                ))
-                                  Positioned(
-                                    left: Dimens.grid8,
-                                    right: Dimens.grid8,
-                                    bottom: Dimens.grid16,
-                                    child: CameraHistogram(controller: widget.controller!),
-                                  ),
-                              ],
-                            )
-                          : const SizedBox.shrink(),
-                    )
-                  : CameraViewPlaceholder(error: widget.error),
-            ),
-          ],
+    return RepaintBoundary(
+      child: AspectRatio(
+        aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
+        child: Center(
+          child: Stack(
+            children: [
+              const CameraViewPlaceholder(error: null),
+              AnimatedSwitcher(
+                duration: Dimens.switchDuration,
+                child: widget.controller != null
+                    ? ValueListenableBuilder<CameraValue>(
+                        valueListenable: widget.controller!,
+                        builder: (_, __, ___) => widget.controller!.value.isInitialized
+                            ? Stack(
+                                alignment: Alignment.bottomCenter,
+                                children: [
+                                  CameraView(controller: widget.controller!),
+                                  if (MeteringScreenLayout.featureOf(
+                                    context,
+                                    MeteringScreenLayoutFeature.histogram,
+                                  ))
+                                    Positioned(
+                                      left: Dimens.grid8,
+                                      right: Dimens.grid8,
+                                      bottom: Dimens.grid16,
+                                      child: CameraHistogram(controller: widget.controller!),
+                                    ),
+                                ],
+                              )
+                            : const SizedBox.shrink(),
+                      )
+                    : CameraViewPlaceholder(error: widget.error),
+              ),
+            ],
+          ),
         ),
       ),
     );

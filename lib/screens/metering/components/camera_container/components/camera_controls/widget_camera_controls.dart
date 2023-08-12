@@ -25,22 +25,24 @@ class CameraControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: ExposureOffsetSlider(
-            range: exposureOffsetRange,
-            value: exposureOffsetValue,
-            onChanged: onExposureOffsetChanged,
+    return RepaintBoundary(
+      child: Column(
+        children: [
+          Expanded(
+            child: ExposureOffsetSlider(
+              range: exposureOffsetRange,
+              value: exposureOffsetValue,
+              onChanged: onExposureOffsetChanged,
+            ),
           ),
-        ),
-        const SizedBox(height: Dimens.grid24),
-        ZoomSlider(
-          range: zoomRange,
-          value: zoomValue,
-          onChanged: onZoomChanged,
-        ),
-      ],
+          const SizedBox(height: Dimens.grid24),
+          ZoomSlider(
+            range: zoomRange,
+            value: zoomValue,
+            onChanged: onZoomChanged,
+          ),
+        ],
+      ),
     );
   }
 }
