@@ -8,6 +8,7 @@
             "name": "dev (android)",
             "request": "launch",
             "type": "dart",
+            "flutterMode": "profile",
             "args": [
                 "--flavor",
                 "dev",
@@ -52,5 +53,17 @@
             ],
             "program": "${workspaceFolder}/lib/main_prod.dart",
         },
+        {
+            "name": "Integration Test",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "prod",
+                "--dart-define",
+                "cameraPreviewAspectRatio=240/320",
+            ],
+            "program": "${workspaceFolder}/integration_test/widget_dialog_animated_test.dart",
+          },
     ],
 }

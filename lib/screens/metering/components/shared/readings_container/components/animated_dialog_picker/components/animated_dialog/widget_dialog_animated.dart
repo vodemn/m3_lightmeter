@@ -294,6 +294,7 @@ class _AnimatedSwitcher extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
+        // https://api.flutter.dev/flutter/widgets/Opacity-class.html#performance-considerations-for-opacity-animation
         Opacity(
           opacity: closedOpacityAnimation.value,
           child: Transform.scale(
@@ -304,10 +305,15 @@ class _AnimatedSwitcher extends StatelessWidget {
             ),
           ),
         ),
-        Opacity(
-          opacity: openedOpacityAnimation.value,
-          child: openedChild,
-        ),
+
+        /// When dialog is only started expanding there is too little horizontal space,
+        /// which leads to the failed ListTile assertion (listTileWidget != leading.width).
+        /// So we show the picker only when it makes sense as it begins to be less opaque.
+        if (openedOpacityAnimation.value != 0)
+          Opacity(
+            opacity: openedOpacityAnimation.value,
+            child: openedChild,
+          ),
       ],
     );
   }
