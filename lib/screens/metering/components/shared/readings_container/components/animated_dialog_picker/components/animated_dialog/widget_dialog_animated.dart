@@ -295,8 +295,8 @@ class _AnimatedSwitcher extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         // https://api.flutter.dev/flutter/widgets/Opacity-class.html#performance-considerations-for-opacity-animation
-        Opacity(
-          opacity: closedOpacityAnimation.value,
+        FadeTransition(
+          opacity: closedOpacityAnimation,
           child: Transform.scale(
             scale: sizeAnimation.value!.width / closedSize.width,
             child: SizedBox(
@@ -310,8 +310,8 @@ class _AnimatedSwitcher extends StatelessWidget {
         /// which leads to the failed ListTile assertion (listTileWidget != leading.width).
         /// So we show the picker only when it makes sense as it begins to be less opaque.
         if (openedOpacityAnimation.value != 0)
-          Opacity(
-            opacity: openedOpacityAnimation.value,
+          FadeTransition(
+            opacity: openedOpacityAnimation,
             child: openedChild,
           ),
       ],

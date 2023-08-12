@@ -18,7 +18,7 @@ Future<void> main() {
         // Optionally, save the summary to disk by setting includeSummary
         // to true
         await summary.writeTimelineToFile(
-          'dialog_opening_timeline',
+          'dialog_opening_timeline(fade)',
           pretty: true,
         );
       }
