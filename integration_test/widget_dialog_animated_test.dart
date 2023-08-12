@@ -9,7 +9,7 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'mocks/application_mock.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('AnimatedDialogPicker test', () {
     testWidgets('Tap on `ReadingValueContainer`, verify opened', (tester) async {
@@ -17,10 +17,16 @@ void main() {
       expect(find.text('Film'), findsOneWidget);
       expect(find.text('None'), findsOneWidget);
 
-      await tester.tap(find.byType(AnimatedDialogPicker<Film>));
-      await tester.pumpAndSettle(Dimens.durationL);
-      expect(find.text('Film'), findsNWidgets(2));
-      expect(find.text('None'), findsNWidgets(2));
+      await binding.traceAction(
+        () async {
+          await tester.tap(find.byType(AnimatedDialogPicker<Film>));
+          await tester.pumpAndSettle(Dimens.durationL);
+        },
+        reportKey: 'dialog_opening_timeline',
+      );
+
+      expect(find.text('Film'), findsNWidgets(3));
+      expect(find.text('None'), findsNWidgets(3));
     });
   });
 }

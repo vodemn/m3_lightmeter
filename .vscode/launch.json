@@ -57,6 +57,7 @@
             "name": "Integration Test",
             "request": "launch",
             "type": "dart",
+            "flutterMode": "profile",
             "args": [
                 "--flavor",
                 "prod",
