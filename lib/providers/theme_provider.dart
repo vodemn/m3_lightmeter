@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
+import 'package:lightmeter/providers/enum_providers.dart';
 import 'package:lightmeter/providers/service_providers.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
@@ -47,7 +48,6 @@ class ThemeProvider extends StatefulWidget {
 class ThemeProviderState extends State<ThemeProvider> with WidgetsBindingObserver {
   UserPreferencesService get _prefs => ServiceProviders.userPreferencesServiceOf(context);
 
-  late final _themeTypeNotifier = ValueNotifier<ThemeType>(_prefs.themeType);
   late final _dynamicColorNotifier = ValueNotifier<bool>(_prefs.dynamicColor);
   late final _primaryColorNotifier = ValueNotifier<Color>(_prefs.primaryColor);
 
@@ -66,7 +66,6 @@ class ThemeProviderState extends State<ThemeProvider> with WidgetsBindingObserve
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _themeTypeNotifier.dispose();
     _dynamicColorNotifier.dispose();
     _primaryColorNotifier.dispose();
     super.dispose();
@@ -75,35 +74,24 @@ class ThemeProviderState extends State<ThemeProvider> with WidgetsBindingObserve
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _themeTypeNotifier,
-      builder: (_, themeType, __) => InheritedWidgetBase<ThemeType>(
-        data: themeType,
-        child: ValueListenableBuilder(
-          valueListenable: _dynamicColorNotifier,
-          builder: (_, useDynamicColor, __) => _DynamicColorProvider(
-            useDynamicColor: useDynamicColor,
-            themeBrightness: _themeBrightness,
-            builder: (_, dynamicPrimaryColor) => ValueListenableBuilder(
-              valueListenable: _primaryColorNotifier,
-              builder: (_, primaryColor, __) => _ThemeDataProvider(
-                primaryColor: dynamicPrimaryColor ?? primaryColor,
-                brightness: _themeBrightness,
-                child: widget.child,
-              ),
-            ),
+      valueListenable: _dynamicColorNotifier,
+      builder: (_, useDynamicColor, __) => _DynamicColorProvider(
+        useDynamicColor: useDynamicColor,
+        themeBrightness: _themeBrightness,
+        builder: (_, dynamicPrimaryColor) => ValueListenableBuilder(
+          valueListenable: _primaryColorNotifier,
+          builder: (_, primaryColor, __) => _ThemeDataProvider(
+            primaryColor: dynamicPrimaryColor ?? primaryColor,
+            brightness: _themeBrightness,
+            child: widget.child,
           ),
         ),
       ),
     );
   }
 
-  void setThemeType(ThemeType themeType) {
-    _themeTypeNotifier.value = themeType;
-    _prefs.themeType = themeType;
-  }
-
   Brightness get _themeBrightness {
-    switch (_themeTypeNotifier.value) {
+    switch (EnumProviders.themeTypeOf(context)) {
       case ThemeType.light:
         return Brightness.light;
       case ThemeType.dark:

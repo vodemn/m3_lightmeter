@@ -5,6 +5,7 @@ import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers.dart';
+import 'package:lightmeter/providers/enum_providers.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
@@ -22,7 +23,7 @@ class Application extends StatelessWidget {
           ? _AnnotatedRegionWrapper(
               child: MaterialApp(
                 theme: context.listen<ThemeData>(),
-                locale: Locale(context.listen<SupportedLocale>().intlName),
+                locale: Locale(EnumProviders.localeOf(context).intlName),
                 localizationsDelegates: const [
                   S.delegate,
                   GlobalMaterialLocalizations.delegate,
