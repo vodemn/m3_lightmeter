@@ -7,7 +7,7 @@ import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
-import 'package:lightmeter/providers/service_provider.dart';
+import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:platform/platform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,7 +27,7 @@ class LightmeterProviders extends StatelessWidget {
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
-          return ServiceProvider(
+          return ServicesProvider(
             caffeineService: const CaffeineService(),
             environment: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
             hapticsService: const HapticsService(),

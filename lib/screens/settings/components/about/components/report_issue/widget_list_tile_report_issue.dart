@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/service_provider.dart';
+import 'package:lightmeter/providers/services_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ReportIssueListTile extends StatelessWidget {
@@ -13,7 +13,7 @@ class ReportIssueListTile extends StatelessWidget {
       title: Text(S.of(context).reportIssue),
       onTap: () {
         launchUrl(
-          Uri.parse(ServiceProvider.environmentOf(context).issuesReportUrl),
+          Uri.parse(ServicesProvider.environmentOf(context).issuesReportUrl),
           mode: LaunchMode.externalApplication,
         );
       },

@@ -8,7 +8,7 @@ import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/service_provider.dart';
+import 'package:lightmeter/providers/services_provider.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class UserPreferencesProvider extends StatefulWidget {
@@ -71,12 +71,12 @@ class UserPreferencesProvider extends StatefulWidget {
 class _UserPreferencesProviderState extends State<UserPreferencesProvider>
     with WidgetsBindingObserver {
   UserPreferencesService get userPreferencesService =>
-      ServiceProvider.userPreferencesServiceOf(context);
+      ServicesProvider.userPreferencesServiceOf(context);
 
   late bool dynamicColor = userPreferencesService.dynamicColor;
   late EvSourceType evSourceType;
   late final MeteringScreenLayoutConfig meteringScreenLayout =
-      ServiceProvider.userPreferencesServiceOf(context).meteringScreenLayout;
+      ServicesProvider.userPreferencesServiceOf(context).meteringScreenLayout;
   late Color primaryColor = userPreferencesService.primaryColor;
   late StopType stopType = userPreferencesService.stopType;
   late SupportedLocale locale = userPreferencesService.locale;
@@ -85,9 +85,9 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
   @override
   void initState() {
     super.initState();
-    evSourceType = ServiceProvider.userPreferencesServiceOf(context).evSourceType;
+    evSourceType = ServicesProvider.userPreferencesServiceOf(context).evSourceType;
     evSourceType = evSourceType == EvSourceType.sensor &&
-            !ServiceProvider.environmentOf(context).hasLightSensor
+            !ServicesProvider.environmentOf(context).hasLightSensor
         ? EvSourceType.camera
         : evSourceType;
     WidgetsBinding.instance.addObserver(this);
@@ -145,11 +145,11 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
     setState(() {
       dynamicColor = enable;
     });
-    ServiceProvider.userPreferencesServiceOf(context).dynamicColor = enable;
+    ServicesProvider.userPreferencesServiceOf(context).dynamicColor = enable;
   }
 
   void toggleEvSourceType() {
-    if (!ServiceProvider.environmentOf(context).hasLightSensor) {
+    if (!ServicesProvider.environmentOf(context).hasLightSensor) {
       return;
     }
     setState(() {
@@ -160,7 +160,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
           evSourceType = EvSourceType.camera;
       }
     });
-    ServiceProvider.userPreferencesServiceOf(context).evSourceType = evSourceType;
+    ServicesProvider.userPreferencesServiceOf(context).evSourceType = evSourceType;
   }
 
   void setLocale(SupportedLocale locale) {
@@ -168,7 +168,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
       setState(() {
         this.locale = locale;
       });
-      ServiceProvider.userPreferencesServiceOf(context).locale = locale;
+      ServicesProvider.userPreferencesServiceOf(context).locale = locale;
     });
   }
 
@@ -182,28 +182,28 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
         );
       });
     });
-    ServiceProvider.userPreferencesServiceOf(context).meteringScreenLayout = meteringScreenLayout;
+    ServicesProvider.userPreferencesServiceOf(context).meteringScreenLayout = meteringScreenLayout;
   }
 
   void setPrimaryColor(Color primaryColor) {
     setState(() {
       this.primaryColor = primaryColor;
     });
-    ServiceProvider.userPreferencesServiceOf(context).primaryColor = primaryColor;
+    ServicesProvider.userPreferencesServiceOf(context).primaryColor = primaryColor;
   }
 
   void setStopType(StopType stopType) {
     setState(() {
       this.stopType = stopType;
     });
-    ServiceProvider.userPreferencesServiceOf(context).stopType = stopType;
+    ServicesProvider.userPreferencesServiceOf(context).stopType = stopType;
   }
 
   void setThemeType(ThemeType themeType) {
     setState(() {
       this.themeType = themeType;
     });
-    ServiceProvider.userPreferencesServiceOf(context).themeType = themeType;
+    ServicesProvider.userPreferencesServiceOf(context).themeType = themeType;
   }
 
   Brightness get _themeBrightness {
