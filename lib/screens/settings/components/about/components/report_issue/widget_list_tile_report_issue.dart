@@ -13,7 +13,7 @@ class ReportIssueListTile extends StatelessWidget {
       title: Text(S.of(context).reportIssue),
       onTap: () {
         launchUrl(
-          Uri.parse(ServicesProvider.environmentOf(context).issuesReportUrl),
+          Uri.parse(ServicesProvider.of(context).environment.issuesReportUrl),
           mode: LaunchMode.externalApplication,
         );
       },

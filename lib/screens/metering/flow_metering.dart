@@ -19,12 +19,12 @@ class _MeteringFlowState extends State<MeteringFlow> {
   Widget build(BuildContext context) {
     return MeteringInteractorProvider(
       data: MeteringInteractor(
-        ServicesProvider.userPreferencesServiceOf(context),
-        ServicesProvider.caffeineServiceOf(context),
-        ServicesProvider.hapticsServiceOf(context),
-        ServicesProvider.permissionsServiceOf(context),
-        ServicesProvider.lightSensorServiceOf(context),
-        ServicesProvider.volumeEventsServiceOf(context),
+        ServicesProvider.of(context).userPreferencesService,
+        ServicesProvider.of(context).caffeineService,
+        ServicesProvider.of(context).hapticsService,
+        ServicesProvider.of(context).permissionsService,
+        ServicesProvider.of(context).lightSensorService,
+        ServicesProvider.of(context).volumeEventsService,
       )..initialize(),
       child: MultiBlocProvider(
         providers: [
@@ -32,7 +32,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
           BlocProvider(
             create: (context) => MeteringBloc(
               MeteringInteractorProvider.of(context),
-              VolumeKeysNotifier(ServicesProvider.volumeEventsServiceOf(context)),
+              VolumeKeysNotifier(ServicesProvider.of(context).volumeEventsService),
               context.read<MeteringCommunicationBloc>(),
             ),
           ),

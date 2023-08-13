@@ -13,7 +13,7 @@ class WriteEmailListTile extends StatelessWidget {
       leading: const Icon(Icons.email),
       title: Text(S.of(context).writeEmail),
       onTap: () {
-        final email = ServicesProvider.environmentOf(context).contactEmail;
+        final email = ServicesProvider.of(context).environment.contactEmail;
         final mailToUrl = Uri.parse('mailto:$email?subject=M3 Lightmeter');
         canLaunchUrl(mailToUrl).then((canLaunch) {
           if (canLaunch) {

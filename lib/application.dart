@@ -90,6 +90,8 @@ class Application extends StatelessWidget {
         } else if (snapshot.error != null) {
           return Center(child: Text(snapshot.error!.toString()));
         }
+
+        // TODO(@vodemn): maybe user splashscreen instead
         return const SizedBox();
       },
     );

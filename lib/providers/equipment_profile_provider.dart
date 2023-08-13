@@ -33,7 +33,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   EquipmentProfile get _selectedProfile => _customProfiles.firstWhere(
         (e) => e.id == _selectedId,
         orElse: () {
-          ServicesProvider.userPreferencesServiceOf(context).selectedEquipmentProfileId =
+          ServicesProvider.of(context).userPreferencesService.selectedEquipmentProfileId =
               _defaultProfile.id;
           return _defaultProfile;
         },
@@ -42,8 +42,8 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   @override
   void initState() {
     super.initState();
-    _selectedId = ServicesProvider.userPreferencesServiceOf(context).selectedEquipmentProfileId;
-    _customProfiles = ServicesProvider.userPreferencesServiceOf(context).equipmentProfiles;
+    _selectedId = ServicesProvider.of(context).userPreferencesService.selectedEquipmentProfileId;
+    _customProfiles = ServicesProvider.of(context).userPreferencesService.equipmentProfiles;
   }
 
   @override
@@ -59,7 +59,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     setState(() {
       _selectedId = data.id;
     });
-    ServicesProvider.userPreferencesServiceOf(context).selectedEquipmentProfileId =
+    ServicesProvider.of(context).userPreferencesService.selectedEquipmentProfileId =
         _selectedProfile.id;
   }
 
@@ -92,7 +92,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   }
 
   void _refreshSavedProfiles() {
-    ServicesProvider.userPreferencesServiceOf(context).equipmentProfiles = _customProfiles;
+    ServicesProvider.of(context).userPreferencesService.equipmentProfiles = _customProfiles;
     setState(() {});
   }
 }
@@ -132,6 +132,8 @@ class EquipmentProfiles extends InheritedModel<EquipmentProfilesAspect> {
 
   @override
   bool updateShouldNotifyDependent(
-          EquipmentProfiles oldWidget, Set<EquipmentProfilesAspect> dependencies,) =>
+    EquipmentProfiles oldWidget,
+    Set<EquipmentProfilesAspect> dependencies,
+  ) =>
       false;
 }

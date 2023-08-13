@@ -27,35 +27,7 @@ class ServicesProvider extends InheritedWidget {
     required super.child,
   });
 
-  static CaffeineService caffeineServiceOf(BuildContext context) {
-    return ServicesProvider._of(context).caffeineService;
-  }
-
-  static Environment environmentOf(BuildContext context) {
-    return ServicesProvider._of(context).environment;
-  }
-
-  static HapticsService hapticsServiceOf(BuildContext context) {
-    return ServicesProvider._of(context).hapticsService;
-  }
-
-  static LightSensorService lightSensorServiceOf(BuildContext context) {
-    return ServicesProvider._of(context).lightSensorService;
-  }
-
-  static PermissionsService permissionsServiceOf(BuildContext context) {
-    return ServicesProvider._of(context).permissionsService;
-  }
-
-  static UserPreferencesService userPreferencesServiceOf(BuildContext context) {
-    return ServicesProvider._of(context).userPreferencesService;
-  }
-
-  static VolumeEventsService volumeEventsServiceOf(BuildContext context) {
-    return ServicesProvider._of(context).volumeEventsService;
-  }
-
-  static ServicesProvider _of(BuildContext context) {
+  static ServicesProvider of(BuildContext context) {
     return context.findAncestorWidgetOfExactType<ServicesProvider>()!;
   }
 

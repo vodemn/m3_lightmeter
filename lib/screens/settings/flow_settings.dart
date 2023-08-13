@@ -10,10 +10,10 @@ class SettingsFlow extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingsInteractorProvider(
       data: SettingsInteractor(
-        ServicesProvider.userPreferencesServiceOf(context),
-        ServicesProvider.caffeineServiceOf(context),
-        ServicesProvider.hapticsServiceOf(context),
-        ServicesProvider.volumeEventsServiceOf(context),
+        ServicesProvider.of(context).userPreferencesService,
+        ServicesProvider.of(context).caffeineService,
+        ServicesProvider.of(context).hapticsService,
+        ServicesProvider.of(context).volumeEventsService,
       ),
       child: const SettingsScreen(),
     );

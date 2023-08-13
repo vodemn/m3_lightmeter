@@ -13,7 +13,7 @@ class SourceCodeListTile extends StatelessWidget {
       title: Text(S.of(context).sourceCode),
       onTap: () {
         launchUrl(
-          Uri.parse(ServicesProvider.environmentOf(context).sourceCodeUrl),
+          Uri.parse(ServicesProvider.of(context).environment.sourceCodeUrl),
           mode: LaunchMode.externalApplication,
         );
       },
