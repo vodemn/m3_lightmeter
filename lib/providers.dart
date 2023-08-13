@@ -10,7 +10,6 @@ import 'package:lightmeter/providers/enum_providers.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/providers/service_providers.dart';
-import 'package:lightmeter/providers/theme_provider.dart';
 import 'package:platform/platform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,10 +39,8 @@ class LightmeterProviders extends StatelessWidget {
             child: EnumProviders(
               child: MeteringScreenLayoutProvider(
                 child: EquipmentProfileProvider(
-                  child: ThemeProvider(
-                    child: Builder(
-                      builder: (context) => builder(context, true),
-                    ),
+                  child: Builder(
+                    builder: (context) => builder(context, true),
                   ),
                 ),
               ),

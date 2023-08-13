@@ -6,9 +6,9 @@ import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers.dart';
 import 'package:lightmeter/providers/enum_providers.dart';
+import 'package:lightmeter/res/theme.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
 
 class Application extends StatelessWidget {
   final Environment env;
@@ -19,54 +19,48 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     return LightmeterProviders(
       env: env,
-      builder: (context, ready) => ready
-          ? _AnnotatedRegionWrapper(
-              child: MaterialApp(
-                theme: context.listen<ThemeData>(),
-                locale: Locale(EnumProviders.localeOf(context).intlName),
-                localizationsDelegates: const [
-                  S.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: S.delegate.supportedLocales,
-                builder: (context, child) => MediaQuery(
-                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                  child: child!,
-                ),
-                initialRoute: "metering",
-                routes: {
-                  "metering": (context) => const MeteringFlow(),
-                  "settings": (context) => const SettingsFlow(),
-                },
+      builder: (context, ready) {
+        if (ready) {
+          final theme = themeFrom(
+            EnumProviders.primaryColorOf(context),
+            EnumProviders.brightnessOf(context),
+          );
+          final systemIconsBrightness =
+              ThemeData.estimateBrightnessForColor(theme.colorScheme.onSurface);
+          return AnnotatedRegion(
+            value: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarBrightness:
+                  systemIconsBrightness == Brightness.light ? Brightness.dark : Brightness.light,
+              statusBarIconBrightness: systemIconsBrightness,
+              systemNavigationBarColor: Colors.transparent,
+              systemNavigationBarIconBrightness: systemIconsBrightness,
+            ),
+            child: MaterialApp(
+              theme: theme,
+              locale: Locale(EnumProviders.localeOf(context).intlName),
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                child: child!,
               ),
-            )
-          : const SizedBox(),
-    );
-  }
-}
-
-class _AnnotatedRegionWrapper extends StatelessWidget {
-  final Widget child;
-
-  const _AnnotatedRegionWrapper({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    final systemIconsBrightness = ThemeData.estimateBrightnessForColor(
-      context.listen<ThemeData>().colorScheme.onSurface,
-    );
-    return AnnotatedRegion(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness:
-            systemIconsBrightness == Brightness.light ? Brightness.dark : Brightness.light,
-        statusBarIconBrightness: systemIconsBrightness,
-        systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness: systemIconsBrightness,
-      ),
-      child: child,
+              initialRoute: "metering",
+              routes: {
+                "metering": (context) => const MeteringFlow(),
+                "settings": (context) => const SettingsFlow(),
+              },
+            ),
+          );
+        } else {
+          return const SizedBox();
+        }
+      },
     );
   }
 }
