@@ -6,10 +6,9 @@ import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
-import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
-import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
 import 'package:lightmeter/providers/service_provider.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:platform/platform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,11 +36,9 @@ class LightmeterProviders extends StatelessWidget {
             userPreferencesService: UserPreferencesService(snapshot.data![0] as SharedPreferences),
             volumeEventsService: const VolumeEventsService(LocalPlatform()),
             child: UserPreferencesProvider(
-              child: MeteringScreenLayoutProvider(
-                child: EquipmentProfileProvider(
-                  child: Builder(
-                    builder: (context) => builder(context, true),
-                  ),
+              child: EquipmentProfileProvider(
+                child: Builder(
+                  builder: (context) => builder(context, true),
                 ),
               ),
             ),

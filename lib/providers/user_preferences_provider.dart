@@ -3,22 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
+import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/service_provider.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-
-enum _ListenableAspect {
-  brightness,
-  dynamicColorState,
-  evSourceType,
-  locale,
-  primaryColor,
-  stopType,
-  themeType,
-}
 
 class UserPreferencesProvider extends StatefulWidget {
   final Widget child;
@@ -45,6 +36,15 @@ class UserPreferencesProvider extends StatefulWidget {
     return _inheritFrom(context, _ListenableAspect.locale).locale;
   }
 
+  static MeteringScreenLayoutConfig meteringScreenConfigOf(BuildContext context) {
+    return context.findAncestorWidgetOfExactType<_MeteringScreenLayoutModel>()!.data;
+  }
+
+  static bool meteringScreenFeatureOf(BuildContext context, MeteringScreenLayoutFeature feature) {
+    return InheritedModel.inheritFrom<_MeteringScreenLayoutModel>(context, aspect: feature)!
+        .data[feature]!;
+  }
+
   static Color primaryColorOf(BuildContext context) {
     return _inheritFrom(context, _ListenableAspect.primaryColor).primaryColor;
   }
@@ -57,9 +57,11 @@ class UserPreferencesProvider extends StatefulWidget {
     return _inheritFrom(context, _ListenableAspect.themeType).themeType;
   }
 
-  static _UserPreferencesProviderModel _inheritFrom(
-      BuildContext context, _ListenableAspect aspect) {
-    return InheritedModel.inheritFrom<_UserPreferencesProviderModel>(context, aspect: aspect)!;
+  static _EnumsModel _inheritFrom(
+    BuildContext context,
+    _ListenableAspect aspect,
+  ) {
+    return InheritedModel.inheritFrom<_EnumsModel>(context, aspect: aspect)!;
   }
 
   @override
@@ -73,6 +75,8 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
 
   late bool dynamicColor = userPreferencesService.dynamicColor;
   late EvSourceType evSourceType;
+  late final MeteringScreenLayoutConfig meteringScreenLayout =
+      ServiceProvider.userPreferencesServiceOf(context).meteringScreenLayout;
   late Color primaryColor = userPreferencesService.primaryColor;
   late StopType stopType = userPreferencesService.stopType;
   late SupportedLocale locale = userPreferencesService.locale;
@@ -120,7 +124,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
           dynamicPrimaryColor = null;
           state = DynamicColorState.unavailable;
         }
-        return _UserPreferencesProviderModel(
+        return _EnumsModel(
           brightness: _themeBrightness,
           dynamicColorState: state,
           evSourceType: evSourceType,
@@ -128,7 +132,10 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
           primaryColor: dynamicPrimaryColor ?? primaryColor,
           stopType: stopType,
           themeType: themeType,
-          child: widget.child,
+          child: _MeteringScreenLayoutModel(
+            data: meteringScreenLayout,
+            child: widget.child,
+          ),
         );
       },
     );
@@ -165,6 +172,19 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
     });
   }
 
+  void setMeteringScreenLayout(MeteringScreenLayoutConfig config) {
+    setState(() {
+      config.forEach((key, value) {
+        meteringScreenLayout.update(
+          key,
+          (_) => value,
+          ifAbsent: () => value,
+        );
+      });
+    });
+    ServiceProvider.userPreferencesServiceOf(context).meteringScreenLayout = meteringScreenLayout;
+  }
+
   void setPrimaryColor(Color primaryColor) {
     setState(() {
       this.primaryColor = primaryColor;
@@ -198,7 +218,17 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
   }
 }
 
-class _UserPreferencesProviderModel extends InheritedModel<_ListenableAspect> {
+enum _ListenableAspect {
+  brightness,
+  dynamicColorState,
+  evSourceType,
+  locale,
+  primaryColor,
+  stopType,
+  themeType,
+}
+
+class _EnumsModel extends InheritedModel<_ListenableAspect> {
   final Brightness brightness;
   final DynamicColorState dynamicColorState;
   final EvSourceType evSourceType;
@@ -207,7 +237,7 @@ class _UserPreferencesProviderModel extends InheritedModel<_ListenableAspect> {
   final StopType stopType;
   final ThemeType themeType;
 
-  const _UserPreferencesProviderModel({
+  const _EnumsModel({
     required this.brightness,
     required this.dynamicColorState,
     required this.evSourceType,
@@ -219,7 +249,7 @@ class _UserPreferencesProviderModel extends InheritedModel<_ListenableAspect> {
   });
 
   @override
-  bool updateShouldNotify(_UserPreferencesProviderModel oldWidget) {
+  bool updateShouldNotify(_EnumsModel oldWidget) {
     return brightness != oldWidget.brightness ||
         dynamicColorState != oldWidget.dynamicColorState ||
         evSourceType != oldWidget.evSourceType ||
@@ -231,7 +261,7 @@ class _UserPreferencesProviderModel extends InheritedModel<_ListenableAspect> {
 
   @override
   bool updateShouldNotifyDependent(
-    _UserPreferencesProviderModel oldWidget,
+    _EnumsModel oldWidget,
     Set<_ListenableAspect> dependencies,
   ) {
     return (brightness != oldWidget.brightness &&
@@ -245,5 +275,30 @@ class _UserPreferencesProviderModel extends InheritedModel<_ListenableAspect> {
             dependencies.contains(_ListenableAspect.primaryColor)) ||
         (stopType != oldWidget.stopType && dependencies.contains(_ListenableAspect.stopType)) ||
         (themeType != oldWidget.themeType && dependencies.contains(_ListenableAspect.themeType));
+  }
+}
+
+class _MeteringScreenLayoutModel extends InheritedModel<MeteringScreenLayoutFeature> {
+  final Map<MeteringScreenLayoutFeature, bool> data;
+
+  const _MeteringScreenLayoutModel({
+    required this.data,
+    required super.child,
+  });
+
+  @override
+  bool updateShouldNotify(_MeteringScreenLayoutModel oldWidget) => oldWidget.data != data;
+
+  @override
+  bool updateShouldNotifyDependent(
+    _MeteringScreenLayoutModel oldWidget,
+    Set<MeteringScreenLayoutFeature> dependencies,
+  ) {
+    for (final dependecy in dependencies) {
+      if (oldWidget.data[dependecy] != data[dependecy]) {
+        return true;
+      }
+    }
+    return false;
   }
 }

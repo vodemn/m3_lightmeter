@@ -5,7 +5,7 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/features.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
-import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/animated_dialog_picker/widget_picker_dialog_animated.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/reading_value_container/widget_container_reading_value.dart';
@@ -43,7 +43,7 @@ class ReadingsContainer extends StatelessWidget {
           const _EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
-        if (MeteringScreenLayout.featureOf(
+        if (UserPreferencesProvider.meteringScreenFeatureOf(
           context,
           MeteringScreenLayoutFeature.extremeExposurePairs,
         )) ...[
@@ -61,7 +61,7 @@ class ReadingsContainer extends StatelessWidget {
           ),
           const _InnerPadding(),
         ],
-        if (MeteringScreenLayout.featureOf(
+        if (UserPreferencesProvider.meteringScreenFeatureOf(
           context,
           MeteringScreenLayoutFeature.filmPicker,
         )) ...[
