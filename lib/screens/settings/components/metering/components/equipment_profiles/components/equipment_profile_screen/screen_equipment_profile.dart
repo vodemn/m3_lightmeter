@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
+
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfilesScreen extends StatefulWidget {
@@ -19,13 +19,12 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   static const maxProfiles = 5 + 1; // replace with a constant from iap
 
   late List<GlobalKey<EquipmentProfileContainerState>> profileContainersKeys = [];
-  int get profilesCount => context.listen<EquipmentProfiles>().length;
+  int get profilesCount => EquipmentProfiles.of(context).length;
 
   @override
-  void initState() {
-    super.initState();
-    profileContainersKeys = context
-        .get<EquipmentProfiles>()
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    profileContainersKeys = EquipmentProfiles.of(context)
         .map((e) => GlobalKey<EquipmentProfileContainerState>(debugLabel: e.id))
         .toList();
   }
@@ -58,14 +57,14 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
                     ),
                     child: EquipmentProfileContainer(
                       key: profileContainersKeys[index],
-                      data: context.listen<EquipmentProfiles>()[index],
+                      data: EquipmentProfiles.of(context)[index],
                       onExpand: () => _keepExpandedAt(index),
                       onUpdate: (profileData) => _updateProfileAt(profileData, index),
                       onDelete: () => _removeProfileAt(index),
                     ),
                   )
                 : const SizedBox.shrink(),
-            childCount: profileContainersKeys.length,
+            childCount: profilesCount,
           ),
         ),
       ],
@@ -79,7 +78,6 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
     ).then((value) {
       if (value != null) {
         EquipmentProfileProvider.of(context).addProfile(value);
-        profileContainersKeys.add(GlobalKey<EquipmentProfileContainerState>());
       }
     });
   }
@@ -89,8 +87,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   }
 
   void _removeProfileAt(int index) {
-    EquipmentProfileProvider.of(context).deleteProfile(context.listen<EquipmentProfiles>()[index]);
-    profileContainersKeys.removeAt(index);
+    EquipmentProfileProvider.of(context).deleteProfile(EquipmentProfiles.of(context)[index]);
   }
 
   void _keepExpandedAt(int index) {

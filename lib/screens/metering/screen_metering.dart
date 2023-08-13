@@ -6,6 +6,7 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
@@ -15,7 +16,7 @@ import 'package:lightmeter/screens/metering/components/light_sensor_container/pr
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:lightmeter/screens/metering/utils/listener_metering_layout_feature.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:lightmeter/screens/metering/utils/listsner_equipment_profiles.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreen extends StatelessWidget {
@@ -72,7 +73,7 @@ class _InheritedListeners extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InheritedWidgetListener<EquipmentProfile>(
+    return EquipmentProfileListener(
       onDidChangeDependencies: (value) {
         context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
       },
@@ -146,7 +147,7 @@ class _MeteringContainerBuidler extends StatelessWidget {
     final StopType stopType = UserPreferencesProvider.stopTypeOf(context);
     final int evSteps = (ev * (stopType.index + 1)).round();
 
-    final EquipmentProfile equipmentProfile = context.listen<EquipmentProfile>();
+    final EquipmentProfile equipmentProfile = EquipmentProfiles.selectedOf(context);
     final List<ApertureValue> apertureValues =
         equipmentProfile.apertureValues.whereStopType(stopType);
     final List<ShutterSpeedValue> shutterSpeedValues =

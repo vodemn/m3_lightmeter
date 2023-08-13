@@ -9,7 +9,6 @@ import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/animated_dialog_picker/widget_picker_dialog_animated.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/reading_value_container/widget_container_reading_value.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class ReadingsContainer extends StatelessWidget {
@@ -77,7 +76,7 @@ class ReadingsContainer extends StatelessWidget {
             Expanded(
               child: _IsoValuePicker(
                 selectedValue: iso,
-                values: context.listen<EquipmentProfile>().isoValues,
+                values: EquipmentProfiles.selectedOf(context).isoValues,
                 onChanged: onIsoChanged,
               ),
             ),
@@ -85,7 +84,7 @@ class ReadingsContainer extends StatelessWidget {
             Expanded(
               child: _NdValuePicker(
                 selectedValue: nd,
-                values: context.listen<EquipmentProfile>().ndValues,
+                values: EquipmentProfiles.selectedOf(context).ndValues,
                 onChanged: onNdChanged,
               ),
             ),
@@ -108,16 +107,16 @@ class _EquipmentProfilePicker extends StatelessWidget {
     return AnimatedDialogPicker<EquipmentProfile>(
       icon: Icons.camera,
       title: S.of(context).equipmentProfile,
-      selectedValue: context.listen<EquipmentProfile>(),
-      values: context.listen<EquipmentProfiles>(),
+      selectedValue: EquipmentProfiles.selectedOf(context),
+      values: EquipmentProfiles.of(context),
       itemTitleBuilder: (_, value) => Text(value.id.isEmpty ? S.of(context).none : value.name),
       onChanged: EquipmentProfileProvider.of(context).setProfile,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: S.of(context).equipmentProfile,
-          value: context.listen<EquipmentProfile>().id.isEmpty
+          value: EquipmentProfiles.selectedOf(context).id.isEmpty
               ? S.of(context).none
-              : context.listen<EquipmentProfile>().name,
+              : EquipmentProfiles.selectedOf(context).name,
         ),
       ),
     );
