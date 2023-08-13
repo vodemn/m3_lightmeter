@@ -30,59 +30,35 @@ class EnumProviders extends StatefulWidget {
   }
 
   static Brightness brightnessOf(BuildContext context) {
-    return InheritedModel.inheritFrom<_EnumProvidersModel>(
-      context,
-      aspect: _ListenableAspect.brightness,
-    )!
-        .brightness;
+    return _inheritFrom(context, _ListenableAspect.brightness).brightness;
   }
 
   static DynamicColorState dynamicColorStateOf(BuildContext context) {
-    return InheritedModel.inheritFrom<_EnumProvidersModel>(
-      context,
-      aspect: _ListenableAspect.dynamicColorState,
-    )!
-        .dynamicColorState;
+    return _inheritFrom(context, _ListenableAspect.dynamicColorState).dynamicColorState;
   }
 
   static EvSourceType evSourceTypeOf(BuildContext context) {
-    return InheritedModel.inheritFrom<_EnumProvidersModel>(
-      context,
-      aspect: _ListenableAspect.evSourceType,
-    )!
-        .evSourceType;
+    return _inheritFrom(context, _ListenableAspect.evSourceType).evSourceType;
   }
 
   static SupportedLocale localeOf(BuildContext context) {
-    return InheritedModel.inheritFrom<_EnumProvidersModel>(
-      context,
-      aspect: _ListenableAspect.locale,
-    )!
-        .locale;
+    return _inheritFrom(context, _ListenableAspect.locale).locale;
   }
 
   static Color primaryColorOf(BuildContext context) {
-    return InheritedModel.inheritFrom<_EnumProvidersModel>(
-      context,
-      aspect: _ListenableAspect.primaryColor,
-    )!
-        .primaryColor;
+    return _inheritFrom(context, _ListenableAspect.primaryColor).primaryColor;
   }
 
   static StopType stopTypeOf(BuildContext context) {
-    return InheritedModel.inheritFrom<_EnumProvidersModel>(
-      context,
-      aspect: _ListenableAspect.stopType,
-    )!
-        .stopType;
+    return _inheritFrom(context, _ListenableAspect.stopType).stopType;
   }
 
   static ThemeType themeTypeOf(BuildContext context) {
-    return InheritedModel.inheritFrom<_EnumProvidersModel>(
-      context,
-      aspect: _ListenableAspect.themeType,
-    )!
-        .themeType;
+    return _inheritFrom(context, _ListenableAspect.themeType).themeType;
+  }
+
+  static _EnumProvidersModel _inheritFrom(BuildContext context, _ListenableAspect aspect) {
+    return InheritedModel.inheritFrom<_EnumProvidersModel>(context, aspect: aspect)!;
   }
 
   @override
