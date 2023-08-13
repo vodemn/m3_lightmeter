@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/enum_providers.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 class DynamicColorListTile extends StatelessWidget {
@@ -12,8 +12,8 @@ class DynamicColorListTile extends StatelessWidget {
     return SwitchListTile(
       secondary: const Icon(Icons.colorize),
       title: Text(S.of(context).dynamicColor),
-      value: EnumProviders.dynamicColorStateOf(context) == DynamicColorState.enabled,
-      onChanged: EnumProviders.of(context).enableDynamicColor,
+      value: UserPreferencesProvider.dynamicColorStateOf(context) == DynamicColorState.enabled,
+      onChanged: UserPreferencesProvider.of(context).enableDynamicColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
     );
   }

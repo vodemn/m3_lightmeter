@@ -5,7 +5,7 @@ import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers.dart';
-import 'package:lightmeter/providers/enum_providers.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/theme.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
@@ -22,8 +22,8 @@ class Application extends StatelessWidget {
       builder: (context, ready) {
         if (ready) {
           final theme = themeFrom(
-            EnumProviders.primaryColorOf(context),
-            EnumProviders.brightnessOf(context),
+            UserPreferencesProvider.primaryColorOf(context),
+            UserPreferencesProvider.brightnessOf(context),
           );
           final systemIconsBrightness =
               ThemeData.estimateBrightnessForColor(theme.colorScheme.onSurface);
@@ -38,7 +38,7 @@ class Application extends StatelessWidget {
             ),
             child: MaterialApp(
               theme: theme,
-              locale: Locale(EnumProviders.localeOf(context).intlName),
+              locale: Locale(UserPreferencesProvider.localeOf(context).intlName),
               localizationsDelegates: const [
                 S.delegate,
                 GlobalMaterialLocalizations.delegate,

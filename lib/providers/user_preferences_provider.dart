@@ -20,13 +20,13 @@ enum _ListenableAspect {
   themeType,
 }
 
-class EnumProviders extends StatefulWidget {
+class UserPreferencesProvider extends StatefulWidget {
   final Widget child;
 
-  const EnumProviders({required this.child, super.key});
+  const UserPreferencesProvider({required this.child, super.key});
 
-  static _EnumProvidersState of(BuildContext context) {
-    return context.findAncestorStateOfType<_EnumProvidersState>()!;
+  static _UserPreferencesProviderState of(BuildContext context) {
+    return context.findAncestorStateOfType<_UserPreferencesProviderState>()!;
   }
 
   static Brightness brightnessOf(BuildContext context) {
@@ -57,15 +57,17 @@ class EnumProviders extends StatefulWidget {
     return _inheritFrom(context, _ListenableAspect.themeType).themeType;
   }
 
-  static _EnumProvidersModel _inheritFrom(BuildContext context, _ListenableAspect aspect) {
-    return InheritedModel.inheritFrom<_EnumProvidersModel>(context, aspect: aspect)!;
+  static _UserPreferencesProviderModel _inheritFrom(
+      BuildContext context, _ListenableAspect aspect) {
+    return InheritedModel.inheritFrom<_UserPreferencesProviderModel>(context, aspect: aspect)!;
   }
 
   @override
-  State<EnumProviders> createState() => _EnumProvidersState();
+  State<UserPreferencesProvider> createState() => _UserPreferencesProviderState();
 }
 
-class _EnumProvidersState extends State<EnumProviders> with WidgetsBindingObserver {
+class _UserPreferencesProviderState extends State<UserPreferencesProvider>
+    with WidgetsBindingObserver {
   UserPreferencesService get userPreferencesService =>
       ServiceProviders.userPreferencesServiceOf(context);
 
@@ -118,7 +120,7 @@ class _EnumProvidersState extends State<EnumProviders> with WidgetsBindingObserv
           dynamicPrimaryColor = null;
           state = DynamicColorState.unavailable;
         }
-        return _EnumProvidersModel(
+        return _UserPreferencesProviderModel(
           brightness: _themeBrightness,
           dynamicColorState: state,
           evSourceType: evSourceType,
@@ -196,7 +198,7 @@ class _EnumProvidersState extends State<EnumProviders> with WidgetsBindingObserv
   }
 }
 
-class _EnumProvidersModel extends InheritedModel<_ListenableAspect> {
+class _UserPreferencesProviderModel extends InheritedModel<_ListenableAspect> {
   final Brightness brightness;
   final DynamicColorState dynamicColorState;
   final EvSourceType evSourceType;
@@ -205,7 +207,7 @@ class _EnumProvidersModel extends InheritedModel<_ListenableAspect> {
   final StopType stopType;
   final ThemeType themeType;
 
-  const _EnumProvidersModel({
+  const _UserPreferencesProviderModel({
     required this.brightness,
     required this.dynamicColorState,
     required this.evSourceType,
@@ -217,7 +219,7 @@ class _EnumProvidersModel extends InheritedModel<_ListenableAspect> {
   });
 
   @override
-  bool updateShouldNotify(_EnumProvidersModel oldWidget) {
+  bool updateShouldNotify(_UserPreferencesProviderModel oldWidget) {
     return brightness != oldWidget.brightness ||
         dynamicColorState != oldWidget.dynamicColorState ||
         evSourceType != oldWidget.evSourceType ||
@@ -229,7 +231,7 @@ class _EnumProvidersModel extends InheritedModel<_ListenableAspect> {
 
   @override
   bool updateShouldNotifyDependent(
-    _EnumProvidersModel oldWidget,
+    _UserPreferencesProviderModel oldWidget,
     Set<_ListenableAspect> dependencies,
   ) {
     return (brightness != oldWidget.brightness &&

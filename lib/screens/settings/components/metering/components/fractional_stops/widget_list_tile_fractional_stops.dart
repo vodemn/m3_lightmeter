@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/enum_providers.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_picker.dart/widget_dialog_picker.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -12,20 +12,20 @@ class StopTypeListTile extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.straighten),
       title: Text(S.of(context).fractionalStops),
-      trailing: Text(_typeToString(context, EnumProviders.stopTypeOf(context))),
+      trailing: Text(_typeToString(context, UserPreferencesProvider.stopTypeOf(context))),
       onTap: () {
         showDialog<StopType>(
           context: context,
           builder: (_) => DialogPicker<StopType>(
             icon: Icons.straighten,
             title: S.of(context).showFractionalStops,
-            selectedValue: EnumProviders.stopTypeOf(context),
+            selectedValue: UserPreferencesProvider.stopTypeOf(context),
             values: StopType.values,
             titleAdapter: _typeToString,
           ),
         ).then((value) {
           if (value != null) {
-            EnumProviders.of(context).setStopType(value);
+            UserPreferencesProvider.of(context).setStopType(value);
           }
         });
       },

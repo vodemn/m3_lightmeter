@@ -6,7 +6,7 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
-import 'package:lightmeter/providers/enum_providers.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/providers/service_providers.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/provider_bottom_controls.dart';
@@ -46,7 +46,7 @@ class MeteringScreen extends StatelessWidget {
                 ev: state is MeteringDataState ? state.ev : null,
                 isMetering: state.isMetering,
                 onSwitchEvSourceType: ServiceProviders.environmentOf(context).hasLightSensor
-                    ? EnumProviders.of(context).toggleEvSourceType
+                    ? UserPreferencesProvider.of(context).toggleEvSourceType
                     : null,
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
                 onSettings: () {
@@ -111,7 +111,7 @@ class _MeteringContainerBuidler extends StatelessWidget {
     final fastest = exposurePairs.isNotEmpty ? exposurePairs.first : null;
     final slowest = exposurePairs.isNotEmpty ? exposurePairs.last : null;
     // Doubled build here when switching evSourceType. As new source bloc fires a new state on init
-    return EnumProviders.evSourceTypeOf(context) == EvSourceType.camera
+    return UserPreferencesProvider.evSourceTypeOf(context) == EvSourceType.camera
         ? CameraContainerProvider(
             fastest: fastest,
             slowest: slowest,
@@ -142,7 +142,7 @@ class _MeteringContainerBuidler extends StatelessWidget {
     }
 
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
-    final StopType stopType = EnumProviders.stopTypeOf(context);
+    final StopType stopType = UserPreferencesProvider.stopTypeOf(context);
     final int evSteps = (ev * (stopType.index + 1)).round();
 
     final EquipmentProfile equipmentProfile = context.listen<EquipmentProfile>();
