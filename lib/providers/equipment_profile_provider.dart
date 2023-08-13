@@ -4,6 +4,7 @@ import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:uuid/uuid.dart';
 
+// TODO(@vodemn): This will be removed in #89
 typedef EquipmentProfiles = List<EquipmentProfile>;
 
 class EquipmentProfileProvider extends StatefulWidget {
