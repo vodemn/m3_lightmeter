@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/service_providers.dart';
+import 'package:lightmeter/providers/service_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SourceCodeListTile extends StatelessWidget {
@@ -13,7 +13,7 @@ class SourceCodeListTile extends StatelessWidget {
       title: Text(S.of(context).sourceCode),
       onTap: () {
         launchUrl(
-          Uri.parse(ServiceProviders.environmentOf(context).sourceCodeUrl),
+          Uri.parse(ServiceProvider.environmentOf(context).sourceCodeUrl),
           mode: LaunchMode.externalApplication,
         );
       },

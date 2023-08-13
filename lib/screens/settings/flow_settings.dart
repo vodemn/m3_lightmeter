@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/interactors/settings_interactor.dart';
-import 'package:lightmeter/providers/service_providers.dart';
+import 'package:lightmeter/providers/service_provider.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 
@@ -11,10 +11,10 @@ class SettingsFlow extends StatelessWidget {
   Widget build(BuildContext context) {
     return InheritedWidgetBase<SettingsInteractor>(
       data: SettingsInteractor(
-        ServiceProviders.userPreferencesServiceOf(context),
-        ServiceProviders.caffeineServiceOf(context),
-        ServiceProviders.hapticsServiceOf(context),
-        ServiceProviders.volumeEventsServiceOf(context),
+        ServiceProvider.userPreferencesServiceOf(context),
+        ServiceProvider.caffeineServiceOf(context),
+        ServiceProvider.hapticsServiceOf(context),
+        ServiceProvider.volumeEventsServiceOf(context),
       ),
       child: const SettingsScreen(),
     );

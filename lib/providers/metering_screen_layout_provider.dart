@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
-import 'package:lightmeter/providers/service_providers.dart';
+import 'package:lightmeter/providers/service_provider.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 
 class MeteringScreenLayoutProvider extends StatefulWidget {
@@ -18,7 +18,7 @@ class MeteringScreenLayoutProvider extends StatefulWidget {
 
 class MeteringScreenLayoutProviderState extends State<MeteringScreenLayoutProvider> {
   late final MeteringScreenLayoutConfig _config =
-      ServiceProviders.userPreferencesServiceOf(context).meteringScreenLayout;
+      ServiceProvider.userPreferencesServiceOf(context).meteringScreenLayout;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class MeteringScreenLayoutProviderState extends State<MeteringScreenLayoutProvid
         );
       });
     });
-    ServiceProviders.userPreferencesServiceOf(context).meteringScreenLayout = _config;
+    ServiceProvider.userPreferencesServiceOf(context).meteringScreenLayout = _config;
   }
 }
 

@@ -7,7 +7,7 @@ import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
 
-class ServiceProviders extends InheritedWidget {
+class ServiceProvider extends InheritedWidget {
   final CaffeineService caffeineService;
   final Environment environment;
   final HapticsService hapticsService;
@@ -16,7 +16,7 @@ class ServiceProviders extends InheritedWidget {
   final UserPreferencesService userPreferencesService;
   final VolumeEventsService volumeEventsService;
 
-  const ServiceProviders({
+  const ServiceProvider({
     required this.caffeineService,
     required this.environment,
     required this.hapticsService,
@@ -28,37 +28,37 @@ class ServiceProviders extends InheritedWidget {
   });
 
   static CaffeineService caffeineServiceOf(BuildContext context) {
-    return ServiceProviders._of(context).caffeineService;
+    return ServiceProvider._of(context).caffeineService;
   }
 
   static Environment environmentOf(BuildContext context) {
-    return ServiceProviders._of(context).environment;
+    return ServiceProvider._of(context).environment;
   }
 
   static HapticsService hapticsServiceOf(BuildContext context) {
-    return ServiceProviders._of(context).hapticsService;
+    return ServiceProvider._of(context).hapticsService;
   }
 
   static LightSensorService lightSensorServiceOf(BuildContext context) {
-    return ServiceProviders._of(context).lightSensorService;
+    return ServiceProvider._of(context).lightSensorService;
   }
 
   static PermissionsService permissionsServiceOf(BuildContext context) {
-    return ServiceProviders._of(context).permissionsService;
+    return ServiceProvider._of(context).permissionsService;
   }
 
   static UserPreferencesService userPreferencesServiceOf(BuildContext context) {
-    return ServiceProviders._of(context).userPreferencesService;
+    return ServiceProvider._of(context).userPreferencesService;
   }
 
   static VolumeEventsService volumeEventsServiceOf(BuildContext context) {
-    return ServiceProviders._of(context).volumeEventsService;
+    return ServiceProvider._of(context).volumeEventsService;
   }
 
-  static ServiceProviders _of(BuildContext context) {
-    return context.findAncestorWidgetOfExactType<ServiceProviders>()!;
+  static ServiceProvider _of(BuildContext context) {
+    return context.findAncestorWidgetOfExactType<ServiceProvider>()!;
   }
 
   @override
-  bool updateShouldNotify(ServiceProviders oldWidget) => false;
+  bool updateShouldNotify(ServiceProvider oldWidget) => false;
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/service_providers.dart';
+import 'package:lightmeter/providers/service_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/bloc_dialog_calibration.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/event_dialog_calibration.dart';
@@ -14,7 +14,7 @@ class CalibrationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasLightSensor = ServiceProviders.environmentOf(context).hasLightSensor;
+    final bool hasLightSensor = ServiceProvider.environmentOf(context).hasLightSensor;
     return AlertDialog(
       icon: const Icon(Icons.settings_brightness),
       titlePadding: Dimens.dialogIconTitlePadding,
