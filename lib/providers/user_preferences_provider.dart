@@ -21,19 +21,19 @@ class UserPreferencesProvider extends StatefulWidget {
   }
 
   static Brightness brightnessOf(BuildContext context) {
-    return _inheritFrom(context, _ListenableAspect.brightness).brightness;
+    return _inheritFromEnumsModel(context, _ListenableAspect.brightness).brightness;
   }
 
   static DynamicColorState dynamicColorStateOf(BuildContext context) {
-    return _inheritFrom(context, _ListenableAspect.dynamicColorState).dynamicColorState;
+    return _inheritFromEnumsModel(context, _ListenableAspect.dynamicColorState).dynamicColorState;
   }
 
   static EvSourceType evSourceTypeOf(BuildContext context) {
-    return _inheritFrom(context, _ListenableAspect.evSourceType).evSourceType;
+    return _inheritFromEnumsModel(context, _ListenableAspect.evSourceType).evSourceType;
   }
 
   static SupportedLocale localeOf(BuildContext context) {
-    return _inheritFrom(context, _ListenableAspect.locale).locale;
+    return _inheritFromEnumsModel(context, _ListenableAspect.locale).locale;
   }
 
   static MeteringScreenLayoutConfig meteringScreenConfigOf(BuildContext context) {
@@ -46,18 +46,18 @@ class UserPreferencesProvider extends StatefulWidget {
   }
 
   static Color primaryColorOf(BuildContext context) {
-    return _inheritFrom(context, _ListenableAspect.primaryColor).primaryColor;
+    return _inheritFromEnumsModel(context, _ListenableAspect.primaryColor).primaryColor;
   }
 
   static StopType stopTypeOf(BuildContext context) {
-    return _inheritFrom(context, _ListenableAspect.stopType).stopType;
+    return _inheritFromEnumsModel(context, _ListenableAspect.stopType).stopType;
   }
 
   static ThemeType themeTypeOf(BuildContext context) {
-    return _inheritFrom(context, _ListenableAspect.themeType).themeType;
+    return _inheritFromEnumsModel(context, _ListenableAspect.themeType).themeType;
   }
 
-  static _EnumsModel _inheritFrom(
+  static _EnumsModel _inheritFromEnumsModel(
     BuildContext context,
     _ListenableAspect aspect,
   ) {
