@@ -14,6 +14,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/provider
 import 'package:lightmeter/screens/metering/components/light_sensor_container/provider_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
+import 'package:lightmeter/screens/metering/utils/listener_metering_layout_feature.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -75,8 +76,8 @@ class _InheritedListeners extends StatelessWidget {
       onDidChangeDependencies: (value) {
         context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
       },
-      child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
-        aspect: MeteringScreenLayoutFeature.filmPicker,
+      child: MeteringScreenLayoutFeatureListener(
+        feature: MeteringScreenLayoutFeature.filmPicker,
         onDidChangeDependencies: (value) {
           if (!value) context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
         },
