@@ -1,8 +1,7 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:lightmeter/providers/service_providers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WriteEmailListTile extends StatelessWidget {
@@ -14,7 +13,7 @@ class WriteEmailListTile extends StatelessWidget {
       leading: const Icon(Icons.email),
       title: Text(S.of(context).writeEmail),
       onTap: () {
-        final email = context.get<Environment>().contactEmail;
+        final email = ServiceProviders.environmentOf(context).contactEmail;
         final mailToUrl = Uri.parse('mailto:$email?subject=M3 Lightmeter');
         canLaunchUrl(mailToUrl).then((canLaunch) {
           if (canLaunch) {

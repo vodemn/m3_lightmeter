@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/data/caffeine_service.dart';
-import 'package:lightmeter/data/haptics_service.dart';
-import 'package:lightmeter/data/light_sensor_service.dart';
-import 'package:lightmeter/data/permissions_service.dart';
-import 'package:lightmeter/data/shared_prefs_service.dart';
-import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/providers/service_providers.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/volume_keys_notifier/notifier_volume_keys.dart';
@@ -25,15 +20,15 @@ class _MeteringFlowState extends State<MeteringFlow> {
   Widget build(BuildContext context) {
     return InheritedWidgetBase<MeteringInteractor>(
       data: MeteringInteractor(
-        context.get<UserPreferencesService>(),
-        context.get<CaffeineService>(),
-        context.get<HapticsService>(),
-        context.get<PermissionsService>(),
-        context.get<LightSensorService>(),
-        context.get<VolumeEventsService>(),
+        ServiceProviders.userPreferencesServiceOf(context),
+        ServiceProviders.caffeineServiceOf(context),
+        ServiceProviders.hapticsServiceOf(context),
+        ServiceProviders.permissionsServiceOf(context),
+        ServiceProviders.lightSensorServiceOf(context),
+        ServiceProviders.volumeEventsServiceOf(context),
       )..initialize(),
       child: InheritedWidgetBase<VolumeKeysNotifier>(
-        data: VolumeKeysNotifier(context.get<VolumeEventsService>()),
+        data: VolumeKeysNotifier(ServiceProviders.volumeEventsServiceOf(context)),
         child: MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => MeteringCommunicationBloc()),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/data/shared_prefs_service.dart';
+import 'package:lightmeter/providers/service_providers.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -22,7 +22,7 @@ class StopTypeProviderState extends State<StopTypeProvider> {
   @override
   void initState() {
     super.initState();
-    _stopType = context.get<UserPreferencesService>().stopType;
+    _stopType = ServiceProviders.userPreferencesServiceOf(context).stopType;
   }
 
   @override
@@ -37,6 +37,6 @@ class StopTypeProviderState extends State<StopTypeProvider> {
     setState(() {
       _stopType = type;
     });
-    context.get<UserPreferencesService>().stopType = type;
+    ServiceProviders.userPreferencesServiceOf(context).stopType = type;
   }
 }

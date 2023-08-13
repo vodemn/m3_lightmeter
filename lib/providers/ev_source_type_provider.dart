@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
-import 'package:lightmeter/data/shared_prefs_service.dart';
-import 'package:lightmeter/environment.dart';
+import 'package:lightmeter/providers/service_providers.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 
 class EvSourceTypeProvider extends StatefulWidget {
@@ -23,9 +22,9 @@ class EvSourceTypeProviderState extends State<EvSourceTypeProvider> {
   @override
   void initState() {
     super.initState();
-    final evSourceType = context.get<UserPreferencesService>().evSourceType;
+    final evSourceType = ServiceProviders.userPreferencesServiceOf(context).evSourceType;
     valueListenable = ValueNotifier(
-      evSourceType == EvSourceType.sensor && !context.get<Environment>().hasLightSensor
+      evSourceType == EvSourceType.sensor && !ServiceProviders.environmentOf(context).hasLightSensor
           ? EvSourceType.camera
           : evSourceType,
     );
@@ -52,12 +51,12 @@ class EvSourceTypeProviderState extends State<EvSourceTypeProvider> {
   void toggleType() {
     switch (valueListenable.value) {
       case EvSourceType.camera:
-        if (context.get<Environment>().hasLightSensor) {
+        if (ServiceProviders.environmentOf(context).hasLightSensor) {
           valueListenable.value = EvSourceType.sensor;
         }
       case EvSourceType.sensor:
         valueListenable.value = EvSourceType.camera;
     }
-    context.get<UserPreferencesService>().evSourceType = valueListenable.value;
+    ServiceProviders.userPreferencesServiceOf(context).evSourceType = valueListenable.value;
   }
 }

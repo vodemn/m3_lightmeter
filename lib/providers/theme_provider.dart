@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
+import 'package:lightmeter/providers/service_providers.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
@@ -44,7 +45,7 @@ class ThemeProvider extends StatefulWidget {
 }
 
 class ThemeProviderState extends State<ThemeProvider> with WidgetsBindingObserver {
-  UserPreferencesService get _prefs => context.get<UserPreferencesService>();
+  UserPreferencesService get _prefs => ServiceProviders.userPreferencesServiceOf(context);
 
   late final _themeTypeNotifier = ValueNotifier<ThemeType>(_prefs.themeType);
   late final _dynamicColorNotifier = ValueNotifier<bool>(_prefs.dynamicColor);

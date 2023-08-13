@@ -9,10 +9,10 @@ import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
 import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
+import 'package:lightmeter/providers/service_providers.dart';
 import 'package:lightmeter/providers/stop_type_provider.dart';
 import 'package:lightmeter/providers/supported_locale_provider.dart';
 import 'package:lightmeter/providers/theme_provider.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:platform/platform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,34 +31,22 @@ class LightmeterProviders extends StatelessWidget {
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
-          return InheritedWidgetBase<Environment>(
-            data: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
-            child: InheritedWidgetBase<UserPreferencesService>(
-              data: UserPreferencesService(snapshot.data![0] as SharedPreferences),
-              child: InheritedWidgetBase<LightSensorService>(
-                data: const LightSensorService(LocalPlatform()),
-                child: InheritedWidgetBase<CaffeineService>(
-                  data: const CaffeineService(),
-                  child: InheritedWidgetBase<HapticsService>(
-                    data: const HapticsService(),
-                    child: InheritedWidgetBase<VolumeEventsService>(
-                      data: const VolumeEventsService(LocalPlatform()),
-                      child: InheritedWidgetBase<PermissionsService>(
-                        data: const PermissionsService(),
-                        child: MeteringScreenLayoutProvider(
-                          child: StopTypeProvider(
-                            child: EquipmentProfileProvider(
-                              child: EvSourceTypeProvider(
-                                child: SupportedLocaleProvider(
-                                  child: ThemeProvider(
-                                    child: Builder(
-                                      builder: (context) => builder(context, true),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+          return ServiceProviders(
+            caffeineService: const CaffeineService(),
+            environment: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
+            hapticsService: const HapticsService(),
+            lightSensorService: const LightSensorService(LocalPlatform()),
+            permissionsService: const PermissionsService(),
+            userPreferencesService: UserPreferencesService(snapshot.data![0] as SharedPreferences),
+            volumeEventsService: const VolumeEventsService(LocalPlatform()),
+            child: MeteringScreenLayoutProvider(
+              child: StopTypeProvider(
+                child: EquipmentProfileProvider(
+                  child: EvSourceTypeProvider(
+                    child: SupportedLocaleProvider(
+                      child: ThemeProvider(
+                        child: Builder(
+                          builder: (context) => builder(context, true),
                         ),
                       ),
                     ),

@@ -6,8 +6,8 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
-import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/ev_source_type_provider.dart';
+import 'package:lightmeter/providers/service_providers.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/provider_bottom_controls.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/provider_container_camera.dart';
@@ -45,7 +45,7 @@ class MeteringScreen extends StatelessWidget {
               builder: (context, state) => MeteringBottomControlsProvider(
                 ev: state is MeteringDataState ? state.ev : null,
                 isMetering: state.isMetering,
-                onSwitchEvSourceType: context.get<Environment>().hasLightSensor
+                onSwitchEvSourceType: ServiceProviders.environmentOf(context).hasLightSensor
                     ? EvSourceTypeProvider.of(context).toggleType
                     : null,
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
