@@ -75,7 +75,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
 
   late bool dynamicColor = userPreferencesService.dynamicColor;
   late EvSourceType evSourceType;
-  late final MeteringScreenLayoutConfig meteringScreenLayout =
+  late MeteringScreenLayoutConfig meteringScreenLayout =
       ServicesProvider.of(context).userPreferencesService.meteringScreenLayout;
   late Color primaryColor = userPreferencesService.primaryColor;
   late StopType stopType = userPreferencesService.stopType;
@@ -174,13 +174,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
 
   void setMeteringScreenLayout(MeteringScreenLayoutConfig config) {
     setState(() {
-      config.forEach((key, value) {
-        meteringScreenLayout.update(
-          key,
-          (_) => value,
-          ifAbsent: () => value,
-        );
-      });
+      meteringScreenLayout = config;
     });
     ServicesProvider.of(context).userPreferencesService.meteringScreenLayout = meteringScreenLayout;
   }
