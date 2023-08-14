@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/interactors/settings_interactor.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/provider_dialog_calibration.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:lightmeter/screens/settings/flow_settings.dart';
 
 class CalibrationListTile extends StatelessWidget {
   const CalibrationListTile({super.key});
@@ -15,8 +14,8 @@ class CalibrationListTile extends StatelessWidget {
       onTap: () {
         showDialog<double>(
           context: context,
-          builder: (_) => InheritedWidgetBase(
-            data: context.get<SettingsInteractor>(),
+          builder: (_) => SettingsInteractorProvider(
+            data: SettingsInteractorProvider.of(context),
             child: const CalibrationDialogProvider(),
           ),
         );

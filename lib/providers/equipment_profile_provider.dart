@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/data/shared_prefs_service.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:lightmeter/providers/services_provider.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:uuid/uuid.dart';
 
-typedef EquipmentProfiles = List<EquipmentProfile>;
-
+// TODO(@vodemn): This will be removed in #89
 class EquipmentProfileProvider extends StatefulWidget {
   final Widget child;
 
@@ -35,7 +33,8 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   EquipmentProfile get _selectedProfile => _customProfiles.firstWhere(
         (e) => e.id == _selectedId,
         orElse: () {
-          context.get<UserPreferencesService>().selectedEquipmentProfileId = _defaultProfile.id;
+          ServicesProvider.of(context).userPreferencesService.selectedEquipmentProfileId =
+              _defaultProfile.id;
           return _defaultProfile;
         },
       );
@@ -43,18 +42,16 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   @override
   void initState() {
     super.initState();
-    _selectedId = context.get<UserPreferencesService>().selectedEquipmentProfileId;
-    _customProfiles = context.get<UserPreferencesService>().equipmentProfiles;
+    _selectedId = ServicesProvider.of(context).userPreferencesService.selectedEquipmentProfileId;
+    _customProfiles = ServicesProvider.of(context).userPreferencesService.equipmentProfiles;
   }
 
   @override
   Widget build(BuildContext context) {
-    return InheritedWidgetBase<List<EquipmentProfile>>(
-      data: [_defaultProfile] + _customProfiles,
-      child: InheritedWidgetBase<EquipmentProfile>(
-        data: _selectedProfile,
-        child: widget.child,
-      ),
+    return EquipmentProfiles(
+      profiles: [_defaultProfile] + _customProfiles,
+      selected: _selectedProfile,
+      child: widget.child,
     );
   }
 
@@ -62,7 +59,8 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     setState(() {
       _selectedId = data.id;
     });
-    context.get<UserPreferencesService>().selectedEquipmentProfileId = _selectedProfile.id;
+    ServicesProvider.of(context).userPreferencesService.selectedEquipmentProfileId =
+        _selectedProfile.id;
   }
 
   /// Creates a default equipment profile
@@ -94,7 +92,48 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   }
 
   void _refreshSavedProfiles() {
-    context.get<UserPreferencesService>().equipmentProfiles = _customProfiles;
+    ServicesProvider.of(context).userPreferencesService.equipmentProfiles = _customProfiles;
     setState(() {});
   }
+}
+
+// Copied from #89
+enum EquipmentProfilesAspect { list, selected }
+
+class EquipmentProfiles extends InheritedModel<EquipmentProfilesAspect> {
+  const EquipmentProfiles({
+    super.key,
+    required this.profiles,
+    required this.selected,
+    required super.child,
+  });
+
+  final List<EquipmentProfile> profiles;
+  final EquipmentProfile selected;
+
+  static List<EquipmentProfile> of(BuildContext context) {
+    return InheritedModel.inheritFrom<EquipmentProfiles>(
+      context,
+      aspect: EquipmentProfilesAspect.list,
+    )!
+        .profiles;
+  }
+
+  static EquipmentProfile selectedOf(BuildContext context) {
+    return InheritedModel.inheritFrom<EquipmentProfiles>(
+      context,
+      aspect: EquipmentProfilesAspect.selected,
+    )!
+        .selected;
+  }
+
+  @override
+  bool updateShouldNotify(EquipmentProfiles oldWidget) => false;
+
+  @override
+  bool updateShouldNotifyDependent(
+    EquipmentProfiles oldWidget,
+    Set<EquipmentProfilesAspect> dependencies,
+  ) =>
+      false;
 }

@@ -6,15 +6,17 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
-import 'package:lightmeter/environment.dart';
-import 'package:lightmeter/providers/ev_source_type_provider.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/services_provider.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/provider_bottom_controls.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/provider_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/light_sensor_container/provider_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:lightmeter/screens/metering/utils/listener_metering_layout_feature.dart';
+import 'package:lightmeter/screens/metering/utils/listsner_equipment_profiles.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreen extends StatelessWidget {
@@ -45,8 +47,8 @@ class MeteringScreen extends StatelessWidget {
               builder: (context, state) => MeteringBottomControlsProvider(
                 ev: state is MeteringDataState ? state.ev : null,
                 isMetering: state.isMetering,
-                onSwitchEvSourceType: context.get<Environment>().hasLightSensor
-                    ? EvSourceTypeProvider.of(context).toggleType
+                onSwitchEvSourceType: ServicesProvider.of(context).environment.hasLightSensor
+                    ? UserPreferencesProvider.of(context).toggleEvSourceType
                     : null,
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
                 onSettings: () {
@@ -71,12 +73,12 @@ class _InheritedListeners extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InheritedWidgetListener<EquipmentProfile>(
+    return EquipmentProfileListener(
       onDidChangeDependencies: (value) {
         context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
       },
-      child: InheritedModelAspectListener<MeteringScreenLayoutFeature, bool>(
-        aspect: MeteringScreenLayoutFeature.filmPicker,
+      child: MeteringScreenLayoutFeatureListener(
+        feature: MeteringScreenLayoutFeature.filmPicker,
         onDidChangeDependencies: (value) {
           if (!value) context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
         },
@@ -110,7 +112,8 @@ class _MeteringContainerBuidler extends StatelessWidget {
     final exposurePairs = ev != null ? buildExposureValues(context, ev!, film) : <ExposurePair>[];
     final fastest = exposurePairs.isNotEmpty ? exposurePairs.first : null;
     final slowest = exposurePairs.isNotEmpty ? exposurePairs.last : null;
-    return context.listen<EvSourceType>() == EvSourceType.camera
+    // Doubled build here when switching evSourceType. As new source bloc fires a new state on init
+    return UserPreferencesProvider.evSourceTypeOf(context) == EvSourceType.camera
         ? CameraContainerProvider(
             fastest: fastest,
             slowest: slowest,
@@ -141,10 +144,10 @@ class _MeteringContainerBuidler extends StatelessWidget {
     }
 
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
-    final StopType stopType = context.listen<StopType>();
+    final StopType stopType = UserPreferencesProvider.stopTypeOf(context);
     final int evSteps = (ev * (stopType.index + 1)).round();
 
-    final EquipmentProfile equipmentProfile = context.listen<EquipmentProfile>();
+    final EquipmentProfile equipmentProfile = EquipmentProfiles.selectedOf(context);
     final List<ApertureValue> apertureValues =
         equipmentProfile.apertureValues.whereStopType(stopType);
     final List<ShutterSpeedValue> shutterSpeedValues =

@@ -7,7 +7,7 @@ import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/features.dart';
 import 'package:lightmeter/platform_config.dart';
-import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls/widget_camera_controls.dart';
@@ -114,14 +114,14 @@ class CameraContainer extends StatelessWidget {
       enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
       enabledFeaturesHeight += Dimens.paddingS;
     }
-    if (MeteringScreenLayout.featureOf(
+    if (UserPreferencesProvider.meteringScreenFeatureOf(
       context,
       MeteringScreenLayoutFeature.extremeExposurePairs,
     )) {
       enabledFeaturesHeight += Dimens.readingContainerDoubleValueHeight;
       enabledFeaturesHeight += Dimens.paddingS;
     }
-    if (MeteringScreenLayout.featureOf(
+    if (UserPreferencesProvider.meteringScreenFeatureOf(
       context,
       MeteringScreenLayoutFeature.filmPicker,
     )) {

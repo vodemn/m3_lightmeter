@@ -6,7 +6,7 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
-import 'package:lightmeter/providers/theme_provider.dart';
+import 'package:lightmeter/res/theme.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -348,13 +348,13 @@ void main() {
   group('primaryColor', () {
     test('get default', () {
       when(() => sharedPreferences.getInt(UserPreferencesService.primaryColorKey)).thenReturn(null);
-      expect(service.primaryColor, ThemeProvider.primaryColorsList[5]);
+      expect(service.primaryColor, primaryColorsList[5]);
     });
 
     test('get', () {
       when(() => sharedPreferences.getInt(UserPreferencesService.primaryColorKey))
           .thenReturn(0xff9c27b0);
-      expect(service.primaryColor, ThemeProvider.primaryColorsList[2]);
+      expect(service.primaryColor, primaryColorsList[2]);
     });
 
     test('set', () {

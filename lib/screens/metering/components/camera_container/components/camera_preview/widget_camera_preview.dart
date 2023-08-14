@@ -2,7 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/platform_config.dart';
-import 'package:lightmeter/providers/metering_screen_layout_provider.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/components/camera_view/widget_camera_view.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/components/camera_view_placeholder/widget_placeholder_camera_view.dart';
@@ -38,7 +38,7 @@ class _CameraPreviewState extends State<CameraPreview> {
                               alignment: Alignment.bottomCenter,
                               children: [
                                 CameraView(controller: widget.controller!),
-                                if (MeteringScreenLayout.featureOf(
+                                if (UserPreferencesProvider.meteringScreenFeatureOf(
                                   context,
                                   MeteringScreenLayoutFeature.histogram,
                                 ))
