@@ -9,6 +9,7 @@ import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/services_provider.dart';
+import 'package:lightmeter/res/theme.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class UserPreferencesProvider extends StatefulWidget {
@@ -20,12 +21,8 @@ class UserPreferencesProvider extends StatefulWidget {
     return context.findAncestorStateOfType<_UserPreferencesProviderState>()!;
   }
 
-  static Brightness brightnessOf(BuildContext context) {
-    return _inheritFromEnumsModel(context, _ListenableAspect.brightness).brightness;
-  }
-
   static DynamicColorState dynamicColorStateOf(BuildContext context) {
-    return _inheritFromEnumsModel(context, _ListenableAspect.dynamicColorState).dynamicColorState;
+    return _inheritFromThemeModel(context, _ThemeAspect.dynamicColorState).dynamicColorState;
   }
 
   static EvSourceType evSourceTypeOf(BuildContext context) {
@@ -45,23 +42,24 @@ class UserPreferencesProvider extends StatefulWidget {
         .data[feature]!;
   }
 
-  static Color primaryColorOf(BuildContext context) {
-    return _inheritFromEnumsModel(context, _ListenableAspect.primaryColor).primaryColor;
-  }
-
   static StopType stopTypeOf(BuildContext context) {
     return _inheritFromEnumsModel(context, _ListenableAspect.stopType).stopType;
   }
 
-  static ThemeType themeTypeOf(BuildContext context) {
-    return _inheritFromEnumsModel(context, _ListenableAspect.themeType).themeType;
+  static ThemeData themeOf(BuildContext context) {
+    return _inheritFromThemeModel(context, _ThemeAspect.theme).theme;
   }
 
-  static _EnumsModel _inheritFromEnumsModel(
-    BuildContext context,
-    _ListenableAspect aspect,
-  ) {
+  static ThemeType themeTypeOf(BuildContext context) {
+    return _inheritFromThemeModel(context, _ThemeAspect.themeType).themeType;
+  }
+
+  static _EnumsModel _inheritFromEnumsModel(BuildContext context, _ListenableAspect aspect) {
     return InheritedModel.inheritFrom<_EnumsModel>(context, aspect: aspect)!;
+  }
+
+  static _ThemeModel _inheritFromThemeModel(BuildContext context, _ThemeAspect aspect) {
+    return InheritedModel.inheritFrom<_ThemeModel>(context, aspect: aspect)!;
   }
 
   @override
@@ -124,17 +122,19 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
           dynamicPrimaryColor = null;
           state = DynamicColorState.unavailable;
         }
-        return _EnumsModel(
+        return _ThemeModel(
           brightness: _themeBrightness,
           dynamicColorState: state,
-          evSourceType: evSourceType,
-          locale: locale,
           primaryColor: dynamicPrimaryColor ?? primaryColor,
-          stopType: stopType,
           themeType: themeType,
-          child: _MeteringScreenLayoutModel(
-            data: meteringScreenLayout,
-            child: widget.child,
+          child: _EnumsModel(
+            evSourceType: evSourceType,
+            locale: locale,
+            stopType: stopType,
+            child: _MeteringScreenLayoutModel(
+              data: meteringScreenLayout,
+              child: widget.child,
+            ),
           ),
         );
       },
@@ -213,44 +213,28 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
 }
 
 enum _ListenableAspect {
-  brightness,
-  dynamicColorState,
   evSourceType,
   locale,
-  primaryColor,
   stopType,
-  themeType,
 }
 
 class _EnumsModel extends InheritedModel<_ListenableAspect> {
-  final Brightness brightness;
-  final DynamicColorState dynamicColorState;
   final EvSourceType evSourceType;
   final SupportedLocale locale;
-  final Color primaryColor;
   final StopType stopType;
-  final ThemeType themeType;
 
   const _EnumsModel({
-    required this.brightness,
-    required this.dynamicColorState,
     required this.evSourceType,
     required this.locale,
-    required this.primaryColor,
     required this.stopType,
-    required this.themeType,
     required super.child,
   });
 
   @override
   bool updateShouldNotify(_EnumsModel oldWidget) {
-    return brightness != oldWidget.brightness ||
-        dynamicColorState != oldWidget.dynamicColorState ||
-        evSourceType != oldWidget.evSourceType ||
+    return evSourceType != oldWidget.evSourceType ||
         locale != oldWidget.locale ||
-        primaryColor != oldWidget.primaryColor ||
-        stopType != oldWidget.stopType ||
-        themeType != oldWidget.themeType;
+        stopType != oldWidget.stopType;
   }
 
   @override
@@ -258,17 +242,55 @@ class _EnumsModel extends InheritedModel<_ListenableAspect> {
     _EnumsModel oldWidget,
     Set<_ListenableAspect> dependencies,
   ) {
-    return (brightness != oldWidget.brightness &&
-            dependencies.contains(_ListenableAspect.brightness)) ||
-        (dynamicColorState != oldWidget.dynamicColorState &&
-            dependencies.contains(_ListenableAspect.dynamicColorState)) ||
-        (evSourceType != oldWidget.evSourceType &&
+    return (evSourceType != oldWidget.evSourceType &&
             dependencies.contains(_ListenableAspect.evSourceType)) ||
         (locale != oldWidget.locale && dependencies.contains(_ListenableAspect.locale)) ||
-        (primaryColor != oldWidget.primaryColor &&
-            dependencies.contains(_ListenableAspect.primaryColor)) ||
-        (stopType != oldWidget.stopType && dependencies.contains(_ListenableAspect.stopType)) ||
-        (themeType != oldWidget.themeType && dependencies.contains(_ListenableAspect.themeType));
+        (stopType != oldWidget.stopType && dependencies.contains(_ListenableAspect.stopType));
+  }
+}
+
+enum _ThemeAspect {
+  dynamicColorState,
+  theme,
+  themeType,
+}
+
+class _ThemeModel extends InheritedModel<_ThemeAspect> {
+  final DynamicColorState dynamicColorState;
+  final ThemeType themeType;
+
+  final Brightness _brightness;
+  final Color _primaryColor;
+
+  const _ThemeModel({
+    required Brightness brightness,
+    required this.dynamicColorState,
+    required Color primaryColor,
+    required this.themeType,
+    required super.child,
+  })  : _brightness = brightness,
+        _primaryColor = primaryColor;
+
+  ThemeData get theme => themeFrom(_primaryColor, _brightness);
+
+  @override
+  bool updateShouldNotify(_ThemeModel oldWidget) {
+    return _brightness != oldWidget._brightness ||
+        dynamicColorState != oldWidget.dynamicColorState ||
+        _primaryColor != oldWidget._primaryColor ||
+        themeType != oldWidget.themeType;
+  }
+
+  @override
+  bool updateShouldNotifyDependent(
+    _ThemeModel oldWidget,
+    Set<_ThemeAspect> dependencies,
+  ) {
+    return (dependencies.contains(_ThemeAspect.theme) &&
+            (_brightness != oldWidget._brightness || _primaryColor != oldWidget._primaryColor)) ||
+        (dependencies.contains(_ThemeAspect.dynamicColorState) &&
+            dynamicColorState != oldWidget.dynamicColorState) ||
+        (dependencies.contains(_ThemeAspect.themeType) && themeType != oldWidget.themeType);
   }
 }
 

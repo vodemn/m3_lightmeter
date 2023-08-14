@@ -13,7 +13,6 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
-import 'package:lightmeter/res/theme.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
 import 'package:platform/platform.dart';
@@ -45,10 +44,7 @@ class Application extends StatelessWidget {
               child: EquipmentProfileProvider(
                 child: Builder(
                   builder: (context) {
-                    final theme = themeFrom(
-                      UserPreferencesProvider.primaryColorOf(context),
-                      UserPreferencesProvider.brightnessOf(context),
-                    );
+                    final theme = UserPreferencesProvider.themeOf(context);
                     final systemIconsBrightness =
                         ThemeData.estimateBrightnessForColor(theme.colorScheme.onSurface);
                     return AnnotatedRegion(
