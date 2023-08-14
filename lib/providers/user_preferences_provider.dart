@@ -74,7 +74,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
   late bool dynamicColor = userPreferencesService.dynamicColor;
   late EvSourceType evSourceType;
   late MeteringScreenLayoutConfig meteringScreenLayout =
-      ServicesProvider.of(context).userPreferencesService.meteringScreenLayout;
+      userPreferencesService.meteringScreenLayout;
   late Color primaryColor = userPreferencesService.primaryColor;
   late StopType stopType = userPreferencesService.stopType;
   late SupportedLocale locale = userPreferencesService.locale;
@@ -83,7 +83,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
   @override
   void initState() {
     super.initState();
-    evSourceType = ServicesProvider.of(context).userPreferencesService.evSourceType;
+    evSourceType = userPreferencesService.evSourceType;
     evSourceType = evSourceType == EvSourceType.sensor &&
             !ServicesProvider.of(context).environment.hasLightSensor
         ? EvSourceType.camera
@@ -145,7 +145,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
     setState(() {
       dynamicColor = enable;
     });
-    ServicesProvider.of(context).userPreferencesService.dynamicColor = enable;
+    userPreferencesService.dynamicColor = enable;
   }
 
   void toggleEvSourceType() {
@@ -160,7 +160,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
           evSourceType = EvSourceType.camera;
       }
     });
-    ServicesProvider.of(context).userPreferencesService.evSourceType = evSourceType;
+    userPreferencesService.evSourceType = evSourceType;
   }
 
   void setLocale(SupportedLocale locale) {
@@ -168,7 +168,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
       setState(() {
         this.locale = locale;
       });
-      ServicesProvider.of(context).userPreferencesService.locale = locale;
+      userPreferencesService.locale = locale;
     });
   }
 
@@ -176,28 +176,28 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
     setState(() {
       meteringScreenLayout = config;
     });
-    ServicesProvider.of(context).userPreferencesService.meteringScreenLayout = meteringScreenLayout;
+    userPreferencesService.meteringScreenLayout = meteringScreenLayout;
   }
 
   void setPrimaryColor(Color primaryColor) {
     setState(() {
       this.primaryColor = primaryColor;
     });
-    ServicesProvider.of(context).userPreferencesService.primaryColor = primaryColor;
+    userPreferencesService.primaryColor = primaryColor;
   }
 
   void setStopType(StopType stopType) {
     setState(() {
       this.stopType = stopType;
     });
-    ServicesProvider.of(context).userPreferencesService.stopType = stopType;
+    userPreferencesService.stopType = stopType;
   }
 
   void setThemeType(ThemeType themeType) {
     setState(() {
       this.themeType = themeType;
     });
-    ServicesProvider.of(context).userPreferencesService.themeType = themeType;
+    userPreferencesService.themeType = themeType;
   }
 
   Brightness get _themeBrightness {
