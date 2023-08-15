@@ -11,20 +11,27 @@ on:
   pull_request:
     branches: ["main"]
 
+env:
+  # Stub iap package if this worlflow is running from the PR from a fork
+  STUB_IAP: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+
 jobs:
   analyze_and_test:
     name: Analyze & test
     runs-on: macos-11
     timeout-minutes: 10
-
     steps:
-      - uses: shaunco/ssh-agent@git-repo-mapping
+      - name: Connect private iap package
+        uses: webfactory/ssh-agent@v0.8.0
+        if: !env.STUB_IAP
         with:
-          ssh-private-key: |
-            ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
-          repo-mappings: |
-            github.com/vodemn/m3_lightmeter_iap
-            
+          ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
+
+      - name: Override iap package with stub
+        if: env.STUB_IAP
+        run: |
+          echo "\ndependecies_override:\n  m3_lightmeter_iap:\n    path: iap" >> pubspec.yaml
+
       - uses: actions/checkout@v3
         with:
           submodules: recursive
@@ -32,7 +39,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: '3.10.0'
+          flutter-version: "3.10.0"
 
       - name: Prepare flutter project
         run: |
