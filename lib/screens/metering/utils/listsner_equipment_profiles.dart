@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfileListener extends StatefulWidget {

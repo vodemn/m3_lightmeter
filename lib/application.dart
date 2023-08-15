@@ -10,11 +10,11 @@ import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:platform/platform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,16 +32,18 @@ class Application extends StatelessWidget {
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
-          return ServicesProvider(
-            caffeineService: const CaffeineService(),
-            environment: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
-            hapticsService: const HapticsService(),
-            lightSensorService: const LightSensorService(LocalPlatform()),
-            permissionsService: const PermissionsService(),
-            userPreferencesService: UserPreferencesService(snapshot.data![0] as SharedPreferences),
-            volumeEventsService: const VolumeEventsService(LocalPlatform()),
-            child: UserPreferencesProvider(
-              child: EquipmentProfileProvider(
+          return IAPProviders(
+            sharedPreferences: snapshot.data![0] as SharedPreferences,
+            child: ServicesProvider(
+              caffeineService: const CaffeineService(),
+              environment: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
+              hapticsService: const HapticsService(),
+              lightSensorService: const LightSensorService(LocalPlatform()),
+              permissionsService: const PermissionsService(),
+              userPreferencesService:
+                  UserPreferencesService(snapshot.data![0] as SharedPreferences),
+              volumeEventsService: const VolumeEventsService(LocalPlatform()),
+              child: UserPreferencesProvider(
                 child: Builder(
                   builder: (context) {
                     final theme = UserPreferencesProvider.themeOf(context);

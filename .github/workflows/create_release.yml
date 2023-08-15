@@ -42,6 +42,10 @@ jobs:
     runs-on: macos-11
     timeout-minutes: 30
     steps:
+      - uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
+
       - uses: actions/checkout@v3
         with:
           submodules: recursive
