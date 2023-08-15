@@ -135,7 +135,7 @@ class CameraContainer extends StatelessWidget {
   }
 
   double _cameraPreviewHeight(BuildContext context) {
-    return ((MediaQuery.of(context).size.width - Dimens.grid8 - 2 * Dimens.paddingM) / 2) /
+    return ((MediaQuery.sizeOf(context).width - Dimens.grid8 - 2 * Dimens.paddingM) / 2) /
         PlatformConfig.cameraPreviewAspectRatio;
   }
 }

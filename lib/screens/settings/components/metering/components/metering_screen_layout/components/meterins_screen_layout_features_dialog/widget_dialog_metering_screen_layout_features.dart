@@ -36,6 +36,7 @@ class _MeteringScreenLayoutFeaturesDialogState extends State<MeteringScreenLayou
             _featureListTile(MeteringScreenLayoutFeature.equipmentProfiles),
             _featureListTile(MeteringScreenLayoutFeature.extremeExposurePairs),
             _featureListTile(MeteringScreenLayoutFeature.filmPicker),
+            _featureListTile(MeteringScreenLayoutFeature.histogram),
           ],
         ),
       ),

@@ -39,7 +39,7 @@ class ReadingsContainer extends StatelessWidget {
       children: [
         if (UserPreferencesProvider.meteringScreenFeatureOf(
           context,
-          MeteringScreenLayoutFeature.extremeExposurePairs,
+          MeteringScreenLayoutFeature.equipmentProfiles,
         )) ...[
           const _EquipmentProfilePicker(),
           const _InnerPadding(),
