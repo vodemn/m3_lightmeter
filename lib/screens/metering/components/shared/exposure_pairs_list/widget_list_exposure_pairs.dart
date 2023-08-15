@@ -12,70 +12,72 @@ class ExposurePairsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (exposurePairs.isEmpty) {
-      return const EmptyExposurePairsList();
-    }
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Positioned.fill(
-          child: ListView.builder(
-            key: ValueKey(exposurePairs.hashCode),
-            padding: const EdgeInsets.symmetric(vertical: Dimens.paddingL),
-            itemCount: exposurePairs.length,
-            itemBuilder: (_, index) => Stack(
+    return AnimatedSwitcher(
+      duration: Dimens.switchDuration,
+      child: exposurePairs.isEmpty
+          ? const EmptyExposurePairsList()
+          : Stack(
               alignment: Alignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: ExposurePairsListItem(
-                          exposurePairs[index].aperture,
-                          tickOnTheLeft: false,
+                Positioned.fill(
+                  child: ListView.builder(
+                    key: ValueKey(exposurePairs.hashCode),
+                    padding: const EdgeInsets.symmetric(vertical: Dimens.paddingL),
+                    itemCount: exposurePairs.length,
+                    itemBuilder: (_, index) => Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: ExposurePairsListItem(
+                                  exposurePairs[index].aperture,
+                                  tickOnTheLeft: false,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: ExposurePairsListItem(
+                                  exposurePairs[index].shutterSpeed,
+                                  tickOnTheLeft: true,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: ExposurePairsListItem(
-                          exposurePairs[index].shutterSpeed,
-                          tickOnTheLeft: true,
+                        Positioned(
+                          top: 0,
+                          bottom: 0,
+                          child: LayoutBuilder(
+                            builder: (context, constraints) => Align(
+                              alignment: index == 0
+                                  ? Alignment.bottomCenter
+                                  : (index == exposurePairs.length - 1
+                                      ? Alignment.topCenter
+                                      : Alignment.center),
+                              child: SizedBox(
+                                height: index == 0 || index == exposurePairs.length - 1
+                                    ? constraints.maxHeight / 2
+                                    : constraints.maxHeight,
+                                child: ColoredBox(
+                                  color: Theme.of(context).colorScheme.onBackground,
+                                  child: const SizedBox(width: 1),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-                Positioned(
-                  top: 0,
-                  bottom: 0,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => Align(
-                      alignment: index == 0
-                          ? Alignment.bottomCenter
-                          : (index == exposurePairs.length - 1
-                              ? Alignment.topCenter
-                              : Alignment.center),
-                      child: SizedBox(
-                        height: index == 0 || index == exposurePairs.length - 1
-                            ? constraints.maxHeight / 2
-                            : constraints.maxHeight,
-                        child: ColoredBox(
-                          color: Theme.of(context).colorScheme.onBackground,
-                          child: const SizedBox(width: 1),
-                        ),
-                      ),
+                      ],
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-        ),
-      ],
     );
   }
 }

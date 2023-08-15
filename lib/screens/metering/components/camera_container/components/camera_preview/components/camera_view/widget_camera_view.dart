@@ -14,10 +14,12 @@ class CameraView extends StatelessWidget {
       valueListenable: controller,
       builder: (_, __, ___) => AspectRatio(
         aspectRatio: _isLandscape(value) ? value.aspectRatio : (1 / value.aspectRatio),
-        child: RotatedBox(
-          quarterTurns: _getQuarterTurns(value),
-          child: controller.buildPreview(),
-        ),
+        child: value.isInitialized
+            ? RotatedBox(
+                quarterTurns: _getQuarterTurns(value),
+                child: controller.buildPreview(),
+              )
+            : const SizedBox.shrink(),
       ),
     );
   }

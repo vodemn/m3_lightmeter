@@ -1,6 +1,7 @@
 enum MeteringScreenLayoutFeature {
   extremeExposurePairs,
   filmPicker,
+  histogram,
   equipmentProfiles,
 }
 

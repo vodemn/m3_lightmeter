@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
-import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/widget_container_camera.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class CameraContainerProvider extends StatelessWidget {
@@ -39,7 +38,7 @@ class CameraContainerProvider extends StatelessWidget {
     return BlocProvider(
       lazy: false,
       create: (context) => CameraContainerBloc(
-        context.get<MeteringInteractor>(),
+        MeteringInteractorProvider.of(context),
         context.read<MeteringCommunicationBloc>(),
       )..add(const RequestPermissionEvent()),
       child: CameraContainer(

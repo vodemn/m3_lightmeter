@@ -19,8 +19,9 @@ on:
 
 jobs:
   build:
+    name: Build .apk
     runs-on: macos-11
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
       - uses: webfactory/ssh-agent@v0.8.0
@@ -79,7 +80,7 @@ jobs:
       - name: Build Apk
         env:
           FLAVOR: ${{ github.event.inputs.flavor }}
-        run: flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_$FLAVOR.dart
+        run: flutter build apk --release --flavor $FLAVOR --dart-define c -t lib/main_$FLAVOR.dart
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3

@@ -38,6 +38,7 @@
     "meteringScreenLayoutHint": "Здесь вы можете скрыть некоторые ненужные или неиспользуемые элементы с главного экрана.",
     "meteringScreenFeatureExtremeExposurePairs": "Длинная и короткая выдержки",
     "meteringScreenFeatureFilmPicker": "Выбор пленки",
+    "meteringScreenFeatureHistogram": "Гистограмма",
     "film": "Пленка",
     "equipment": "Оборудование",
     "equipmentProfileName": "Название профиля",
