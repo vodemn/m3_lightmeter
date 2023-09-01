@@ -19,7 +19,7 @@ on:
       include-iap:
         type: boolean
         description: Include IAP package
-        default: false # TODO(@vodemn) when Google fixes their api
+        default: true
 
 jobs:
   build:

@@ -34,7 +34,7 @@ on:
       include-iap:
         type: boolean
         description: Include IAP package
-        default: false # TODO(@vodemn) when Google fixes their api
+        default: true
 
 env:
   BUILD_ARGS: --release --flavor prod --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_prod.dart
