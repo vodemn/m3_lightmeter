@@ -36,7 +36,7 @@ jobs:
       - name: Override iap package with stub
         if: ${{ !inputs.include-iap }}
         run: | 
-          echo "\ndependecies_override:\n  m3_lightmeter_iap:\n    path: iap" >> pubspec.yaml
+          echo "\ndependency_overrides:\n  m3_lightmeter_iap:\n    path: iap" >> pubspec.yaml
            
       - uses: actions/checkout@v3
         with:
