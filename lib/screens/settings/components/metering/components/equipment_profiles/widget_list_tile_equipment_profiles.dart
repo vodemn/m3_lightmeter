@@ -22,13 +22,14 @@ class EquipmentProfilesListTile extends StatelessWidget {
               MaterialPageRoute(builder: (_) => const EquipmentProfilesScreen()),
             );
           },
-        IAPProductStatus.purchasable => () {
+        IAPProductStatus.pending => null,
+        _ => () {
             IAPProductsProvider.of(context).buy(IAPProductType.paidFeatures);
           },
-        _ => null,
       },
       trailing: switch (paidStatus) {
         IAPProductStatus.purchasable => const Icon(Icons.lock),
+        null => const Icon(Icons.lock),
         _ => null,
       },
     );
