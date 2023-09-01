@@ -44,30 +44,38 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
           icon: const Icon(Icons.close),
         ),
       ],
-      slivers: [
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => index > 0
-                ? Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      Dimens.paddingM,
-                      index == 0 ? Dimens.paddingM : 0,
-                      Dimens.paddingM,
-                      Dimens.paddingM,
-                    ),
-                    child: EquipmentProfileContainer(
-                      key: profileContainersKeys[index],
-                      data: EquipmentProfiles.of(context)[index],
-                      onExpand: () => _keepExpandedAt(index),
-                      onUpdate: (profileData) => _updateProfileAt(profileData, index),
-                      onDelete: () => _removeProfileAt(index),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-            childCount: profilesCount,
-          ),
-        ),
-      ],
+      slivers: profilesCount == 1
+          ? [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: _EquipmentProfilesListPlaceholder(onTap: _addProfile),
+              )
+            ]
+          : [
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => index > 0 // skip default
+                      ? Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            Dimens.paddingM,
+                            index == 0 ? Dimens.paddingM : 0,
+                            Dimens.paddingM,
+                            Dimens.paddingM,
+                          ),
+                          child: EquipmentProfileContainer(
+                            key: profileContainersKeys[index],
+                            data: EquipmentProfiles.of(context)[index],
+                            onExpand: () => _keepExpandedAt(index),
+                            onUpdate: (profileData) => _updateProfileAt(profileData, index),
+                            onDelete: () => _removeProfileAt(index),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                  childCount: profilesCount,
+                ),
+              ),
+              SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
+            ],
     );
   }
 
@@ -97,5 +105,46 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
     profileContainersKeys.getRange(index + 1, profilesCount).forEach((element) {
       element.currentState?.collapse();
     });
+  }
+}
+
+class _EquipmentProfilesListPlaceholder extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _EquipmentProfilesListPlaceholder({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: Dimens.sliverAppBarExpandedHeight,
+      ),
+      child: FractionallySizedBox(
+        widthFactor: 1 / 1.618,
+        child: Center(
+          child: GestureDetector(
+            onTap: onTap,
+            child: Opacity(
+              opacity: Dimens.disabledOpacity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.add,
+                    size: MediaQuery.sizeOf(context).width / (1.618 * 1.618),
+                  ),
+                  const SizedBox(height: Dimens.grid4),
+                  Text(
+                    'Tap to add',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

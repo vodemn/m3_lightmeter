@@ -54,6 +54,7 @@
     "isoValuesFilterDescription": "Select the ISO values to display. These may be your most commonly used values or those supported by your camera.",
     "equipmentProfile": "Equipment profile",
     "equipmentProfiles": "Equipment profiles",
+    "tapToAdd": "Tap to add",
     "general": "General",
     "keepScreenOn": "Keep screen on",
     "haptics": "Haptics",

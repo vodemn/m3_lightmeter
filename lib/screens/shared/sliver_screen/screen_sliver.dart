@@ -24,7 +24,7 @@ class SliverScreen extends StatelessWidget {
             SliverAppBar(
               pinned: true,
               automaticallyImplyLeading: false,
-              expandedHeight: Dimens.grid168,
+              expandedHeight: Dimens.sliverAppBarExpandedHeight,
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: false,
                 titlePadding: const EdgeInsets.all(Dimens.paddingM),
@@ -39,7 +39,6 @@ class SliverScreen extends StatelessWidget {
               actions: appBarActions,
             ),
             ...slivers,
-            SliverToBoxAdapter(child: SizedBox(height: MediaQuery.of(context).padding.bottom)),
           ],
         ),
       ),
