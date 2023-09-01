@@ -4,6 +4,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
+import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -116,30 +117,18 @@ class _EquipmentProfilesListPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: Dimens.sliverAppBarExpandedHeight,
-      ),
+      padding: const EdgeInsets.only(bottom: Dimens.sliverAppBarExpandedHeight),
       child: FractionallySizedBox(
         widthFactor: 1 / 1.618,
         child: Center(
           child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
             onTap: onTap,
-            child: Opacity(
-              opacity: Dimens.disabledOpacity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.add,
-                    size: MediaQuery.sizeOf(context).width / (1.618 * 1.618),
-                  ),
-                  const SizedBox(height: Dimens.grid4),
-                  Text(
-                    'Tap to add',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                    textAlign: TextAlign.center,
-                  )
-                ],
+            child: Padding(
+              padding: const EdgeInsets.all(Dimens.paddingL),
+              child: IconPlaceholder(
+                icon: Icons.add,
+                text: S.of(context).tapToAdd,
               ),
             ),
           ),
