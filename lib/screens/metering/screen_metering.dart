@@ -176,20 +176,7 @@ class MeteringContainerBuidler extends StatelessWidget {
     /// But user can exclude this value from the list using custom equipment profile.
     /// So we have to restore the index of the anchor value.
     const anchorShutterSpeed = ShutterSpeedValue(1, false, StopType.full);
-    int anchorIndex = shutterSpeedValues.indexOf(anchorShutterSpeed);
-    if (anchorIndex < 0) {
-      final filteredFullList = ShutterSpeedValue.values.whereStopType(stopType);
-      final customListStartIndex = filteredFullList.indexOf(shutterSpeedValues.first);
-      final fullListAnchor = filteredFullList.indexOf(anchorShutterSpeed);
-      if (customListStartIndex < fullListAnchor) {
-        /// This means, that user excluded anchor value at the end,
-        /// i.e. all shutter speed values are shorter than 1".
-        anchorIndex = fullListAnchor - customListStartIndex;
-      } else {
-        /// In case user excludes anchor value at the start,
-        /// we can do no adjustment.
-      }
-    }
+    final int anchorIndex = shutterSpeedValues.indexOf(anchorShutterSpeed);
     final int evOffset = anchorIndex - evSteps;
 
     late final int apertureOffset;
@@ -208,7 +195,7 @@ class MeteringContainerBuidler extends StatelessWidget {
         ) -
         max(apertureOffset, shutterSpeedOffset);
 
-    if (itemsCount < 0) {
+    if (itemsCount <= 0) {
       return List.empty();
     }
 

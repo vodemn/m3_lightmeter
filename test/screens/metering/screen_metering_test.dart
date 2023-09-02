@@ -29,6 +29,10 @@ void main() {
     test('isInifinity', () {
       expect(exposurePairsFull(double.infinity), const []);
     });
+
+    test('Big ass number', () {
+      expect(exposurePairsFull(23), const []);
+    });
   });
 
   group('Default equipment profile', () {
@@ -333,13 +337,16 @@ void main() {
     });
   });
 
-  group('Reduced equipment profile', () {
+  group('Shutter speed 1/1000-1/2"', () {
     final equipmentProfile = EquipmentProfile(
       id: "1",
       name: 'Test1',
-      apertureValues: ApertureValue.values.sublist(4),
+      apertureValues: ApertureValue.values,
       ndValues: NdValue.values,
-      shutterSpeedValues: ShutterSpeedValue.values.sublist(0, ShutterSpeedValue.values.length - 4),
+      shutterSpeedValues: ShutterSpeedValue.values.sublist(
+        ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1000, true, StopType.full)),
+        ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(2, true, StopType.full)) + 1,
+      ),
       isoValues: IsoValue.values,
     );
 
@@ -357,15 +364,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(1, false, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(4, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -375,15 +382,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(1, false, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(4, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -393,15 +400,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(2, true, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(4, true, StopType.full),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(5.6, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.4, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -411,15 +418,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(2, true, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(4, true, StopType.full),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(5.6, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.4, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -429,15 +436,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(2, true, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(4, true, StopType.full),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(5.6, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.4, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -457,15 +464,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(1, false, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(4.0, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -475,15 +482,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(1.5, true, StopType.half),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(3, true, StopType.half),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(4.8, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.2, StopType.half),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -493,15 +500,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(1.5, true, StopType.half),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(3, true, StopType.half),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(4.8, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.2, StopType.half),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -511,15 +518,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(1.5, true, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(3, true, StopType.half),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(4.8, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.2, StopType.half),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -529,15 +536,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(2, true, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(4, true, StopType.full),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(5.6, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.4, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -557,15 +564,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(1, false, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(4, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -575,15 +582,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(1.3, true, StopType.third),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(2.5, true, StopType.third),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(4.5, StopType.third),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.1, StopType.third),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -593,15 +600,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(1.6, true, StopType.third),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(3, true, StopType.third),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(5.0, StopType.third),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.2, StopType.third),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -611,15 +618,15 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
-            ApertureValue(1.4, StopType.full),
-            ShutterSpeedValue(1.6, true, StopType.third),
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(3, true, StopType.third),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
-            ApertureValue(5.0, StopType.third),
-            ShutterSpeedValue(8, false, StopType.full),
+            ApertureValue(1.2, StopType.third),
+            ShutterSpeedValue(2, true, StopType.full),
           ),
         );
       });
@@ -629,15 +636,328 @@ void main() {
         expect(
           exposurePairs.first,
           const ExposurePair(
+            ApertureValue(1.0, StopType.full),
+            ShutterSpeedValue(4, true, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
             ApertureValue(1.4, StopType.full),
             ShutterSpeedValue(2, true, StopType.full),
+          ),
+        );
+      });
+    });
+  });
+
+  group('Shutter speed 2"-16"', () {
+    final equipmentProfile = EquipmentProfile(
+      id: "1",
+      name: 'Test1',
+      apertureValues: ApertureValue.values.sublist(4),
+      ndValues: NdValue.values,
+      shutterSpeedValues: ShutterSpeedValue.values.sublist(
+        ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(2, false, StopType.full)),
+      ),
+      isoValues: IsoValue.values,
+    );
+
+    group("StopType.full", () {
+      List<ExposurePair> exposurePairsFull(double ev) =>
+          MeteringContainerBuidler.buildExposureValues(
+            ev,
+            StopType.full,
+            equipmentProfile,
+            const Film.other(),
+          );
+
+      test('EV 1', () {
+        final exposurePairs = exposurePairsFull(1);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.0, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
           ),
         );
         expect(
           exposurePairs.last,
           const ExposurePair(
             ApertureValue(5.6, StopType.full),
-            ShutterSpeedValue(8, false, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 1.3', () {
+        final exposurePairs = exposurePairsFull(1.3);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.0, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(5.6, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 1.5', () {
+        final exposurePairs = exposurePairsFull(1.5);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.8, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(8, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 1.7', () {
+        final exposurePairs = exposurePairsFull(1.7);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.8, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(8, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 2', () {
+        final exposurePairs = exposurePairsFull(2);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.8, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(8, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+    });
+
+    group("StopType.half", () {
+      List<ExposurePair> exposurePairsFull(double ev) =>
+          MeteringContainerBuidler.buildExposureValues(
+            ev,
+            StopType.half,
+            equipmentProfile,
+            const Film.other(),
+          );
+
+      test('EV 1', () {
+        final exposurePairs = exposurePairsFull(1);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.0, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(5.6, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 1.3', () {
+        final exposurePairs = exposurePairsFull(1.3);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.4, StopType.half),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(6.7, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 1.5', () {
+        final exposurePairs = exposurePairsFull(1.5);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.4, StopType.half),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(6.7, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 1.7', () {
+        final exposurePairs = exposurePairsFull(1.7);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.4, StopType.half),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(6.7, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 2', () {
+        final exposurePairs = exposurePairsFull(2);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.8, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(8, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+    });
+
+    group("StopType.third", () {
+      List<ExposurePair> exposurePairsFull(double ev) =>
+          MeteringContainerBuidler.buildExposureValues(
+            ev,
+            StopType.third,
+            equipmentProfile,
+            const Film.other(),
+          );
+
+      test('EV 1', () {
+        final exposurePairs = exposurePairsFull(1);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.0, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(5.6, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 1.3', () {
+        final exposurePairs = exposurePairsFull(1.3);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.2, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(6.3, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 1.5', () {
+        final exposurePairs = exposurePairsFull(1.5);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.4, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(7.1, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 1.7', () {
+        final exposurePairs = exposurePairsFull(1.7);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.4, StopType.full),
+            ShutterSpeedValue(2, false, StopType.third),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(7.1, StopType.third),
+            ShutterSpeedValue(16, false, StopType.full),
+          ),
+        );
+      });
+
+      test('EV 2', () {
+        final exposurePairs = exposurePairsFull(2);
+        expect(
+          exposurePairs.first,
+          const ExposurePair(
+            ApertureValue(2.8, StopType.full),
+            ShutterSpeedValue(2, false, StopType.full),
+          ),
+        );
+        expect(
+          exposurePairs.last,
+          const ExposurePair(
+            ApertureValue(8, StopType.full),
+            ShutterSpeedValue(16, false, StopType.full),
           ),
         );
       });
