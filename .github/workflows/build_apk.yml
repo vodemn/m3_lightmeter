@@ -86,10 +86,10 @@ jobs:
           flutter pub get
           flutter pub run intl_utils:generate
 
-      - name: Build Apk
+      - name: Build .apk
         env:
           FLAVOR: ${{ github.event.inputs.flavor }}
-        run: flutter build apk --release --flavor $FLAVOR --dart-define c -t lib/main_$FLAVOR.dart
+        run: flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_$FLAVOR.dart
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
