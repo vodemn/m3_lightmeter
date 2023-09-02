@@ -19,15 +19,15 @@ class EquipmentProfilesScreen extends StatefulWidget {
 class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   static const maxProfiles = 5 + 1; // replace with a constant from iap
 
-  late List<GlobalKey<EquipmentProfileContainerState>> profileContainersKeys = [];
-  int get profilesCount => EquipmentProfiles.of(context).length;
+  final Map<String, GlobalKey<EquipmentProfileContainerState>> keysMap = {};
+  int get profilesCount => keysMap.length;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    profileContainersKeys = EquipmentProfiles.of(context)
-        .map((e) => GlobalKey<EquipmentProfileContainerState>(debugLabel: e.id))
-        .toList();
+    EquipmentProfiles.of(context).forEach((profile) {
+      keysMap[profile.id] ??= GlobalKey<EquipmentProfileContainerState>(debugLabel: profile.id);
+    });
   }
 
   @override
@@ -64,7 +64,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
                             Dimens.paddingM,
                           ),
                           child: EquipmentProfileContainer(
-                            key: profileContainersKeys[index],
+                            key: keysMap.values.toList()[index],
                             data: EquipmentProfiles.of(context)[index],
                             onExpand: () => _keepExpandedAt(index),
                             onUpdate: (profileData) => _updateProfileAt(profileData, index),
@@ -72,7 +72,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
                           ),
                         )
                       : const SizedBox.shrink(),
-                  childCount: profilesCount,
+                  childCount: keysMap.length,
                 ),
               ),
               SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
@@ -100,10 +100,10 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   }
 
   void _keepExpandedAt(int index) {
-    profileContainersKeys.getRange(0, index).forEach((element) {
+    keysMap.values.toList().getRange(0, index).forEach((element) {
       element.currentState?.collapse();
     });
-    profileContainersKeys.getRange(index + 1, profilesCount).forEach((element) {
+    keysMap.values.toList().getRange(index + 1, profilesCount).forEach((element) {
       element.currentState?.collapse();
     });
   }
