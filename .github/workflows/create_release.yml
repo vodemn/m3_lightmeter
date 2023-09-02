@@ -46,6 +46,10 @@ jobs:
     runs-on: macos-11
     timeout-minutes: 30
     steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - name: Connect private iap package
         uses: webfactory/ssh-agent@v0.8.0
         if: ${{ inputs.include-iap }}
@@ -56,10 +60,6 @@ jobs:
         if: ${{ !inputs.include-iap }}
         run: | 
           echo "\ndependency_overrides:\n  m3_lightmeter_iap:\n    path: iap" >> pubspec.yaml
-
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
 
       - uses: actions/setup-java@v3
         with:
