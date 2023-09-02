@@ -29,7 +29,7 @@ jobs:
 
       - name: Override iap package with stub
         if: ${{ env.STUB_IAP }}
-        run: ./.github/scripts/stub_iap.sh
+        run: .github/scripts/stub_iap.sh
         shell: bash
 
       - uses: actions/checkout@v3
