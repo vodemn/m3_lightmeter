@@ -27,6 +27,10 @@ jobs:
     runs-on: macos-11
     timeout-minutes: 15
     steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - name: Connect private iap package
         uses: webfactory/ssh-agent@v0.8.0
         if: ${{ inputs.include-iap }}
@@ -35,13 +39,8 @@ jobs:
 
       - name: Override iap package with stub
         if: ${{ !inputs.include-iap }}
-        run: | 
-          echo "\ndependency_overrides:\n  m3_lightmeter_iap:\n    path: iap" >> pubspec.yaml
-           
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-
+        run: bash ./.github/scripts/stub_iap.sh
+        
       - uses: actions/setup-java@v2
         with:
           distribution: "zulu"
