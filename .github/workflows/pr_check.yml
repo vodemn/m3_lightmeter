@@ -29,7 +29,6 @@ jobs:
 
       - name: Override iap package with stub
         if: ${{ env.STUB_IAP }}
-        working-directory: ${{ github.workspace }}/m3_lightmeter
         run: bash ./.github/scripts/stub_iap.sh
 
       - uses: actions/checkout@v3
