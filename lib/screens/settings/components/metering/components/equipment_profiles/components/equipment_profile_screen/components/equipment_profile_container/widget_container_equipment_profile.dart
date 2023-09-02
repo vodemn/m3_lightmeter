@@ -143,10 +143,13 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
     widget.onExpand();
     _controller.forward();
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      Scrollable.ensureVisible(
-        context,
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-      );
+      Future.delayed(_controller.duration!).then((_) {
+        Scrollable.ensureVisible(
+          context,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          duration: _controller.duration!,
+        );
+      });
     });
   }
 
