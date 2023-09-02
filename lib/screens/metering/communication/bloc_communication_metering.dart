@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'event_communication_metering.dart';
-import 'state_communication_metering.dart';
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart';
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart';
 
 class MeteringCommunicationBloc
     extends Bloc<MeteringCommunicationEvent, MeteringCommunicationState> {
@@ -9,6 +9,9 @@ class MeteringCommunicationBloc
     // `MeasureState` is not const, so that `Bloc` treats each state as new and updates state stream
     // ignore: prefer_const_constructors
     on<MeasureEvent>((_, emit) => emit(MeasureState()));
-    on<MeasuredEvent>((event, emit) => emit(MeasuredState(event.ev100)));
+    on<MeteringInProgressEvent>((event, emit) => emit(MeteringInProgressState(event.ev100)));
+    on<MeteringEndedEvent>((event, emit) => emit(MeteringEndedState(event.ev100)));
+    on<SettingsOpenedEvent>((_, emit) => emit(const SettingsOpenedState()));
+    on<SettingsClosedEvent>((_, emit) => emit(const SettingsClosedState()));
   }
 }

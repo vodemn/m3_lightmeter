@@ -1,166 +1,246 @@
 import 'dart:async';
-import 'dart:math';
 
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/data/models/photography_values/aperture_value.dart';
-import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
-import 'package:lightmeter/data/models/photography_values/shutter_speed_value.dart';
-import 'package:lightmeter/data/shared_prefs_service.dart';
+import 'package:lightmeter/data/models/film.dart';
+import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
     as communication_states;
-import 'package:lightmeter/utils/log_2.dart';
-
-import 'communication/bloc_communication_metering.dart';
-import 'event_metering.dart';
-import 'state_metering.dart';
+import 'package:lightmeter/screens/metering/components/shared/volume_keys_notifier/notifier_volume_keys.dart';
+import 'package:lightmeter/screens/metering/event_metering.dart';
+import 'package:lightmeter/screens/metering/state_metering.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
-  final MeteringCommunicationBloc _communicationBloc;
-  final UserPreferencesService _userPreferencesService;
   final MeteringInteractor _meteringInteractor;
+  final VolumeKeysNotifier _volumeKeysNotifier;
+  final MeteringCommunicationBloc _communicationBloc;
   late final StreamSubscription<communication_states.ScreenState> _communicationSubscription;
 
-  List<ApertureValue> get _apertureValues => apertureValues.whereStopType(stopType);
-  List<ShutterSpeedValue> get _shutterSpeedValues => shutterSpeedValues.whereStopType(stopType);
-
-  StopType stopType;
-
   MeteringBloc(
-    this._communicationBloc,
-    this._userPreferencesService,
     this._meteringInteractor,
-    this.stopType,
+    this._volumeKeysNotifier,
+    this._communicationBloc,
   ) : super(
-          MeteringState(
-            iso: _userPreferencesService.iso,
-            ev: 0.0,
-            evCompensation: 0.0,
-            nd: _userPreferencesService.ndFilter,
-            exposurePairs: [],
+          MeteringDataState(
+            ev100: null,
+            film: _meteringInteractor.film,
+            iso: _meteringInteractor.iso,
+            nd: _meteringInteractor.ndFilter,
+            isMetering: false,
           ),
         ) {
+    _volumeKeysNotifier.addListener(onVolumeKey);
     _communicationSubscription = _communicationBloc.stream
         .where((state) => state is communication_states.ScreenState)
         .map((state) => state as communication_states.ScreenState)
-        .listen(_onCommunicationState);
+        .listen(onCommunicationState);
 
-    on<StopTypeChangedEvent>(_onStopTypeChanged);
+    on<EquipmentProfileChangedEvent>(_onEquipmentProfileChanged);
+    on<FilmChangedEvent>(_onFilmChanged);
     on<IsoChangedEvent>(_onIsoChanged);
     on<NdChangedEvent>(_onNdChanged);
-    on<MeasureEvent>(_onMeasure);
+    on<MeasureEvent>(_onMeasure, transformer: droppable());
     on<MeasuredEvent>(_onMeasured);
+    on<MeasureErrorEvent>(_onMeasureError);
+    on<SettingsOpenedEvent>(_onSettingsOpened);
+    on<SettingsClosedEvent>(_onSettingsClosed);
+  }
 
-    add(const MeasureEvent());
+  @override
+  void onTransition(Transition<MeteringEvent, MeteringState> transition) {
+    super.onTransition(transition);
+    if (transition.nextState is MeteringDataState) {
+      final nextState = transition.nextState as MeteringDataState;
+      if (transition.currentState is LoadingState ||
+          transition.currentState is MeteringDataState &&
+              (transition.currentState as MeteringDataState).ev != nextState.ev) {
+        if (nextState.hasError) {
+          _meteringInteractor.errorVibration();
+        } else {
+          _meteringInteractor.responseVibration();
+        }
+      }
+    }
   }
 
   @override
   Future<void> close() async {
+    _volumeKeysNotifier.removeListener(onVolumeKey);
     await _communicationSubscription.cancel();
     return super.close();
   }
 
-  void _onCommunicationState(communication_states.ScreenState communicationState) {
+  @visibleForTesting
+  void onCommunicationState(communication_states.ScreenState communicationState) {
     if (communicationState is communication_states.MeasuredState) {
-      add(MeasuredEvent(communicationState.ev100));
+      _handleEv100(
+        communicationState.ev100,
+        isMetering: communicationState is communication_states.MeteringInProgressState,
+      );
     }
   }
 
-  void _onStopTypeChanged(StopTypeChangedEvent event, Emitter emit) {
-    stopType = event.stopType;
-    emit(MeteringState(
-      iso: state.iso,
-      ev: state.ev,
-      evCompensation: state.evCompensation,
-      nd: state.nd,
-      exposurePairs: _buildExposureValues(state.ev),
-    ));
+  void _onEquipmentProfileChanged(EquipmentProfileChangedEvent event, Emitter emit) {
+    bool willUpdateMeasurements = false;
+
+    /// Update selected ISO value and discard selected film, if selected equipment profile
+    /// doesn't contain currently selected value
+    IsoValue iso = state.iso;
+    Film film = state.film;
+    if (!event.equipmentProfileData.isoValues.any((v) => state.iso.value == v.value)) {
+      _meteringInteractor.iso = event.equipmentProfileData.isoValues.first;
+      iso = event.equipmentProfileData.isoValues.first;
+      _meteringInteractor.film = Film.values.first;
+      film = Film.values.first;
+      willUpdateMeasurements = true;
+    }
+
+    /// The same for ND filter
+    NdValue nd = state.nd;
+    if (!event.equipmentProfileData.ndValues.any((v) => state.nd.value == v.value)) {
+      _meteringInteractor.ndFilter = event.equipmentProfileData.ndValues.first;
+      nd = event.equipmentProfileData.ndValues.first;
+      willUpdateMeasurements = true;
+    }
+
+    if (willUpdateMeasurements) {
+      emit(
+        MeteringDataState(
+          ev100: state.ev100,
+          film: film,
+          iso: iso,
+          nd: nd,
+          isMetering: state.isMetering,
+        ),
+      );
+    }
+  }
+
+  void _onFilmChanged(FilmChangedEvent event, Emitter emit) {
+    if (state.film.name != event.film.name) {
+      _meteringInteractor.film = event.film;
+
+      /// Find `IsoValue` with matching value
+      IsoValue iso = state.iso;
+      if (state.iso.value != event.film.iso && event.film != const Film.other()) {
+        iso = IsoValue.values.firstWhere(
+          (e) => e.value == event.film.iso,
+          orElse: () => state.iso,
+        );
+        _meteringInteractor.iso = iso;
+      }
+
+      /// If user selects 'Other' film we preserve currently selected ISO
+      /// and therefore only discard reciprocity formula
+      emit(
+        MeteringDataState(
+          ev100: state.ev100,
+          film: event.film,
+          iso: iso,
+          nd: state.nd,
+          isMetering: state.isMetering,
+        ),
+      );
+    }
   }
 
   void _onIsoChanged(IsoChangedEvent event, Emitter emit) {
-    _userPreferencesService.iso = event.isoValue;
-    final ev = state.ev + log2(event.isoValue.value / state.iso.value);
-    emit(MeteringState(
-      iso: event.isoValue,
-      ev: ev,
-      evCompensation: state.evCompensation,
-      nd: state.nd,
-      exposurePairs: _buildExposureValues(ev),
-    ));
+    /// Discard currently selected film even if ISO is the same,
+    /// because, for example, Fomapan 400 and any Ilford 400
+    /// have different reciprocity formulas
+    _meteringInteractor.film = Film.values.first;
+
+    if (state.iso != event.isoValue) {
+      _meteringInteractor.iso = event.isoValue;
+      emit(
+        MeteringDataState(
+          ev100: state.ev100,
+          film: Film.values.first,
+          iso: event.isoValue,
+          nd: state.nd,
+          isMetering: state.isMetering,
+        ),
+      );
+    }
   }
 
   void _onNdChanged(NdChangedEvent event, Emitter emit) {
-    _userPreferencesService.ndFilter = event.ndValue;
-    final ev = state.ev - event.ndValue.stopReduction + state.nd.stopReduction;
-    emit(MeteringState(
-      iso: state.iso,
-      ev: ev,
-      evCompensation: state.evCompensation,
-      nd: event.ndValue,
-      exposurePairs: _buildExposureValues(ev),
-    ));
+    if (state.nd != event.ndValue) {
+      _meteringInteractor.ndFilter = event.ndValue;
+      emit(
+        MeteringDataState(
+          ev100: state.ev100,
+          film: state.film,
+          iso: state.iso,
+          nd: event.ndValue,
+          isMetering: state.isMetering,
+        ),
+      );
+    }
   }
 
-  void _onMeasure(_, __) {
+  void _onMeasure(MeasureEvent _, Emitter emit) {
     _meteringInteractor.quickVibration();
     _communicationBloc.add(const communication_events.MeasureEvent());
+    emit(
+      LoadingState(
+        film: state.film,
+        iso: state.iso,
+        nd: state.nd,
+      ),
+    );
+  }
+
+  void _handleEv100(double? ev100, {required bool isMetering}) {
+    if (ev100 == null || ev100.isNaN || ev100.isInfinite) {
+      add(MeasureErrorEvent(isMetering: isMetering));
+    } else {
+      add(MeasuredEvent(ev100, isMetering: isMetering));
+    }
   }
 
   void _onMeasured(MeasuredEvent event, Emitter emit) {
-    _meteringInteractor.responseVibration();
-    final ev = event.ev100 + log2(state.iso.value / 100);
-    emit(MeteringState(
-      iso: state.iso,
-      ev: ev,
-      evCompensation: state.evCompensation,
-      nd: state.nd,
-      exposurePairs: _buildExposureValues(ev),
-    ));
+    emit(
+      MeteringDataState(
+        ev100: event.ev100,
+        film: state.film,
+        iso: state.iso,
+        nd: state.nd,
+        isMetering: event.isMetering,
+      ),
+    );
   }
 
-  List<ExposurePair> _buildExposureValues(double ev) {
-    late final int evSteps;
-    switch (stopType) {
-      case StopType.full:
-        evSteps = ev.floor();
-        break;
-      case StopType.half:
-        evSteps = (ev / 0.5).floor();
-        break;
-      case StopType.third:
-        evSteps = (ev / 0.3).floor();
-        break;
-    }
-    final evOffset =
-        _shutterSpeedValues.indexOf(const ShutterSpeedValue(1, false, StopType.full)) - evSteps;
-
-    late final int apertureOffset;
-    late final int shutterSpeedOffset;
-    if (evOffset >= 0) {
-      apertureOffset = 0;
-      shutterSpeedOffset = evOffset;
-    } else {
-      apertureOffset = -evOffset;
-      shutterSpeedOffset = 0;
-    }
-
-    int itemsCount = min(_apertureValues.length + shutterSpeedOffset,
-            _shutterSpeedValues.length + apertureOffset) -
-        max(apertureOffset, shutterSpeedOffset);
-
-    if (itemsCount < 0) {
-      return List.empty(growable: false);
-    }
-    return List.generate(
-      itemsCount,
-      (index) => ExposurePair(
-        _apertureValues[index + apertureOffset],
-        _shutterSpeedValues[index + shutterSpeedOffset],
+  void _onMeasureError(MeasureErrorEvent event, Emitter emit) {
+    emit(
+      MeteringDataState(
+        ev100: null,
+        film: state.film,
+        iso: state.iso,
+        nd: state.nd,
+        isMetering: event.isMetering,
       ),
-      growable: false,
     );
+  }
+
+  @visibleForTesting
+  void onVolumeKey() {
+    if (_meteringInteractor.volumeAction == VolumeAction.shutter) {
+      add(const MeasureEvent());
+    }
+  }
+
+  void _onSettingsOpened(SettingsOpenedEvent _, Emitter __) {
+    _communicationBloc.add(const communication_events.SettingsOpenedEvent());
+  }
+
+  void _onSettingsClosed(SettingsClosedEvent _, Emitter __) {
+    _communicationBloc.add(const communication_events.SettingsClosedEvent());
   }
 }

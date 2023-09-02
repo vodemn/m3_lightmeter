@@ -1,15 +1,20 @@
-import 'package:lightmeter/data/models/photography_values/iso_value.dart';
-import 'package:lightmeter/data/models/photography_values/nd_value.dart';
-import 'package:lightmeter/data/models/photography_values/photography_value.dart';
+import 'package:lightmeter/data/models/film.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-abstract class MeteringEvent {
+sealed class MeteringEvent {
   const MeteringEvent();
 }
 
-class StopTypeChangedEvent extends MeteringEvent {
-  final StopType stopType;
+class EquipmentProfileChangedEvent extends MeteringEvent {
+  final EquipmentProfile equipmentProfileData;
 
-  const StopTypeChangedEvent(this.stopType);
+  const EquipmentProfileChangedEvent(this.equipmentProfileData);
+}
+
+class FilmChangedEvent extends MeteringEvent {
+  final Film film;
+
+  const FilmChangedEvent(this.film);
 }
 
 class IsoChangedEvent extends MeteringEvent {
@@ -30,6 +35,21 @@ class MeasureEvent extends MeteringEvent {
 
 class MeasuredEvent extends MeteringEvent {
   final double ev100;
+  final bool isMetering;
 
-  const MeasuredEvent(this.ev100);
+  const MeasuredEvent(this.ev100, {required this.isMetering});
+}
+
+class MeasureErrorEvent extends MeteringEvent {
+  final bool isMetering;
+
+  const MeasureErrorEvent({required this.isMetering});
+}
+
+class SettingsOpenedEvent extends MeteringEvent {
+  const SettingsOpenedEvent();
+}
+
+class SettingsClosedEvent extends MeteringEvent {
+  const SettingsClosedEvent();
 }

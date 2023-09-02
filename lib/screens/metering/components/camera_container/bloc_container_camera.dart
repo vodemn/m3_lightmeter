@@ -1,29 +1,30 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
+import 'dart:math' as math;
 import 'dart:typed_data';
+
 import 'package:camera/camera.dart';
 import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
-import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
-import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_event;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
     as communication_states;
-import 'package:lightmeter/utils/log_2.dart';
-
-import 'event_container_camera.dart';
-import 'state_container_camera.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
+import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;
   late final _WidgetsBindingObserver _observer;
+
   CameraController? _cameraController;
-  CameraController? get cameraController => _cameraController;
 
   static const _maxZoom = 7.0;
   RangeValues? _zoomRange;
@@ -33,6 +34,10 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   RangeValues? _exposureOffsetRange;
   double _exposureStep = 0.0;
   double _currentExposureOffset = 0.0;
+
+  double? _ev100 = 0.0;
+
+  bool _settingsOpened = false;
 
   CameraContainerBloc(
     this._meteringInteractor,
@@ -47,35 +52,47 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     on<RequestPermissionEvent>(_onRequestPermission);
     on<OpenAppSettingsEvent>(_onOpenAppSettings);
     on<InitializeEvent>(_onInitialize);
+    on<DeinitializeEvent>(_onDeinitialize);
     on<ZoomChangedEvent>(_onZoomChanged);
     on<ExposureOffsetChangedEvent>(_onExposureOffsetChanged);
     on<ExposureOffsetResetEvent>(_onExposureOffsetResetEvent);
-
-    add(const RequestPermissionEvent());
   }
 
   @override
   Future<void> close() async {
     WidgetsBinding.instance.removeObserver(_observer);
-    unawaited(_cameraController?.dispose());
+    unawaited(_cameraController?.dispose().then((_) => _cameraController = null));
+    communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
     return super.close();
   }
 
   @override
   void onCommunicationState(communication_states.SourceState communicationState) {
-    if (communicationState is communication_states.MeasureState) {
-      _takePhoto().then((ev100) {
-        if (ev100 != null) {
-          communicationBloc.add(
-            communication_event.MeasuredEvent(ev100 + _meteringInteractor.cameraEvCalibration),
-          );
+    switch (communicationState) {
+      case communication_states.MeasureState():
+        if (_canTakePhoto) {
+          _takePhoto().then((ev100Raw) {
+            if (ev100Raw != null) {
+              _ev100 = ev100Raw + _meteringInteractor.cameraEvCalibration;
+              communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
+            } else {
+              _ev100 = null;
+              communicationBloc.add(const communication_event.MeteringEndedEvent(null));
+            }
+          });
         }
-      });
+      case communication_states.SettingsOpenedState():
+        _settingsOpened = true;
+        add(const DeinitializeEvent());
+      case communication_states.SettingsClosedState():
+        _settingsOpened = false;
+        add(const InitializeEvent());
+      default:
     }
   }
 
   Future<void> _onRequestPermission(_, Emitter emit) async {
-    final hasPermission = await _meteringInteractor.requestPermission();
+    final hasPermission = await _meteringInteractor.requestCameraPermission();
     if (!hasPermission) {
       emit(const CameraErrorState(CameraErrorType.permissionNotGranted));
     } else {
@@ -106,7 +123,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
           (camera) => camera.lensDirection == CameraLensDirection.back,
           orElse: () => cameras.last,
         ),
-        ResolutionPreset.medium,
+        ResolutionPreset.low,
         enableAudio: false,
       );
 
@@ -116,7 +133,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       _zoomRange = await Future.wait<double>([
         _cameraController!.getMinZoomLevel(),
         _cameraController!.getMaxZoomLevel(),
-      ]).then((levels) => RangeValues(levels[0], min(_maxZoom, levels[1])));
+      ]).then((levels) => RangeValues(math.max(1.0, levels[0]), math.min(_maxZoom, levels[1])));
       _currentZoom = _zoomRange!.start;
 
       _exposureOffsetRange = await Future.wait<double>([
@@ -124,8 +141,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
         _cameraController!.getMaxExposureOffset(),
       ]).then(
         (levels) => RangeValues(
-          max(_exposureMaxRange.start, levels[0]),
-          min(_exposureMaxRange.end, levels[1]),
+          math.max(_exposureMaxRange.start, levels[0]),
+          math.min(_exposureMaxRange.end, levels[1]),
         ),
       );
       await _cameraController!.getExposureOffsetStepSize().then((value) {
@@ -141,16 +158,28 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     }
   }
 
+  Future<void> _onDeinitialize(DeinitializeEvent _, Emitter emit) async {
+    emit(const CameraInitState());
+    communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
+    await _cameraController?.dispose().then((_) => _cameraController = null);
+  }
+
   Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
-    _cameraController!.setZoomLevel(event.value);
-    _currentZoom = event.value;
-    _emitActiveState(emit);
+    if (_cameraController != null &&
+        event.value >= _zoomRange!.start &&
+        event.value <= _zoomRange!.end) {
+      _cameraController!.setZoomLevel(event.value);
+      _currentZoom = event.value;
+      _emitActiveState(emit);
+    }
   }
 
   Future<void> _onExposureOffsetChanged(ExposureOffsetChangedEvent event, Emitter emit) async {
-    _cameraController!.setExposureOffset(event.value);
-    _currentExposureOffset = event.value;
-    _emitActiveState(emit);
+    if (_cameraController != null) {
+      _cameraController!.setExposureOffset(event.value);
+      _currentExposureOffset = event.value;
+      _emitActiveState(emit);
+    }
   }
 
   Future<void> _onExposureOffsetResetEvent(ExposureOffsetResetEvent event, Emitter emit) async {
@@ -159,52 +188,62 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   void _emitActiveState(Emitter emit) {
-    emit(CameraActiveState(
-      zoomRange: _zoomRange!,
-      currentZoom: _currentZoom,
-      exposureOffsetRange: _exposureOffsetRange!,
-      exposureOffsetStep: _exposureStep,
-      currentExposureOffset: _currentExposureOffset,
-    ));
+    emit(
+      CameraActiveState(
+        zoomRange: _zoomRange!,
+        currentZoom: _currentZoom,
+        exposureOffsetRange: _exposureOffsetRange!,
+        exposureOffsetStep: _exposureStep,
+        currentExposureOffset: _currentExposureOffset,
+      ),
+    );
   }
 
-  Future<double?> _takePhoto() async {
-    if (_cameraController == null ||
-        !_cameraController!.value.isInitialized ||
-        _cameraController!.value.isTakingPicture) {
-      return null;
-    }
+  bool get _canTakePhoto => !(_cameraController == null ||
+      !_cameraController!.value.isInitialized ||
+      _cameraController!.value.isTakingPicture);
 
+  Future<double?> _takePhoto() async {
     try {
+      // https://github.com/flutter/flutter/issues/84957#issuecomment-1661155095
+      await _cameraController!.setFocusMode(FocusMode.locked);
+      await _cameraController!.setExposureMode(ExposureMode.locked);
       final file = await _cameraController!.takePicture();
+      await _cameraController!.setFocusMode(FocusMode.auto);
+      await _cameraController!.setExposureMode(ExposureMode.auto);
+
       final Uint8List bytes = await file.readAsBytes();
       Directory(file.path).deleteSync(recursive: true);
 
       final tags = await readExifFromBytes(bytes);
-      final iso = double.parse("${tags["EXIF ISOSpeedRatings"]}");
-      final apertureValueRatio = (tags["EXIF FNumber"]!.values as IfdRatios).ratios.first;
+      final iso = double.tryParse("${tags["EXIF ISOSpeedRatings"]}");
+      final apertureValueRatio = (tags["EXIF FNumber"]?.values as IfdRatios?)?.ratios.first;
+      final speedValueRatio = (tags["EXIF ExposureTime"]?.values as IfdRatios?)?.ratios.first;
+      if (iso == null || apertureValueRatio == null || speedValueRatio == null) {
+        log('Error parsing EXIF: ${tags.keys}');
+        return null;
+      }
+
       final aperture = apertureValueRatio.numerator / apertureValueRatio.denominator;
-      final speedValueRatio = (tags["EXIF ExposureTime"]!.values as IfdRatios).ratios.first;
       final speed = speedValueRatio.numerator / speedValueRatio.denominator;
 
-      return log2(pow(aperture, 2)) - log2(speed) - log2(iso / 100);
-    } on CameraException catch (e) {
-      debugPrint('Error: ${e.code}\nError Message: ${e.description}');
+      return log2(math.pow(aperture, 2)) - log2(speed) - log2(iso / 100);
+    } catch (e) {
+      log(e.toString());
       return null;
     }
   }
 
   Future<void> _appLifecycleStateObserver(AppLifecycleState state) async {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        add(const InitializeEvent());
-        break;
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-        _cameraController?.dispose();
-        _cameraController = null;
-        break;
-      default:
+    if (!_settingsOpened) {
+      switch (state) {
+        case AppLifecycleState.resumed:
+          add(const InitializeEvent());
+        case AppLifecycleState.paused:
+        case AppLifecycleState.detached:
+          add(const DeinitializeEvent());
+        default:
+      }
     }
   }
 }

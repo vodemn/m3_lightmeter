@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 class AnimatedDialog extends StatefulWidget {
@@ -35,8 +34,8 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
   late final Animation<double> _borderRadiusAnimation;
   late final Animation<double> _closedOpacityAnimation;
   late final Animation<double> _openedOpacityAnimation;
-  late final Animation<Color?> _foregroundColorAnimation;
-  late final Animation<double> _elevationAnimation;
+  late Animation<Color?> _foregroundColorAnimation;
+  late Animation<double> _elevationAnimation;
 
   bool _isDialogShown = false;
 
@@ -65,25 +64,29 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
     _closedOpacityAnimation = Tween<double>(
       begin: 1,
       end: 0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(
-        0,
-        0.8,
-        curve: Curves.ease,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(
+          0,
+          0.8,
+          curve: Curves.ease,
+        ),
       ),
-    ));
+    );
     _openedOpacityAnimation = Tween<double>(
       begin: 0,
       end: 1,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(
-        0.8,
-        1.0,
-        curve: Curves.easeInOut,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(
+          0.8,
+          1.0,
+          curve: Curves.easeInOut,
+        ),
       ),
-    ));
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final mediaQuery = MediaQuery.of(context);
@@ -101,7 +104,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
       );
       _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
 
-      final renderBox = _key.currentContext!.findRenderObject() as RenderBox;
+      final renderBox = _key.currentContext!.findRenderObject()! as RenderBox;
       _closedOffset = renderBox.localToGlobal(Offset.zero);
       _offsetAnimation = SizeTween(
         begin: Size(
@@ -126,7 +129,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
 
     _elevationAnimation = Tween<double>(
       begin: 0,
-      end: Theme.of(context).dialogTheme.elevation!,
+      end: Theme.of(context).dialogTheme.elevation,
     ).animate(_defaultCurvedAnimation);
   }
 
@@ -185,16 +188,15 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
     _animateForward();
   }
 
-  void _animateForward() {
+  Future<void> _animateForward() async {
     setState(() {
       _isDialogShown = true;
     });
-    _animationController.forward();
+    await _animationController.forward();
   }
 
   Future<void> _animateReverse() async {
-    _animationController.reverse();
-    await Future.delayed(_animationController.reverseDuration! * timeDilation);
+    await _animationController.reverse();
     setState(() {
       _isDialogShown = false;
     });

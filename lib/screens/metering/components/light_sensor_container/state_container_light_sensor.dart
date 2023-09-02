@@ -1,7 +1,5 @@
-abstract class LightSensorContainerState {
-  const LightSensorContainerState();
-}
+class LightSensorContainerState {
+  final double? ev100;
 
-class LightSensorInitState extends LightSensorContainerState {
-  const LightSensorInitState();
+  const LightSensorContainerState(this.ev100);
 }

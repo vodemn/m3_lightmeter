@@ -1,98 +1,57 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/res/dimens.dart';
-import 'package:provider/provider.dart';
+import 'package:lightmeter/screens/settings/components/about/widget_settings_section_about.dart';
+import 'package:lightmeter/screens/settings/components/general/widget_settings_section_general.dart';
+import 'package:lightmeter/screens/settings/components/metering/widget_settings_section_metering.dart';
+import 'package:lightmeter/screens/settings/components/theme/widget_settings_section_theme.dart';
+import 'package:lightmeter/screens/settings/flow_settings.dart';
+import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 
-import 'components/caffeine/provider_list_tile_caffeine.dart';
-import 'components/calibration/widget_list_tile_calibration.dart';
-import 'components/haptics/provider_list_tile_haptics.dart';
-import 'components/language/widget_list_tile_language.dart';
-import 'components/primary_color/widget_list_tile_primary_color.dart';
-import 'components/report_issue/widget_list_tile_report_issue.dart';
-import 'components/shared/settings_section/widget_settings_section.dart';
-import 'components/source_code/widget_list_tile_source_code.dart';
-import 'components/dynamic_color/widget_list_tile_dynamic_color.dart';
-import 'components/theme_type/widget_list_tile_theme_type.dart';
-import 'components/version/widget_list_tile_version.dart';
-import 'components/fractional_stops/widget_list_tile_fractional_stops.dart';
-import 'components/write_email/widget_list_tile_write_email.dart';
-
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
   @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    SettingsInteractorProvider.of(context).disableVolumeHandling();
+  }
+
+  @override
+  void deactivate() {
+    SettingsInteractorProvider.of(context).restoreVolumeHandling();
+    super.deactivate();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        top: false,
-        bottom: false,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              pinned: true,
-              automaticallyImplyLeading: false,
-              expandedHeight: Dimens.grid168,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: false,
-                titlePadding: const EdgeInsets.all(Dimens.paddingM),
-                title: Text(
-                  S.of(context).settings,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-              actions: [
-                IconButton(
-                  onPressed: Navigator.of(context).pop,
-                  icon: const Icon(Icons.close),
-                ),
+    return ScaffoldMessenger(
+      child: SliverScreen(
+        title: S.of(context).settings,
+        appBarActions: [
+          IconButton(
+            onPressed: Navigator.of(context).pop,
+            icon: const Icon(Icons.close),
+          ),
+        ],
+        slivers: [
+          SliverList(
+            delegate: SliverChildListDelegate(
+              <Widget>[
+                const MeteringSettingsSection(),
+                const GeneralSettingsSection(),
+                const ThemeSettingsSection(),
+                const AboutSettingsSection(),
+                SizedBox(height: MediaQuery.of(context).padding.bottom),
               ],
             ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                <Widget>[
-                  SettingsSection(
-                    title: S.of(context).metering,
-                    children: const [
-                      StopTypeListTile(),
-                      CalibrationListTile(),
-                    ],
-                  ),
-                  SettingsSection(
-                    title: S.of(context).general,
-                    children: const [
-                      CaffeineListTileProvider(),
-                      HapticsListTileProvider(),
-                      LanguageListTile(),
-                    ],
-                  ),
-                  SettingsSection(
-                    title: S.of(context).theme,
-                    children: [
-                      const ThemeTypeListTile(),
-                      const PrimaryColorListTile(),
-                      if (context.read<DynamicColorState>() != DynamicColorState.unavailable)
-                        const DynamicColorListTile(),
-                    ],
-                  ),
-                  SettingsSection(
-                    title: S.of(context).about,
-                    children: const [
-                      SourceCodeListTile(),
-                      ReportIssueListTile(),
-                      WriteEmailListTile(),
-                      VersionListTile(),
-                    ],
-                  ),
-                  SizedBox(height: MediaQuery.of(context).padding.bottom),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+          SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
+        ],
       ),
     );
   }

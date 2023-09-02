@@ -13,7 +13,7 @@ class Dimens {
   static const double grid24 = 24;
   static const double grid48 = 48;
   static const double grid56 = 56;
-  static const double grid168 = 168;
+  static const double grid72 = 72;
 
   static const double paddingS = 8;
   static const double paddingM = 16;
@@ -24,10 +24,16 @@ class Dimens {
   static const Duration durationM = Duration(milliseconds: 200);
   static const Duration durationML = Duration(milliseconds: 250);
   static const Duration durationL = Duration(milliseconds: 300);
+  static const Duration switchDuration = Duration(milliseconds: 100);
+
+  static const double enabledOpacity = 1.0;
+  static const double disabledOpacity = 0.38;
+
+  static const double sliverAppBarExpandedHeight = 168;
 
   // TopBar
-  /// Probably this is a bad practice, but with text size locked, the height is always 212
-  static const double readingContainerHeight = 212;
+  static const double readingContainerDoubleValueHeight = 128;
+  static const double readingContainerSingleValueHeight = 76;
 
   // `CenteredSlider`
   static const double cameraSliderTrackHeight = grid4;
@@ -43,8 +49,14 @@ class Dimens {
     paddingL,
     paddingM,
   );
-  static const EdgeInsets dialogActionsPadding = EdgeInsets.fromLTRB(
+  static const EdgeInsets dialogIconTitlePadding = EdgeInsets.fromLTRB(
     paddingL,
+    0,
+    paddingL,
+    paddingM,
+  );
+  static const EdgeInsets dialogActionsPadding = EdgeInsets.fromLTRB(
+    paddingM,
     paddingM,
     paddingL,
     paddingL,

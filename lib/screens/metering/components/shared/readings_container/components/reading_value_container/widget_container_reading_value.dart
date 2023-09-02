@@ -42,7 +42,6 @@ class ReadingValueContainer extends StatelessWidget {
           padding: const EdgeInsets.all(Dimens.paddingM),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: _items,
           ),
@@ -73,13 +72,16 @@ class _ReadingValueBuilder extends StatelessWidget {
           softWrap: false,
         ),
         const SizedBox(height: Dimens.grid4),
-        Text(
-          reading.value,
-          style: textTheme.titleMedium?.copyWith(color: textColor),
-          maxLines: 1,
-          overflow: TextOverflow.visible,
-          softWrap: false,
-        ),
+        AnimatedSwitcher(
+          duration: Dimens.switchDuration,
+          child: Text(
+            reading.value,
+            style: textTheme.titleMedium?.copyWith(color: textColor),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
+          ),
+        )
       ],
     );
   }

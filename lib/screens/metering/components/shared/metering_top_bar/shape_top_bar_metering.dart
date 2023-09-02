@@ -44,7 +44,7 @@ class MeteringTopBarShape extends CustomPainter {
           bottomRight: circularRadius,
         ),
       );
-    } else {
+    } else if (appendixHeight < 0) {
       // Left side with bottom corner
       path.lineTo(0, size.height + appendixHeight - Dimens.borderRadiusL);
       path.arcToPoint(
@@ -56,27 +56,15 @@ class MeteringTopBarShape extends CustomPainter {
       // Bottom side with step
       final allowedRadius = min(appendixHeight.abs() / 2, Dimens.borderRadiusL);
       path.lineTo(appendixWidth - allowedRadius, size.height + appendixHeight);
-
-      final bool isCutout = appendixHeight < 0;
-      if (isCutout) {
-        path.arcToPoint(
-          Offset(appendixWidth, size.height + appendixHeight + allowedRadius),
-          radius: circularRadius,
-          clockwise: true,
-        );
-        path.lineTo(appendixWidth, size.height - allowedRadius);
-      } else {
-        path.arcToPoint(
-          Offset(appendixWidth, size.height + appendixHeight - allowedRadius),
-          radius: circularRadius,
-          clockwise: false,
-        );
-        path.lineTo(appendixWidth, size.height + allowedRadius);
-      }
+      path.arcToPoint(
+        Offset(appendixWidth, size.height + appendixHeight + allowedRadius),
+        radius: circularRadius,
+      );
+      path.lineTo(appendixWidth, size.height - allowedRadius);
       path.arcToPoint(
         Offset(appendixWidth + allowedRadius, size.height),
         radius: circularRadius,
-        clockwise: !isCutout,
+        clockwise: false,
       );
 
       // Right side with bottom corner
@@ -86,9 +74,41 @@ class MeteringTopBarShape extends CustomPainter {
         radius: circularRadius,
         clockwise: false,
       );
-      path.lineTo(size.width, 0);
-      path.close();
+    } else {
+      // Left side with bottom corner
+      path.lineTo(0, size.height - Dimens.borderRadiusL);
+      path.arcToPoint(
+        Offset(Dimens.borderRadiusL, size.height),
+        radius: circularRadius,
+        clockwise: false,
+      );
+
+      // Bottom side with step
+      final allowedRadius = min(appendixHeight.abs() / 2, Dimens.borderRadiusL);
+      path.relativeLineTo(appendixWidth - allowedRadius * 2, 0);
+      path.relativeArcToPoint(
+        Offset(allowedRadius, -allowedRadius),
+        radius: Radius.circular(allowedRadius),
+        rotation: 90,
+        clockwise: false,
+      );
+      path.relativeLineTo(0, -appendixHeight + allowedRadius * 2);
+      path.relativeArcToPoint(
+        Offset(allowedRadius, -allowedRadius),
+        radius: Radius.circular(allowedRadius),
+        rotation: 90,
+      );
+
+      // Right side with bottom corner
+      path.lineTo(size.width - Dimens.borderRadiusL, size.height - appendixHeight);
+      path.arcToPoint(
+        Offset(size.width, size.height - appendixHeight - Dimens.borderRadiusL),
+        radius: circularRadius,
+        clockwise: false,
+      );
     }
+    path.lineTo(size.width, 0);
+    path.close();
     canvas.drawPath(path, paint);
   }
 

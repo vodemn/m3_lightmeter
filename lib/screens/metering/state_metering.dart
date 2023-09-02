@@ -1,22 +1,41 @@
-import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/photography_values/iso_value.dart';
-import 'package:lightmeter/data/models/photography_values/nd_value.dart';
+import 'package:flutter/material.dart';
+import 'package:lightmeter/data/models/film.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-class MeteringState {
-  final double ev;
-  final double evCompensation;
+@immutable
+abstract class MeteringState {
+  final double? ev100;
+  final Film film;
   final IsoValue iso;
   final NdValue nd;
-  final List<ExposurePair> exposurePairs;
+  final bool isMetering;
 
   const MeteringState({
-    required this.ev,
-    required this.evCompensation,
+    this.ev100,
+    required this.film,
     required this.iso,
     required this.nd,
-    required this.exposurePairs,
+    required this.isMetering,
+  });
+}
+
+class LoadingState extends MeteringState {
+  const LoadingState({
+    required super.film,
+    required super.iso,
+    required super.nd,
+  }) : super(isMetering: true);
+}
+
+class MeteringDataState extends MeteringState {
+  const MeteringDataState({
+    required super.ev100,
+    required super.film,
+    required super.iso,
+    required super.nd,
+    required super.isMetering,
   });
 
-  ExposurePair? get fastest => exposurePairs.isEmpty ? null : exposurePairs.first;
-  ExposurePair? get slowest => exposurePairs.isEmpty ? null : exposurePairs.last;
+  double? get ev => ev100 != null ? ev100! + log2(iso.value / 100) - nd.stopReduction : null;
+  bool get hasError => ev == null;
 }

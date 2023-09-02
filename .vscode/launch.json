@@ -8,12 +8,11 @@
             "name": "dev (android)",
             "request": "launch",
             "type": "dart",
-            //"flutterMode": "profile",
             "args": [
                 "--flavor",
                 "dev",
                 "--dart-define",
-                "cameraPreviewAspectRatio=2/3",
+                "cameraPreviewAspectRatio=240/320",
             ],
             "program": "${workspaceFolder}/lib/main_dev.dart",
         },
@@ -32,18 +31,20 @@
         {
             "name": "prod (android)",
             "request": "launch",
+            //"flutterMode": "release",
             "type": "dart",
             "args": [
                 "--flavor",
                 "prod",
                 "--dart-define",
-                "cameraPreviewAspectRatio=2/3",
+                "cameraPreviewAspectRatio=240/320",
             ],
             "program": "${workspaceFolder}/lib/main_prod.dart",
         },
         {
             "name": "prod (ios)",
             "request": "launch",
+            //"flutterMode": "release",
             "type": "dart",
             "args": [
                 "--flavor",

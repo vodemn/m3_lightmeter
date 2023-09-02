@@ -1,9 +1,26 @@
 import 'package:light_sensor/light_sensor.dart';
+import 'package:platform/platform.dart';
 
 class LightSensorService {
-  const LightSensorService();
+  final LocalPlatform localPlatform;
 
-  Future<bool> hasSensor() async => await LightSensor.hasSensor ?? false;
+  const LightSensorService(this.localPlatform);
 
-  Stream<int> luxStream() => LightSensor.lightSensorStream;
+  Future<bool> hasSensor() async {
+    if (!localPlatform.isAndroid) {
+      return false;
+    }
+    try {
+      return await LightSensor.hasSensor ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Stream<int> luxStream() {
+    if (!localPlatform.isAndroid) {
+      return const Stream<int>.empty();
+    }
+    return LightSensor.lightSensorStream;
+  }
 }

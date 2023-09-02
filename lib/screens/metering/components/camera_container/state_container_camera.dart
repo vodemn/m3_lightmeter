@@ -34,10 +34,42 @@ class CameraActiveState extends CameraContainerState {
     required this.exposureOffsetStep,
     required this.currentExposureOffset,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is CameraActiveState &&
+        other.zoomRange == zoomRange &&
+        other.currentZoom == currentZoom &&
+        other.exposureOffsetRange == exposureOffsetRange &&
+        other.exposureOffsetStep == exposureOffsetStep &&
+        other.currentExposureOffset == currentExposureOffset;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        runtimeType,
+        zoomRange,
+        currentZoom,
+        exposureOffsetRange,
+        exposureOffsetStep,
+        currentExposureOffset,
+      );
 }
 
 class CameraErrorState extends CameraContainerState {
   final CameraErrorType error;
 
   const CameraErrorState(this.error);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is CameraErrorState && other.error == error;
+  }
+
+  @override
+  int get hashCode => Object.hash(error, runtimeType);
 }

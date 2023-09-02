@@ -1,5 +1,4 @@
-import 'photography_values/aperture_value.dart';
-import 'photography_values/shutter_speed_value.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class ExposurePair {
   final ApertureValue aperture;
@@ -8,5 +7,17 @@ class ExposurePair {
   const ExposurePair(this.aperture, this.shutterSpeed);
 
   @override
-  String toString() => '${aperture.toString()} - ${shutterSpeed.toString()}';
+  String toString() => '$aperture - $shutterSpeed';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is ExposurePair &&
+        other.aperture == aperture &&
+        other.shutterSpeed == shutterSpeed;
+  }
+
+  @override
+  int get hashCode => Object.hash(aperture, shutterSpeed, runtimeType);
 }

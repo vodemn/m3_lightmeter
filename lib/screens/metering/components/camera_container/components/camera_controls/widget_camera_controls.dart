@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-import 'components/exposure_offset_slider/widget_slider_exposure_offset.dart';
-import 'components/zoom_slider/widget_slider_zoom.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls/components/exposure_offset_slider/widget_slider_exposure_offset.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls/components/zoom_slider/widget_slider_zoom.dart';
 
 class CameraControls extends StatelessWidget {
   final RangeValues exposureOffsetRange;

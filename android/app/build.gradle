@@ -8,7 +8,7 @@ if (localPropertiesFile.exists()) {
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    throw GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -21,7 +21,15 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
@@ -44,21 +52,24 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
+        targetSdkVersion 33            
+        ndk {
+            debugSymbolLevel 'FULL'
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+        /// legacy material-lightmeter ap stopped updating after 60022
+        /// 7xxxx means that it is a new app
+        versionCode 70000 + flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
     signingConfigs {
-        debug {}
-        /*
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
         }
-        */
     }
 
     flavorDimensions "app"
@@ -66,12 +77,12 @@ android {
         dev {
             applicationId "com.vodemn.lightmeter.dev"
             dimension "app"
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
         prod {
             applicationId "com.vodemn.lightmeter"
             dimension "app"
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 
@@ -80,9 +91,13 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
+            ndk {
+                debugSymbolLevel 'FULL'
+                abiFilters 'armeabi-v7a', 'arm64-v8a'
+            }
         }
     }
 }
@@ -93,4 +108,6 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.android.billingclient:billing-ktx:6.0.0"
+    implementation "com.google.firebase:firebase-analytics:17.4.1"
 }

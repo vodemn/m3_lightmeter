@@ -6,10 +6,10 @@ class CaffeineService {
   const CaffeineService();
 
   Future<bool> isKeepScreenOn() async {
-    return await _methodChannel.invokeMethod<bool>("isKeepScreenOn").then((value) => value!);
+    return _methodChannel.invokeMethod<bool>("isKeepScreenOn").then((value) => value!);
   }
 
-  Future<void> keepScreenOn(bool keep) async {
-    await _methodChannel.invokeMethod<bool>("setKeepScreenOn", keep);
+  Future<bool> keepScreenOn(bool keep) async {
+    return _methodChannel.invokeMethod<bool>("setKeepScreenOn", keep).then((value) => value!);
   }
 }

@@ -7,9 +7,11 @@ class HapticsService {
 
   Future<void> responseVibration() async => _tryVibrate(duration: 50, amplitude: 128);
 
+  Future<void> errorVibration() async => _tryVibrate(duration: 100, amplitude: 128);
+
   Future<void> _tryVibrate({required int duration, required int amplitude}) async {
     if (await _canVibrate()) {
-      Vibration.vibrate(
+      await Vibration.vibrate(
         duration: duration,
         amplitude: amplitude,
       );
