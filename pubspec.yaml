@@ -57,7 +57,3 @@ flutter:
 
 flutter_intl:
   enabled: true
-
-dependecies_override:
-  m3_lightmeter_iap:
-    path: iap
