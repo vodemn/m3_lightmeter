@@ -21,6 +21,10 @@ jobs:
     runs-on: macos-11
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - name: Connect private iap package
         uses: webfactory/ssh-agent@v0.8.0
         if: ${{ !env.STUB_IAP }}
@@ -30,10 +34,6 @@ jobs:
       - name: Override iap package with stub
         if: ${{ env.STUB_IAP }}
         run: bash ./.github/scripts/stub_iap.sh
-
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
 
       - uses: subosito/flutter-action@v2
         with:
