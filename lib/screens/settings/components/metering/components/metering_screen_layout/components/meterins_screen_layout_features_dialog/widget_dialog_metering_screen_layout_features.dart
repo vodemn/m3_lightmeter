@@ -33,18 +33,10 @@ class _MeteringScreenLayoutFeaturesDialogState extends State<MeteringScreenLayou
               child: Text(S.of(context).meteringScreenLayoutHint),
             ),
             const SizedBox(height: Dimens.grid16),
-            ...MeteringScreenLayoutFeature.values.map(
-              (f) => SwitchListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: Dimens.dialogTitlePadding.left),
-                title: Text(_toStringLocalized(context, f)),
-                value: _features[f]!,
-                onChanged: (value) {
-                  setState(() {
-                    _features.update(f, (_) => value);
-                  });
-                },
-              ),
-            ),
+            _featureListTile(MeteringScreenLayoutFeature.equipmentProfiles),
+            _featureListTile(MeteringScreenLayoutFeature.extremeExposurePairs),
+            _featureListTile(MeteringScreenLayoutFeature.filmPicker),
+            _featureListTile(MeteringScreenLayoutFeature.histogram),
           ],
         ),
       ),
@@ -65,8 +57,23 @@ class _MeteringScreenLayoutFeaturesDialogState extends State<MeteringScreenLayou
     );
   }
 
+  Widget _featureListTile(MeteringScreenLayoutFeature f) {
+    return SwitchListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: Dimens.dialogTitlePadding.left),
+      title: Text(_toStringLocalized(context, f)),
+      value: _features[f]!,
+      onChanged: (value) {
+        setState(() {
+          _features.update(f, (_) => value);
+        });
+      },
+    );
+  }
+
   String _toStringLocalized(BuildContext context, MeteringScreenLayoutFeature feature) {
     switch (feature) {
+      case MeteringScreenLayoutFeature.equipmentProfiles:
+        return S.of(context).equipmentProfiles;
       case MeteringScreenLayoutFeature.extremeExposurePairs:
         return S.of(context).meteringScreenFeatureExtremeExposurePairs;
       case MeteringScreenLayoutFeature.filmPicker:

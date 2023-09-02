@@ -95,6 +95,7 @@ class UserPreferencesService {
       );
     } else {
       return {
+        MeteringScreenLayoutFeature.equipmentProfiles: true,
         MeteringScreenLayoutFeature.extremeExposurePairs: true,
         MeteringScreenLayoutFeature.filmPicker: true,
         MeteringScreenLayoutFeature.histogram: true,
@@ -147,10 +148,4 @@ class UserPreferencesService {
         orElse: () => Film.values.first,
       );
   set film(Film value) => _sharedPreferences.setString(filmKey, value.name);
-
-  String get selectedEquipmentProfileId => ''; // coverage:ignore-line
-  set selectedEquipmentProfileId(String id) {} // coverage:ignore-line
-
-  List<EquipmentProfile> get equipmentProfiles => []; // coverage:ignore-line
-  set equipmentProfiles(List<EquipmentProfile> profiles) {} // coverage:ignore-line
 }

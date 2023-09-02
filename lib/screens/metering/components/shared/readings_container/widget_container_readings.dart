@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
-import 'package:lightmeter/features.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/animated_dialog_picker/widget_picker_dialog_animated.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/reading_value_container/widget_container_reading_value.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class ReadingsContainer extends StatelessWidget {
@@ -38,7 +37,10 @@ class ReadingsContainer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (FeaturesConfig.equipmentProfilesEnabled) ...[
+        if (UserPreferencesProvider.meteringScreenFeatureOf(
+          context,
+          MeteringScreenLayoutFeature.equipmentProfiles,
+        )) ...[
           const _EquipmentProfilePicker(),
           const _InnerPadding(),
         ],

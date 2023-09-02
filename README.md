@@ -39,7 +39,22 @@ Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics t
 
 ### 3. Get packages
 
-Fetch all the neccessary dependencies and generate translation files by running the following commands:
+As part of the app's functionallity is in the private repo, you have to replace these lines in _pubspec.yaml_:
+
+```yaml
+m3_lightmeter_iap:
+  git:
+    url: "https://github.com/vodemn/m3_lightmeter_iap"
+    ref: main
+```
+with these:
+```yaml
+m3_lightmeter_iap:
+  path: iap
+```
+and run `flutter pub get` from the _iap/_ folder.
+
+Then you can fetch all the neccessary dependencies and generate translation files by running the following commands:
 ```console
 flutter pub get
 flutter pub run intl_utils:generate

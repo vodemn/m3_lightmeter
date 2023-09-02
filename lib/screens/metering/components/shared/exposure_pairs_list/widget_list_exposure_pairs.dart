@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/components/empty_exposure_pairs_list/widget_list_exposure_pairs_empty.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/components/exposure_pairs_list_item/widget_item_list_exposure_pairs.dart';
+import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
 
 class ExposurePairsList extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
@@ -15,7 +16,10 @@ class ExposurePairsList extends StatelessWidget {
     return AnimatedSwitcher(
       duration: Dimens.switchDuration,
       child: exposurePairs.isEmpty
-          ? const EmptyExposurePairsList()
+          ? IconPlaceholder(
+              icon: Icons.not_interested,
+              text: S.of(context).noExposurePairs,
+            )
           : Stack(
               alignment: Alignment.center,
               children: [

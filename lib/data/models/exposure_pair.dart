@@ -8,4 +8,16 @@ class ExposurePair {
 
   @override
   String toString() => '$aperture - $shutterSpeed';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is ExposurePair &&
+        other.aperture == aperture &&
+        other.shutterSpeed == shutterSpeed;
+  }
+
+  @override
+  int get hashCode => Object.hash(aperture, shutterSpeed, runtimeType);
 }

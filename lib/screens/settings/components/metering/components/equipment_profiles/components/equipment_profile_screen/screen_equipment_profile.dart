@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/equipment_profile_provider.dart';
 
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
+import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfilesScreen extends StatefulWidget {
@@ -44,30 +45,38 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
           icon: const Icon(Icons.close),
         ),
       ],
-      slivers: [
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => index > 0
-                ? Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      Dimens.paddingM,
-                      index == 0 ? Dimens.paddingM : 0,
-                      Dimens.paddingM,
-                      Dimens.paddingM,
-                    ),
-                    child: EquipmentProfileContainer(
-                      key: profileContainersKeys[index],
-                      data: EquipmentProfiles.of(context)[index],
-                      onExpand: () => _keepExpandedAt(index),
-                      onUpdate: (profileData) => _updateProfileAt(profileData, index),
-                      onDelete: () => _removeProfileAt(index),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-            childCount: profilesCount,
-          ),
-        ),
-      ],
+      slivers: profilesCount == 1
+          ? [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: _EquipmentProfilesListPlaceholder(onTap: _addProfile),
+              )
+            ]
+          : [
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => index > 0 // skip default
+                      ? Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            Dimens.paddingM,
+                            index == 0 ? Dimens.paddingM : 0,
+                            Dimens.paddingM,
+                            Dimens.paddingM,
+                          ),
+                          child: EquipmentProfileContainer(
+                            key: profileContainersKeys[index],
+                            data: EquipmentProfiles.of(context)[index],
+                            onExpand: () => _keepExpandedAt(index),
+                            onUpdate: (profileData) => _updateProfileAt(profileData, index),
+                            onDelete: () => _removeProfileAt(index),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                  childCount: profilesCount,
+                ),
+              ),
+              SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
+            ],
     );
   }
 
@@ -97,5 +106,34 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
     profileContainersKeys.getRange(index + 1, profilesCount).forEach((element) {
       element.currentState?.collapse();
     });
+  }
+}
+
+class _EquipmentProfilesListPlaceholder extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _EquipmentProfilesListPlaceholder({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Dimens.sliverAppBarExpandedHeight),
+      child: FractionallySizedBox(
+        widthFactor: 1 / 1.618,
+        child: Center(
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(Dimens.paddingL),
+              child: IconPlaceholder(
+                icon: Icons.add,
+                text: S.of(context).tapToAdd,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

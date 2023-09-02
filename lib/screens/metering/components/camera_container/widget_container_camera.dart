@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
-import 'package:lightmeter/features.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
@@ -110,7 +109,10 @@ class CameraContainer extends StatelessWidget {
 
   double _meteringContainerHeight(BuildContext context) {
     double enabledFeaturesHeight = 0;
-    if (FeaturesConfig.equipmentProfilesEnabled) {
+    if (UserPreferencesProvider.meteringScreenFeatureOf(
+      context,
+      MeteringScreenLayoutFeature.equipmentProfiles,
+    )) {
       enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
       enabledFeaturesHeight += Dimens.paddingS;
     }
@@ -133,7 +135,7 @@ class CameraContainer extends StatelessWidget {
   }
 
   double _cameraPreviewHeight(BuildContext context) {
-    return ((MediaQuery.of(context).size.width - Dimens.grid8 - 2 * Dimens.paddingM) / 2) /
+    return ((MediaQuery.sizeOf(context).width - Dimens.grid8 - 2 * Dimens.paddingM) / 2) /
         PlatformConfig.cameraPreviewAspectRatio;
   }
 }

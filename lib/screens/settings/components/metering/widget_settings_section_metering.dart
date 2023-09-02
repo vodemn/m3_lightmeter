@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/features.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/calibration/widget_list_tile_calibration.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/widget_list_tile_equipment_profiles.dart';
@@ -18,7 +17,7 @@ class MeteringSettingsSection extends StatelessWidget {
         StopTypeListTile(),
         CalibrationListTile(),
         MeteringScreenLayoutListTile(),
-        if (FeaturesConfig.equipmentProfilesEnabled) EquipmentProfilesListTile(),
+        EquipmentProfilesListTile(),
       ],
     );
   }
