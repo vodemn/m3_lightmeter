@@ -13,6 +13,8 @@ double log10polynomian(
 ) =>
     a * pow(log10(x), 2) + b * log10(x) + c;
 
+typedef ReciprocityFailureBuilder = ShutterSpeedValue Function(ShutterSpeedValue shutterSpeed);
+
 /// Only Ilford films have reciprocity formulas provided by the manufacturer:
 /// https://www.ilfordphoto.com/wp/wp-content/uploads/2017/06/Reciprocity-Failure-Compensation.pdf
 ///

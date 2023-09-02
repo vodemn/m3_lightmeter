@@ -14,7 +14,6 @@ class Dimens {
   static const double grid48 = 48;
   static const double grid56 = 56;
   static const double grid72 = 72;
-  static const double grid168 = 168;
 
   static const double paddingS = 8;
   static const double paddingM = 16;
@@ -25,9 +24,12 @@ class Dimens {
   static const Duration durationM = Duration(milliseconds: 200);
   static const Duration durationML = Duration(milliseconds: 250);
   static const Duration durationL = Duration(milliseconds: 300);
+  static const Duration switchDuration = Duration(milliseconds: 100);
 
   static const double enabledOpacity = 1.0;
   static const double disabledOpacity = 0.38;
+
+  static const double sliverAppBarExpandedHeight = 168;
 
   // TopBar
   static const double readingContainerDoubleValueHeight = 128;

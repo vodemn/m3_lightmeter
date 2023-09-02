@@ -16,14 +16,28 @@ on:
           - dev
           - prod
         default: 'dev'
+      include-iap:
+        type: boolean
+        description: Include IAP package
+        default: true
 
 jobs:
   build:
     name: Build .apk
     runs-on: macos-11
     timeout-minutes: 15
-
     steps:
+      - name: Connect private iap package
+        uses: webfactory/ssh-agent@v0.8.0
+        if: ${{ inputs.include-iap }}
+        with:
+          ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
+
+      - name: Override iap package with stub
+        if: ${{ !inputs.include-iap }}
+        run: | 
+          echo "\ndependency_overrides:\n  m3_lightmeter_iap:\n    path: iap" >> pubspec.yaml
+           
       - uses: actions/checkout@v3
         with:
           submodules: recursive
@@ -76,7 +90,7 @@ jobs:
       - name: Build Apk
         env:
           FLAVOR: ${{ github.event.inputs.flavor }}
-        run: flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_$FLAVOR.dart
+        run: flutter build apk --release --flavor $FLAVOR --dart-define c -t lib/main_$FLAVOR.dart
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3

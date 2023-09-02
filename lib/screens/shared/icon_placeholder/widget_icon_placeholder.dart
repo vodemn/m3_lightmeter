@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-class EmptyExposurePairsList extends StatelessWidget {
-  const EmptyExposurePairsList({super.key});
+class IconPlaceholder extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const IconPlaceholder({
+    required this.icon,
+    required this.text,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
+      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width / 2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            Icons.not_interested,
+            icon,
             color: Theme.of(context).colorScheme.onBackground,
           ),
           const SizedBox(height: Dimens.grid8),
           Text(
-            S.of(context).noExposurePairs,
+            text,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium

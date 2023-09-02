@@ -39,17 +39,32 @@ Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics t
 
 ### 3. Get packages
 
-Fetch all the neccessary dependencies and generate translation files by running the following commands:
+As part of the app's functionallity is in the private repo, you have to replace these lines in _pubspec.yaml_:
+
+```yaml
+m3_lightmeter_iap:
+  git:
+    url: "https://github.com/vodemn/m3_lightmeter_iap"
+    ref: main
+```
+with these:
+```yaml
+m3_lightmeter_iap:
+  path: iap
+```
+and run `flutter pub get` from the _iap/_ folder.
+
+Then you can fetch all the neccessary dependencies and generate translation files by running the following commands:
 ```console
 flutter pub get
 flutter pub run intl_utils:generate
 ```
 
-### 4. Build
+### 4. Build (Android)
 
 You can build an apk by running the following command from the root of the repository:
 ```console
-flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=2/3 -t lib/main_$FLAVOR.dart
+flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_$FLAVOR.dart
 ```
 Just replace `$FLAVOR` with `dev` or `prod`.
 
