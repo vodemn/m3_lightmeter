@@ -35,7 +35,7 @@ class IAPProducts extends InheritedModel<IAPProductType> {
     super.key,
   });
 
-  static IAPProduct? of(BuildContext context, IAPProductType type) => null;
+  static IAPProduct? productOf(BuildContext context, IAPProductType type) => null;
 
   static bool isPurchased(BuildContext context, IAPProductType type) => false;
 

@@ -46,6 +46,10 @@ jobs:
     runs-on: macos-11
     timeout-minutes: 30
     steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - name: Connect private iap package
         uses: webfactory/ssh-agent@v0.8.0
         if: ${{ inputs.include-iap }}
@@ -54,12 +58,7 @@ jobs:
 
       - name: Override iap package with stub
         if: ${{ !inputs.include-iap }}
-        run: | 
-          echo "\ndependency_overrides:\n  m3_lightmeter_iap:\n    path: iap" >> pubspec.yaml
-
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
+        run: bash ./.github/scripts/stub_iap.sh
 
       - uses: actions/setup-java@v3
         with:
@@ -98,7 +97,7 @@ jobs:
       # Therefore here we have to increment it as well to build an apk with the same build number.
       - name: Increment build number & replace version number
         if: ${{ inputs.github-release }}
-        run: perl -i -pe 's/^(version:\s+)(\d+\.\d+\.\d+)(\+)(\d+)$/$1."${{ github.event.inputs.version }}".$3.($4+1)/e' pubspec.yaml
+        run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
@@ -160,7 +159,7 @@ jobs:
           submodules: recursive
 
       - name: Increment build number & replace version number
-        run: perl -i -pe 's/^(version:\s+)(\d+\.\d+\.\d+)(\+)(\d+)$/$1."${{ github.event.inputs.version }}".$3.($4+1)/e' pubspec.yaml
+        run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
 
       - name: Commit changes
         run: |

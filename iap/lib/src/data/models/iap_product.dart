@@ -1,5 +1,13 @@
+enum IAPProductStatus {
+  purchasable,
+  pending,
+  purchased,
+}
+
 enum IAPProductType { paidFeatures }
 
-class IAPProduct {
-  IAPProduct();
+abstract class IAPProduct {
+  const IAPProduct._();
+
+  IAPProductStatus get status => IAPProductStatus.purchasable;
 }
