@@ -60,13 +60,18 @@ flutter pub get
 flutter pub run intl_utils:generate
 ```
 
-### 4. Build (Android)
+### 4. Build
+
+#### Android
 
 You can build an apk by running the following command from the root of the repository:
 ```console
-flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_$FLAVOR.dart
+flutter build apk --release --flavor dev --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_dev.dart
 ```
-Just replace `$FLAVOR` with `dev` or `prod`.
+
+### iOS
+
+TBD
 
 # Contribution
 
