@@ -3,6 +3,7 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class MeteringScreenLayoutFeaturesDialog extends StatefulWidget {
   const MeteringScreenLayoutFeaturesDialog({super.key});
@@ -48,6 +49,9 @@ class _MeteringScreenLayoutFeaturesDialogState extends State<MeteringScreenLayou
         ),
         TextButton(
           onPressed: () {
+            if (!_features[MeteringScreenLayoutFeature.equipmentProfiles]!) {
+              EquipmentProfileProvider.of(context).setProfile(EquipmentProfiles.of(context).first);
+            }
             UserPreferencesProvider.of(context).setMeteringScreenLayout(_features);
             Navigator.of(context).pop();
           },
