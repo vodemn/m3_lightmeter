@@ -36,6 +36,7 @@
     "lightSensor": "Capteur de lumière",
     "meteringScreenLayout": "Disposition de l'écran de mesure",
     "meteringScreenLayoutHint": "Masquer les éléments sur l'écran de mesure dont vous n'avez pas besoin pour qu'ils ne gaspillent pas de l'espace dans les paires d'exposition.",
+    "meteringScreenLayoutHintEquipmentProfiles": "Sélecteur de profil de l'équipement",
     "meteringScreenFeatureExtremeExposurePairs": "Paires d'exposition les plus rapides et les plus courtes",
     "meteringScreenFeatureFilmPicker": "Sélecteur de film",
     "meteringScreenFeatureHistogram": "Histogramme",

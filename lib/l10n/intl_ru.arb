@@ -36,6 +36,7 @@
     "lightSensor": "Датчик освещённости",
     "meteringScreenLayout": "Элементы главного экрана",
     "meteringScreenLayoutHint": "Здесь вы можете скрыть некоторые ненужные или неиспользуемые элементы с главного экрана.",
+    "meteringScreenLayoutHintEquipmentProfiles": "Выбор профиля оборудования",
     "meteringScreenFeatureExtremeExposurePairs": "Длинная и короткая выдержки",
     "meteringScreenFeatureFilmPicker": "Выбор пленки",
     "meteringScreenFeatureHistogram": "Гистограмма",

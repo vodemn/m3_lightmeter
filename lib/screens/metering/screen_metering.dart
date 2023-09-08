@@ -84,15 +84,7 @@ class _InheritedListeners extends StatelessWidget {
             context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
           }
         },
-        child: MeteringScreenLayoutFeatureListener(
-          feature: MeteringScreenLayoutFeature.equipmentProfiles,
-          onDidChangeDependencies: (value) {
-            if (!value) {
-              EquipmentProfileProvider.of(context).setProfile(EquipmentProfiles.of(context).first);
-            }
-          },
-          child: child,
-        ),
+        child: child,
       ),
     );
   }
