@@ -36,6 +36,7 @@
     "lightSensor": "光传感器",
     "meteringScreenLayout": "布局",
     "meteringScreenLayoutHint": "隐藏不需要的元素，以免浪费曝光列表空间",
+    "meteringScreenLayoutHintEquipmentProfiles": "设备配置选择",
     "meteringScreenFeatureExtremeExposurePairs": "最快 & 最慢曝光组合",
     "meteringScreenFeatureFilmPicker": "胶片选择",
     "meteringScreenFeatureHistogram": "直方图",
