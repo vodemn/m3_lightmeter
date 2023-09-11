@@ -13,15 +13,15 @@ class FilmsListTile extends StatelessWidget {
     return IAPBuilder(
       builder: (context, status) => ListTile(
         leading: const Icon(Icons.camera_roll),
-        title: Text('Films in use'),
+        title: Text(S.of(context).filmsInUse),
         onTap: status == IAPProductStatus.purchased
             ? () {
                 showDialog<List<Film>>(
                   context: context,
                   builder: (_) => DialogFilter<Film>(
                     icon: const Icon(Icons.camera_roll),
-                    title: "Films in use",
-                    description: "Deselect films that you are not using, so they will not appear in the film picker",
+                    title: S.of(context).filmsInUse,
+                    description: S.of(context).filmsInUseDescription,
                     values: Film.values.sublist(1),
                     selectedValues: Film.values.sublist(1),
                     titleAdapter: (_, value) => value.name,

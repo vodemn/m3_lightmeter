@@ -56,6 +56,8 @@
     "equipmentProfile": "Equipment profile",
     "equipmentProfiles": "Equipment profiles",
     "tapToAdd": "Tap to add",
+    "filmsInUse": "Films in use",
+    "filmsInUseDescription": "Deselect films that you are not using, so they will not appear in the film picker",
     "general": "General",
     "keepScreenOn": "Keep screen on",
     "haptics": "Haptics",
