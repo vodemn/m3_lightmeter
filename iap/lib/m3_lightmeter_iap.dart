@@ -2,11 +2,12 @@ library m3_lightmeter_iap;
 
 import 'package:flutter/material.dart';
 import 'package:m3_lightmeter_iap/src/providers/equipment_profile_provider.dart';
+import 'package:m3_lightmeter_iap/src/providers/films_provider.dart';
 import 'package:m3_lightmeter_iap/src/providers/iap_products_provider.dart';
 
 export 'src/data/models/iap_product.dart';
 
-export 'src/providers/equipment_profile_provider.dart' hide EquipmentProfilesAspect;
+export 'src/providers/equipment_profile_provider.dart';
 export 'src/providers/iap_products_provider.dart';
 
 class IAPProviders extends StatelessWidget {
@@ -22,8 +23,10 @@ class IAPProviders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IAPProductsProvider(
-      child: EquipmentProfileProvider(
-        child: child,
+      child: FilmsProvider(
+        child: EquipmentProfileProvider(
+          child: child,
+        ),
       ),
     );
   }
