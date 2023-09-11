@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/screens/settings/components/about/widget_settings_section_about.dart';
+import 'package:lightmeter/screens/settings/components/equipment/widget_settings_section_equipment.dart';
 import 'package:lightmeter/screens/settings/components/general/widget_settings_section_general.dart';
 import 'package:lightmeter/screens/settings/components/metering/widget_settings_section_metering.dart';
 import 'package:lightmeter/screens/settings/components/theme/widget_settings_section_theme.dart';
@@ -43,6 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             delegate: SliverChildListDelegate(
               <Widget>[
                 const MeteringSettingsSection(),
+                const EquipmentSettingsSection(),
                 const GeneralSettingsSection(),
                 const ThemeSettingsSection(),
                 const AboutSettingsSection(),
