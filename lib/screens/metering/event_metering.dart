@@ -1,4 +1,3 @@
-import 'package:lightmeter/data/models/film.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 sealed class MeteringEvent {

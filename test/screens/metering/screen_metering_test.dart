@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 

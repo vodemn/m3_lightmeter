@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
@@ -13,7 +12,6 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 class ReadingsContainer extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;
-  final Film film;
   final IsoValue iso;
   final NdValue nd;
   final ValueChanged<Film> onFilmChanged;
@@ -23,7 +21,6 @@ class ReadingsContainer extends StatelessWidget {
   const ReadingsContainer({
     required this.fastest,
     required this.slowest,
-    required this.film,
     required this.iso,
     required this.nd,
     required this.onFilmChanged,
@@ -66,11 +63,7 @@ class ReadingsContainer extends StatelessWidget {
           context,
           MeteringScreenLayoutFeature.filmPicker,
         )) ...[
-          _FilmPicker(
-            values: Film.values,
-            selectedValue: film,
-            onChanged: onFilmChanged,
-          ),
+          const _FilmPicker(),
           const _InnerPadding(),
         ],
         Row(
@@ -126,29 +119,23 @@ class _EquipmentProfilePicker extends StatelessWidget {
 }
 
 class _FilmPicker extends StatelessWidget {
-  final List<Film> values;
-  final Film selectedValue;
-  final ValueChanged<Film> onChanged;
-
-  const _FilmPicker({
-    required this.values,
-    required this.selectedValue,
-    required this.onChanged,
-  });
+  const _FilmPicker();
 
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<Film>(
       icon: Icons.camera_roll,
       title: S.of(context).film,
-      selectedValue: selectedValue,
-      values: values,
+      selectedValue: Films.selectedOf(context),
+      values: Films.of(context),
       itemTitleBuilder: (_, value) => Text(value.name.isEmpty ? S.of(context).none : value.name),
-      onChanged: onChanged,
+      onChanged: FilmsProvider.of(context).setFilm,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: S.of(context).film,
-          value: selectedValue.name.isEmpty ? S.of(context).none : selectedValue.name,
+          value: Films.selectedOf(context).name.isEmpty
+              ? S.of(context).none
+              : Films.selectedOf(context).name,
         ),
       ),
     );

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
@@ -29,7 +28,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   ) : super(
           MeteringDataState(
             ev100: null,
-            film: _meteringInteractor.film,
             iso: _meteringInteractor.iso,
             nd: _meteringInteractor.ndFilter,
             isMetering: false,
@@ -92,12 +90,9 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     /// Update selected ISO value and discard selected film, if selected equipment profile
     /// doesn't contain currently selected value
     IsoValue iso = state.iso;
-    Film film = state.film;
     if (!event.equipmentProfileData.isoValues.any((v) => state.iso.value == v.value)) {
       _meteringInteractor.iso = event.equipmentProfileData.isoValues.first;
       iso = event.equipmentProfileData.isoValues.first;
-      _meteringInteractor.film = Film.values.first;
-      film = Film.values.first;
       willUpdateMeasurements = true;
     }
 
@@ -113,7 +108,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       emit(
         MeteringDataState(
           ev100: state.ev100,
-          film: film,
           iso: iso,
           nd: nd,
           isMetering: state.isMetering,
@@ -123,25 +117,20 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   }
 
   void _onFilmChanged(FilmChangedEvent event, Emitter emit) {
-    if (state.film.name != event.film.name) {
-      _meteringInteractor.film = event.film;
-
-      /// Find `IsoValue` with matching value
-      IsoValue iso = state.iso;
-      if (state.iso.value != event.film.iso && event.film != const Film.other()) {
-        iso = IsoValue.values.firstWhere(
-          (e) => e.value == event.film.iso,
-          orElse: () => state.iso,
-        );
-        _meteringInteractor.iso = iso;
-      }
+    /// Find `IsoValue` with matching value
+    IsoValue iso = state.iso;
+    if (state.iso.value != event.film.iso && event.film != const Film.other()) {
+      iso = IsoValue.values.firstWhere(
+        (e) => e.value == event.film.iso,
+        orElse: () => state.iso,
+      );
+      _meteringInteractor.iso = iso;
 
       /// If user selects 'Other' film we preserve currently selected ISO
       /// and therefore only discard reciprocity formula
       emit(
         MeteringDataState(
           ev100: state.ev100,
-          film: event.film,
           iso: iso,
           nd: state.nd,
           isMetering: state.isMetering,
@@ -151,17 +140,11 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   }
 
   void _onIsoChanged(IsoChangedEvent event, Emitter emit) {
-    /// Discard currently selected film even if ISO is the same,
-    /// because, for example, Fomapan 400 and any Ilford 400
-    /// have different reciprocity formulas
-    _meteringInteractor.film = Film.values.first;
-
     if (state.iso != event.isoValue) {
       _meteringInteractor.iso = event.isoValue;
       emit(
         MeteringDataState(
           ev100: state.ev100,
-          film: Film.values.first,
           iso: event.isoValue,
           nd: state.nd,
           isMetering: state.isMetering,
@@ -176,7 +159,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
       emit(
         MeteringDataState(
           ev100: state.ev100,
-          film: state.film,
           iso: state.iso,
           nd: event.ndValue,
           isMetering: state.isMetering,
@@ -190,7 +172,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     _communicationBloc.add(const communication_events.MeasureEvent());
     emit(
       LoadingState(
-        film: state.film,
         iso: state.iso,
         nd: state.nd,
       ),
@@ -209,7 +190,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     emit(
       MeteringDataState(
         ev100: event.ev100,
-        film: state.film,
         iso: state.iso,
         nd: state.nd,
         isMetering: event.isMetering,
@@ -221,7 +201,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     emit(
       MeteringDataState(
         ev100: null,
-        film: state.film,
         iso: state.iso,
         nd: state.nd,
         isMetering: event.isMetering,

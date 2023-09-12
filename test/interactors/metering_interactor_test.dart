@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
@@ -123,19 +122,6 @@ void main() {
             .thenReturn(NdValue.values.first);
         interactor.ndFilter = NdValue.values.first;
         verify(() => mockUserPreferencesService.ndFilter = NdValue.values.first).called(1);
-      });
-
-      test('film - get', () async {
-        when(() => mockUserPreferencesService.film).thenReturn(Film.values.first);
-        expect(interactor.film, Film.values.first);
-        verify(() => mockUserPreferencesService.film).called(1);
-      });
-
-      test('film - set', () async {
-        when(() => mockUserPreferencesService.film = Film.values.first)
-            .thenReturn(Film.values.first);
-        interactor.film = Film.values.first;
-        verify(() => mockUserPreferencesService.film = Film.values.first).called(1);
       });
     },
   );

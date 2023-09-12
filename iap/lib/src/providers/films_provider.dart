@@ -19,23 +19,16 @@ class FilmsProvider extends StatefulWidget {
 }
 
 class FilmsProviderState extends State<FilmsProvider> {
-  late Film _selected = Film.values.first;
-
   @override
   Widget build(BuildContext context) {
     return Films(
-      values: Film.values,
-      selected: _selected,
+      values: const [Film.other()],
+      selected: const Film.other(),
       child: widget.child,
     );
   }
 
-  void setFilm(Film film) {
-    if (_selected != film) {
-      _selected = film;
-      setState(() {});
-    }
-  }
+  void setFilm(Film film) {}
 
   void saveFilms(List<Film> films) {}
 }
