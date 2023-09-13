@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
-import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/animated_dialog_picker/widget_picker_dialog_animated.dart';
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/reading_value_container/widget_container_reading_value.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/nd_picker/widget_picker_nd.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -36,24 +38,16 @@ class ReadingsContainer extends StatelessWidget {
           context,
           MeteringScreenLayoutFeature.equipmentProfiles,
         )) ...[
-          const _EquipmentProfilePicker(),
+          const EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
         if (UserPreferencesProvider.meteringScreenFeatureOf(
           context,
           MeteringScreenLayoutFeature.extremeExposurePairs,
         )) ...[
-          ReadingValueContainer(
-            values: [
-              ReadingValue(
-                label: S.of(context).fastestExposurePair,
-                value: fastest != null ? fastest!.toString() : '-',
-              ),
-              ReadingValue(
-                label: S.of(context).slowestExposurePair,
-                value: fastest != null ? slowest!.toString() : '-',
-              ),
-            ],
+          ExtremeExposurePairsContainer(
+            fastest: fastest,
+            slowest: slowest,
           ),
           const _InnerPadding(),
         ],
@@ -61,13 +55,13 @@ class ReadingsContainer extends StatelessWidget {
           context,
           MeteringScreenLayoutFeature.filmPicker,
         )) ...[
-          _FilmPicker(selectedIso: iso),
+          FilmPicker(selectedIso: iso),
           const _InnerPadding(),
         ],
         Row(
           children: [
             Expanded(
-              child: _IsoValuePicker(
+              child: IsoValuePicker(
                 selectedValue: iso,
                 values: EquipmentProfiles.selectedOf(context).isoValues,
                 onChanged: onIsoChanged,
@@ -75,7 +69,7 @@ class ReadingsContainer extends StatelessWidget {
             ),
             const _InnerPadding(),
             Expanded(
-              child: _NdValuePicker(
+              child: NdValuePicker(
                 selectedValue: nd,
                 values: EquipmentProfiles.selectedOf(context).ndValues,
                 onChanged: onNdChanged,
@@ -90,146 +84,4 @@ class ReadingsContainer extends StatelessWidget {
 
 class _InnerPadding extends SizedBox {
   const _InnerPadding() : super(height: Dimens.grid8, width: Dimens.grid8);
-}
-
-class _EquipmentProfilePicker extends StatelessWidget {
-  const _EquipmentProfilePicker();
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedDialogPicker<EquipmentProfile>(
-      icon: Icons.camera,
-      title: S.of(context).equipmentProfile,
-      selectedValue: EquipmentProfiles.selectedOf(context),
-      values: EquipmentProfiles.of(context),
-      itemTitleBuilder: (_, value) => Text(value.id.isEmpty ? S.of(context).none : value.name),
-      onChanged: EquipmentProfileProvider.of(context).setProfile,
-      closedChild: ReadingValueContainer.singleValue(
-        value: ReadingValue(
-          label: S.of(context).equipmentProfile,
-          value: EquipmentProfiles.selectedOf(context).id.isEmpty
-              ? S.of(context).none
-              : EquipmentProfiles.selectedOf(context).name,
-        ),
-      ),
-    );
-  }
-}
-
-class _FilmPicker extends StatelessWidget {
-  final IsoValue selectedIso;
-
-  const _FilmPicker({required this.selectedIso});
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedDialogPicker<Film>(
-      icon: Icons.camera_roll,
-      title: S.of(context).film,
-      selectedValue: Films.selectedOf(context),
-      values: Films.of(context),
-      itemTitleBuilder: (_, value) => Text(value.name.isEmpty ? S.of(context).none : value.name),
-      onChanged: FilmsProvider.of(context).setFilm,
-      closedChild: ReadingValueContainer.singleValue(
-        value: ReadingValue(
-          label: _label(context),
-          value: Films.selectedOf(context).name.isEmpty
-              ? S.of(context).none
-              : Films.selectedOf(context).name,
-        ),
-      ),
-    );
-  }
-
-  String _label(BuildContext context) {
-    if (Films.selectedOf(context) == const Film.other() ||
-        Films.selectedOf(context).iso == selectedIso.value) {
-      return S.of(context).film;
-    }
-
-    final evDiff = IsoValue(
-      Films.selectedOf(context).iso,
-      StopType.full,
-    ).difference(selectedIso);
-
-    if (evDiff > 0) {
-      return S.of(context).filmPush;
-    } else if (evDiff < 0) {
-      return S.of(context).filmPull;
-    } else {
-      return S.of(context).film;
-    }
-  }
-}
-
-class _IsoValuePicker extends StatelessWidget {
-  final List<IsoValue> values;
-  final IsoValue selectedValue;
-  final ValueChanged<IsoValue> onChanged;
-
-  const _IsoValuePicker({
-    required this.selectedValue,
-    required this.values,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedDialogPicker<IsoValue>(
-      icon: Icons.iso,
-      title: S.of(context).iso,
-      subtitle: S.of(context).filmSpeed,
-      selectedValue: selectedValue,
-      values: values,
-      itemTitleBuilder: (_, value) => Text(value.value.toString()),
-      // using ascending order, because increase in film speed rises EV
-      itemTrailingBuilder: (selected, value) => value.value != selected.value
-          ? Text(S.of(context).evValue(selected.toStringDifference(value)))
-          : null,
-      onChanged: onChanged,
-      closedChild: ReadingValueContainer.singleValue(
-        value: ReadingValue(
-          label: S.of(context).iso,
-          value: selectedValue.value.toString(),
-        ),
-      ),
-    );
-  }
-}
-
-class _NdValuePicker extends StatelessWidget {
-  final List<NdValue> values;
-  final NdValue selectedValue;
-  final ValueChanged<NdValue> onChanged;
-
-  const _NdValuePicker({
-    required this.selectedValue,
-    required this.values,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedDialogPicker<NdValue>(
-      icon: Icons.filter_b_and_w,
-      title: S.of(context).nd,
-      subtitle: S.of(context).ndFilterFactor,
-      selectedValue: selectedValue,
-      values: values,
-      itemTitleBuilder: (_, value) => Text(
-        value.value == 0 ? S.of(context).none : value.value.toString(),
-      ),
-      // using descending order, because ND filter darkens image & lowers EV
-      itemTrailingBuilder: (selected, value) => value.value != selected.value
-          ? Text(S.of(context).evValue(value.toStringDifference(selected)))
-          : null,
-      onChanged: onChanged,
-      closedChild: ReadingValueContainer.singleValue(
-        value: ReadingValue(
-          label: S.of(context).nd,
-          value: selectedValue.value.toString(),
-        ),
-      ),
-    );
-  }
 }
