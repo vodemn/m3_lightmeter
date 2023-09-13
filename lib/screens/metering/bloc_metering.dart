@@ -40,7 +40,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
         .listen(onCommunicationState);
 
     on<EquipmentProfileChangedEvent>(_onEquipmentProfileChanged);
-    on<FilmChangedEvent>(_onFilmChanged);
     on<IsoChangedEvent>(_onIsoChanged);
     on<NdChangedEvent>(_onNdChanged);
     on<MeasureEvent>(_onMeasure, transformer: droppable());
@@ -110,29 +109,6 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
           ev100: state.ev100,
           iso: iso,
           nd: nd,
-          isMetering: state.isMetering,
-        ),
-      );
-    }
-  }
-
-  void _onFilmChanged(FilmChangedEvent event, Emitter emit) {
-    /// Find `IsoValue` with matching value
-    IsoValue iso = state.iso;
-    if (state.iso.value != event.film.iso && event.film != const Film.other()) {
-      iso = IsoValue.values.firstWhere(
-        (e) => e.value == event.film.iso,
-        orElse: () => state.iso,
-      );
-      _meteringInteractor.iso = iso;
-
-      /// If user selects 'Other' film we preserve currently selected ISO
-      /// and therefore only discard reciprocity formula
-      emit(
-        MeteringDataState(
-          ev100: state.ev100,
-          iso: iso,
-          nd: state.nd,
           isMetering: state.isMetering,
         ),
       );

@@ -12,7 +12,6 @@ class LightSensorContainerProvider extends StatelessWidget {
   final ExposurePair? slowest;
   final IsoValue iso;
   final NdValue nd;
-  final ValueChanged<Film> onFilmChanged;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
   final List<ExposurePair> exposurePairs;
@@ -22,7 +21,6 @@ class LightSensorContainerProvider extends StatelessWidget {
     required this.slowest,
     required this.iso,
     required this.nd,
-    required this.onFilmChanged,
     required this.onIsoChanged,
     required this.onNdChanged,
     required this.exposurePairs,
@@ -42,7 +40,6 @@ class LightSensorContainerProvider extends StatelessWidget {
         slowest: slowest,
         iso: iso,
         nd: nd,
-        onFilmChanged: onFilmChanged,
         onIsoChanged: onIsoChanged,
         onNdChanged: onNdChanged,
         exposurePairs: exposurePairs,

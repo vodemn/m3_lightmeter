@@ -13,7 +13,6 @@ import 'package:lightmeter/screens/metering/components/camera_container/provider
 import 'package:lightmeter/screens/metering/components/light_sensor_container/provider_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
-import 'package:lightmeter/screens/metering/utils/film_listener.dart';
 import 'package:lightmeter/screens/metering/utils/listener_metering_layout_feature.dart';
 import 'package:lightmeter/screens/metering/utils/listsner_equipment_profiles.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
@@ -35,8 +34,6 @@ class MeteringScreen extends StatelessWidget {
                   ev: state is MeteringDataState ? state.ev : null,
                   iso: state.iso,
                   nd: state.nd,
-                  onFilmChanged: (value) =>
-                      context.read<MeteringBloc>().add(FilmChangedEvent(value)),
                   onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
                   onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
                 ),
@@ -72,23 +69,18 @@ class _InheritedListeners extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilmListener(
+    return EquipmentProfileListener(
       onDidChangeDependencies: (value) {
-        context.read<MeteringBloc>().add(FilmChangedEvent(value));
+        context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
       },
-      child: EquipmentProfileListener(
+      child: MeteringScreenLayoutFeatureListener(
+        feature: MeteringScreenLayoutFeature.filmPicker,
         onDidChangeDependencies: (value) {
-          context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
+          if (!value) {
+            FilmsProvider.of(context).setFilm(const Film.other());
+          }
         },
-        child: MeteringScreenLayoutFeatureListener(
-          feature: MeteringScreenLayoutFeature.filmPicker,
-          onDidChangeDependencies: (value) {
-            if (!value) {
-              FilmsProvider.of(context).setFilm(const Film.other());
-            }
-          },
-          child: child,
-        ),
+        child: child,
       ),
     );
   }
@@ -98,7 +90,6 @@ class MeteringContainerBuidler extends StatelessWidget {
   final double? ev;
   final IsoValue iso;
   final NdValue nd;
-  final ValueChanged<Film> onFilmChanged;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
 
@@ -106,7 +97,6 @@ class MeteringContainerBuidler extends StatelessWidget {
     required this.ev,
     required this.iso,
     required this.nd,
-    required this.onFilmChanged,
     required this.onIsoChanged,
     required this.onNdChanged,
   });
@@ -130,7 +120,6 @@ class MeteringContainerBuidler extends StatelessWidget {
             slowest: slowest,
             iso: iso,
             nd: nd,
-            onFilmChanged: onFilmChanged,
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,
@@ -140,7 +129,6 @@ class MeteringContainerBuidler extends StatelessWidget {
             slowest: slowest,
             iso: iso,
             nd: nd,
-            onFilmChanged: onFilmChanged,
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,

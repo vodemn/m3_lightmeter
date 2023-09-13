@@ -10,12 +10,6 @@ class EquipmentProfileChangedEvent extends MeteringEvent {
   const EquipmentProfileChangedEvent(this.equipmentProfileData);
 }
 
-class FilmChangedEvent extends MeteringEvent {
-  final Film film;
-
-  const FilmChangedEvent(this.film);
-}
-
 class IsoChangedEvent extends MeteringEvent {
   final IsoValue isoValue;
 

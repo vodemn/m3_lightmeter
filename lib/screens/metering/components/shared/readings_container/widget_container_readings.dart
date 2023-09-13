@@ -14,7 +14,6 @@ class ReadingsContainer extends StatelessWidget {
   final ExposurePair? slowest;
   final IsoValue iso;
   final NdValue nd;
-  final ValueChanged<Film> onFilmChanged;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
 
@@ -23,7 +22,6 @@ class ReadingsContainer extends StatelessWidget {
     required this.slowest,
     required this.iso,
     required this.nd,
-    required this.onFilmChanged,
     required this.onIsoChanged,
     required this.onNdChanged,
     super.key,
