@@ -58,6 +58,8 @@
     "equipmentProfile": "设备配置",
     "equipmentProfiles": "设备配置",
     "tapToAdd": "點擊添加",
+    "filmsInUse": "Films in use",
+    "filmsInUseDescription": "Select films which you use.",
     "general": "通用",
     "keepScreenOn": "保持屏幕常亮",
     "haptics": "震动",

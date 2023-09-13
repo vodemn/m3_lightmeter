@@ -58,6 +58,8 @@
     "equipmentProfile": "Оборудование",
     "equipmentProfiles": "Профили оборудования",
     "tapToAdd": "Нажмите, чтобы добавить",
+    "filmsInUse": "Используемые пленки",
+    "filmsInUseDescription": "Выберите пленки, которыми вы пользуетесь.",
     "general": "Общие",
     "keepScreenOn": "Запрет блокировки",
     "haptics": "Вибрация",
