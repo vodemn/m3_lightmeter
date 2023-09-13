@@ -41,6 +41,8 @@
     "meteringScreenFeatureFilmPicker": "Film picker",
     "meteringScreenFeatureHistogram": "Histogram",
     "film": "Film",
+    "filmPush": "Film (push)",
+    "filmPull": "Film (pull)",
     "equipment": "Equipment",
     "equipmentProfileName": "Equipment profile name",
     "equipmentProfileNameHint": "Praktica MTL5B",

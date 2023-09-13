@@ -41,6 +41,8 @@
     "meteringScreenFeatureFilmPicker": "Выбор пленки",
     "meteringScreenFeatureHistogram": "Гистограмма",
     "film": "Пленка",
+    "filmPush": "Пленка (push)",
+    "filmPull": "Пленка (pull)",
     "equipment": "Оборудование",
     "equipmentProfileName": "Название профиля",
     "equipmentProfileNameHint": "Praktica MTL5B",

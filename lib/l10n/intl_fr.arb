@@ -41,6 +41,8 @@
     "meteringScreenFeatureFilmPicker": "Sélecteur de film",
     "meteringScreenFeatureHistogram": "Histogramme",
     "film": "Pellicule",
+    "filmPush": "Pellicule (push)",
+    "filmPull": "Pellicule (pull)",
     "equipment": "Équipement",
     "equipmentProfileName": "Nom du profil de l'équipement",
     "tapToAdd": "Appuie pour ajouter",

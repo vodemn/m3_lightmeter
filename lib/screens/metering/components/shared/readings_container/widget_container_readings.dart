@@ -61,7 +61,7 @@ class ReadingsContainer extends StatelessWidget {
           context,
           MeteringScreenLayoutFeature.filmPicker,
         )) ...[
-          const _FilmPicker(),
+          _FilmPicker(selectedIso: iso),
           const _InnerPadding(),
         ],
         Row(
@@ -117,7 +117,9 @@ class _EquipmentProfilePicker extends StatelessWidget {
 }
 
 class _FilmPicker extends StatelessWidget {
-  const _FilmPicker();
+  final IsoValue selectedIso;
+
+  const _FilmPicker({required this.selectedIso});
 
   @override
   Widget build(BuildContext context) {
@@ -130,13 +132,33 @@ class _FilmPicker extends StatelessWidget {
       onChanged: FilmsProvider.of(context).setFilm,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
-          label: S.of(context).film,
+          label: _label(context),
           value: Films.selectedOf(context).name.isEmpty
               ? S.of(context).none
               : Films.selectedOf(context).name,
         ),
       ),
     );
+  }
+
+  String _label(BuildContext context) {
+    if (Films.selectedOf(context) == const Film.other() ||
+        Films.selectedOf(context).iso == selectedIso.value) {
+      return S.of(context).film;
+    }
+
+    final evDiff = IsoValue(
+      Films.selectedOf(context).iso,
+      StopType.full,
+    ).difference(selectedIso);
+
+    if (evDiff > 0) {
+      return S.of(context).filmPush;
+    } else if (evDiff < 0) {
+      return S.of(context).filmPull;
+    } else {
+      return S.of(context).film;
+    }
   }
 }
 
