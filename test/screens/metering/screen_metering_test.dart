@@ -18,7 +18,6 @@ void main() {
           ev,
           StopType.full,
           defaultEquipmentProfile,
-          const Film.other(),
         );
 
     test('isNan', () {
@@ -41,7 +40,6 @@ void main() {
             ev,
             StopType.full,
             defaultEquipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -141,7 +139,6 @@ void main() {
             ev,
             StopType.half,
             defaultEquipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -241,7 +238,6 @@ void main() {
             ev,
             StopType.third,
             defaultEquipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -355,7 +351,6 @@ void main() {
             ev,
             StopType.full,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -455,7 +450,6 @@ void main() {
             ev,
             StopType.half,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -555,7 +549,6 @@ void main() {
             ev,
             StopType.third,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -668,7 +661,6 @@ void main() {
             ev,
             StopType.full,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -768,7 +760,6 @@ void main() {
             ev,
             StopType.half,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -868,7 +859,6 @@ void main() {
             ev,
             StopType.third,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {

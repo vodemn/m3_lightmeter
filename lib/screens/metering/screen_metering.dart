@@ -108,7 +108,6 @@ class MeteringContainerBuidler extends StatelessWidget {
             ev!,
             UserPreferencesProvider.stopTypeOf(context),
             EquipmentProfiles.selectedOf(context),
-            Films.selectedOf(context),
           )
         : <ExposurePair>[];
     final fastest = exposurePairs.isNotEmpty ? exposurePairs.first : null;
@@ -140,7 +139,6 @@ class MeteringContainerBuidler extends StatelessWidget {
     double ev,
     StopType stopType,
     EquipmentProfile equipmentProfile,
-    Film film,
   ) {
     if (ev.isNaN || ev.isInfinite) {
       return List.empty();
@@ -183,7 +181,7 @@ class MeteringContainerBuidler extends StatelessWidget {
       itemsCount,
       (index) => ExposurePair(
         apertureValues[index + apertureOffset],
-        film.reciprocityFailure(shutterSpeedValues[index + shutterSpeedOffset]),
+        shutterSpeedValues[index + shutterSpeedOffset],
       ),
       growable: false,
     );

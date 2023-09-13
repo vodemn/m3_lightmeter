@@ -5,6 +5,7 @@ import 'package:lightmeter/res/dimens.dart';
 
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/components/exposure_pairs_list_item/widget_item_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class ExposurePairsList extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
@@ -47,7 +48,8 @@ class ExposurePairsList extends StatelessWidget {
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: ExposurePairsListItem(
-                                  exposurePairs[index].shutterSpeed,
+                                  Films.selectedOf(context)
+                                      .reciprocityFailure(exposurePairs[index].shutterSpeed),
                                   tickOnTheLeft: true,
                                 ),
                               ),
