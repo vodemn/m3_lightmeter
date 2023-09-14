@@ -16,7 +16,7 @@ class FilmPicker extends StatelessWidget {
       icon: Icons.camera_roll,
       title: S.of(context).film,
       selectedValue: Films.selectedOf(context),
-      values: Films.of(context),
+      values: Films.inUseOf(context),
       itemTitleBuilder: (_, value) => Text(value.name.isEmpty ? S.of(context).none : value.name),
       onChanged: FilmsProvider.of(context).setFilm,
       closedChild: ReadingValueContainer.singleValue(

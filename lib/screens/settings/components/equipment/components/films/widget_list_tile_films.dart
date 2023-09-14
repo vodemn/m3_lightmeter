@@ -20,8 +20,8 @@ class FilmsListTile extends StatelessWidget {
             icon: const Icon(Icons.camera_roll),
             title: S.of(context).filmsInUse,
             description: S.of(context).filmsInUseDescription,
-            values: Film.values.sublist(1),
-            selectedValues: Films.of(context),
+            values: Films.of(context).sublist(1),
+            selectedValues: Films.inUseOf(context),
             titleAdapter: (_, value) => value.name,
           ),
         ).then((values) {
