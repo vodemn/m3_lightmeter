@@ -8,6 +8,7 @@ import 'package:m3_lightmeter_iap/src/providers/iap_products_provider.dart';
 export 'src/data/models/iap_product.dart';
 
 export 'src/providers/equipment_profile_provider.dart';
+export 'src/providers/films_provider.dart';
 export 'src/providers/iap_products_provider.dart';
 
 class IAPProviders extends StatelessWidget {
