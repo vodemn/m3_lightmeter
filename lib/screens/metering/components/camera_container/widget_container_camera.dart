@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
@@ -23,10 +22,8 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 class CameraContainer extends StatelessWidget {
   final ExposurePair? fastest;
   final ExposurePair? slowest;
-  final Film film;
   final IsoValue iso;
   final NdValue nd;
-  final ValueChanged<Film> onFilmChanged;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
   final List<ExposurePair> exposurePairs;
@@ -34,10 +31,8 @@ class CameraContainer extends StatelessWidget {
   const CameraContainer({
     required this.fastest,
     required this.slowest,
-    required this.film,
     required this.iso,
     required this.nd,
-    required this.onFilmChanged,
     required this.onIsoChanged,
     required this.onNdChanged,
     required this.exposurePairs,
@@ -60,10 +55,8 @@ class CameraContainer extends StatelessWidget {
             readingsContainer: ReadingsContainer(
               fastest: fastest,
               slowest: slowest,
-              film: film,
               iso: iso,
               nd: nd,
-              onFilmChanged: onFilmChanged,
               onIsoChanged: onIsoChanged,
               onNdChanged: onNdChanged,
             ),

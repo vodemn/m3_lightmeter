@@ -2,7 +2,6 @@ import 'package:app_settings/app_settings.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
@@ -44,9 +43,6 @@ class MeteringInteractor {
 
   NdValue get ndFilter => _userPreferencesService.ndFilter;
   set ndFilter(NdValue value) => _userPreferencesService.ndFilter = value;
-
-  Film get film => _userPreferencesService.film;
-  set film(Film value) => _userPreferencesService.film = value;
 
   VolumeAction get volumeAction => _userPreferencesService.volumeAction;
 

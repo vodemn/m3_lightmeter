@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/equipment_list_tiles/components/dialog_filter/widget_dialog_filter.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/equipment_list_tiles/components/dialog_range_picker/widget_dialog_picker_range.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widget_dialog_filter.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_range_picker/widget_dialog_picker_range.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentListTiles extends StatelessWidget {

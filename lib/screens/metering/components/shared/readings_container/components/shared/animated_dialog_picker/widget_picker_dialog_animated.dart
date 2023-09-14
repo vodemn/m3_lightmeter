@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/animated_dialog_picker/components/animated_dialog/widget_dialog_animated.dart';
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/animated_dialog/widget_dialog_animated.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
 
 // Has to be stateful, so that [GlobalKey] is not recreated. 
 // Otherwise use will no be able to close the dialog after EV value has changed.

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
@@ -390,28 +389,6 @@ void main() {
       service.dynamicColor = false;
       verify(() => sharedPreferences.setBool(UserPreferencesService.dynamicColorKey, false))
           .called(1);
-    });
-  });
-
-  group('film', () {
-    test('get default', () {
-      when(() => sharedPreferences.getString(UserPreferencesService.filmKey)).thenReturn(null);
-      expect(service.film, Film.values.first);
-    });
-
-    test('get', () {
-      when(() => sharedPreferences.getString(UserPreferencesService.filmKey))
-          .thenReturn('Fomapan ACTION 400');
-      expect(service.film, const FomapanFilm.action400());
-    });
-
-    test('set', () {
-      when(() => sharedPreferences.setString(UserPreferencesService.filmKey, 'Fomapan ACTION 400'))
-          .thenAnswer((_) => Future.value(true));
-      service.film = const FomapanFilm.action400();
-      verify(
-        () => sharedPreferences.setString(UserPreferencesService.filmKey, 'Fomapan ACTION 400'),
-      ).called(1);
     });
   });
 }

@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/equipment_list_tiles/widget_list_tiles_equipments.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
+import 'package:lightmeter/screens/settings/components/equipment/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/equipment_list_tiles/widget_list_tiles_equipments.dart';
+import 'package:lightmeter/screens/settings/components/equipment/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfileContainer extends StatefulWidget {

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-class DialogFilter<T extends PhotographyValue> extends StatefulWidget {
+class DialogFilter<T> extends StatefulWidget {
   final Icon icon;
   final String title;
   final String description;
@@ -25,10 +24,10 @@ class DialogFilter<T extends PhotographyValue> extends StatefulWidget {
   State<DialogFilter<T>> createState() => _DialogFilterState<T>();
 }
 
-class _DialogFilterState<T extends PhotographyValue> extends State<DialogFilter<T>> {
+class _DialogFilterState<T> extends State<DialogFilter<T>> {
   late final List<bool> checkboxValues = List.generate(
     widget.values.length,
-    (index) => widget.selectedValues.any((element) => element.value == widget.values[index].value),
+    (index) => widget.selectedValues.any((element) => element == widget.values[index]),
     growable: false,
   );
 
