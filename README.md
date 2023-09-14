@@ -33,11 +33,7 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 
 To build this app you need to install Flutter 3.10.0 stable. [How to install](https://docs.flutter.dev/get-started/install).
 
-### 2. (Optional) Install Firebase
-
-Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics to your local build please follow [this guide](https://firebase.google.com/docs/flutter/setup).
-
-### 3. Get packages
+### 3. Project setup
 
 As part of the app's functionallity is in the private repo, you have to replace these lines in _pubspec.yaml_:
 
@@ -47,24 +43,39 @@ m3_lightmeter_iap:
     url: "https://github.com/vodemn/m3_lightmeter_iap"
     ref: main
 ```
+
 with these:
+
 ```yaml
 m3_lightmeter_iap:
   path: iap
 ```
-and run `flutter pub get` from the _iap/_ folder.
+
+You can do it simply by running the script:
+
+```console
+sh .github/scripts/stub_iap.sh
+```
+
+> If you are using VSCode, you can open the workspace like so: _File -> Open Workspace from File -> m3_lightmeter.code-workspace_. Otherwise you have to run `flutter pub get` command from the iap folder.
 
 Then you can fetch all the neccessary dependencies and generate translation files by running the following commands:
+
 ```console
 flutter pub get
 flutter pub run intl_utils:generate
 ```
 
-### 4. Build
+### 4. (Optional) Install Firebase
+
+Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics to your local build please follow [this guide](https://firebase.google.com/docs/flutter/setup).
+
+### 5. Build
 
 #### Android
 
 You can build an apk by running the following command from the root of the repository:
+
 ```console
 flutter build apk --release --flavor dev --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_dev.dart
 ```
