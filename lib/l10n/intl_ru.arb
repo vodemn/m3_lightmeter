@@ -43,6 +43,7 @@
     "film": "Пленка",
     "filmPush": "Пленка (push)",
     "filmPull": "Пленка (pull)",
+    "filmReciprocityHint": "Применяет коррекцию для выдержек длиннее 1 секунды",
     "equipment": "Оборудование",
     "equipmentProfileName": "Название профиля",
     "equipmentProfileNameHint": "Praktica MTL5B",

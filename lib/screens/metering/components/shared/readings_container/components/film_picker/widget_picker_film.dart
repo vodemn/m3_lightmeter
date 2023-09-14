@@ -15,6 +15,7 @@ class FilmPicker extends StatelessWidget {
     return AnimatedDialogPicker<Film>(
       icon: Icons.camera_roll,
       title: S.of(context).film,
+      subtitle: S.of(context).filmReciprocityHint,
       selectedValue: Films.selectedOf(context),
       values: Films.inUseOf(context),
       itemTitleBuilder: (_, value) => Text(value.name.isEmpty ? S.of(context).none : value.name),
