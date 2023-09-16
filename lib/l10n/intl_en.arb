@@ -92,5 +92,9 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "lightmeterPro": "Lightmeter PRO",
+    "buyLightmeterPro": "Buy Lightmeter PRO",
+    "lightmeterProDescription": "TBD",
+    "buy": "Buy"
 }
