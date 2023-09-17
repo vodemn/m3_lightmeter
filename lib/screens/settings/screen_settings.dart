@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/screens/settings/components/about/widget_settings_section_about.dart';
-import 'package:lightmeter/screens/settings/components/lightmeter_pro/widget_settings_section_lightmeter_pro.dart';
 import 'package:lightmeter/screens/settings/components/equipment/widget_settings_section_equipment.dart';
 import 'package:lightmeter/screens/settings/components/general/widget_settings_section_general.dart';
+import 'package:lightmeter/screens/settings/components/lightmeter_pro/widget_settings_section_lightmeter_pro.dart';
 import 'package:lightmeter/screens/settings/components/metering/widget_settings_section_metering.dart';
 import 'package:lightmeter/screens/settings/components/theme/widget_settings_section_theme.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -44,7 +45,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SliverList(
             delegate: SliverChildListDelegate(
               <Widget>[
-                const LightmeterProSettingsSection(),
+                if (!IAPProducts.isPurchased(context, IAPProductType.paidFeatures))
+                  const LightmeterProSettingsSection(),
                 const MeteringSettingsSection(),
                 const EquipmentSettingsSection(),
                 const GeneralSettingsSection(),
