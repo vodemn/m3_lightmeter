@@ -95,6 +95,6 @@
     },
     "buyLightmeterPro": "Buy Lightmeter Pro",
     "lightmeterPro": "Lightmeter Pro",
-    "lightmeterProDescription": "Unlocks extra features, such as equipment profiles containing aperture, shutter speed, ISO and ND values filters and films.\n\nThe source code of Lightmeter is available on GitHub. You are welcome to compile it yourself. However, if you want to support the development and receive new features and updates, consider purchasing Lightmeter Pro.",
+    "lightmeterProDescription": "Unlocks extra features, such as equipment profiles containing filters for aperture, shutter speed, and more; and a list of films with compensation for what's known as reciprocity failure.\n\nThe source code of Lightmeter is available on GitHub. You are welcome to compile it yourself. However, if you want to support the development and receive new features and updates, consider purchasing Lightmeter Pro.",
     "buy": "Buy"
 }
