@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class BuyProListTile extends StatelessWidget {
   const BuyProListTile({super.key});
@@ -28,6 +29,7 @@ class BuyProListTile extends StatelessWidget {
               FilledButton(
                 onPressed: () {
                   Navigator.of(context).pop();
+                  IAPProductsProvider.of(context).buy(IAPProductType.paidFeatures);
                 },
                 child: Text(S.of(context).buy),
               ),
