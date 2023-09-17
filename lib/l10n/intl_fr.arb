@@ -92,5 +92,9 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "buyLightmeterPro": "Acheter Lightmeter Pro",
+    "lightmeterPro": "Lightmeter Pro",
+    "lightmeterProDescription": "Déverrouille des fonctionnalités supplémentaires, telles que des profils d'équipement contenant des filtres pour l'ouverture, la vitesse d'obturation et plus encore, ainsi qu'une liste de films avec une compensation pour ce que l'on appelle l'échec de réciprocité.\n\nLe code source du Lightmeter est disponible sur GitHub. Vous pouvez le compiler vous-même. Cependant, si vous souhaitez soutenir le développement et recevoir de nouvelles fonctionnalités et mises à jour, envisagez d'acheter Lightmeter Pro.",
+    "buy": "Acheter"
 }
