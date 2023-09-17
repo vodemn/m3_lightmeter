@@ -93,8 +93,10 @@
             }
         }
     },
-    "lightmeterPro": "Lightmeter PRO",
-    "buyLightmeterPro": "Buy Lightmeter PRO",
-    "lightmeterProDescription": "TBD",
+    "buyLightmeterPro": "Buy Lightmeter Pro",
+    "lightmeterPro": "Lightmeter Pro",
+    "lightmeterProDescription": "Unlocks extra features, such as equipment profiles containing aperture, shutter speed, ISO and ND values filters and films.\n\nThe source code of Lightmeter is available on GitHub. You are welcome to compile it yourself. However, if you want to support the development and receive new features and updates, consider purchasing Lightmeter Pro.",
+    "equipmentProfilesFeatureDescription": "Each equipment profile allows you to select:\n- Aperture values and shutter speeds, that your lens and camera have\n- ND filters, that fit the chosen lens\n- ISO values, that your camera supports\nCreating multiple profiles for different cameras and lenses allows you to easily switch between them and always have the relevant readings!",
+    "filmsInUseFeatureDescription": "Select the films that you usually use. Selecting one will apply a correction to shutter speeds greater than 1\" to compensate for the reciprocity failure.",
     "buy": "Buy"
 }
