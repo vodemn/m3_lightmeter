@@ -35,12 +35,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return ScaffoldMessenger(
       child: SliverScreen(
         title: S.of(context).settings,
-        appBarActions: [
-          IconButton(
-            onPressed: Navigator.of(context).pop,
-            icon: const Icon(Icons.close),
-          ),
-        ],
         slivers: [
           SliverList(
             delegate: SliverChildListDelegate(

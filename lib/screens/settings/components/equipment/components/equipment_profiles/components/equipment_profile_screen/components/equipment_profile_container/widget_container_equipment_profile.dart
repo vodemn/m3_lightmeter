@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/equipment/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/equipment_list_tiles/widget_list_tiles_equipments.dart';
 import 'package:lightmeter/screens/settings/components/equipment/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
@@ -188,6 +189,7 @@ class _AnimatedArrowButton extends AnimatedWidget {
         angle: _progress.value * pi,
         child: const Icon(Icons.keyboard_arrow_down),
       ),
+      tooltip: _progress.value == 0 ? S.of(context).tooltipExpand : S.of(context).tooltipCollapse,
     );
   }
 }
@@ -246,10 +248,12 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
                   IconButton(
                     onPressed: onCopy,
                     icon: const Icon(Icons.copy),
+                    tooltip: S.of(context).tooltipCopy,
                   ),
                   IconButton(
                     onPressed: onDelete,
                     icon: const Icon(Icons.delete),
+                    tooltip: S.of(context).tooltipDelete,
                   ),
                 ],
               ),

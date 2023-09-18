@@ -96,5 +96,17 @@
     "buyLightmeterPro": "Купить Lightmeter Pro",
     "lightmeterPro": "Lightmeter Pro",
     "lightmeterProDescription": "Даёт доступ к таким функциям как профили оборудования, содержащие фильтры для диафрагмы, выдержки и других значений, а также набору пленок с компенсацией эффекта Шварцшильда.\n\nИсходный код Lightmeter доступен на GitHub. Вы можете собрать его самостоятельно. Однако если вы хотите поддержать разработку и получать новые функции и обновления, то приобретите Lightmeter Pro.",
-    "buy": "Купить"
+    "buy": "Купить",
+    "tooltipAdd": "Добавить",
+    "tooltipClose": "Закрыть",
+    "tooltipExpand": "Развернуть",
+    "tooltipCollapse": "Свернуть",
+    "tooltipCopy": "Скопировать",
+    "tooltipDelete": "Удалить",
+    "tooltipSelectAll": "Выбрать все",
+    "tooltipDesecelectAll": "Отменить все",
+    "tooltipResetToZero": "Сбросить до 0",
+    "tooltipUseLightSensor": "Использовать датчик освещенности",
+    "tooltipUseCamera": "Использовать камеру",
+    "tooltipOpenSettings": "Открыть настройки"
 }

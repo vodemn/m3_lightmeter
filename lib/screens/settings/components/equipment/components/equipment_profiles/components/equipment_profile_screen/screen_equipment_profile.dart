@@ -34,10 +34,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
         IconButton(
           onPressed: _addProfile,
           icon: const Icon(Icons.add),
-        ),
-        IconButton(
-          onPressed: Navigator.of(context).pop,
-          icon: const Icon(Icons.close),
+          tooltip: S.of(context).tooltipAdd,
         ),
       ],
       slivers: profilesCount == 1
