@@ -22,15 +22,9 @@ class AnimatedDialog extends StatefulWidget {
 class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProviderStateMixin {
   final GlobalKey _key = GlobalKey();
 
-  late final Size _closedSize;
-  late final Offset _closedOffset;
-
   late final AnimationController _animationController;
   late final CurvedAnimation _defaultCurvedAnimation;
   late final Animation<Color?> _barrierColorAnimation;
-  late final SizeTween _sizeTween;
-  late final Animation<Size?> _sizeAnimation;
-  late final Animation<Size?> _offsetAnimation;
   late final Animation<double> _borderRadiusAnimation;
   late final Animation<double> _closedOpacityAnimation;
   late final Animation<double> _openedOpacityAnimation;
@@ -87,36 +81,6 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         ),
       ),
     );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final mediaQuery = MediaQuery.of(context);
-
-      _closedSize = _key.currentContext!.size!;
-      _sizeTween = SizeTween(
-        begin: _closedSize,
-        end: widget.openedSize ??
-            Size(
-              mediaQuery.size.width -
-                  mediaQuery.padding.horizontal -
-                  Dimens.dialogMargin.horizontal,
-              mediaQuery.size.height - mediaQuery.padding.vertical - Dimens.dialogMargin.vertical,
-            ),
-      );
-      _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
-
-      final renderBox = _key.currentContext!.findRenderObject()! as RenderBox;
-      _closedOffset = renderBox.localToGlobal(Offset.zero);
-      _offsetAnimation = SizeTween(
-        begin: Size(
-          _closedOffset.dx + _closedSize.width / 2,
-          _closedOffset.dy + _closedSize.height / 2,
-        ),
-        end: Size(
-          mediaQuery.size.width / 2,
-          mediaQuery.size.height / 2 + mediaQuery.padding.top / 2 - mediaQuery.padding.bottom / 2,
-        ),
-      ).animate(_defaultCurvedAnimation);
-    });
   }
 
   @override
@@ -152,6 +116,30 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
   }
 
   void _openDialog() {
+    final mediaQuery = MediaQuery.of(context);
+    final closedSize = _key.currentContext!.size!;
+    final sizeTween = SizeTween(
+      begin: closedSize,
+      end: widget.openedSize ??
+          Size(
+            mediaQuery.size.width - mediaQuery.padding.horizontal - Dimens.dialogMargin.horizontal,
+            mediaQuery.size.height - mediaQuery.padding.vertical - Dimens.dialogMargin.vertical,
+          ),
+    );
+    final sizeAnimation = sizeTween.animate(_defaultCurvedAnimation);
+    final renderBox = _key.currentContext!.findRenderObject()! as RenderBox;
+    final closedOffset = renderBox.localToGlobal(Offset.zero);
+    final offsetAnimation = SizeTween(
+      begin: Size(
+        closedOffset.dx + closedSize.width / 2,
+        closedOffset.dy + closedSize.height / 2,
+      ),
+      end: Size(
+        mediaQuery.size.width / 2,
+        mediaQuery.size.height / 2 + mediaQuery.padding.top / 2 - mediaQuery.padding.bottom / 2,
+      ),
+    ).animate(_defaultCurvedAnimation);
+    
     Navigator.of(context).push(
       PageRouteBuilder(
         barrierColor: Colors.transparent,
@@ -163,19 +151,19 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
           child: _AnimatedOverlay(
             controller: _animationController,
             barrierColorAnimation: _barrierColorAnimation,
-            sizeAnimation: _sizeAnimation,
-            offsetAnimation: _offsetAnimation,
+            sizeAnimation: sizeAnimation,
+            offsetAnimation: offsetAnimation,
             borderRadiusAnimation: _borderRadiusAnimation,
             foregroundColorAnimation: _foregroundColorAnimation,
             elevationAnimation: _elevationAnimation,
             onDismiss: close,
             builder: widget.closedChild != null && widget.openedChild != null
                 ? (_) => _AnimatedSwitcher(
-                      sizeAnimation: _sizeAnimation,
+                      sizeAnimation: sizeAnimation,
                       closedOpacityAnimation: _closedOpacityAnimation,
                       openedOpacityAnimation: _openedOpacityAnimation,
-                      closedSize: _sizeTween.begin!,
-                      openedSize: _sizeTween.end!,
+                      closedSize: sizeTween.begin!,
+                      openedSize: sizeTween.end!,
                       closedChild: widget.closedChild!,
                       openedChild: widget.openedChild!,
                     )

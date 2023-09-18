@@ -9,6 +9,10 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'mocks/application_mock.dart';
 
 void main() {
+  runApp(const ApplicationMock(child: AnimatedPickerTest()));
+}
+
+void main2() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('AnimatedDialogPicker test', () {
