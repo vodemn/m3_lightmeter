@@ -69,6 +69,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
                         data: profile,
                         onExpand: () => _keepExpandedAt(index),
                         onUpdate: _updateProfileAt,
+                        onCopy: () => _addProfile(profile),
                         onDelete: () => _removeProfileAt(profile),
                       ),
                     );
@@ -81,13 +82,13 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
     );
   }
 
-  void _addProfile() {
+  void _addProfile([EquipmentProfile? copyFrom]) {
     showDialog<String>(
       context: context,
       builder: (_) => const EquipmentProfileNameDialog(),
-    ).then((value) {
-      if (value != null) {
-        EquipmentProfileProvider.of(context).addProfile(value);
+    ).then((name) {
+      if (name != null) {
+        EquipmentProfileProvider.of(context).addProfile(name, copyFrom);
       }
     });
   }
