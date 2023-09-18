@@ -85,6 +85,9 @@ class _DialogFilterState<T> extends State<DialogFilter<T>> {
                     padding: EdgeInsets.zero,
                     icon: Icon(_hasAnyUnselected ? Icons.select_all : Icons.deselect),
                     onPressed: _toggleAll,
+                    tooltip: _hasAnyUnselected
+                        ? S.of(context).tooltipSelectAll
+                        : S.of(context).tooltipDesecelectAll,
                   ),
                 ),
                 const Spacer(),

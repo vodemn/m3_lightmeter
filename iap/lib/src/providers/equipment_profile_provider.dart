@@ -36,7 +36,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
 
   void setProfile(EquipmentProfile data) {}
 
-  void addProfile(String name) {}
+  void addProfile(String name, [EquipmentProfile? copyFrom]) {}
 
   void updateProdile(EquipmentProfile data) {}
 

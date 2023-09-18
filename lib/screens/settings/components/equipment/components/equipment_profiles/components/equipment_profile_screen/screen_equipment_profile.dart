@@ -34,10 +34,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
         IconButton(
           onPressed: _addProfile,
           icon: const Icon(Icons.add),
-        ),
-        IconButton(
-          onPressed: Navigator.of(context).pop,
-          icon: const Icon(Icons.close),
+          tooltip: S.of(context).tooltipAdd,
         ),
       ],
       slivers: profilesCount == 1
@@ -69,6 +66,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
                         data: profile,
                         onExpand: () => _keepExpandedAt(index),
                         onUpdate: _updateProfileAt,
+                        onCopy: () => _addProfile(profile),
                         onDelete: () => _removeProfileAt(profile),
                       ),
                     );
@@ -81,13 +79,13 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
     );
   }
 
-  void _addProfile() {
+  void _addProfile([EquipmentProfile? copyFrom]) {
     showDialog<String>(
       context: context,
       builder: (_) => const EquipmentProfileNameDialog(),
-    ).then((value) {
-      if (value != null) {
-        EquipmentProfileProvider.of(context).addProfile(value);
+    ).then((name) {
+      if (name != null) {
+        EquipmentProfileProvider.of(context).addProfile(name, copyFrom);
       }
     });
   }

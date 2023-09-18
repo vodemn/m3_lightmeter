@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 class SliverScreen extends StatelessWidget {
@@ -8,7 +9,7 @@ class SliverScreen extends StatelessWidget {
 
   const SliverScreen({
     required this.title,
-    required this.appBarActions,
+    this.appBarActions = const [],
     required this.slivers,
     super.key,
   });
@@ -36,7 +37,15 @@ class SliverScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              actions: appBarActions,
+              actions: [
+                ...appBarActions,
+                if (Navigator.of(context).canPop())
+                  IconButton(
+                    onPressed: Navigator.of(context).pop,
+                    icon: const Icon(Icons.close),
+                    tooltip: S.of(context).tooltipClose,
+                  ),
+              ],
             ),
             ...slivers,
           ],
