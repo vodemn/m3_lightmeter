@@ -44,7 +44,6 @@
     "filmPush": "胶片 (push)",
     "filmPull": "胶片 (pull)",
     "filmReciprocityHint": "Applies correction for shutter speeds grater than 1 second",
-    "equipment": "设备",
     "equipmentProfileName": "设备配置名称",
     "equipmentProfileNameHint": "Praktica MTL5B",
     "equipmentProfileAllValues": "全部",

@@ -44,7 +44,6 @@
     "filmPush": "Film (push)",
     "filmPull": "Film (pull)",
     "filmReciprocityHint": "Applies correction for shutter speeds grater than 1 second",
-    "equipment": "Equipment",
     "equipmentProfileName": "Equipment profile name",
     "equipmentProfileNameHint": "Praktica MTL5B",
     "equipmentProfileAllValues": "All",

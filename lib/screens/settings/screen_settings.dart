@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/screens/settings/components/about/widget_settings_section_about.dart';
-import 'package:lightmeter/screens/settings/components/equipment/widget_settings_section_equipment.dart';
 import 'package:lightmeter/screens/settings/components/general/widget_settings_section_general.dart';
 import 'package:lightmeter/screens/settings/components/lightmeter_pro/widget_settings_section_lightmeter_pro.dart';
 import 'package:lightmeter/screens/settings/components/metering/widget_settings_section_metering.dart';
@@ -42,7 +41,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 if (!IAPProducts.isPurchased(context, IAPProductType.paidFeatures))
                   const LightmeterProSettingsSection(),
                 const MeteringSettingsSection(),
-                const EquipmentSettingsSection(),
                 const GeneralSettingsSection(),
                 const ThemeSettingsSection(),
                 const AboutSettingsSection(),
