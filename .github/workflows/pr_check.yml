@@ -23,12 +23,14 @@ jobs:
 
       - name: Connect private iap package
         uses: webfactory/ssh-agent@v0.8.0
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        id: fetch-iap
+        if: github.event.pull_request.head.repo.full_name == github.repository
         with:
           ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
 
       - name: Override iap package with stub
-        if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+        id: override-iap
+        if: steps.fetch-iap.conclusion != 'success'
         run: bash ./.github/scripts/stub_iap.sh
 
       - uses: subosito/flutter-action@v2
@@ -49,7 +51,7 @@ jobs:
         run: flutter test
 
       - name: Analyze project source with stub
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: steps.override-iap.conclusion != 'success'
         run: |
           bash ./.github/scripts/stub_iap.sh
           flutter pub get
