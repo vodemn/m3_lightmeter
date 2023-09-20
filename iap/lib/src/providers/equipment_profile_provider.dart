@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:m3_lightmeter_iap/src/providers/selectable_provider.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfileProvider extends StatefulWidget {
@@ -27,7 +28,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
   @override
   Widget build(BuildContext context) {
     return EquipmentProfiles(
-      profiles: const [_defaultProfile],
+      values: const [_defaultProfile],
       selected: _defaultProfile,
       child: widget.child,
     );
@@ -35,45 +36,26 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
 
   void setProfile(EquipmentProfile data) {}
 
-  void addProfile(String name) {}
+  void addProfile(String name, [EquipmentProfile? copyFrom]) {}
 
   void updateProdile(EquipmentProfile data) {}
 
   void deleteProfile(EquipmentProfile data) {}
 }
 
-enum EquipmentProfilesAspect { list, selected }
-
-class EquipmentProfiles extends InheritedModel<EquipmentProfilesAspect> {
+class EquipmentProfiles extends SelectableInheritedModel<EquipmentProfile> {
   const EquipmentProfiles({
     super.key,
-    required this.profiles,
-    required this.selected,
+    required super.values,
+    required super.selected,
     required super.child,
   });
 
-  final List<EquipmentProfile> profiles;
-  final EquipmentProfile selected;
-
   static List<EquipmentProfile> of(BuildContext context) {
-    return InheritedModel.inheritFrom<EquipmentProfiles>(
-      context,
-      aspect: EquipmentProfilesAspect.list,
-    )!
-        .profiles;
+    return InheritedModel.inheritFrom<EquipmentProfiles>(context, aspect: SelectableAspect.list)!.values;
   }
 
   static EquipmentProfile selectedOf(BuildContext context) {
-    return InheritedModel.inheritFrom<EquipmentProfiles>(
-      context,
-      aspect: EquipmentProfilesAspect.selected,
-    )!
-        .selected;
+    return InheritedModel.inheritFrom<EquipmentProfiles>(context, aspect: SelectableAspect.selected)!.selected;
   }
-
-  @override
-  bool updateShouldNotify(EquipmentProfiles oldWidget) => false;
-
-  @override
-  bool updateShouldNotifyDependent(EquipmentProfiles oldWidget, Set<EquipmentProfilesAspect> dependencies) => false;
 }

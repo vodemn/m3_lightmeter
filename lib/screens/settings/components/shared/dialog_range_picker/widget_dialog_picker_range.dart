@@ -68,8 +68,8 @@ class _DialogRangePickerState<T extends PhotographyValue> extends State<DialogRa
                   divisions: widget.values.length - 1,
                   onChanged: (value) {
                     setState(() {
-                      _start = value.start.toInt();
-                      _end = value.end.toInt();
+                      _start = value.start.round();
+                      _end = value.end.round();
                     });
                   },
                 ),

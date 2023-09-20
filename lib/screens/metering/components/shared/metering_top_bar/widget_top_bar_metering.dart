@@ -20,9 +20,7 @@ class MeteringTopBar extends StatelessWidget {
     return CustomPaint(
       painter: MeteringTopBarShape(
         color: Theme.of(context).colorScheme.surface,
-        appendixWidth: appendixHeight > 0
-            ? MediaQuery.of(context).size.width / 2 - Dimens.grid8 + Dimens.paddingM
-            : MediaQuery.of(context).size.width / 2 + Dimens.grid8 - Dimens.paddingM,
+        appendixWidth: MediaQuery.of(context).size.width / 2 - Dimens.grid8 / 2 + Dimens.paddingM,
         appendixHeight: appendixHeight,
       ),
       child: Padding(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
-import 'package:lightmeter/screens/settings/components/shared/dialog_picker.dart/widget_dialog_picker.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_picker/widget_dialog_picker.dart';
 
 class LanguageListTile extends StatelessWidget {
   const LanguageListTile({super.key});

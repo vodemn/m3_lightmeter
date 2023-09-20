@@ -15,7 +15,7 @@ jobs:
   analyze_and_test:
     name: Analyze & test
     runs-on: macos-11
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
         with:
@@ -47,3 +47,10 @@ jobs:
 
       - name: Run tests
         run: flutter test
+
+      - name: Analyze project source with stub
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        run: |
+          bash ./.github/scripts/stub_iap.sh
+          flutter pub get
+          flutter analyze lib --fatal-infos

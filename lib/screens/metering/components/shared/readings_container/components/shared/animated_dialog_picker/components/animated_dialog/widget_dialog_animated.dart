@@ -22,15 +22,15 @@ class AnimatedDialog extends StatefulWidget {
 class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProviderStateMixin {
   final GlobalKey _key = GlobalKey();
 
-  late final Size _closedSize;
-  late final Offset _closedOffset;
+  late Size _closedSize;
+  late Offset _closedOffset;
 
   late final AnimationController _animationController;
   late final CurvedAnimation _defaultCurvedAnimation;
   late final Animation<Color?> _barrierColorAnimation;
-  late final SizeTween _sizeTween;
-  late final Animation<Size?> _sizeAnimation;
-  late final Animation<Size?> _offsetAnimation;
+  late SizeTween _sizeTween;
+  late Animation<Size?> _sizeAnimation;
+  late Animation<Size?> _offsetAnimation;
   late final Animation<double> _borderRadiusAnimation;
   late final Animation<double> _closedOpacityAnimation;
   late final Animation<double> _openedOpacityAnimation;
@@ -88,35 +88,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
       ),
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final mediaQuery = MediaQuery.of(context);
-
-      _closedSize = _key.currentContext!.size!;
-      _sizeTween = SizeTween(
-        begin: _closedSize,
-        end: widget.openedSize ??
-            Size(
-              mediaQuery.size.width -
-                  mediaQuery.padding.horizontal -
-                  Dimens.dialogMargin.horizontal,
-              mediaQuery.size.height - mediaQuery.padding.vertical - Dimens.dialogMargin.vertical,
-            ),
-      );
-      _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
-
-      final renderBox = _key.currentContext!.findRenderObject()! as RenderBox;
-      _closedOffset = renderBox.localToGlobal(Offset.zero);
-      _offsetAnimation = SizeTween(
-        begin: Size(
-          _closedOffset.dx + _closedSize.width / 2,
-          _closedOffset.dy + _closedSize.height / 2,
-        ),
-        end: Size(
-          mediaQuery.size.width / 2,
-          mediaQuery.size.height / 2 + mediaQuery.padding.top / 2 - mediaQuery.padding.bottom / 2,
-        ),
-      ).animate(_defaultCurvedAnimation);
-    });
+    _setClosedOffset();
   }
 
   @override
@@ -131,6 +103,12 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
       begin: 0,
       end: Theme.of(context).dialogTheme.elevation,
     ).animate(_defaultCurvedAnimation);
+  }
+
+  @override
+  void didUpdateWidget(covariant AnimatedDialog oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _setClosedOffset();
   }
 
   @override
@@ -149,6 +127,38 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         child: widget.child ?? widget.closedChild,
       ),
     );
+  }
+
+  void _setClosedOffset() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final renderBox = _key.currentContext?.findRenderObject()! as RenderBox?;
+      if (renderBox != null) {
+        final size = MediaQuery.sizeOf(context);
+        final padding = MediaQuery.paddingOf(context);
+        _closedSize = _key.currentContext!.size!;
+        _sizeTween = SizeTween(
+          begin: _closedSize,
+          end: widget.openedSize ??
+              Size(
+                size.width - padding.horizontal - Dimens.dialogMargin.horizontal,
+                size.height - padding.vertical - Dimens.dialogMargin.vertical,
+              ),
+        );
+        _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
+
+        _closedOffset = renderBox.localToGlobal(Offset.zero);
+        _offsetAnimation = SizeTween(
+          begin: Size(
+            _closedOffset.dx + _closedSize.width / 2,
+            _closedOffset.dy + _closedSize.height / 2,
+          ),
+          end: Size(
+            size.width / 2,
+            size.height / 2 + padding.top / 2 - padding.bottom / 2,
+          ),
+        ).animate(_defaultCurvedAnimation);
+      }
+    });
   }
 
   void _openDialog() {

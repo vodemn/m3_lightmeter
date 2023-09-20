@@ -17,17 +17,13 @@ class EquipmentProfilesScreen extends StatefulWidget {
 }
 
 class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
-  static const maxProfiles = 5 + 1; // replace with a constant from iap
-
-  late List<GlobalKey<EquipmentProfileContainerState>> profileContainersKeys = [];
-  int get profilesCount => EquipmentProfiles.of(context).length;
+  final Map<String, GlobalKey<EquipmentProfileContainerState>> keysMap = {};
+  int get profilesCount => keysMap.length;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    profileContainersKeys = EquipmentProfiles.of(context)
-        .map((e) => GlobalKey<EquipmentProfileContainerState>(debugLabel: e.id))
-        .toList();
+    _updateProfilesKeys();
   }
 
   @override
@@ -35,14 +31,10 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
     return SliverScreen(
       title: S.of(context).equipmentProfiles,
       appBarActions: [
-        if (profilesCount < maxProfiles)
-          IconButton(
-            onPressed: _addProfile,
-            icon: const Icon(Icons.add),
-          ),
         IconButton(
-          onPressed: Navigator.of(context).pop,
-          icon: const Icon(Icons.close),
+          onPressed: _addProfile,
+          icon: const Icon(Icons.add),
+          tooltip: S.of(context).tooltipAdd,
         ),
       ],
       slivers: profilesCount == 1
@@ -55,24 +47,31 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
           : [
               SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) => index > 0 // skip default
-                      ? Padding(
-                          padding: EdgeInsets.fromLTRB(
-                            Dimens.paddingM,
-                            index == 0 ? Dimens.paddingM : 0,
-                            Dimens.paddingM,
-                            Dimens.paddingM,
-                          ),
-                          child: EquipmentProfileContainer(
-                            key: profileContainersKeys[index],
-                            data: EquipmentProfiles.of(context)[index],
-                            onExpand: () => _keepExpandedAt(index),
-                            onUpdate: (profileData) => _updateProfileAt(profileData, index),
-                            onDelete: () => _removeProfileAt(index),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                  childCount: profilesCount,
+                  (context, index) {
+                    if (index == 0) {
+                      // skip default profile
+                      return const SizedBox.shrink();
+                    }
+
+                    final profile = EquipmentProfiles.of(context)[index];
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        Dimens.paddingM,
+                        index == 0 ? Dimens.paddingM : 0,
+                        Dimens.paddingM,
+                        Dimens.paddingM,
+                      ),
+                      child: EquipmentProfileContainer(
+                        key: keysMap[profile.id],
+                        data: profile,
+                        onExpand: () => _keepExpandedAt(index),
+                        onUpdate: _updateProfileAt,
+                        onCopy: () => _addProfile(profile),
+                        onDelete: () => _removeProfileAt(profile),
+                      ),
+                    );
+                  },
+                  childCount: EquipmentProfiles.of(context).length,
                 ),
               ),
               SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
@@ -80,32 +79,57 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
     );
   }
 
-  void _addProfile() {
+  void _addProfile([EquipmentProfile? copyFrom]) {
     showDialog<String>(
       context: context,
       builder: (_) => const EquipmentProfileNameDialog(),
-    ).then((value) {
-      if (value != null) {
-        EquipmentProfileProvider.of(context).addProfile(value);
+    ).then((name) {
+      if (name != null) {
+        EquipmentProfileProvider.of(context).addProfile(name, copyFrom);
       }
     });
   }
 
-  void _updateProfileAt(EquipmentProfile data, int index) {
+  void _updateProfileAt(EquipmentProfile data) {
     EquipmentProfileProvider.of(context).updateProdile(data);
   }
 
-  void _removeProfileAt(int index) {
-    EquipmentProfileProvider.of(context).deleteProfile(EquipmentProfiles.of(context)[index]);
+  void _removeProfileAt(EquipmentProfile data) {
+    EquipmentProfileProvider.of(context).deleteProfile(data);
   }
 
   void _keepExpandedAt(int index) {
-    profileContainersKeys.getRange(0, index).forEach((element) {
+    keysMap.values.toList().getRange(0, index).forEach((element) {
       element.currentState?.collapse();
     });
-    profileContainersKeys.getRange(index + 1, profilesCount).forEach((element) {
+    keysMap.values.toList().getRange(index + 1, profilesCount).forEach((element) {
       element.currentState?.collapse();
     });
+  }
+
+  void _updateProfilesKeys() {
+    final profiles = EquipmentProfiles.of(context);
+    if (profiles.length > keysMap.length) {
+      // profile added
+      final List<String> idsToAdd = [];
+      for (final profile in profiles) {
+        if (!keysMap.keys.contains(profile.id)) idsToAdd.add(profile.id);
+      }
+      for (final id in idsToAdd) {
+        keysMap[id] = GlobalKey<EquipmentProfileContainerState>(debugLabel: id);
+      }
+      idsToAdd.clear();
+    } else if (profiles.length < keysMap.length) {
+      // profile deleted
+      final List<String> idsToDelete = [];
+      for (final id in keysMap.keys) {
+        if (!profiles.any((p) => p.id == id)) idsToDelete.add(id);
+      }
+      idsToDelete.forEach(keysMap.remove);
+      idsToDelete.clear();
+    } else {
+      // profile updated, no need to updated keys
+    }
   }
 }
 

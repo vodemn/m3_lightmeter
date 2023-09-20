@@ -36,11 +36,14 @@
     "lightSensor": "Light sensor",
     "meteringScreenLayout": "Metering screen layout",
     "meteringScreenLayoutHint": "Hide elements on the metering screen that you don't need so that they don't waste exposure pairs list space.",
+    "meteringScreenLayoutHintEquipmentProfiles": "Equipment profile picker",
     "meteringScreenFeatureExtremeExposurePairs": "Fastest & shortest exposure pairs",
     "meteringScreenFeatureFilmPicker": "Film picker",
     "meteringScreenFeatureHistogram": "Histogram",
     "film": "Film",
-    "equipment": "Equipment",
+    "filmPush": "Film (push)",
+    "filmPull": "Film (pull)",
+    "filmReciprocityHint": "Applies correction for shutter speeds grater than 1 second",
     "equipmentProfileName": "Equipment profile name",
     "equipmentProfileNameHint": "Praktica MTL5B",
     "equipmentProfileAllValues": "All",
@@ -55,6 +58,8 @@
     "equipmentProfile": "Equipment profile",
     "equipmentProfiles": "Equipment profiles",
     "tapToAdd": "Tap to add",
+    "filmsInUse": "Films in use",
+    "filmsInUseDescription": "Select films which you use.",
     "general": "General",
     "keepScreenOn": "Keep screen on",
     "haptics": "Haptics",
@@ -86,5 +91,21 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "buyLightmeterPro": "Buy Lightmeter Pro",
+    "lightmeterPro": "Lightmeter Pro",
+    "lightmeterProDescription": "Unlocks extra features, such as equipment profiles containing filters for aperture, shutter speed, and more; and a list of films with compensation for what's known as reciprocity failure.\n\nThe source code of Lightmeter is available on GitHub. You are welcome to compile it yourself. However, if you want to support the development and receive new features and updates, consider purchasing Lightmeter Pro.",
+    "buy": "Buy",
+    "tooltipAdd": "Add",
+    "tooltipClose": "Close",
+    "tooltipExpand": "Expand",
+    "tooltipCollapse": "Collapse",
+    "tooltipCopy": "Copy",
+    "tooltipDelete": "Delete",
+    "tooltipSelectAll": "Select all",
+    "tooltipDesecelectAll": "Deselect all",
+    "tooltipResetToZero": "Reset to zero",
+    "tooltipUseLightSensor": "Use lightsensor",
+    "tooltipUseCamera": "Use camera",
+    "tooltipOpenSettings": "Open settings"
 }

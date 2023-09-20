@@ -117,6 +117,7 @@ class _CalibrationUnit extends StatelessWidget {
             IconButton(
               onPressed: onReset,
               icon: const Icon(Icons.sync),
+              tooltip: S.of(context).tooltipResetToZero,
             ),
           ],
         )

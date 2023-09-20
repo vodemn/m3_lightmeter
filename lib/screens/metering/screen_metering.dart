@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
@@ -33,11 +32,8 @@ class MeteringScreen extends StatelessWidget {
               child: BlocBuilder<MeteringBloc, MeteringState>(
                 builder: (_, state) => MeteringContainerBuidler(
                   ev: state is MeteringDataState ? state.ev : null,
-                  film: state.film,
                   iso: state.iso,
                   nd: state.nd,
-                  onFilmChanged: (value) =>
-                      context.read<MeteringBloc>().add(FilmChangedEvent(value)),
                   onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
                   onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
                 ),
@@ -81,18 +77,10 @@ class _InheritedListeners extends StatelessWidget {
         feature: MeteringScreenLayoutFeature.filmPicker,
         onDidChangeDependencies: (value) {
           if (!value) {
-            context.read<MeteringBloc>().add(const FilmChangedEvent(Film.other()));
+            FilmsProvider.of(context).setFilm(const Film.other());
           }
         },
-        child: MeteringScreenLayoutFeatureListener(
-          feature: MeteringScreenLayoutFeature.equipmentProfiles,
-          onDidChangeDependencies: (value) {
-            if (!value) {
-              EquipmentProfileProvider.of(context).setProfile(EquipmentProfiles.of(context).first);
-            }
-          },
-          child: child,
-        ),
+        child: child,
       ),
     );
   }
@@ -100,19 +88,15 @@ class _InheritedListeners extends StatelessWidget {
 
 class MeteringContainerBuidler extends StatelessWidget {
   final double? ev;
-  final Film film;
   final IsoValue iso;
   final NdValue nd;
-  final ValueChanged<Film> onFilmChanged;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
 
   const MeteringContainerBuidler({
     required this.ev,
-    required this.film,
     required this.iso,
     required this.nd,
-    required this.onFilmChanged,
     required this.onIsoChanged,
     required this.onNdChanged,
   });
@@ -124,7 +108,6 @@ class MeteringContainerBuidler extends StatelessWidget {
             ev!,
             UserPreferencesProvider.stopTypeOf(context),
             EquipmentProfiles.selectedOf(context),
-            film,
           )
         : <ExposurePair>[];
     final fastest = exposurePairs.isNotEmpty ? exposurePairs.first : null;
@@ -134,10 +117,8 @@ class MeteringContainerBuidler extends StatelessWidget {
         ? CameraContainerProvider(
             fastest: fastest,
             slowest: slowest,
-            film: film,
             iso: iso,
             nd: nd,
-            onFilmChanged: onFilmChanged,
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,
@@ -145,10 +126,8 @@ class MeteringContainerBuidler extends StatelessWidget {
         : LightSensorContainerProvider(
             fastest: fastest,
             slowest: slowest,
-            film: film,
             iso: iso,
             nd: nd,
-            onFilmChanged: onFilmChanged,
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,
@@ -160,7 +139,6 @@ class MeteringContainerBuidler extends StatelessWidget {
     double ev,
     StopType stopType,
     EquipmentProfile equipmentProfile,
-    Film film,
   ) {
     if (ev.isNaN || ev.isInfinite) {
       return List.empty();
@@ -203,7 +181,7 @@ class MeteringContainerBuidler extends StatelessWidget {
       itemsCount,
       (index) => ExposurePair(
         apertureValues[index + apertureOffset],
-        film.reciprocityFailure(shutterSpeedValues[index + shutterSpeedOffset]),
+        shutterSpeedValues[index + shutterSpeedOffset],
       ),
       growable: false,
     );

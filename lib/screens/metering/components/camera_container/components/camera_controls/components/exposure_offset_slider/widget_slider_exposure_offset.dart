@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/centered_slider/widget_slider_centered.dart';
 import 'package:lightmeter/utils/to_string_signed.dart';
@@ -22,6 +23,7 @@ class ExposureOffsetSlider extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.sync),
           onPressed: value != 0.0 ? () => onChanged(0.0) : null,
+          tooltip: S.of(context).tooltipResetToZero,
         ),
         Expanded(
           child: Row(

@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -19,7 +18,6 @@ void main() {
           ev,
           StopType.full,
           defaultEquipmentProfile,
-          const Film.other(),
         );
 
     test('isNan', () {
@@ -42,7 +40,6 @@ void main() {
             ev,
             StopType.full,
             defaultEquipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -142,7 +139,6 @@ void main() {
             ev,
             StopType.half,
             defaultEquipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -242,7 +238,6 @@ void main() {
             ev,
             StopType.third,
             defaultEquipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -356,7 +351,6 @@ void main() {
             ev,
             StopType.full,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -456,7 +450,6 @@ void main() {
             ev,
             StopType.half,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -556,7 +549,6 @@ void main() {
             ev,
             StopType.third,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -669,7 +661,6 @@ void main() {
             ev,
             StopType.full,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -769,7 +760,6 @@ void main() {
             ev,
             StopType.half,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
@@ -869,7 +859,6 @@ void main() {
             ev,
             StopType.third,
             equipmentProfile,
-            const Film.other(),
           );
 
       test('EV 1', () {
