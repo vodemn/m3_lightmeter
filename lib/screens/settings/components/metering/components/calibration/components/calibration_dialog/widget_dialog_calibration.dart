@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/bloc_dialog_calibration.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/event_dialog_calibration.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/calibration/components/calibration_dialog/state_dialog_calibration.dart';
 import 'package:lightmeter/screens/shared/centered_slider/widget_slider_centered.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
 import 'package:lightmeter/utils/to_string_signed.dart';
 
 class CalibrationDialog extends StatelessWidget {
@@ -15,7 +14,7 @@ class CalibrationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasLightSensor = context.get<Environment>().hasLightSensor;
+    final bool hasLightSensor = ServicesProvider.of(context).environment.hasLightSensor;
     return AlertDialog(
       icon: const Icon(Icons.settings_brightness),
       titlePadding: Dimens.dialogIconTitlePadding,
@@ -118,6 +117,7 @@ class _CalibrationUnit extends StatelessWidget {
             IconButton(
               onPressed: onReset,
               icon: const Icon(Icons.sync),
+              tooltip: S.of(context).tooltipResetToZero,
             ),
           ],
         )

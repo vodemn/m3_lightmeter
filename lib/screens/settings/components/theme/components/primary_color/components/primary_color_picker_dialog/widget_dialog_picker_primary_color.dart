@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/theme_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/res/theme.dart';
 import 'package:lightmeter/screens/shared/filled_circle/widget_circle_filled.dart';
 
 class PrimaryColorDialogPicker extends StatefulWidget {
@@ -38,9 +38,9 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
               padding: EdgeInsets.zero,
               child: Row(
                 children: List.generate(
-                  ThemeProvider.primaryColorsList.length,
+                  primaryColorsList.length,
                   (index) {
-                    final color = ThemeProvider.primaryColorsList[index];
+                    final color = primaryColorsList[index];
                     return Padding(
                       padding: EdgeInsets.only(left: index == 0 ? 0 : Dimens.paddingS),
                       child: _SelectableColorItem(

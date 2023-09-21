@@ -1,5 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
@@ -34,7 +33,6 @@ void main() {
     meteringInteractor = _MockMeteringInteractor();
     when<IsoValue>(() => meteringInteractor.iso).thenReturn(iso100);
     when<NdValue>(() => meteringInteractor.ndFilter).thenReturn(NdValue.values.first);
-    when<Film>(() => meteringInteractor.film).thenReturn(Film.values.first);
     when(meteringInteractor.quickVibration).thenAnswer((_) async {});
     when(meteringInteractor.responseVibration).thenAnswer((_) async {});
     when(meteringInteractor.errorVibration).thenAnswer((_) async {});
@@ -157,7 +155,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: 1.0,
-          film: Film.values[1],
           iso: const IsoValue(100, StopType.full),
           nd: NdValue.values.first,
           isMetering: false,
@@ -166,14 +163,12 @@ void main() {
           bloc.add(const IsoChangedEvent(IsoValue(200, StopType.full)));
         },
         verify: (_) {
-          verify(() => meteringInteractor.film = Film.values.first).called(1);
           verify(() => meteringInteractor.iso = const IsoValue(200, StopType.full)).called(1);
         },
         expect: () => [
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', 1.0)
               .having((state) => state.ev, 'ev', 2.0)
-              .having((state) => state.film, 'film', Film.values.first)
               .having((state) => state.iso, 'iso', const IsoValue(200, StopType.full))
               .having((state) => state.nd, 'nd', NdValue.values.first)
               .having((state) => state.isMetering, 'isMetering', false),
@@ -185,7 +180,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: null,
-          film: Film.values[1],
           iso: const IsoValue(100, StopType.full),
           nd: NdValue.values.first,
           isMetering: false,
@@ -194,14 +188,12 @@ void main() {
           bloc.add(const IsoChangedEvent(IsoValue(200, StopType.full)));
         },
         verify: (_) {
-          verify(() => meteringInteractor.film = Film.values.first).called(1);
           verify(() => meteringInteractor.iso = const IsoValue(200, StopType.full)).called(1);
         },
         expect: () => [
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', null)
               .having((state) => state.ev, 'ev', null)
-              .having((state) => state.film, 'film', Film.values.first)
               .having((state) => state.iso, 'iso', const IsoValue(200, StopType.full))
               .having((state) => state.nd, 'nd', NdValue.values.first)
               .having((state) => state.isMetering, 'isMetering', false),
@@ -213,7 +205,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: 1.0,
-          film: Film.values[1],
           iso: const IsoValue(100, StopType.full),
           nd: NdValue.values.first,
           isMetering: false,
@@ -222,7 +213,6 @@ void main() {
           bloc.add(const IsoChangedEvent(IsoValue(100, StopType.full)));
         },
         verify: (_) {
-          verify(() => meteringInteractor.film = Film.values.first).called(1);
           verifyNever(() => meteringInteractor.iso = const IsoValue(100, StopType.full));
         },
         expect: () => [],
@@ -233,7 +223,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: 1.0,
-          film: Film.values[1],
           iso: const IsoValue(100, StopType.full),
           nd: NdValue.values.first,
           isMetering: false,
@@ -244,14 +233,12 @@ void main() {
           bloc.onCommunicationState(const communication_states.MeteringEndedState(2));
         },
         verify: (_) {
-          verify(() => meteringInteractor.film = Film.values.first).called(1);
           verify(() => meteringInteractor.iso = const IsoValue(200, StopType.full)).called(1);
         },
         expect: () => [
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', 1.0)
               .having((state) => state.ev, 'ev', 2.0)
-              .having((state) => state.film, 'film', Film.values.first)
               .having((state) => state.iso, 'iso', const IsoValue(200, StopType.full))
               .having((state) => state.nd, 'nd', NdValue.values.first)
               .having((state) => state.isMetering, 'isMetering', false),
@@ -259,7 +246,6 @@ void main() {
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', 2.0)
               .having((state) => state.ev, 'ev', 3.0)
-              .having((state) => state.film, 'film', Film.values.first)
               .having((state) => state.iso, 'iso', const IsoValue(200, StopType.full))
               .having((state) => state.nd, 'nd', NdValue.values.first)
               .having((state) => state.isMetering, 'isMetering', false),
@@ -276,7 +262,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: 1.0,
-          film: Film.values[1],
           iso: const IsoValue(100, StopType.full),
           nd: NdValue.values.first,
           isMetering: false,
@@ -291,7 +276,6 @@ void main() {
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', 1.0)
               .having((state) => state.ev, 'ev', 0.0)
-              .having((state) => state.film, 'film', Film.values[1])
               .having((state) => state.iso, 'iso', const IsoValue(100, StopType.full))
               .having((state) => state.nd, 'nd', const NdValue(2))
               .having((state) => state.isMetering, 'isMetering', false),
@@ -303,7 +287,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: null,
-          film: Film.values[1],
           iso: const IsoValue(100, StopType.full),
           nd: NdValue.values.first,
           isMetering: false,
@@ -318,7 +301,6 @@ void main() {
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', null)
               .having((state) => state.ev, 'ev', null)
-              .having((state) => state.film, 'film', Film.values[1])
               .having((state) => state.iso, 'iso', const IsoValue(100, StopType.full))
               .having((state) => state.nd, 'nd', const NdValue(2))
               .having((state) => state.isMetering, 'isMetering', false),
@@ -330,7 +312,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: 1.0,
-          film: Film.values[1],
           iso: const IsoValue(100, StopType.full),
           nd: NdValue.values.first,
           isMetering: false,
@@ -349,7 +330,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: 1.0,
-          film: Film.values[1],
           iso: const IsoValue(100, StopType.full),
           nd: NdValue.values.first,
           isMetering: false,
@@ -366,7 +346,6 @@ void main() {
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', 1.0)
               .having((state) => state.ev, 'ev', 0.0)
-              .having((state) => state.film, 'film', Film.values[1])
               .having((state) => state.iso, 'iso', const IsoValue(100, StopType.full))
               .having((state) => state.nd, 'nd', const NdValue(2))
               .having((state) => state.isMetering, 'isMetering', false),
@@ -374,118 +353,8 @@ void main() {
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', 2.0)
               .having((state) => state.ev, 'ev', 1.0)
-              .having((state) => state.film, 'film', Film.values[1])
               .having((state) => state.iso, 'iso', const IsoValue(100, StopType.full))
               .having((state) => state.nd, 'nd', const NdValue(2))
-              .having((state) => state.isMetering, 'isMetering', false),
-        ],
-      );
-    },
-  );
-
-  group(
-    '`FilmChangedEvent`',
-    () {
-      blocTest<MeteringBloc, MeteringState>(
-        'Pick different film with different ISO',
-        build: () => bloc,
-        seed: () => MeteringDataState(
-          ev100: 1.0,
-          film: const FomapanFilm.creative100(),
-          iso: const IsoValue(100, StopType.full),
-          nd: NdValue.values.first,
-          isMetering: false,
-        ),
-        act: (bloc) async {
-          bloc.add(const FilmChangedEvent(FomapanFilm.creative200()));
-        },
-        verify: (_) {
-          verify(() => meteringInteractor.film = const FomapanFilm.creative200()).called(1);
-          verify(() => meteringInteractor.iso = const IsoValue(200, StopType.full)).called(1);
-        },
-        expect: () => [
-          isA<MeteringDataState>()
-              .having((state) => state.ev100, 'ev100', 1.0)
-              .having((state) => state.ev, 'ev', 2.0)
-              .having((state) => state.film, 'film', const FomapanFilm.creative200())
-              .having((state) => state.iso, 'iso', const IsoValue(200, StopType.full))
-              .having((state) => state.nd, 'nd', NdValue.values.first)
-              .having((state) => state.isMetering, 'isMetering', false),
-        ],
-      );
-
-      blocTest<MeteringBloc, MeteringState>(
-        'Pick different film with same ISO',
-        build: () => bloc,
-        seed: () => MeteringDataState(
-          ev100: 1.0,
-          film: const FomapanFilm.creative100(),
-          iso: const IsoValue(100, StopType.full),
-          nd: NdValue.values.first,
-          isMetering: false,
-        ),
-        act: (bloc) async {
-          bloc.add(const FilmChangedEvent(IlfordFilm.delta100()));
-        },
-        verify: (_) {
-          verify(() => meteringInteractor.film = const IlfordFilm.delta100()).called(1);
-          verifyNever(() => meteringInteractor.iso = const IsoValue(100, StopType.full));
-        },
-        expect: () => [
-          isA<MeteringDataState>()
-              .having((state) => state.ev100, 'ev100', 1.0)
-              .having((state) => state.ev, 'ev', 1.0)
-              .having((state) => state.film, 'film', const IlfordFilm.delta100())
-              .having((state) => state.iso, 'iso', const IsoValue(100, StopType.full))
-              .having((state) => state.nd, 'nd', NdValue.values.first)
-              .having((state) => state.isMetering, 'isMetering', false),
-        ],
-      );
-
-      blocTest<MeteringBloc, MeteringState>(
-        'Pick same film',
-        build: () => bloc,
-        seed: () => MeteringDataState(
-          ev100: 1.0,
-          film: const FomapanFilm.creative100(),
-          iso: const IsoValue(100, StopType.full),
-          nd: NdValue.values.first,
-          isMetering: false,
-        ),
-        act: (bloc) async {
-          bloc.add(const FilmChangedEvent(FomapanFilm.creative100()));
-        },
-        verify: (_) {
-          verifyNever(() => meteringInteractor.film = const FomapanFilm.creative100());
-        },
-        expect: () => [],
-      );
-
-      blocTest<MeteringBloc, MeteringState>(
-        'Pick `Film.other()`',
-        build: () => bloc,
-        seed: () => MeteringDataState(
-          ev100: 1.0,
-          film: const FomapanFilm.creative100(),
-          iso: const IsoValue(100, StopType.full),
-          nd: NdValue.values.first,
-          isMetering: false,
-        ),
-        act: (bloc) async {
-          bloc.add(const FilmChangedEvent(Film.other()));
-        },
-        verify: (_) {
-          verify(() => meteringInteractor.film = const Film.other()).called(1);
-          verifyNever(() => meteringInteractor.iso = const IsoValue(0, StopType.full));
-          verifyNever(() => meteringInteractor.responseVibration());
-        },
-        expect: () => [
-          isA<MeteringDataState>()
-              .having((state) => state.ev100, 'ev100', 1.0)
-              .having((state) => state.ev, 'ev', 1.0)
-              .having((state) => state.film, 'film', const Film.other())
-              .having((state) => state.iso, 'iso', const IsoValue(100, StopType.full))
-              .having((state) => state.nd, 'nd', NdValue.values.first)
               .having((state) => state.isMetering, 'isMetering', false),
         ],
       );
@@ -509,7 +378,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: 1.0,
-          film: Film.values[1],
           iso: const IsoValue(100, StopType.full),
           nd: NdValue.values.first,
           isMetering: false,
@@ -518,7 +386,6 @@ void main() {
           bloc.add(EquipmentProfileChangedEvent(reducedProfile));
         },
         verify: (_) {
-          verifyNever(() => meteringInteractor.film = const Film.other());
           verifyNever(() => meteringInteractor.iso = reducedProfile.isoValues.first);
           verifyNever(() => meteringInteractor.ndFilter = reducedProfile.ndValues.first);
           verifyNever(() => meteringInteractor.responseVibration());
@@ -531,7 +398,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: 1.0,
-          film: Film.values[1],
           iso: IsoValue.values[2],
           nd: NdValue.values.first,
           isMetering: false,
@@ -540,7 +406,6 @@ void main() {
           bloc.add(EquipmentProfileChangedEvent(reducedProfile));
         },
         verify: (_) {
-          verify(() => meteringInteractor.film = const Film.other()).called(1);
           verify(() => meteringInteractor.iso = reducedProfile.isoValues.first).called(1);
           verifyNever(() => meteringInteractor.ndFilter = reducedProfile.ndValues.first);
           verify(() => meteringInteractor.responseVibration()).called(1);
@@ -548,7 +413,6 @@ void main() {
         expect: () => [
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', 1.0)
-              .having((state) => state.film, 'film', const Film.other())
               .having((state) => state.iso, 'iso', reducedProfile.isoValues.first)
               .having((state) => state.nd, 'nd', NdValue.values.first)
               .having((state) => state.isMetering, 'isMetering', false),
@@ -560,7 +424,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: 1.0,
-          film: Film.values[1],
           iso: const IsoValue(100, StopType.full),
           nd: NdValue.values[4],
           isMetering: false,
@@ -569,7 +432,6 @@ void main() {
           bloc.add(EquipmentProfileChangedEvent(reducedProfile));
         },
         verify: (_) {
-          verifyNever(() => meteringInteractor.film = const Film.other());
           verifyNever(() => meteringInteractor.iso = reducedProfile.isoValues.first);
           verify(() => meteringInteractor.ndFilter = reducedProfile.ndValues.first).called(1);
           verify(() => meteringInteractor.responseVibration()).called(1);
@@ -577,7 +439,6 @@ void main() {
         expect: () => [
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', 1.0)
-              .having((state) => state.film, 'film', Film.values[1])
               .having((state) => state.iso, 'iso', const IsoValue(100, StopType.full))
               .having((state) => state.nd, 'nd', reducedProfile.ndValues.first)
               .having((state) => state.isMetering, 'isMetering', false),
@@ -589,7 +450,6 @@ void main() {
         build: () => bloc,
         seed: () => MeteringDataState(
           ev100: 1.0,
-          film: Film.values[1],
           iso: IsoValue.values[2],
           nd: NdValue.values[4],
           isMetering: false,
@@ -598,7 +458,6 @@ void main() {
           bloc.add(EquipmentProfileChangedEvent(reducedProfile));
         },
         verify: (_) {
-          verify(() => meteringInteractor.film = const Film.other()).called(1);
           verify(() => meteringInteractor.iso = reducedProfile.isoValues.first).called(1);
           verify(() => meteringInteractor.ndFilter = reducedProfile.ndValues.first).called(1);
           verify(() => meteringInteractor.responseVibration()).called(1);
@@ -606,7 +465,6 @@ void main() {
         expect: () => [
           isA<MeteringDataState>()
               .having((state) => state.ev100, 'ev100', 1.0)
-              .having((state) => state.film, 'film', const Film.other())
               .having((state) => state.iso, 'iso', reducedProfile.isoValues.first)
               .having((state) => state.nd, 'nd', reducedProfile.ndValues.first)
               .having((state) => state.isMetering, 'isMetering', false),

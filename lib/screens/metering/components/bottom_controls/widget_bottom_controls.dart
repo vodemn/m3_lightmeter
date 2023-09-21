@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
+import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
 
 class MeteringBottomControls extends StatelessWidget {
   final double? ev;
@@ -37,12 +38,20 @@ class MeteringBottomControls extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 if (onSwitchEvSourceType != null)
-                  _SideIcon(
-                    onPressed: onSwitchEvSourceType!,
-                    icon: Icon(
-                      context.listen<EvSourceType>() != EvSourceType.camera
-                          ? Icons.camera_rear
-                          : Icons.wb_incandescent,
+                  Expanded(
+                    child: Center(
+                      child: IconButton(
+                        onPressed: onSwitchEvSourceType,
+                        icon: Icon(
+                          UserPreferencesProvider.evSourceTypeOf(context) != EvSourceType.camera
+                              ? Icons.camera_rear
+                              : Icons.wb_incandescent,
+                        ),
+                        tooltip:
+                            UserPreferencesProvider.evSourceTypeOf(context) != EvSourceType.camera
+                                ? S.of(context).tooltipUseCamera
+                                : S.of(context).tooltipUseLightSensor,
+                      ),
                     ),
                   )
                 else
@@ -52,36 +61,17 @@ class MeteringBottomControls extends StatelessWidget {
                   isMetering: isMetering,
                   onTap: onMeasure,
                 ),
-                _SideIcon(
-                  onPressed: onSettings,
-                  icon: const Icon(Icons.settings),
+                Expanded(
+                  child: Center(
+                    child: IconButton(
+                      onPressed: onSettings,
+                      icon: const Icon(Icons.settings),
+                      tooltip: S.of(context).tooltipOpenSettings,
+                    ),
+                  ),
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SideIcon extends StatelessWidget {
-  final Icon icon;
-  final VoidCallback onPressed;
-
-  const _SideIcon({
-    required this.icon,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Center(
-        child: RepaintBoundary(
-          child: IconButton(
-            onPressed: onPressed,
-            icon: icon,
           ),
         ),
       ),

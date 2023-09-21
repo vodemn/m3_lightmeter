@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/equipment_list_tiles/components/dialog_filter/widget_dialog_filter.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/equipment_list_tiles/components/dialog_range_picker/widget_dialog_picker_range.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widget_dialog_filter.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_range_picker/widget_dialog_picker_range.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentListTiles extends StatelessWidget {
@@ -36,9 +36,6 @@ class EquipmentListTiles extends StatelessWidget {
           title: S.of(context).isoValues,
           description: S.of(context).isoValuesFilterDescription,
           values: IsoValue.values,
-          valuesCount: selectedIsoValues.length == IsoValue.values.length
-              ? S.of(context).equipmentProfileAllValues
-              : selectedIsoValues.length.toString(),
           selectedValues: selectedIsoValues,
           rangeSelect: false,
           onChanged: onIsoValuesSelecred,
@@ -48,9 +45,6 @@ class EquipmentListTiles extends StatelessWidget {
           title: S.of(context).ndFilters,
           description: S.of(context).ndFiltersFilterDescription,
           values: NdValue.values,
-          valuesCount: selectedNdValues.length == NdValue.values.length
-              ? S.of(context).equipmentProfileAllValues
-              : selectedNdValues.length.toString(),
           selectedValues: selectedNdValues,
           rangeSelect: false,
           onChanged: onNdValuesSelected,
@@ -60,9 +54,6 @@ class EquipmentListTiles extends StatelessWidget {
           title: S.of(context).apertureValues,
           description: S.of(context).apertureValuesFilterDescription,
           values: ApertureValue.values,
-          valuesCount: selectedApertureValues.length == ApertureValue.values.length
-              ? S.of(context).equipmentProfileAllValues
-              : selectedApertureValues.length.toString(),
           selectedValues: selectedApertureValues,
           rangeSelect: true,
           onChanged: onApertureValuesSelected,
@@ -72,9 +63,6 @@ class EquipmentListTiles extends StatelessWidget {
           title: S.of(context).shutterSpeedValues,
           description: S.of(context).shutterSpeedValuesFilterDescription,
           values: ShutterSpeedValue.values,
-          valuesCount: selectedShutterSpeedValues.length == ShutterSpeedValue.values.length
-              ? S.of(context).equipmentProfileAllValues
-              : selectedShutterSpeedValues.length.toString(),
           selectedValues: selectedShutterSpeedValues,
           rangeSelect: true,
           onChanged: onShutterSpeedValuesSelected,
@@ -87,7 +75,6 @@ class EquipmentListTiles extends StatelessWidget {
 class _EquipmentListTile<T extends PhotographyValue> extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String valuesCount;
   final String description;
   final List<T> selectedValues;
   final List<T> values;
@@ -97,7 +84,6 @@ class _EquipmentListTile<T extends PhotographyValue> extends StatelessWidget {
   const _EquipmentListTile({
     required this.icon,
     required this.title,
-    required this.valuesCount,
     required this.description,
     required this.selectedValues,
     required this.values,
@@ -111,7 +97,13 @@ class _EquipmentListTile<T extends PhotographyValue> extends StatelessWidget {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      trailing: Text(valuesCount),
+      trailing: rangeSelect
+          ? Text("${selectedValues.first} - ${selectedValues.last}")
+          : Text(
+              values.length == selectedValues.length
+                  ? S.of(context).equipmentProfileAllValues
+                  : selectedValues.length.toString(),
+            ),
       onTap: () {
         showDialog<List<T>>(
           context: context,

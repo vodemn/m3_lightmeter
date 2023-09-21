@@ -15,17 +15,31 @@ jobs:
   analyze_and_test:
     name: Analyze & test
     runs-on: macos-11
-    timeout-minutes: 10
-
+    timeout-minutes: 5
     steps:
+      - uses: 8BitJonny/gh-get-current-pr@2.2.0
+        id: PR
+
       - uses: actions/checkout@v3
         with:
           submodules: recursive
 
+      - name: Connect private iap package
+        uses: webfactory/ssh-agent@v0.8.0
+        id: fetch-iap
+        if: steps.PR.outputs.number == 'null' || github.event.pull_request.head.repo.full_name == github.repository
+        with:
+          ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
+
+      - name: Override iap package with stub
+        id: override-iap
+        if: steps.fetch-iap.conclusion != 'success'
+        run: bash ./.github/scripts/stub_iap.sh
+
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: '3.10.0'
+          flutter-version: "3.10.0"
 
       - name: Prepare flutter project
         run: |
@@ -38,3 +52,10 @@ jobs:
 
       - name: Run tests
         run: flutter test
+
+      - name: Analyze project source with stub
+        if: steps.override-iap.conclusion != 'success'
+        run: |
+          bash ./.github/scripts/stub_iap.sh
+          flutter pub get
+          flutter analyze lib --fatal-infos

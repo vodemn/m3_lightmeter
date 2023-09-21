@@ -10,7 +10,7 @@ import 'package:lightmeter/screens/metering/communication/state_communication_me
 import 'package:lightmeter/screens/metering/components/light_sensor_container/event_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/components/light_sensor_container/state_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
-import 'package:lightmeter/utils/log_2.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class LightSensorContainerBloc
     extends EvSourceBlocBase<LightSensorContainerEvent, LightSensorContainerState> {

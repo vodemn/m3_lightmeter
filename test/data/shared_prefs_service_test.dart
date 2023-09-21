@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
-import 'package:lightmeter/data/models/film.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
-import 'package:lightmeter/providers/theme_provider.dart';
+import 'package:lightmeter/res/theme.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -193,6 +192,7 @@ void main() {
         {
           MeteringScreenLayoutFeature.extremeExposurePairs: true,
           MeteringScreenLayoutFeature.filmPicker: true,
+          MeteringScreenLayoutFeature.equipmentProfiles: true,
           MeteringScreenLayoutFeature.histogram: true,
         },
       );
@@ -207,6 +207,7 @@ void main() {
         {
           MeteringScreenLayoutFeature.extremeExposurePairs: false,
           MeteringScreenLayoutFeature.filmPicker: true,
+          MeteringScreenLayoutFeature.equipmentProfiles: true,
           MeteringScreenLayoutFeature.histogram: true,
         },
       );
@@ -216,18 +217,19 @@ void main() {
       when(
         () => sharedPreferences.setString(
           UserPreferencesService.meteringScreenLayoutKey,
-          """{"0":false,"1":true,"2":true}""",
+          """{"0":false,"1":true,"2":true,"3":true}""",
         ),
       ).thenAnswer((_) => Future.value(true));
       service.meteringScreenLayout = {
         MeteringScreenLayoutFeature.extremeExposurePairs: false,
         MeteringScreenLayoutFeature.filmPicker: true,
         MeteringScreenLayoutFeature.histogram: true,
+        MeteringScreenLayoutFeature.equipmentProfiles: true,
       };
       verify(
         () => sharedPreferences.setString(
           UserPreferencesService.meteringScreenLayoutKey,
-          """{"0":false,"1":true,"2":true}""",
+          """{"0":false,"1":true,"2":true,"3":true}""",
         ),
       ).called(1);
     });
@@ -348,13 +350,13 @@ void main() {
   group('primaryColor', () {
     test('get default', () {
       when(() => sharedPreferences.getInt(UserPreferencesService.primaryColorKey)).thenReturn(null);
-      expect(service.primaryColor, ThemeProvider.primaryColorsList[5]);
+      expect(service.primaryColor, primaryColorsList[5]);
     });
 
     test('get', () {
       when(() => sharedPreferences.getInt(UserPreferencesService.primaryColorKey))
           .thenReturn(0xff9c27b0);
-      expect(service.primaryColor, ThemeProvider.primaryColorsList[2]);
+      expect(service.primaryColor, primaryColorsList[2]);
     });
 
     test('set', () {
@@ -387,28 +389,6 @@ void main() {
       service.dynamicColor = false;
       verify(() => sharedPreferences.setBool(UserPreferencesService.dynamicColorKey, false))
           .called(1);
-    });
-  });
-
-  group('film', () {
-    test('get default', () {
-      when(() => sharedPreferences.getString(UserPreferencesService.filmKey)).thenReturn(null);
-      expect(service.film, Film.values.first);
-    });
-
-    test('get', () {
-      when(() => sharedPreferences.getString(UserPreferencesService.filmKey))
-          .thenReturn('Fomapan ACTION 400');
-      expect(service.film, const FomapanFilm.action400());
-    });
-
-    test('set', () {
-      when(() => sharedPreferences.setString(UserPreferencesService.filmKey, 'Fomapan ACTION 400'))
-          .thenAnswer((_) => Future.value(true));
-      service.film = const FomapanFilm.action400();
-      verify(
-        () => sharedPreferences.setString(UserPreferencesService.filmKey, 'Fomapan ACTION 400'),
-      ).called(1);
     });
   });
 }
