@@ -143,7 +143,6 @@ class MeteringContainerBuidler extends StatelessWidget {
     if (ev.isNaN || ev.isInfinite) {
       return List.empty();
     }
-    return List.empty();
 
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
     final int evSteps = (ev * (stopType.index + 1)).round();
