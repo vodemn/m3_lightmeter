@@ -149,17 +149,17 @@ void main() {
         when(() => mockUserPreferencesService.primaryColor).thenReturn(color);
         await pumpApplication(tester);
 
-        //await tester.takeScreenshot(binding, '${color.value}-metering-reflected');
+        //await tester.takeScreenshot(binding, '${color.value}_metering_reflected');
 
         await tester.tap(find.byType(MeteringMeasureButton));
         await tester.tap(find.byType(MeteringMeasureButton));
-        await tester.takeScreenshot(binding, '${color.value}-metering-incident');
+        await tester.takeScreenshot(binding, '${color.value}_metering_incident');
 
         expect(find.byType(IsoValuePicker), findsOneWidget);
         await tester.tap(find.byType(IsoValuePicker));
         await tester.pumpAndSettle(Dimens.durationL);
         expect(find.byType(DialogPicker<IsoValue>), findsOneWidget);
-        await tester.takeScreenshot(binding, '${color.value}-metering-iso_picker');
+        await tester.takeScreenshot(binding, '${color.value}_metering_iso_picker');
 
         await tester.tapCancelButton();
         expect(find.byType(DialogPicker<IsoValue>), findsNothing);
@@ -167,10 +167,10 @@ void main() {
         await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
         await tester.pumpAndSettle();
         expect(find.byType(SettingsScreen), findsOneWidget);
-        await tester.takeScreenshot(binding, '${color.value}-settings');
+        await tester.takeScreenshot(binding, '${color.value}_settings');
 
         await tester.tapListTile(S.current.meteringScreenLayout);
-        await tester.takeScreenshot(binding, '${color.value}-settings-metering_screen_layout');
+        await tester.takeScreenshot(binding, '${color.value}_settings_metering_screen_layout');
 
         await tester.tapCancelButton();
         await tester.tapListTile(S.current.equipmentProfiles);
@@ -181,7 +181,7 @@ void main() {
 
         await tester.tap(find.byIcon(Icons.iso).first);
         await tester.pumpAndSettle();
-        await tester.takeScreenshot(binding, '${color.value}-equipment_profiles-iso_picker');
+        await tester.takeScreenshot(binding, '${color.value}_equipment_profiles_iso_picker');
       },
       skip: true,
     );
@@ -193,11 +193,11 @@ void main() {
         when(() => mockUserPreferencesService.primaryColor).thenReturn(color);
         await pumpApplication(tester);
 
-        //await tester.takeScreenshot(binding, '${color.value}-metering-reflected');
+        //await tester.takeScreenshot(binding, '${color.value}_metering_reflected');
 
         await tester.tap(find.byType(MeteringMeasureButton));
         await tester.tap(find.byType(MeteringMeasureButton));
-        await tester.takeScreenshot(binding, '${color.value}-metering-incident_dark');
+        await tester.takeScreenshot(binding, '${color.value}_metering_incident_dark');
       },
     );
   }
