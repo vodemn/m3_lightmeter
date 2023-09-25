@@ -10,7 +10,7 @@ class IAPProduct {
   final String storeId;
   final IAPProductStatus status;
 
-  IAPProduct({
+  const IAPProduct({
     required this.storeId,
     this.status = IAPProductStatus.purchasable,
   });
