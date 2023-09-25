@@ -82,6 +82,7 @@ void main() {
 
     mockCaffeineService = _MockCaffeineService();
     when(() => mockCaffeineService.isKeepScreenOn()).thenAnswer((_) async => false);
+    when(() => mockCaffeineService.keepScreenOn(true)).thenAnswer((_) async => true);
     when(() => mockCaffeineService.keepScreenOn(false)).thenAnswer((_) async => false);
 
     mockHapticsService = _MockHapticsService();
@@ -109,39 +110,44 @@ void main() {
     when(() => mockHapticsService.responseVibration()).thenAnswer((_) async {});
   });
 
-  void generateScreenshots(Color color) {
-    testWidgets(
-      '${color.value}',
-      (tester) async {
-        when(() => mockUserPreferencesService.primaryColor).thenReturn(color);
-
-        await tester.pumpWidget(
-          IAPProviders(
-            sharedPreferences: _MockSharedPreferences(),
-            child: EquipmentProfiles(
-              selected: _mockEquipmentProfiles[1],
-              values: _mockEquipmentProfiles,
-              child: Films(
-                selected: const Film('Ilford HP5+', 400),
-                values: const [Film.other(), Film('Ilford HP5+', 400)],
-                filmsInUse: const [Film.other(), Film('Ilford HP5+', 400)],
-                child: ServicesProvider(
-                  environment: const Environment.prod().copyWith(hasLightSensor: true),
-                  userPreferencesService: mockUserPreferencesService,
-                  caffeineService: mockCaffeineService,
-                  hapticsService: mockHapticsService,
-                  permissionsService: mockPermissionsService,
-                  lightSensorService: mockLightSensorService,
-                  volumeEventsService: mockVolumeEventsService,
-                  child: const UserPreferencesProvider(
-                    child: Application(),
-                  ),
-                ),
+  Future<void> pumpApplication(WidgetTester tester) async {
+    await tester.pumpWidget(
+      IAPProviders(
+        sharedPreferences: _MockSharedPreferences(),
+        child: EquipmentProfiles(
+          selected: _mockEquipmentProfiles[1],
+          values: _mockEquipmentProfiles,
+          child: Films(
+            selected: const Film('Ilford HP5+', 400),
+            values: const [Film.other(), Film('Ilford HP5+', 400)],
+            filmsInUse: const [Film.other(), Film('Ilford HP5+', 400)],
+            child: ServicesProvider(
+              environment: const Environment.prod().copyWith(hasLightSensor: true),
+              userPreferencesService: mockUserPreferencesService,
+              caffeineService: mockCaffeineService,
+              hapticsService: mockHapticsService,
+              permissionsService: mockPermissionsService,
+              lightSensorService: mockLightSensorService,
+              volumeEventsService: mockVolumeEventsService,
+              child: const UserPreferencesProvider(
+                child: Application(),
               ),
             ),
           ),
-        );
-        await tester.pumpAndSettle();
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  /// Generates several screenshots with the light theme
+  /// and the additionally the first one with the dark theme
+  void generateScreenshots(Color color) {
+    testWidgets(
+      '${color.value}_light',
+      (tester) async {
+        when(() => mockUserPreferencesService.primaryColor).thenReturn(color);
+        await pumpApplication(tester);
 
         //await tester.takeScreenshot(binding, '${color.value}-metering-reflected');
 
@@ -176,6 +182,22 @@ void main() {
         await tester.tap(find.byIcon(Icons.iso).first);
         await tester.pumpAndSettle();
         await tester.takeScreenshot(binding, '${color.value}-equipment_profiles-iso_picker');
+      },
+      skip: true,
+    );
+
+    testWidgets(
+      '${color.value}_dark',
+      (tester) async {
+        when(() => mockUserPreferencesService.themeType).thenReturn(ThemeType.dark);
+        when(() => mockUserPreferencesService.primaryColor).thenReturn(color);
+        await pumpApplication(tester);
+
+        //await tester.takeScreenshot(binding, '${color.value}-metering-reflected');
+
+        await tester.tap(find.byType(MeteringMeasureButton));
+        await tester.tap(find.byType(MeteringMeasureButton));
+        await tester.takeScreenshot(binding, '${color.value}-metering-incident_dark');
       },
     );
   }
