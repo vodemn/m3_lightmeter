@@ -2,10 +2,9 @@ import 'dart:io';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/basic.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:lightmeter/application.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
@@ -19,24 +18,25 @@ import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/providers/services_provider.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/res/theme.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
-import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/animated_dialog/widget_dialog_animated.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
-import 'package:lightmeter/screens/metering/flow_metering.dart';
-import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
-import 'package:lightmeter/screens/settings/flow_settings.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/screen_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'mocks/application_mock.dart';
+class _MockSharedPreferences extends Mock implements SharedPreferences {}
 
 class _MockUserPreferencesService extends Mock implements UserPreferencesService {}
 
@@ -52,6 +52,7 @@ class _MockVolumeEventsService extends Mock implements VolumeEventsService {}
 
 class _MockMeteringBloc extends Mock implements MeteringBloc {}
 
+//https://stackoverflow.com/a/67186625/13167574
 void main() {
   late _MockUserPreferencesService mockUserPreferencesService;
   late _MockCaffeineService mockCaffeineService;
@@ -74,7 +75,6 @@ void main() {
 
   setUpAll(() {
     mockUserPreferencesService = _MockUserPreferencesService();
-
     when(() => mockUserPreferencesService.evSourceType).thenReturn(EvSourceType.sensor);
     when(() => mockUserPreferencesService.stopType).thenReturn(StopType.third);
     when(() => mockUserPreferencesService.locale).thenReturn(SupportedLocale.en);
@@ -95,7 +95,8 @@ void main() {
     when(() => mockUserPreferencesService.dynamicColor).thenReturn(false);
 
     mockCaffeineService = _MockCaffeineService();
-    when(() => mockCaffeineService.keepScreenOn(true)).thenAnswer((_) async => true);
+    when(() => mockCaffeineService.isKeepScreenOn()).thenAnswer((_) async => false);
+    when(() => mockCaffeineService.keepScreenOn(false)).thenAnswer((_) async => false);
 
     mockHapticsService = _MockHapticsService();
     when(() => mockHapticsService.quickVibration()).thenAnswer((_) async {});
@@ -127,73 +128,80 @@ void main() {
     when(() => meteringBloc.close()).thenAnswer((_) async {});
   });
 
-  group(
-    '',
-    () {
-      const initColor = 0xff2196f3;
-      setUp(() {
-        when(() => mockUserPreferencesService.primaryColor).thenReturn(const Color(initColor));
-      });
+  void generateScreenshots(Color color) {
+    testWidgets(
+      '${color.value}',
+      (tester) async {
+        when(() => mockUserPreferencesService.primaryColor).thenReturn(color);
 
-      testWidgets(
-        '$initColor',
-        (tester) async {
-          await tester.pumpWidget(
-            ApplicationMock(
-              const Environment.prod().copyWith(hasLightSensor: true),
-              userPreferencesService: mockUserPreferencesService,
-              caffeineService: mockCaffeineService,
-              hapticsService: mockHapticsService,
-              permissionsService: mockPermissionsService,
-              lightSensorService: mockLightSensorService,
-              volumeEventsService: mockVolumeEventsService,
+        await tester.pumpWidget(
+          IAPProviders(
+            sharedPreferences: _MockSharedPreferences(),
+            child: EquipmentProfiles(
+              selected: _mockEquipmentProfiles[1],
+              values: _mockEquipmentProfiles,
+              child: Films(
+                selected: const Film('Ilford HP5+', 400),
+                values: const [Film.other(), Film('Ilford HP5+', 400)],
+                filmsInUse: const [Film.other(), Film('Ilford HP5+', 400)],
+                child: ServicesProvider(
+                  environment: const Environment.prod().copyWith(hasLightSensor: true),
+                  userPreferencesService: mockUserPreferencesService,
+                  caffeineService: mockCaffeineService,
+                  hapticsService: mockHapticsService,
+                  permissionsService: mockPermissionsService,
+                  lightSensorService: mockLightSensorService,
+                  volumeEventsService: mockVolumeEventsService,
+                  child: const UserPreferencesProvider(
+                    child: Application(),
+                  ),
+                ),
+              ),
             ),
-          );
-          await tester.pumpAndSettle();
+          ),
+        );
+        await tester.pumpAndSettle();
 
-          //await tester.takeScreenshot(binding, '$initColor-metering-reflected');
+        //await tester.takeScreenshot(binding, '${color.value}-metering-reflected');
 
-          await tester.tap(find.byType(MeteringMeasureButton));
-          await tester.tap(find.byType(MeteringMeasureButton));
-          await tester.takeScreenshot(binding, '$initColor-metering-incident');
+        await tester.tap(find.byType(MeteringMeasureButton));
+        await tester.tap(find.byType(MeteringMeasureButton));
+        await tester.takeScreenshot(binding, '${color.value}-metering-incident');
 
-          await tester.tap(find.byType(IsoValuePicker));
-          await tester.pumpAndSettle(Dimens.durationL);
-          expect(find.byType(IsoValuePicker), findsOneWidget);
-          await tester.takeScreenshot(binding, '$initColor-metering-iso_picker');
-          final cancelButton = find.byWidgetPredicate(
-            (widget) =>
-                widget is TextButton &&
-                widget.child is Text &&
-                (widget.child as Text?)?.data == (S.current.cancel),
-          );
-          expect(cancelButton, findsOneWidget);
-          await tester.tap(cancelButton);
-          // await tester.tap(
-          //   find.descendant(
-          //     of: find.byWidgetPredicate(
-          //       (widget) =>
-          //           widget is AnimatedDialog && widget.openedChild is DialogPicker<IsoValue>,
-          //     ),
-          //     matching: find.byType(TextButton),
-          //   ),
-          // );
-          await tester.pumpAndSettle(Dimens.durationML);
-          await tester.pumpAndSettle();
+        expect(find.byType(IsoValuePicker), findsOneWidget);
+        await tester.tap(find.byType(IsoValuePicker));
+        await tester.pumpAndSettle(Dimens.durationL);
+        expect(find.byType(DialogPicker<IsoValue>), findsOneWidget);
+        await tester.takeScreenshot(binding, '${color.value}-metering-iso_picker');
 
-          expect(find.byTooltip(S.current.tooltipOpenSettings), findsOneWidget);
-          await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
-          await tester.pumpAndSettle();
-          // print("============ TAP ============");
-          // expect(find.byType(SettingsScreen), findsOneWidget);
-          // await tester.takeScreenshot(binding, '$initColor-settings');
-          // await tester.takeScreenshot(binding, '$initColor-settings-metering_screen_layout');
-          // await tester.takeScreenshot(binding, '$initColor-equipment_profiles');
-          // await tester.takeScreenshot(binding, '$initColor-equipment_profiles-iso_picker');
-        },
-      );
-    },
-  );
+        await tester.tapCancelButton();
+        expect(find.byType(DialogPicker<IsoValue>), findsNothing);
+        expect(find.byTooltip(S.current.tooltipOpenSettings), findsOneWidget);
+        await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
+        await tester.pumpAndSettle();
+        expect(find.byType(SettingsScreen), findsOneWidget);
+        await tester.takeScreenshot(binding, '${color.value}-settings');
+
+        await tester.tapListTile(S.current.meteringScreenLayout);
+        await tester.takeScreenshot(binding, '${color.value}-settings-metering_screen_layout');
+
+        await tester.tapCancelButton();
+        await tester.tapListTile(S.current.equipmentProfiles);
+        expect(find.byType(EquipmentProfilesScreen), findsOneWidget);
+        await tester.tap(find.byType(EquipmentProfileContainer).first);
+        await tester.pumpAndSettle();
+        await tester.takeScreenshot(binding, '${color.value}-equipment_profiles');
+
+        await tester.tap(find.byIcon(Icons.iso).first);
+        await tester.pumpAndSettle();
+        await tester.takeScreenshot(binding, '${color.value}-equipment_profiles-iso_picker');
+      },
+    );
+  }
+
+  generateScreenshots(primaryColorsList[5]);
+  generateScreenshots(primaryColorsList[3]);
+  generateScreenshots(primaryColorsList[9]);
 }
 
 extension on WidgetTester {
@@ -203,5 +211,71 @@ extension on WidgetTester {
       await pumpAndSettle();
     }
     await binding.takeScreenshot(name);
+    await pumpAndSettle();
+  }
+
+  Future<void> tapCancelButton() async {
+    final cancelButton = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextButton &&
+          widget.child is Text &&
+          (widget.child as Text?)?.data == S.current.cancel,
+    );
+    expect(cancelButton, findsOneWidget);
+    await tap(cancelButton);
+    await pumpAndSettle();
+  }
+
+  Future<void> tapListTile(String title) async {
+    final listTile = find.byWidgetPredicate(
+      (widget) =>
+          widget is ListTile && widget.title is Text && (widget.title as Text?)?.data == title,
+    );
+    expect(listTile, findsOneWidget);
+    await tap(listTile);
+    await pumpAndSettle();
   }
 }
+
+final _mockEquipmentProfiles = [
+  const EquipmentProfile(
+    id: '',
+    name: '',
+    apertureValues: ApertureValue.values,
+    ndValues: NdValue.values,
+    shutterSpeedValues: ShutterSpeedValue.values,
+    isoValues: IsoValue.values,
+  ),
+  EquipmentProfile(
+    id: '1',
+    name: 'Praktica + Zenitar',
+    apertureValues: ApertureValue.values.sublist(
+      ApertureValue.values.indexOf(const ApertureValue(1.7, StopType.half)),
+      ApertureValue.values.indexOf(const ApertureValue(16, StopType.full)),
+    ),
+    ndValues: NdValue.values.sublist(0, 3),
+    shutterSpeedValues: ShutterSpeedValue.values.sublist(
+      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1000, true, StopType.full)),
+      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(16, false, StopType.full)),
+    ),
+    isoValues: const [
+      IsoValue(50, StopType.full),
+      IsoValue(100, StopType.full),
+      IsoValue(200, StopType.full),
+      IsoValue(250, StopType.third),
+      IsoValue(400, StopType.full),
+      IsoValue(500, StopType.third),
+      IsoValue(800, StopType.full),
+      IsoValue(1600, StopType.full),
+      IsoValue(3200, StopType.full),
+    ],
+  ),
+  const EquipmentProfile(
+    id: '2',
+    name: 'Praktica + Jupiter',
+    apertureValues: ApertureValue.values,
+    ndValues: NdValue.values,
+    shutterSpeedValues: ShutterSpeedValue.values,
+    isoValues: IsoValue.values,
+  ),
+];
