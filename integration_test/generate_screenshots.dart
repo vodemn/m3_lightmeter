@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -22,11 +21,9 @@ import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
-import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
-import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/screen_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
@@ -50,8 +47,6 @@ class _MockLightSensorService extends Mock implements LightSensorService {}
 
 class _MockVolumeEventsService extends Mock implements VolumeEventsService {}
 
-class _MockMeteringBloc extends Mock implements MeteringBloc {}
-
 //https://stackoverflow.com/a/67186625/13167574
 void main() {
   late _MockUserPreferencesService mockUserPreferencesService;
@@ -63,15 +58,6 @@ void main() {
 
   final binding = IntegrationTestWidgetsFlutterBinding();
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  late _MockMeteringBloc meteringBloc;
-
-  const meteringBlocState = MeteringDataState(
-    ev100: 7.7,
-    iso: IsoValue(400, StopType.full),
-    nd: NdValue(0),
-    isMetering: false,
-  );
 
   setUpAll(() {
     mockUserPreferencesService = _MockUserPreferencesService();
@@ -121,11 +107,6 @@ void main() {
 
     when(() => mockHapticsService.quickVibration()).thenAnswer((_) async {});
     when(() => mockHapticsService.responseVibration()).thenAnswer((_) async {});
-
-    meteringBloc = _MockMeteringBloc();
-    when(() => meteringBloc.state).thenReturn(meteringBlocState);
-    whenListen(meteringBloc, Stream.fromIterable([meteringBlocState]));
-    when(() => meteringBloc.close()).thenAnswer((_) async {});
   });
 
   void generateScreenshots(Color color) {
