@@ -61,7 +61,7 @@ void main() {
 
   setUpAll(() {
     mockUserPreferencesService = _MockUserPreferencesService();
-    when(() => mockUserPreferencesService.evSourceType).thenReturn(EvSourceType.sensor);
+    when(() => mockUserPreferencesService.evSourceType).thenReturn(EvSourceType.camera);
     when(() => mockUserPreferencesService.stopType).thenReturn(StopType.third);
     when(() => mockUserPreferencesService.locale).thenReturn(SupportedLocale.en);
     when(() => mockUserPreferencesService.caffeine).thenReturn(true);
@@ -143,48 +143,48 @@ void main() {
   /// Generates several screenshots with the light theme
   /// and the additionally the first one with the dark theme
   void generateScreenshots(Color color) {
-    testWidgets(
-      '${color.value}_light',
-      (tester) async {
-        when(() => mockUserPreferencesService.primaryColor).thenReturn(color);
-        await pumpApplication(tester);
+    testWidgets('${color.value}_light', (tester) async {
+      when(() => mockUserPreferencesService.themeType).thenReturn(ThemeType.light);
+      when(() => mockUserPreferencesService.primaryColor).thenReturn(color);
+      await pumpApplication(tester);
 
-        //await tester.takeScreenshot(binding, '${color.value}_metering_reflected');
+      await tester.takePhoto();
+      await tester.takeScreenshot(binding, '${color.value}_metering_reflected');
 
-        await tester.tap(find.byType(MeteringMeasureButton));
-        await tester.tap(find.byType(MeteringMeasureButton));
-        await tester.takeScreenshot(binding, '${color.value}_metering_incident');
+      await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(MeteringMeasureButton));
+      await tester.tap(find.byType(MeteringMeasureButton));
+      await tester.takeScreenshot(binding, '${color.value}_metering_incident');
 
-        expect(find.byType(IsoValuePicker), findsOneWidget);
-        await tester.tap(find.byType(IsoValuePicker));
-        await tester.pumpAndSettle(Dimens.durationL);
-        expect(find.byType(DialogPicker<IsoValue>), findsOneWidget);
-        await tester.takeScreenshot(binding, '${color.value}_metering_iso_picker');
+      expect(find.byType(IsoValuePicker), findsOneWidget);
+      await tester.tap(find.byType(IsoValuePicker));
+      await tester.pumpAndSettle(Dimens.durationL);
+      expect(find.byType(DialogPicker<IsoValue>), findsOneWidget);
+      await tester.takeScreenshot(binding, '${color.value}_metering_iso_picker');
 
-        await tester.tapCancelButton();
-        expect(find.byType(DialogPicker<IsoValue>), findsNothing);
-        expect(find.byTooltip(S.current.tooltipOpenSettings), findsOneWidget);
-        await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
-        await tester.pumpAndSettle();
-        expect(find.byType(SettingsScreen), findsOneWidget);
-        await tester.takeScreenshot(binding, '${color.value}_settings');
+      await tester.tapCancelButton();
+      expect(find.byType(DialogPicker<IsoValue>), findsNothing);
+      expect(find.byTooltip(S.current.tooltipOpenSettings), findsOneWidget);
+      await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
+      await tester.pumpAndSettle();
+      expect(find.byType(SettingsScreen), findsOneWidget);
+      await tester.takeScreenshot(binding, '${color.value}_settings');
 
-        await tester.tapListTile(S.current.meteringScreenLayout);
-        await tester.takeScreenshot(binding, '${color.value}_settings_metering_screen_layout');
+      await tester.tapListTile(S.current.meteringScreenLayout);
+      await tester.takeScreenshot(binding, '${color.value}_settings_metering_screen_layout');
 
-        await tester.tapCancelButton();
-        await tester.tapListTile(S.current.equipmentProfiles);
-        expect(find.byType(EquipmentProfilesScreen), findsOneWidget);
-        await tester.tap(find.byType(EquipmentProfileContainer).first);
-        await tester.pumpAndSettle();
-        await tester.takeScreenshot(binding, '${color.value}-equipment_profiles');
+      await tester.tapCancelButton();
+      await tester.tapListTile(S.current.equipmentProfiles);
+      expect(find.byType(EquipmentProfilesScreen), findsOneWidget);
+      await tester.tap(find.byType(EquipmentProfileContainer).first);
+      await tester.pumpAndSettle();
+      await tester.takeScreenshot(binding, '${color.value}-equipment_profiles');
 
-        await tester.tap(find.byIcon(Icons.iso).first);
-        await tester.pumpAndSettle();
-        await tester.takeScreenshot(binding, '${color.value}_equipment_profiles_iso_picker');
-      },
-      skip: true,
-    );
+      await tester.tap(find.byIcon(Icons.iso).first);
+      await tester.pumpAndSettle();
+      await tester.takeScreenshot(binding, '${color.value}_equipment_profiles_iso_picker');
+    });
 
     testWidgets(
       '${color.value}_dark',
@@ -193,8 +193,11 @@ void main() {
         when(() => mockUserPreferencesService.primaryColor).thenReturn(color);
         await pumpApplication(tester);
 
-        //await tester.takeScreenshot(binding, '${color.value}_metering_reflected');
+        await tester.takePhoto();
+        await tester.takeScreenshot(binding, '${color.value}_metering_reflected');
 
+        await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
+        await tester.pumpAndSettle();
         await tester.tap(find.byType(MeteringMeasureButton));
         await tester.tap(find.byType(MeteringMeasureButton));
         await tester.takeScreenshot(binding, '${color.value}_metering_incident_dark');
@@ -214,6 +217,12 @@ extension on WidgetTester {
       await pumpAndSettle();
     }
     await binding.takeScreenshot(name);
+    await pumpAndSettle();
+  }
+
+  Future<void> takePhoto() async {
+    await tap(find.byType(MeteringMeasureButton));
+    await pump(const Duration(seconds: 2)); // wait for circular progress indicator
     await pumpAndSettle();
   }
 

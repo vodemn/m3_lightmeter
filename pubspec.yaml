@@ -54,6 +54,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets: 
+    - assets/camera_stub_image.jpg
 
 flutter_intl:
   enabled: true

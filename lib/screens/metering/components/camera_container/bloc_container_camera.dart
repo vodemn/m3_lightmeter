@@ -7,8 +7,10 @@ import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_event;
@@ -32,7 +34,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
   static const _exposureMaxRange = RangeValues(-4, 4);
   RangeValues? _exposureOffsetRange;
-  double _exposureStep = 0.0;
+  double _exposureStep = 0.1;
   double _currentExposureOffset = 0.0;
 
   double? _ev100 = 0.0;
@@ -199,21 +201,28 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     );
   }
 
-  bool get _canTakePhoto => !(_cameraController == null ||
-      !_cameraController!.value.isInitialized ||
-      _cameraController!.value.isTakingPicture);
+  bool get _canTakePhoto =>
+      PlatformConfig.cameraStubImage.isNotEmpty ||
+      !(_cameraController == null ||
+          !_cameraController!.value.isInitialized ||
+          _cameraController!.value.isTakingPicture);
 
   Future<double?> _takePhoto() async {
     try {
       // https://github.com/flutter/flutter/issues/84957#issuecomment-1661155095
-      await _cameraController!.setFocusMode(FocusMode.locked);
-      await _cameraController!.setExposureMode(ExposureMode.locked);
-      final file = await _cameraController!.takePicture();
-      await _cameraController!.setFocusMode(FocusMode.auto);
-      await _cameraController!.setExposureMode(ExposureMode.auto);
 
-      final Uint8List bytes = await file.readAsBytes();
-      Directory(file.path).deleteSync(recursive: true);
+      late final Uint8List bytes;
+      if (PlatformConfig.cameraStubImage.isNotEmpty) {
+        bytes = (await rootBundle.load(PlatformConfig.cameraStubImage)).buffer.asUint8List();
+      } else {
+        await _cameraController!.setFocusMode(FocusMode.locked);
+        await _cameraController!.setExposureMode(ExposureMode.locked);
+        final file = await _cameraController!.takePicture();
+        await _cameraController!.setFocusMode(FocusMode.auto);
+        await _cameraController!.setExposureMode(ExposureMode.auto);
+        bytes = await file.readAsBytes();
+        Directory(file.path).deleteSync(recursive: true);
+      }
 
       final tags = await readExifFromBytes(bytes);
       final iso = double.tryParse("${tags["EXIF ISOSpeedRatings"]}");
