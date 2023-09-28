@@ -18,7 +18,12 @@ class IAPProductsProviderState extends State<IAPProductsProvider> {
   @override
   Widget build(BuildContext context) {
     return IAPProducts(
-      products: const [],
+      products: [
+        IAPProduct(
+          storeId: IAPProductType.paidFeatures.storeId,
+          status: IAPProductStatus.purchased,
+        )
+      ],
       child: widget.child,
     );
   }
@@ -35,13 +40,28 @@ class IAPProducts extends InheritedModel<IAPProductType> {
     super.key,
   });
 
-  static IAPProduct? productOf(BuildContext context, IAPProductType type) => null;
+  static IAPProduct? productOf(BuildContext context, IAPProductType type) {
+    final IAPProducts? result = InheritedModel.inheritFrom<IAPProducts>(context, aspect: type);
+    return result!._findProduct(type);
+  }
 
-  static bool isPurchased(BuildContext context, IAPProductType type) => false;
+  static bool isPurchased(BuildContext context, IAPProductType type) {
+    final IAPProducts? result = InheritedModel.inheritFrom<IAPProducts>(context, aspect: type);
+    return result!._findProduct(type)?.status == IAPProductStatus.purchased;
+  }
 
   @override
   bool updateShouldNotify(IAPProducts oldWidget) => false;
 
   @override
-  bool updateShouldNotifyDependent(covariant IAPProducts oldWidget, Set<IAPProductType> dependencies) => false;
+  bool updateShouldNotifyDependent(IAPProducts oldWidget, Set<IAPProductType> dependencies) =>
+      false;
+
+  IAPProduct? _findProduct(IAPProductType type) {
+    try {
+      return products.firstWhere((element) => element.storeId == type.storeId);
+    } catch (_) {
+      return null;
+    }
+  }
 }
