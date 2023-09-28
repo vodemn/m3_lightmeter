@@ -223,6 +223,7 @@ extension on WidgetTester {
   Future<void> takePhoto() async {
     await tap(find.byType(MeteringMeasureButton));
     await pump(const Duration(seconds: 2)); // wait for circular progress indicator
+    await pump(const Duration(seconds: 1)); // wait for circular progress indicator
     await pumpAndSettle();
   }
 
