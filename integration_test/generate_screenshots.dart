@@ -194,7 +194,7 @@ void main() {
         await pumpApplication(tester);
 
         await tester.takePhoto();
-        await tester.takeScreenshot(binding, '${color.value}_metering_reflected');
+        await tester.takeScreenshot(binding, '${color.value}_metering_reflected_dark');
 
         await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
         await tester.pumpAndSettle();
