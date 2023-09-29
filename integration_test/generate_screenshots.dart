@@ -115,7 +115,7 @@ void main() {
       IAPProviders(
         sharedPreferences: _MockSharedPreferences(),
         child: EquipmentProfiles(
-          selected: _mockEquipmentProfiles[1],
+          selected: _mockEquipmentProfiles[0],
           values: _mockEquipmentProfiles,
           child: Films(
             selected: const Film('Ilford HP5+', 400),
@@ -264,12 +264,12 @@ final _mockEquipmentProfiles = [
     name: 'Praktica + Zenitar',
     apertureValues: ApertureValue.values.sublist(
       ApertureValue.values.indexOf(const ApertureValue(1.7, StopType.half)),
-      ApertureValue.values.indexOf(const ApertureValue(16, StopType.full)),
+      ApertureValue.values.indexOf(const ApertureValue(16, StopType.full)) + 1,
     ),
     ndValues: NdValue.values.sublist(0, 3),
     shutterSpeedValues: ShutterSpeedValue.values.sublist(
       ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1000, true, StopType.full)),
-      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(16, false, StopType.full)),
+      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(16, false, StopType.full)) + 1,
     ),
     isoValues: const [
       IsoValue(50, StopType.full),
