@@ -6,7 +6,7 @@ fvm flutter build apk \
     --profile \
     --flavor=dev
 
-for n in {1..2}; do
+for n in {1..25}; do
     echo "============ Run number ${n} ============"
 
     flutter drive \
@@ -22,4 +22,4 @@ for n in {1..2}; do
         --use-application-binary=build/app/outputs/flutter-apk/app-dev-profile.apk
 done
 
-sh integration_test/extract_benchmarks.sh toggle_iso_picker_baseline
+sh integration_test/extract_benchmarks.sh toggle_iso_picker
