@@ -69,6 +69,9 @@ class _CameraPreviewBuilderState extends State<_CameraPreviewBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    if (PlatformConfig.cameraStubImage.isNotEmpty) {
+      return Image.asset(PlatformConfig.cameraStubImage);
+    }
     return ValueListenableBuilder<bool>(
       valueListenable: _initializedNotifier,
       builder: (context, value, child) => value

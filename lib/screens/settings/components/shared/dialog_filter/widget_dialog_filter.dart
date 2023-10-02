@@ -34,6 +34,26 @@ class _DialogFilterState<T> extends State<DialogFilter<T>> {
   bool get _hasAnySelected => checkboxValues.contains(true);
   bool get _hasAnyUnselected => checkboxValues.contains(false);
 
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    int i = 0;
+    for (; i < checkboxValues.length; i++) {
+      if (checkboxValues[i]) {
+        break;
+      }
+    }
+    _scrollController = ScrollController(initialScrollOffset: Dimens.grid56 * i);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -50,6 +70,7 @@ class _DialogFilterState<T> extends State<DialogFilter<T>> {
           const Divider(),
           Expanded(
             child: SingleChildScrollView(
+              controller: _scrollController,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
