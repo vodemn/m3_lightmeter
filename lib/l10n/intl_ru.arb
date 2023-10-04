@@ -36,10 +36,14 @@
     "lightSensor": "Датчик освещённости",
     "meteringScreenLayout": "Элементы главного экрана",
     "meteringScreenLayoutHint": "Здесь вы можете скрыть некоторые ненужные или неиспользуемые элементы с главного экрана.",
+    "meteringScreenLayoutHintEquipmentProfiles": "Выбор профиля оборудования",
     "meteringScreenFeatureExtremeExposurePairs": "Длинная и короткая выдержки",
     "meteringScreenFeatureFilmPicker": "Выбор пленки",
+    "meteringScreenFeatureHistogram": "Гистограмма",
     "film": "Пленка",
-    "equipment": "Оборудование",
+    "filmPush": "Пленка (push)",
+    "filmPull": "Пленка (pull)",
+    "filmReciprocityHint": "Применяет коррекцию для выдержек длиннее 1 секунды",
     "equipmentProfileName": "Название профиля",
     "equipmentProfileNameHint": "Praktica MTL5B",
     "equipmentProfileAllValues": "Все",
@@ -53,6 +57,9 @@
     "isoValuesFilterDescription": "Выберите значения ISO для отображения. Это может быть наиболее часто используемые значения или значения, поддерживаемые вашей камерой.",
     "equipmentProfile": "Оборудование",
     "equipmentProfiles": "Профили оборудования",
+    "tapToAdd": "Нажмите, чтобы добавить",
+    "filmsInUse": "Используемые пленки",
+    "filmsInUseDescription": "Выберите пленки, которыми вы пользуетесь.",
     "general": "Общие",
     "keepScreenOn": "Запрет блокировки",
     "haptics": "Вибрация",
@@ -84,5 +91,21 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "buyLightmeterPro": "Купить Lightmeter Pro",
+    "lightmeterPro": "Lightmeter Pro",
+    "lightmeterProDescription": "Даёт доступ к таким функциям как профили оборудования, содержащие фильтры для диафрагмы, выдержки и других значений, а также набору пленок с компенсацией эффекта Шварцшильда.\n\nИсходный код Lightmeter доступен на GitHub. Вы можете собрать его самостоятельно. Однако если вы хотите поддержать разработку и получать новые функции и обновления, то приобретите Lightmeter Pro.",
+    "buy": "Купить",
+    "tooltipAdd": "Добавить",
+    "tooltipClose": "Закрыть",
+    "tooltipExpand": "Развернуть",
+    "tooltipCollapse": "Свернуть",
+    "tooltipCopy": "Скопировать",
+    "tooltipDelete": "Удалить",
+    "tooltipSelectAll": "Выбрать все",
+    "tooltipDesecelectAll": "Отменить все",
+    "tooltipResetToZero": "Сбросить до 0",
+    "tooltipUseLightSensor": "Использовать датчик освещенности",
+    "tooltipUseCamera": "Использовать камеру",
+    "tooltipOpenSettings": "Открыть настройки"
 }

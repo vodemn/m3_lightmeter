@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a bug report to help improve the app
 title: ''
-labels: bug
+labels: bug, user feedback
 assignees: vodemn
 
 ---

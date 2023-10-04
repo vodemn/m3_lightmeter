@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
     as communication_event;
@@ -18,7 +19,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/event_co
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
-import 'package:lightmeter/utils/log_2.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;
@@ -32,7 +33,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
   static const _exposureMaxRange = RangeValues(-4, 4);
   RangeValues? _exposureOffsetRange;
-  double _exposureStep = 0.0;
+  double _exposureStep = 0.1;
   double _currentExposureOffset = 0.0;
 
   double? _ev100 = 0.0;
@@ -123,7 +124,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
           (camera) => camera.lensDirection == CameraLensDirection.back,
           orElse: () => cameras.last,
         ),
-        ResolutionPreset.medium,
+        ResolutionPreset.low,
         enableAudio: false,
       );
 
@@ -199,15 +200,28 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     );
   }
 
-  bool get _canTakePhoto => !(_cameraController == null ||
-      !_cameraController!.value.isInitialized ||
-      _cameraController!.value.isTakingPicture);
+  bool get _canTakePhoto =>
+      PlatformConfig.cameraStubImage.isNotEmpty ||
+      !(_cameraController == null ||
+          !_cameraController!.value.isInitialized ||
+          _cameraController!.value.isTakingPicture);
 
   Future<double?> _takePhoto() async {
     try {
-      final file = await _cameraController!.takePicture();
-      final Uint8List bytes = await file.readAsBytes();
-      Directory(file.path).deleteSync(recursive: true);
+      // https://github.com/flutter/flutter/issues/84957#issuecomment-1661155095
+
+      late final Uint8List bytes;
+      if (PlatformConfig.cameraStubImage.isNotEmpty) {
+        bytes = (await rootBundle.load(PlatformConfig.cameraStubImage)).buffer.asUint8List();
+      } else {
+        await _cameraController!.setFocusMode(FocusMode.locked);
+        await _cameraController!.setExposureMode(ExposureMode.locked);
+        final file = await _cameraController!.takePicture();
+        await _cameraController!.setFocusMode(FocusMode.auto);
+        await _cameraController!.setExposureMode(ExposureMode.auto);
+        bytes = await file.readAsBytes();
+        Directory(file.path).deleteSync(recursive: true);
+      }
 
       final tags = await readExifFromBytes(bytes);
       final iso = double.tryParse("${tags["EXIF ISOSpeedRatings"]}");

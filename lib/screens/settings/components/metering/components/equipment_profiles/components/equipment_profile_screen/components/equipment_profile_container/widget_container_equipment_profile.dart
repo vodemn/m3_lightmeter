@@ -2,20 +2,23 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/equipment_list_tiles/widget_list_tiles_equipments.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfileContainer extends StatefulWidget {
-  final EquipmentProfileData data;
-  final ValueChanged<EquipmentProfileData> onUpdate;
+  final EquipmentProfile data;
+  final ValueChanged<EquipmentProfile> onUpdate;
+  final VoidCallback onCopy;
   final VoidCallback onDelete;
   final VoidCallback onExpand;
 
   const EquipmentProfileContainer({
     required this.data,
     required this.onUpdate,
+    required this.onCopy,
     required this.onDelete,
     required this.onExpand,
     super.key,
@@ -27,7 +30,7 @@ class EquipmentProfileContainer extends StatefulWidget {
 
 class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
     with TickerProviderStateMixin {
-  late EquipmentProfileData _equipmentData = EquipmentProfileData(
+  late EquipmentProfile _equipmentData = EquipmentProfile(
     id: widget.data.id,
     name: widget.data.name,
     apertureValues: widget.data.apertureValues,
@@ -45,7 +48,7 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
   @override
   void didUpdateWidget(EquipmentProfileContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _equipmentData = EquipmentProfileData(
+    _equipmentData = EquipmentProfile(
       id: widget.data.id,
       name: widget.data.name,
       apertureValues: widget.data.apertureValues,
@@ -71,6 +74,7 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
               title: Row(
                 children: [
                   _AnimatedNameLeading(controller: _controller),
@@ -84,19 +88,9 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
                   ),
                 ],
               ),
-              trailing: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _AnimatedArrowButton(
-                    controller: _controller,
-                    onPressed: () => _expanded ? collapse() : expand(),
-                  ),
-                  IconButton(
-                    onPressed: widget.onDelete,
-                    icon: const Icon(Icons.delete),
-                  ),
-                ],
+              trailing: _AnimatedArrowButton(
+                controller: _controller,
+                onPressed: () => _expanded ? collapse() : expand(),
               ),
               onTap: () => _expanded ? _showNameDialog() : expand(),
             ),
@@ -119,6 +113,8 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
                 _equipmentData = _equipmentData.copyWith(shutterSpeedValues: value);
                 widget.onUpdate(_equipmentData);
               },
+              onCopy: widget.onCopy,
+              onDelete: widget.onDelete,
             ),
           ],
         ),
@@ -142,10 +138,13 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
     widget.onExpand();
     _controller.forward();
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      Scrollable.ensureVisible(
-        context,
-        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-      );
+      Future.delayed(_controller.duration!).then((_) {
+        Scrollable.ensureVisible(
+          context,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          duration: _controller.duration!,
+        );
+      });
     });
   }
 
@@ -163,7 +162,7 @@ class _AnimatedNameLeading extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(right: _progress.value * Dimens.grid24),
+      padding: EdgeInsets.only(right: _progress.value * Dimens.grid8),
       child: Icon(
         Icons.edit,
         size: _progress.value * Dimens.grid24,
@@ -190,16 +189,19 @@ class _AnimatedArrowButton extends AnimatedWidget {
         angle: _progress.value * pi,
         child: const Icon(Icons.keyboard_arrow_down),
       ),
+      tooltip: _progress.value == 0 ? S.of(context).tooltipExpand : S.of(context).tooltipCollapse,
     );
   }
 }
 
 class _AnimatedEquipmentListTiles extends AnimatedWidget {
-  final EquipmentProfileData equipmentData;
+  final EquipmentProfile equipmentData;
   final ValueChanged<List<ApertureValue>> onApertureValuesSelected;
   final ValueChanged<List<IsoValue>> onIsoValuesSelecred;
   final ValueChanged<List<NdValue>> onNdValuesSelected;
   final ValueChanged<List<ShutterSpeedValue>> onShutterSpeedValuesSelected;
+  final VoidCallback onCopy;
+  final VoidCallback onDelete;
 
   const _AnimatedEquipmentListTiles({
     required AnimationController controller,
@@ -208,6 +210,8 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
     required this.onIsoValuesSelecred,
     required this.onNdValuesSelected,
     required this.onShutterSpeedValuesSelected,
+    required this.onCopy,
+    required this.onDelete,
   }) : super(listenable: controller);
 
   Animation<double> get _progress => listenable as Animation<double>;
@@ -218,19 +222,43 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
       alignment: Alignment.topCenter,
       size: Size(
         double.maxFinite,
-        _progress.value * Dimens.grid56 * 4,
+        _progress.value * Dimens.grid56 * 5,
       ),
+      // https://github.com/gskinnerTeam/flutter-folio/pull/62
       child: Opacity(
         opacity: _progress.value,
-        child: EquipmentListTiles(
-          selectedApertureValues: equipmentData.apertureValues,
-          selectedIsoValues: equipmentData.isoValues,
-          selectedNdValues: equipmentData.ndValues,
-          selectedShutterSpeedValues: equipmentData.shutterSpeedValues,
-          onApertureValuesSelected: onApertureValuesSelected,
-          onIsoValuesSelecred: onIsoValuesSelecred,
-          onNdValuesSelected: onNdValuesSelected,
-          onShutterSpeedValuesSelected: onShutterSpeedValuesSelected,
+        child: Column(
+          children: [
+            EquipmentListTiles(
+              selectedApertureValues: equipmentData.apertureValues,
+              selectedIsoValues: equipmentData.isoValues,
+              selectedNdValues: equipmentData.ndValues,
+              selectedShutterSpeedValues: equipmentData.shutterSpeedValues,
+              onApertureValuesSelected: onApertureValuesSelected,
+              onIsoValuesSelecred: onIsoValuesSelecred,
+              onNdValuesSelected: onNdValuesSelected,
+              onShutterSpeedValuesSelected: onShutterSpeedValuesSelected,
+            ),
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
+              trailing: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    onPressed: onCopy,
+                    icon: const Icon(Icons.copy),
+                    tooltip: S.of(context).tooltipCopy,
+                  ),
+                  IconButton(
+                    onPressed: onDelete,
+                    icon: const Icon(Icons.delete),
+                    tooltip: S.of(context).tooltipDelete,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

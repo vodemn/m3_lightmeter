@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/theme_provider.dart';
-import 'package:lightmeter/screens/settings/components/shared/dialog_picker.dart/widget_dialog_picker.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_picker/widget_dialog_picker.dart';
 
 class ThemeTypeListTile extends StatelessWidget {
   const ThemeTypeListTile({super.key});
@@ -13,20 +12,20 @@ class ThemeTypeListTile extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.brightness_6),
       title: Text(S.of(context).theme),
-      trailing: Text(_typeToString(context, context.listen<ThemeType>())),
+      trailing: Text(_typeToString(context, UserPreferencesProvider.themeTypeOf(context))),
       onTap: () {
         showDialog<ThemeType>(
           context: context,
           builder: (_) => DialogPicker<ThemeType>(
             icon: Icons.brightness_6,
             title: S.of(context).chooseTheme,
-            selectedValue: context.get<ThemeType>(),
+            selectedValue: UserPreferencesProvider.themeTypeOf(context),
             values: ThemeType.values,
             titleAdapter: _typeToString,
           ),
         ).then((value) {
           if (value != null) {
-            ThemeProvider.of(context).setThemeType(value);
+            UserPreferencesProvider.of(context).setThemeType(value);
           }
         });
       },

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/supported_locale_provider.dart';
-import 'package:lightmeter/screens/settings/components/shared/dialog_picker.dart/widget_dialog_picker.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_picker/widget_dialog_picker.dart';
 
 class LanguageListTile extends StatelessWidget {
   const LanguageListTile({super.key});
@@ -13,20 +12,20 @@ class LanguageListTile extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.language),
       title: Text(S.of(context).language),
-      trailing: Text(context.listen<SupportedLocale>().localizedName),
+      trailing: Text(UserPreferencesProvider.localeOf(context).localizedName),
       onTap: () {
         showDialog<SupportedLocale>(
           context: context,
           builder: (_) => DialogPicker<SupportedLocale>(
             icon: Icons.language,
             title: S.of(context).chooseLanguage,
-            selectedValue: context.get<SupportedLocale>(),
+            selectedValue: UserPreferencesProvider.localeOf(context),
             values: SupportedLocale.values,
             titleAdapter: (context, value) => value.localizedName,
           ),
         ).then((value) {
           if (value != null) {
-            SupportedLocaleProvider.of(context).setLocale(value);
+            UserPreferencesProvider.of(context).setLocale(value);
           }
         });
       },

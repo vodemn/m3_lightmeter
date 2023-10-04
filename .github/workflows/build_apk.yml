@@ -1,0 +1,98 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Build .apk
+
+on:
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: 'Flavor'   
+        type: choice  
+        required: true
+        options:
+          - dev
+          - prod
+        default: 'dev'
+      include-iap:
+        type: boolean
+        description: Include IAP package
+        default: true
+
+jobs:
+  build:
+    name: Build .apk
+    runs-on: macos-11
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Connect private iap package
+        uses: webfactory/ssh-agent@v0.8.0
+        if: ${{ inputs.include-iap }}
+        with:
+          ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
+
+      - name: Override iap package with stub
+        if: ${{ !inputs.include-iap }}
+        run: bash ./.github/scripts/stub_iap.sh
+        
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: "11"
+
+      - name: Restore Android keystore .jsk and .properties files
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
+        run: |
+          KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
+          echo -n "$KEYSTORE" | base64 --decode --output $KEYSTORE_PATH
+          cp $KEYSTORE_PATH ./android/app
+          KEYSTORE_PROPERTIES_PATH=$RUNNER_TEMP/key.properties
+          echo -n "$KEYSTORE_PROPERTIES" | base64 --decode --output $KEYSTORE_PROPERTIES_PATH
+          cp $KEYSTORE_PROPERTIES_PATH ./android
+
+      - name: Restore android/app/google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_ANDROID: ${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}
+        run: |
+          GOOGLE_SERVICES_JSON_ANDROID_PATH=$RUNNER_TEMP/google-services.json
+          echo -n "$GOOGLE_SERVICES_JSON_ANDROID" | base64 --decode --output $GOOGLE_SERVICES_JSON_ANDROID_PATH
+          cp $GOOGLE_SERVICES_JSON_ANDROID_PATH ./android/app
+
+      - name: Restore firebase_options.dart
+        env:
+          FIREBASE_OPTIONS: ${{ secrets.FIREBASE_OPTIONS }}
+        run: |
+          FIREBASE_OPTIONS_PATH=$RUNNER_TEMP/firebase_options.dart
+          echo -n "$FIREBASE_OPTIONS" | base64 --decode --output $FIREBASE_OPTIONS_PATH
+          cp $FIREBASE_OPTIONS_PATH ./lib
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: '3.10.0'
+
+      - name: Prepare flutter project
+        run: | 
+          flutter --version
+          flutter pub get
+          flutter pub run intl_utils:generate
+
+      - name: Build .apk
+        env:
+          FLAVOR: ${{ github.event.inputs.flavor }}
+        run: flutter build apk --release --flavor $FLAVOR --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_$FLAVOR.dart
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: m3_lightmeter_${{ github.event.inputs.flavor }}
+          path: build/app/outputs/flutter-apk/app-${{ github.event.inputs.flavor }}-release.apk

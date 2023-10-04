@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
+import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
-import 'package:lightmeter/utils/inherited_generics.dart';
 
 class MeteringBottomControls extends StatelessWidget {
   final double? ev;
@@ -42,10 +43,14 @@ class MeteringBottomControls extends StatelessWidget {
                       child: IconButton(
                         onPressed: onSwitchEvSourceType,
                         icon: Icon(
-                          context.listen<EvSourceType>() != EvSourceType.camera
+                          UserPreferencesProvider.evSourceTypeOf(context) != EvSourceType.camera
                               ? Icons.camera_rear
                               : Icons.wb_incandescent,
                         ),
+                        tooltip:
+                            UserPreferencesProvider.evSourceTypeOf(context) != EvSourceType.camera
+                                ? S.of(context).tooltipUseCamera
+                                : S.of(context).tooltipUseLightSensor,
                       ),
                     ),
                   )
@@ -61,6 +66,7 @@ class MeteringBottomControls extends StatelessWidget {
                     child: IconButton(
                       onPressed: onSettings,
                       icon: const Icon(Icons.settings),
+                      tooltip: S.of(context).tooltipOpenSettings,
                     ),
                   ),
                 ),
