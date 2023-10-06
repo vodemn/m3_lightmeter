@@ -33,6 +33,7 @@ class ExposurePairsList extends StatelessWidget {
                       alignment: Alignment.center,
                       children: [
                         Row(
+                          key: ValueKey(index),
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Expanded(

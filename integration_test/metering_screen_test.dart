@@ -19,11 +19,15 @@ import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
+import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/nd_picker/widget_picker_nd.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
+import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
@@ -126,6 +130,69 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
+
+  group('Match extreme exposure pairs & pairs list edge values', () {
+    setUpAll(() {
+      when(() => mockUserPreferencesService.evSourceType).thenReturn(EvSourceType.sensor);
+      when(() => mockLightSensorService.luxStream()).thenAnswer((_) => Stream.fromIterable([100]));
+    });
+
+    testWidgets(
+      'No exposure pairs',
+      (tester) async {
+        await pumpApplication(tester, IAPProductStatus.purchasable);
+
+        final pickerFinder = find.byType(ExtremeExposurePairsContainer);
+        expect(pickerFinder, findsOneWidget);
+        expect(find.descendant(of: pickerFinder, matching: find.text(S.current.fastestExposurePair)), findsOneWidget);
+        expect(find.descendant(of: pickerFinder, matching: find.text(S.current.slowestExposurePair)), findsOneWidget);
+        expect(find.descendant(of: pickerFinder, matching: find.text('-')), findsNWidgets(2));
+
+        expect(
+          find.descendant(
+            of: find.byType(ExposurePairsList),
+            matching: find.byWidgetPredicate(
+              (widget) =>
+                  widget is IconPlaceholder &&
+                  widget.icon == Icons.not_interested &&
+                  widget.text == S.current.noExposurePairs,
+            ),
+          ),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'Multiple exposure pairs',
+      (tester) async {
+        await pumpApplication(tester, IAPProductStatus.purchasable);
+        await tester.tap(find.byType(MeteringMeasureButton));
+        await tester.tap(find.byType(MeteringMeasureButton));
+        await tester.pumpAndSettle();
+
+        final pickerFinder = find.byType(ExtremeExposurePairsContainer);
+        expect(pickerFinder, findsOneWidget);
+        expect(find.descendant(of: pickerFinder, matching: find.text(S.current.fastestExposurePair)), findsOneWidget);
+        expect(find.descendant(of: pickerFinder, matching: find.text(S.current.slowestExposurePair)), findsOneWidget);
+        expect(find.descendant(of: pickerFinder, matching: find.text('f/1.0 - 1/160')), findsOneWidget);
+        expect(find.descendant(of: pickerFinder, matching: find.text('f/45 - 13"')), findsOneWidget);
+
+        final firstPairRow = find.byWidgetPredicate((widget) => widget is Row && widget.key == const ValueKey(0));
+        expect(find.descendant(of: firstPairRow, matching: find.text('f/1.0')), findsOneWidget);
+        expect(find.descendant(of: firstPairRow, matching: find.text('1/160')), findsOneWidget);
+
+        final lastPairRow = find.byWidgetPredicate(
+          (widget) =>
+              widget is Row && widget.key == ValueKey(ApertureValue.values.whereStopType(StopType.third).length - 1),
+        );
+        final listFinder = find.descendant(of: find.byType(ExposurePairsList), matching: find.byType(Scrollable));
+        await tester.scrollUntilVisible(lastPairRow, 56, scrollable: listFinder);
+        expect(find.descendant(of: lastPairRow, matching: find.text('f/45')), findsOneWidget);
+        expect(find.descendant(of: lastPairRow, matching: find.text('13"')), findsOneWidget);
+      },
+    );
+  });
 
   group(
     'Free version',
