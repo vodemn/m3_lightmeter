@@ -118,7 +118,11 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
               ),
               const SizedBox(width: Dimens.grid16),
               TextButton(
-                onPressed: () => widget.onSelect(_selectedValue),
+                onPressed: () {
+                  if (widget.initialValue != _selectedValue) {
+                    widget.onSelect(_selectedValue);
+                  }
+                },
                 child: Text(S.of(context).select),
               ),
             ],
