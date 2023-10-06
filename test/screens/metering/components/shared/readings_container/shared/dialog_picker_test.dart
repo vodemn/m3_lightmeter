@@ -41,7 +41,7 @@ void main() {
           expect(find.byType(DialogPicker<IsoValue>), findsOneWidget);
           await tester.tapListTile(400);
           await tester.tapSelectButton();
-          verifyNever(() => functions.onChanged(const IsoValue(400, StopType.full)));
+          verify(() => functions.onChanged(const IsoValue(400, StopType.full))).called(1);
         },
       );
     },

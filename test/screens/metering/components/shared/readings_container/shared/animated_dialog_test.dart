@@ -101,7 +101,7 @@ extension WidgetTesterActions on WidgetTester {
     );
     expect(cancelButton, findsOneWidget);
     await tap(cancelButton);
-    await pumpAndSettle();
+    await pumpAndSettle(Dimens.durationML);
   }
 
   Future<void> tapCancelButton() async {
@@ -110,6 +110,6 @@ extension WidgetTesterActions on WidgetTester {
     );
     expect(cancelButton, findsOneWidget);
     await tap(cancelButton);
-    await pumpAndSettle();
+    await pumpAndSettle(Dimens.durationML);
   }
 }
