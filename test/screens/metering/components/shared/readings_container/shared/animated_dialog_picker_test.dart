@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/res/theme.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+
+import '../../../../../../application_mock.dart';
 
 void main() {
   group(
@@ -73,33 +73,17 @@ void main() {
 extension WidgetTesterActions on WidgetTester {
   Future<void> pumpApplication() async {
     await pumpWidget(
-      MaterialApp(
-        title: 'Flutter Demo',
-        theme: themeFrom(primaryColorsList[5], Brightness.light),
-        locale: const Locale('en'),
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-          child: child!,
-        ),
-        home: Scaffold(
-          body: Row(
-            children: [
-              Expanded(
-                child: IsoValuePicker(
-                  selectedValue: const IsoValue(400, StopType.full),
-                  values: IsoValue.values,
-                  onChanged: (_) {},
-                ),
+      WidgetTestApplicationMock(
+        child: Row(
+          children: [
+            Expanded(
+              child: IsoValuePicker(
+                selectedValue: const IsoValue(400, StopType.full),
+                values: IsoValue.values,
+                onChanged: (_) {},
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
