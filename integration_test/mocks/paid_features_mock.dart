@@ -1,65 +1,81 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/films_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class _MockSharedPreferences extends Mock implements SharedPreferences {}
+class _MockIAPStorageService extends Mock implements IAPStorageService {}
 
-class MockIAPProviders extends StatelessWidget {
+class MockIAPProviders extends StatefulWidget {
   final IAPProductStatus purchaseStatus;
+  final String selectedEquipmentProfileId;
+  final Film selectedFilm;
   final Widget child;
 
   const MockIAPProviders({
+    this.selectedEquipmentProfileId = '',
+    this.selectedFilm = const Film.other(),
     required this.purchaseStatus,
     required this.child,
     super.key,
   });
 
   const MockIAPProviders.purchasable({
+    this.selectedEquipmentProfileId = '',
+    this.selectedFilm = const Film.other(),
     required this.child,
     super.key,
   }) : purchaseStatus = IAPProductStatus.purchasable;
 
   const MockIAPProviders.purchased({
+    this.selectedEquipmentProfileId = '',
+    this.selectedFilm = const Film.other(),
     required this.child,
     super.key,
   }) : purchaseStatus = IAPProductStatus.purchased;
 
   @override
+  State<MockIAPProviders> createState() => _MockIAPProvidersState();
+}
+
+class _MockIAPProvidersState extends State<MockIAPProviders> {
+  late final _MockIAPStorageService mockIAPStorageService;
+
+  @override
+  void initState() {
+    super.initState();
+    mockIAPStorageService = _MockIAPStorageService();
+    when(() => mockIAPStorageService.equipmentProfiles).thenReturn(mockEquipmentProfiles);
+    when(() => mockIAPStorageService.selectedEquipmentProfileId)
+        .thenReturn(widget.selectedEquipmentProfileId);
+    when(() => mockIAPStorageService.filmsInUse).thenReturn(mockFilms);
+    when(() => mockIAPStorageService.selectedFilm).thenReturn(widget.selectedFilm);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (purchaseStatus == IAPProductStatus.purchased) {
-      return IAPProviders(
-        sharedPreferences: _MockSharedPreferences(),
-        child: EquipmentProfiles(
-          selected: _mockEquipmentProfiles[0],
-          values: _mockEquipmentProfiles,
-          child: Films(
-            selected: const Film('Ilford HP5+', 400),
-            values: const [Film.other(), Film('Ilford HP5+', 400)],
-            filmsInUse: const [Film.other(), Film('Ilford HP5+', 400)],
-            child: child,
+    return IAPProductsProvider(
+      child: IAPProducts(
+        products: [
+          IAPProduct(
+            storeId: IAPProductType.paidFeatures.storeId,
+            status: widget.purchaseStatus,
+          )
+        ],
+        child: EquipmentProfileProvider(
+          storageService: mockIAPStorageService,
+          child: FilmsProvider(
+            storageService: mockIAPStorageService,
+            child: widget.child,
           ),
-        ),
-      );
-    }
-    return IAPProviders(
-      sharedPreferences: _MockSharedPreferences(),
-      child: EquipmentProfiles(
-        selected: _defaultEquipmentProfile,
-        values: const [_defaultEquipmentProfile],
-        child: Films(
-          selected: const Film.other(),
-          values: const [Film.other()],
-          filmsInUse: const [Film.other()],
-          child: child,
         ),
       ),
     );
   }
 }
 
-const _defaultEquipmentProfile = EquipmentProfile(
+const defaultEquipmentProfile = EquipmentProfile(
   id: '',
   name: '',
   apertureValues: ApertureValue.values,
@@ -68,8 +84,7 @@ const _defaultEquipmentProfile = EquipmentProfile(
   isoValues: IsoValue.values,
 );
 
-final _mockEquipmentProfiles = [
-  _defaultEquipmentProfile,
+final mockEquipmentProfiles = [
   EquipmentProfile(
     id: '1',
     name: 'Praktica + Zenitar',
@@ -103,3 +118,5 @@ final _mockEquipmentProfiles = [
     isoValues: IsoValue.values,
   ),
 ];
+
+const mockFilms = [Film('Ilford HP5+', 400)];

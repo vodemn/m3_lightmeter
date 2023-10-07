@@ -27,13 +27,11 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/screen_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class _MockSharedPreferences extends Mock implements SharedPreferences {}
+import 'mocks/paid_features_mock.dart';
 
 class _MockUserPreferencesService extends Mock implements UserPreferencesService {}
 
@@ -112,28 +110,17 @@ void main() {
 
   Future<void> pumpApplication(WidgetTester tester) async {
     await tester.pumpWidget(
-      IAPProviders(
-        sharedPreferences: _MockSharedPreferences(),
-        child: EquipmentProfiles(
-          selected: _mockEquipmentProfiles[0],
-          values: _mockEquipmentProfiles,
-          child: Films(
-            selected: const Film('Ilford HP5+', 400),
-            values: const [Film.other(), Film('Ilford HP5+', 400)],
-            filmsInUse: const [Film.other(), Film('Ilford HP5+', 400)],
-            child: ServicesProvider(
-              environment: const Environment.prod().copyWith(hasLightSensor: true),
-              userPreferencesService: mockUserPreferencesService,
-              caffeineService: mockCaffeineService,
-              hapticsService: mockHapticsService,
-              permissionsService: mockPermissionsService,
-              lightSensorService: mockLightSensorService,
-              volumeEventsService: mockVolumeEventsService,
-              child: const UserPreferencesProvider(
-                child: Application(),
-              ),
-            ),
-          ),
+      MockIAPProviders.purchased(
+        selectedFilm: mockFilms.first,
+        child: ServicesProvider(
+          environment: const Environment.prod().copyWith(hasLightSensor: true),
+          userPreferencesService: mockUserPreferencesService,
+          caffeineService: mockCaffeineService,
+          hapticsService: mockHapticsService,
+          permissionsService: mockPermissionsService,
+          lightSensorService: mockLightSensorService,
+          volumeEventsService: mockVolumeEventsService,
+          child: const UserPreferencesProvider(child: Application()),
         ),
       ),
     );

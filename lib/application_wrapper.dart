@@ -6,6 +6,8 @@ import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
@@ -27,8 +29,8 @@ class ApplicationWrapper extends StatelessWidget {
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
-          return IAPProviders(
-            sharedPreferences: snapshot.data![0] as SharedPreferences,
+          final iapService = IAPStorageService(snapshot.data![0] as SharedPreferences);
+          return IAPProductsProvider(
             child: ServicesProvider(
               caffeineService: const CaffeineService(),
               environment: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
@@ -38,8 +40,14 @@ class ApplicationWrapper extends StatelessWidget {
               userPreferencesService:
                   UserPreferencesService(snapshot.data![0] as SharedPreferences),
               volumeEventsService: const VolumeEventsService(LocalPlatform()),
-              child: UserPreferencesProvider(
-                child: child,
+              child: EquipmentProfileProvider(
+                storageService: iapService,
+                child: FilmsProvider(
+                  storageService: iapService,
+                  child: UserPreferencesProvider(
+                    child: child,
+                  ),
+                ),
               ),
             ),
           );

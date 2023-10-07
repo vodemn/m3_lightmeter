@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class MeteringScreenLayoutFeaturesDialog extends StatefulWidget {
   const MeteringScreenLayoutFeaturesDialog({super.key});
