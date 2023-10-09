@@ -5,10 +5,12 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmsProvider extends StatefulWidget {
   final IAPStorageService storageService;
+  final List<Film>? availableFilms;
   final Widget child;
 
   const FilmsProvider({
     required this.storageService,
+    this.availableFilms,
     required this.child,
     super.key,
   });
@@ -36,7 +38,10 @@ class FilmsProviderState extends State<FilmsProvider> {
   @override
   Widget build(BuildContext context) {
     return Films(
-      values: films,
+      values: [
+        const Film.other(),
+        ...widget.availableFilms ?? films,
+      ],
       filmsInUse: [
         const Film.other(),
         if (IAPProducts.isPurchased(context, IAPProductType.paidFeatures)) ..._filmsInUse,
