@@ -7,6 +7,7 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import '../../../../../../application_mock.dart';
+import '../utils.dart';
 
 void main() {
   group(
@@ -88,11 +89,6 @@ extension WidgetTesterActions on WidgetTester {
       ),
     );
     await pumpAndSettle();
-  }
-
-  Future<void> openAnimatedPicker<T>() async {
-    await tap(find.byType(T));
-    await pumpAndSettle(Dimens.durationL);
   }
 
   Future<void> tapSelectButton() async {

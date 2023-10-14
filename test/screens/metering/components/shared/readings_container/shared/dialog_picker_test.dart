@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../../../application_mock.dart';
+import '../utils.dart';
 
 class _ValueChanged {
   void onChanged<T>(T value) {}
@@ -66,11 +66,6 @@ extension WidgetTesterActions on WidgetTester {
       ),
     );
     await pumpAndSettle();
-  }
-
-  Future<void> openAnimatedPicker<T>() async {
-    await tap(find.byType(T));
-    await pumpAndSettle(Dimens.durationL);
   }
 
   Future<void> tapListTile(int iso) async {
