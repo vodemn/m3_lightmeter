@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
-import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/widget_picker_dialog_animated.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/reading_value_container/widget_container_reading_value.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../../../application_mock.dart';
@@ -25,11 +25,11 @@ void main() {
         'other',
         (tester) async {
           await tester.pumpApplication(functions.onChanged);
-          await tester.openAnimatedPicker<IsoValuePicker>();
-          expect(find.byType(DialogPicker<IsoValue>), findsOneWidget);
-          await tester.tapListTile(500);
+          await tester.openAnimatedPicker<AnimatedDialogPicker<int>>();
+          expect(find.byType(DialogPicker<int>), findsOneWidget);
+          await tester.tapListTile(1);
           await tester.tapSelectButton();
-          verify(() => functions.onChanged(const IsoValue(500, StopType.third))).called(1);
+          verify(() => functions.onChanged(1)).called(1);
         },
       );
 
@@ -37,11 +37,11 @@ void main() {
         'same',
         (tester) async {
           await tester.pumpApplication(functions.onChanged);
-          await tester.openAnimatedPicker<IsoValuePicker>();
-          expect(find.byType(DialogPicker<IsoValue>), findsOneWidget);
-          await tester.tapListTile(400);
+          await tester.openAnimatedPicker<AnimatedDialogPicker<int>>();
+          expect(find.byType(DialogPicker<int>), findsOneWidget);
+          await tester.tapListTile(0);
           await tester.tapSelectButton();
-          verify(() => functions.onChanged(const IsoValue(400, StopType.full))).called(1);
+          verify(() => functions.onChanged(0)).called(1);
         },
       );
     },
@@ -49,16 +49,27 @@ void main() {
 }
 
 extension WidgetTesterActions on WidgetTester {
-  Future<void> pumpApplication(ValueChanged<IsoValue> onChanged) async {
+  Future<void> pumpApplication(ValueChanged<int> onChanged) async {
     await pumpWidget(
       WidgetTestApplicationMock(
         child: Row(
           children: [
             Expanded(
-              child: IsoValuePicker(
-                selectedValue: const IsoValue(400, StopType.full),
-                values: IsoValue.values,
+              child: AnimatedDialogPicker<int>(
+                icon: Icons.iso,
+                title: '',
+                subtitle: '',
+                selectedValue: 0,
+                values: List.generate(10, (index) => index),
+                itemTitleBuilder: (_, value) => Text(value.toString()),
+                itemTrailingBuilder: (selected, value) => null,
                 onChanged: onChanged,
+                closedChild: ReadingValueContainer.singleValue(
+                  value: ReadingValue(
+                    label: '',
+                    value: 0.toString(),
+                  ),
+                ),
               ),
             ),
           ],
@@ -69,8 +80,8 @@ extension WidgetTesterActions on WidgetTester {
   }
 
   Future<void> tapListTile(int iso) async {
-    expect(find.descendant(of: find.byType(RadioListTile<IsoValue>), matching: find.text('$iso')), findsOneWidget);
-    await tap(find.descendant(of: find.byType(RadioListTile<IsoValue>), matching: find.text('$iso')));
+    expect(find.descendant(of: find.byType(RadioListTile<int>), matching: find.text('$iso')), findsOneWidget);
+    await tap(find.descendant(of: find.byType(RadioListTile<int>), matching: find.text('$iso')));
   }
 
   Future<void> tapSelectButton() async {
