@@ -21,7 +21,9 @@ import 'package:lightmeter/res/theme.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/metering_screen_layout/components/meterins_screen_layout_features_dialog/widget_dialog_metering_screen_layout_features.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widget_dialog_filter.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -73,7 +75,7 @@ void main() {
       MeteringScreenLayoutFeature.equipmentProfiles: true,
       MeteringScreenLayoutFeature.extremeExposurePairs: true,
       MeteringScreenLayoutFeature.filmPicker: true,
-      MeteringScreenLayoutFeature.histogram: false,
+      MeteringScreenLayoutFeature.histogram: true,
     });
     when(() => mockUserPreferencesService.themeType).thenReturn(ThemeType.light);
     when(() => mockUserPreferencesService.primaryColor).thenReturn(primaryColorsList[5]);
@@ -135,7 +137,7 @@ void main() {
   }
 
   group(
-    'Metering layout features',
+    '[Metering layout features]',
     () {
       Future<void> toggleFeatureAndClose(WidgetTester tester, String feature) async {
         await tester.openSettings();
@@ -154,17 +156,6 @@ void main() {
         await tester.tap(find.byIcon(Icons.close));
         await tester.pumpAndSettle();
       }
-
-      setUpAll(() {
-        when(() => mockUserPreferencesService.evSourceType).thenReturn(EvSourceType.sensor);
-        when(() => mockLightSensorService.luxStream()).thenAnswer((_) => Stream.fromIterable([100]));
-        when(() => mockUserPreferencesService.meteringScreenLayout).thenReturn({
-          MeteringScreenLayoutFeature.equipmentProfiles: true,
-          MeteringScreenLayoutFeature.extremeExposurePairs: true,
-          MeteringScreenLayoutFeature.filmPicker: true,
-          MeteringScreenLayoutFeature.histogram: true,
-        });
-      });
 
       testWidgets(
         'Toggle equipmentProfiles & discard selected',
@@ -240,6 +231,55 @@ void main() {
           await pumpApplication(tester, IAPProductStatus.purchased);
         },
         skip: true, // TODO(@vodemn)
+      );
+    },
+  );
+
+  testWidgets(
+    '[Films in use] Deselect current',
+    (tester) async {
+      await pumpApplication(
+        tester,
+        IAPProductStatus.purchased,
+        selectedFilm: mockFilms[0],
+      );
+
+      // Check that film is selected and reciprocity is applied
+      await tester.toggleIncidentMetering();
+      expectAnimatedPickerWith<FilmPicker>(value: mockFilms[0].name);
+      expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 26"');
+      expectMeasureButton(7.3);
+
+      // Deselect the first films
+      await tester.openSettings();
+      expect(find.byType(SettingsScreen), findsOneWidget);
+      await tester.tap(find.text(S.current.filmsInUse));
+      await tester.pumpAndSettle();
+      expect(find.byType(DialogFilter<Film>), findsOneWidget);
+      await tester.tap(
+        find.descendant(
+          of: find.byType(CheckboxListTile),
+          matching: find.text(mockFilms[0].name),
+        ),
+      );
+      await tester.tapSaveButton();
+      expect(find.byType(DialogFilter<Film>), findsNothing);
+      await tester.tap(find.byIcon(Icons.close));
+      await tester.pumpAndSettle();
+
+      // The previously selected films is no longer in use and therefore is discarded to None
+      expectAnimatedPickerWith<FilmPicker>(value: S.current.none);
+      expectMeasureButton(7.3);
+
+      // The previously selected films is no longer in use and therefore is not present in the picker
+      await tester.openAnimatedPicker<FilmPicker>();
+      expect(find.byType(DialogPicker<Film>), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byWidgetPredicate((widget) => widget is RadioListTile<Film> && widget.selected),
+          matching: find.text(mockFilms[0].name),
+        ),
+        findsNothing,
       );
     },
   );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 
 extension WidgetTesterTextButtonActions on WidgetTester {
@@ -25,5 +26,10 @@ extension WidgetTesterCommonActions on WidgetTester {
     await tap(find.byType(MeteringMeasureButton));
     await tap(find.byType(MeteringMeasureButton));
     await pumpAndSettle();
+  }
+
+  Future<void> openAnimatedPicker<T>() async {
+    await tap(find.byType(T));
+    await pumpAndSettle(Dimens.durationL);
   }
 }

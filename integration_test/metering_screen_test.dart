@@ -17,7 +17,6 @@ import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
-import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
@@ -333,11 +332,6 @@ void main() {
 }
 
 extension _WidgetTesterActions on WidgetTester {
-  Future<void> openAnimatedPicker<T>() async {
-    await tap(find.byType(T));
-    await pumpAndSettle(Dimens.durationL);
-  }
-
   Future<void> tapRadioListTile<T>(String value) async {
     expect(find.descendant(of: find.byType(RadioListTile<T>), matching: find.text(value)), findsOneWidget);
     await tap(find.descendant(of: find.byType(RadioListTile<T>), matching: find.text(value)));
