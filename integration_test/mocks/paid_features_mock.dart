@@ -67,6 +67,7 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
           storageService: mockIAPStorageService,
           child: FilmsProvider(
             storageService: mockIAPStorageService,
+            availableFilms: mockFilms,
             child: widget.child,
           ),
         ),
@@ -119,4 +120,18 @@ final mockEquipmentProfiles = [
   ),
 ];
 
-const mockFilms = [Film('Ilford HP5+', 400)];
+const mockFilms = [_MockFilm2x(), _MockFilm3x()];
+
+class _MockFilm2x extends Film {
+  const _MockFilm2x() : super('Mock film 2x', 400);
+
+  @override
+  double reciprocityFormula(double t) => t * 2;
+}
+
+class _MockFilm3x extends Film {
+  const _MockFilm3x() : super('Mock film 3x', 800);
+
+  @override
+  double reciprocityFormula(double t) => t * 3;
+}
