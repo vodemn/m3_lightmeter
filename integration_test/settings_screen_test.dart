@@ -17,17 +17,12 @@ import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
-import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
-import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/nd_picker/widget_picker_nd.dart';
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
-import 'package:lightmeter/screens/metering/screen_metering.dart';
-import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/metering_screen_layout/components/meterins_screen_layout_features_dialog/widget_dialog_metering_screen_layout_features.dart';
+import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
@@ -140,206 +135,120 @@ void main() {
   }
 
   group(
-    'Match extreme exposure pairs & pairs list edge values',
+    'Metering layout features',
     () {
-      void expectExposurePairsListItem(int index, String aperture, String shutterSpeed) {
-        final firstPairRow = find.byWidgetPredicate(
-          (widget) => widget is Row && widget.key == ValueKey(index),
+      Future<void> toggleFeatureAndClose(WidgetTester tester, String feature) async {
+        await tester.openSettings();
+        expect(find.byType(SettingsScreen), findsOneWidget);
+        await tester.tap(find.text(S.current.meteringScreenLayout));
+        await tester.pumpAndSettle();
+        expect(find.byType(MeteringScreenLayoutFeaturesDialog), findsOneWidget);
+        await tester.tap(
+          find.descendant(
+            of: find.byType(SwitchListTile),
+            matching: find.text(feature),
+          ),
         );
-        expect(
-          find.descendant(of: firstPairRow, matching: find.text(aperture)),
-          findsOneWidget,
-        );
-        expect(
-          find.descendant(of: firstPairRow, matching: find.text(shutterSpeed)),
-          findsOneWidget,
-        );
+        await tester.tapSaveButton();
+        expect(find.byType(MeteringScreenLayoutFeaturesDialog), findsNothing);
+        await tester.tap(find.byIcon(Icons.close));
+        await tester.pumpAndSettle();
       }
 
       setUpAll(() {
         when(() => mockUserPreferencesService.evSourceType).thenReturn(EvSourceType.sensor);
         when(() => mockLightSensorService.luxStream()).thenAnswer((_) => Stream.fromIterable([100]));
+        when(() => mockUserPreferencesService.meteringScreenLayout).thenReturn({
+          MeteringScreenLayoutFeature.equipmentProfiles: true,
+          MeteringScreenLayoutFeature.extremeExposurePairs: true,
+          MeteringScreenLayoutFeature.filmPicker: true,
+          MeteringScreenLayoutFeature.histogram: true,
+        });
       });
 
       testWidgets(
-        'No exposure pairs',
+        'Toggle equipmentProfiles & discard selected',
         (tester) async {
-          await pumpApplication(tester, IAPProductStatus.purchasable);
+          await pumpApplication(
+            tester,
+            IAPProductStatus.purchased,
+            selectedEquipmentProfileId: mockEquipmentProfiles[0].id,
+          );
+          await tester.toggleIncidentMetering();
+          expectAnimatedPickerWith<EquipmentProfilePicker>(value: mockEquipmentProfiles[0].name);
+          expectExposurePairsContainer('f/1.8 - 1/50', 'f/16 - 1.6"');
+          expectMeasureButton(7.3);
 
-          final pickerFinder = find.byType(ExtremeExposurePairsContainer);
-          expect(pickerFinder, findsOneWidget);
-          expect(
-            find.descendant(of: pickerFinder, matching: find.text(S.current.fastestExposurePair)),
-            findsOneWidget,
-          );
-          expect(
-            find.descendant(of: pickerFinder, matching: find.text(S.current.slowestExposurePair)),
-            findsOneWidget,
-          );
-          expect(find.descendant(of: pickerFinder, matching: find.text('-')), findsNWidgets(2));
+          await toggleFeatureAndClose(tester, S.current.meteringScreenLayoutHintEquipmentProfiles);
+          expect(find.byType(EquipmentProfilePicker), findsNothing);
+          expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 13"');
+          expectMeasureButton(7.3);
 
-          expect(
-            find.descendant(
-              of: find.byType(ExposurePairsList),
-              matching: find.byWidgetPredicate(
-                (widget) =>
-                    widget is IconPlaceholder &&
-                    widget.icon == Icons.not_interested &&
-                    widget.text == S.current.noExposurePairs,
-              ),
-            ),
-            findsOneWidget,
-          );
+          await toggleFeatureAndClose(tester, S.current.meteringScreenLayoutHintEquipmentProfiles);
+          expectAnimatedPickerWith<EquipmentProfilePicker>(value: S.current.none);
+          expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 13"');
+          expectMeasureButton(7.3);
         },
       );
 
       testWidgets(
-        'Multiple exposure pairs w/o reciprocity',
+        'Toggle extremeExposurePairs',
         (tester) async {
-          await pumpApplication(tester, IAPProductStatus.purchasable);
+          await pumpApplication(tester, IAPProductStatus.purchased);
           await tester.toggleIncidentMetering();
           expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 13"');
-          expectExposurePairsListItem(0, 'f/1.0', '1/160');
           expectMeasureButton(7.3);
 
-          final exposurePairs = MeteringContainerBuidler.buildExposureValues(
-            7.3,
-            StopType.third,
-            defaultEquipmentProfile,
-          );
-          await tester.scrollUntilVisible(
-            find.byWidgetPredicate(
-              (widget) => widget is Row && widget.key == ValueKey(exposurePairs.length - 1),
-            ),
-            56,
-            scrollable: find.descendant(
-              of: find.byType(ExposurePairsList),
-              matching: find.byType(Scrollable),
-            ),
-          );
-          expectExposurePairsListItem(exposurePairs.length - 1, 'f/45', '13"');
+          await toggleFeatureAndClose(tester, S.current.meteringScreenFeatureExtremeExposurePairs);
+          expect(find.byType(ExtremeExposurePairsContainer), findsNothing);
+          expectMeasureButton(7.3);
+
+          await toggleFeatureAndClose(tester, S.current.meteringScreenFeatureExtremeExposurePairs);
+          expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 13"');
           expectMeasureButton(7.3);
         },
       );
 
       testWidgets(
-        'Multiple exposure pairs w/ reciprocity',
+        'Toggle film & discard selected',
         (tester) async {
-          await pumpApplication(tester, IAPProductStatus.purchased, selectedFilm: mockFilms.first);
+          await pumpApplication(
+            tester,
+            IAPProductStatus.purchased,
+            selectedFilm: mockFilms.first,
+          );
           await tester.toggleIncidentMetering();
+          expectAnimatedPickerWith<FilmPicker>(value: mockFilms.first.name);
           expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 26"');
-          expectExposurePairsListItem(0, 'f/1.0', '1/160');
           expectMeasureButton(7.3);
 
-          final exposurePairs = MeteringContainerBuidler.buildExposureValues(
-            7.3,
-            StopType.third,
-            defaultEquipmentProfile,
-          );
-          await tester.scrollUntilVisible(
-            find.byWidgetPredicate(
-              (widget) => widget is Row && widget.key == ValueKey(exposurePairs.length - 1),
-            ),
-            56,
-            scrollable: find.descendant(
-              of: find.byType(ExposurePairsList),
-              matching: find.byType(Scrollable),
-            ),
-          );
-          expectExposurePairsListItem(exposurePairs.length - 1, 'f/45', '26"');
-          expectMeasureButton(7.3);
-        },
-      );
-    },
-    skip: true,
-  );
-
-  group(
-    'Pickers tests',
-    () {
-      group('Select film', () {
-        testWidgets(
-          'with the same ISO',
-          (tester) async {
-            await pumpApplication(tester, IAPProductStatus.purchased);
-            expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 13"');
-            expectMeasureButton(7.3);
-
-            await tester.openAnimatedPicker<FilmPicker>();
-            expect(find.byType(DialogPicker<Film>), findsOneWidget);
-            await tester.tapRadioListTile<Film>('2');
-            await tester.tapSelectButton();
-            expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 13"');
-            expectMeasureButton(7.3);
-
-            /// Make sure, that nothing is changed
-            await tester.tap(find.byType(MeteringMeasureButton));
-            await tester.tap(find.byType(MeteringMeasureButton));
-            await tester.pumpAndSettle();
-            expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 13"');
-            expectMeasureButton(7.3);
-          },
-        );
-      });
-
-      testWidgets(
-        'Select ISO +1 EV',
-        (tester) async {
-          await pumpApplication(tester, IAPProductStatus.purchased);
+          await toggleFeatureAndClose(tester, S.current.meteringScreenFeatureFilmPicker);
+          expect(find.byType(FilmPicker), findsNothing);
           expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 13"');
           expectMeasureButton(7.3);
 
-          await tester.openAnimatedPicker<IsoValuePicker>();
-          expect(find.byType(DialogPicker<IsoValue>), findsOneWidget);
-          await tester.tapRadioListTile<IsoValue>('800');
-          await tester.tapSelectButton();
-          expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 6"');
-          expectMeasureButton(8.3);
-
-          /// Make sure, that current ISO is used in metering
-          await tester.tap(find.byType(MeteringMeasureButton));
-          await tester.tap(find.byType(MeteringMeasureButton));
-          await tester.pumpAndSettle();
-          expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 6"');
-          expectMeasureButton(8.3);
+          await toggleFeatureAndClose(tester, S.current.meteringScreenFeatureFilmPicker);
+          expectAnimatedPickerWith<FilmPicker>(value: S.current.none);
+          expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 13"');
+          expectMeasureButton(7.3);
         },
       );
 
       testWidgets(
-        'Select ND -1 EV',
+        'Toggle histogram',
         (tester) async {
           await pumpApplication(tester, IAPProductStatus.purchased);
-          expectExposurePairsContainer('f/1.0 - 1/160', 'f/45 - 13"');
-          expectMeasureButton(7.3);
-
-          await tester.openAnimatedPicker<NdValuePicker>();
-          expect(find.byType(DialogPicker<NdValue>), findsOneWidget);
-          await tester.tapRadioListTile<NdValue>('2');
-          await tester.tapSelectButton();
-          expectExposurePairsContainer('f/1.0 - 1/80', 'f/36 - 16"');
-          expectMeasureButton(6.3);
-
-          /// Make sure, that current ISO is used in metering
-          await tester.tap(find.byType(MeteringMeasureButton));
-          await tester.tap(find.byType(MeteringMeasureButton));
-          await tester.pumpAndSettle();
-          expectExposurePairsContainer('f/1.0 - 1/80', 'f/36 - 16"');
-          expectMeasureButton(6.3);
         },
+        skip: true, // TODO(@vodemn)
       );
     },
-    skip: true,
   );
 }
 
 extension _WidgetTesterActions on WidgetTester {
-  Future<void> openAnimatedPicker<T>() async {
-    await tap(find.byType(T));
-    await pumpAndSettle(Dimens.durationL);
-  }
-
-  Future<void> tapRadioListTile<T>(String value) async {
-    expect(find.descendant(of: find.byType(RadioListTile<T>), matching: find.text(value)), findsOneWidget);
-    await tap(find.descendant(of: find.byType(RadioListTile<T>), matching: find.text(value)));
+  Future<void> openSettings() async {
+    expect(find.byTooltip(S.current.tooltipOpenSettings), findsOneWidget);
+    await tap(find.byTooltip(S.current.tooltipOpenSettings));
+    await pumpAndSettle();
   }
 }
