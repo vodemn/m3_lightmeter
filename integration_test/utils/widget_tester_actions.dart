@@ -10,6 +10,7 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import '../mocks/paid_features_mock.dart';
+import 'platform_channel_mock.dart';
 
 extension WidgetTesterCommonActions on WidgetTester {
   Future<void> pumpApplication({
@@ -33,8 +34,16 @@ extension WidgetTesterCommonActions on WidgetTester {
     await pumpAndSettle();
   }
 
-  Future<void> toggleIncidentMetering() async {
+  Future<void> takePhoto() async {
     await tap(find.byType(MeteringMeasureButton));
+    await pump(const Duration(seconds: 2)); // wait for circular progress indicator
+    await pump(const Duration(seconds: 1)); // wait for circular progress indicator
+    await pumpAndSettle();
+  }
+
+  Future<void> toggleIncidentMetering(double ev) async {
+    await tap(find.byType(MeteringMeasureButton));
+    await sendMockIncidentEv(ev);
     await tap(find.byType(MeteringMeasureButton));
     await pumpAndSettle();
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
@@ -37,10 +38,15 @@ void expectMeasureButton(double ev) {
 void expectExposurePairsContainer(String fastest, String slowest) {
   final pickerFinder = find.byType(ExtremeExposurePairsContainer);
   expect(pickerFinder, findsOneWidget);
-  expect(find.descendant(of: pickerFinder, matching: find.text(S.current.fastestExposurePair)),
-      findsOneWidget);
+  expect(find.descendant(of: pickerFinder, matching: find.text(S.current.fastestExposurePair)), findsOneWidget);
   expect(find.descendant(of: pickerFinder, matching: find.text(fastest)), findsOneWidget);
-  expect(find.descendant(of: pickerFinder, matching: find.text(S.current.slowestExposurePair)),
-      findsOneWidget);
+  expect(find.descendant(of: pickerFinder, matching: find.text(S.current.slowestExposurePair)), findsOneWidget);
   expect(find.descendant(of: pickerFinder, matching: find.text(slowest)), findsOneWidget);
+}
+
+void expectRadioListTile<T>(String text, {bool isSelected = false}) {
+  expect(
+    find.descendant(of: find.byWidgetPredicate((widget) => widget is RadioListTile<T>), matching: find.text(text)),
+    findsOneWidget,
+  );
 }

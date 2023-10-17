@@ -18,3 +18,17 @@ Future<void> sendMockIncidentEv(double ev) async {
     (ByteData? data) {},
   );
 }
+
+void setLightSensorAvilability({required bool hasSensor}) {
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    const MethodChannel('system_feature'),
+    (methodCall) async {
+      switch (methodCall.method) {
+        case "sensor":
+          return hasSensor;
+        default:
+          return null;
+      }
+    },
+  );
+}
