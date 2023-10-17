@@ -8,7 +8,6 @@ import 'package:mocktail/mocktail.dart';
 class _MockIAPStorageService extends Mock implements IAPStorageService {}
 
 class MockIAPProviders extends StatefulWidget {
-  final IAPProductStatus purchaseStatus;
   final String selectedEquipmentProfileId;
   final Film selectedFilm;
   final Widget child;
@@ -16,24 +15,9 @@ class MockIAPProviders extends StatefulWidget {
   const MockIAPProviders({
     this.selectedEquipmentProfileId = '',
     this.selectedFilm = const Film.other(),
-    required this.purchaseStatus,
     required this.child,
     super.key,
   });
-
-  const MockIAPProviders.purchasable({
-    this.selectedEquipmentProfileId = '',
-    this.selectedFilm = const Film.other(),
-    required this.child,
-    super.key,
-  }) : purchaseStatus = IAPProductStatus.purchasable;
-
-  const MockIAPProviders.purchased({
-    this.selectedEquipmentProfileId = '',
-    this.selectedFilm = const Film.other(),
-    required this.child,
-    super.key,
-  }) : purchaseStatus = IAPProductStatus.purchased;
 
   @override
   State<MockIAPProviders> createState() => _MockIAPProvidersState();
@@ -47,30 +31,19 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
     super.initState();
     mockIAPStorageService = _MockIAPStorageService();
     when(() => mockIAPStorageService.equipmentProfiles).thenReturn(mockEquipmentProfiles);
-    when(() => mockIAPStorageService.selectedEquipmentProfileId)
-        .thenReturn(widget.selectedEquipmentProfileId);
+    when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
     when(() => mockIAPStorageService.filmsInUse).thenReturn(mockFilms);
     when(() => mockIAPStorageService.selectedFilm).thenReturn(widget.selectedFilm);
   }
 
   @override
   Widget build(BuildContext context) {
-    return IAPProductsProvider(
-      child: IAPProducts(
-        products: [
-          IAPProduct(
-            storeId: IAPProductType.paidFeatures.storeId,
-            status: widget.purchaseStatus,
-          )
-        ],
-        child: EquipmentProfileProvider(
-          storageService: mockIAPStorageService,
-          child: FilmsProvider(
-            storageService: mockIAPStorageService,
-            availableFilms: mockFilms,
-            child: widget.child,
-          ),
-        ),
+    return EquipmentProfileProvider(
+      storageService: mockIAPStorageService,
+      child: FilmsProvider(
+        storageService: mockIAPStorageService,
+        availableFilms: mockFilms,
+        child: widget.child,
       ),
     );
   }
@@ -120,18 +93,13 @@ final mockEquipmentProfiles = [
   ),
 ];
 
-const mockFilms = [_MockFilm2x(), _MockFilm3x()];
+const mockFilms = [_MockFilm(400, 2), _MockFilm(3, 800), _MockFilm(400, 1.5)];
 
-class _MockFilm2x extends Film {
-  const _MockFilm2x() : super('Mock film 2x', 400);
+class _MockFilm extends Film {
+  final double reciprocityMultiplier;
 
-  @override
-  double reciprocityFormula(double t) => t * 2;
-}
-
-class _MockFilm3x extends Film {
-  const _MockFilm3x() : super('Mock film 3x', 800);
+  const _MockFilm(int iso, this.reciprocityMultiplier) : super('Mock film $iso x$reciprocityMultiplier', iso);
 
   @override
-  double reciprocityFormula(double t) => t * 3;
+  double reciprocityFormula(double t) => t * reciprocityMultiplier;
 }

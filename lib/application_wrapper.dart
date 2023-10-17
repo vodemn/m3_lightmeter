@@ -30,23 +30,21 @@ class ApplicationWrapper extends StatelessWidget {
       builder: (_, snapshot) {
         if (snapshot.data != null) {
           final iapService = IAPStorageService(snapshot.data![0] as SharedPreferences);
-          return IAPProductsProvider(
-            child: ServicesProvider(
-              caffeineService: const CaffeineService(),
-              environment: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
-              hapticsService: const HapticsService(),
-              lightSensorService: const LightSensorService(LocalPlatform()),
-              permissionsService: const PermissionsService(),
-              userPreferencesService:
-                  UserPreferencesService(snapshot.data![0] as SharedPreferences),
-              volumeEventsService: const VolumeEventsService(LocalPlatform()),
-              child: EquipmentProfileProvider(
+          return ServicesProvider(
+            caffeineService: const CaffeineService(),
+            environment: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
+            hapticsService: const HapticsService(),
+            lightSensorService: const LightSensorService(LocalPlatform()),
+            permissionsService: const PermissionsService(),
+            userPreferencesService:
+                UserPreferencesService(snapshot.data![0] as SharedPreferences),
+            volumeEventsService: const VolumeEventsService(LocalPlatform()),
+            child: EquipmentProfileProvider(
+              storageService: iapService,
+              child: FilmsProvider(
                 storageService: iapService,
-                child: FilmsProvider(
-                  storageService: iapService,
-                  child: UserPreferencesProvider(
-                    child: child,
-                  ),
+                child: UserPreferencesProvider(
+                  child: child,
                 ),
               ),
             ),
