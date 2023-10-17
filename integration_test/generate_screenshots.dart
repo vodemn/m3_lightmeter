@@ -29,109 +29,99 @@ void main() {
   final Color darkThemeColor = primaryColorsList[3];
 
   void mockSharedPrefs(ThemeType theme, Color color) {
-    setUp(() {
-      SharedPreferences.setMockInitialValues({
-        /// Metering values
-        UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
-        UserPreferencesService.isoKey: 400,
-        UserPreferencesService.ndFilterKey: 0,
+    SharedPreferences.setMockInitialValues({
+      /// Metering values
+      UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
+      UserPreferencesService.isoKey: 400,
+      UserPreferencesService.ndFilterKey: 0,
 
-        /// Metering settings
-        UserPreferencesService.stopTypeKey: StopType.third.index,
-        UserPreferencesService.cameraEvCalibrationKey: 0.0,
-        UserPreferencesService.lightSensorEvCalibrationKey: 0.0,
-        UserPreferencesService.meteringScreenLayoutKey: json.encode(
-          {
-            MeteringScreenLayoutFeature.equipmentProfiles: true,
-            MeteringScreenLayoutFeature.extremeExposurePairs: true,
-            MeteringScreenLayoutFeature.filmPicker: true,
-            MeteringScreenLayoutFeature.histogram: false,
-          }.toJson(),
-        ),
+      /// Metering settings
+      UserPreferencesService.stopTypeKey: StopType.third.index,
+      UserPreferencesService.cameraEvCalibrationKey: 0.0,
+      UserPreferencesService.lightSensorEvCalibrationKey: 0.0,
+      UserPreferencesService.meteringScreenLayoutKey: json.encode(
+        {
+          MeteringScreenLayoutFeature.equipmentProfiles: true,
+          MeteringScreenLayoutFeature.extremeExposurePairs: true,
+          MeteringScreenLayoutFeature.filmPicker: true,
+          MeteringScreenLayoutFeature.histogram: false,
+        }.toJson(),
+      ),
 
-        /// General settings
-        UserPreferencesService.caffeineKey: true,
-        UserPreferencesService.hapticsKey: true,
-        UserPreferencesService.volumeActionKey: VolumeAction.shutter.toString(),
-        UserPreferencesService.localeKey: 'en',
+      /// General settings
+      UserPreferencesService.caffeineKey: true,
+      UserPreferencesService.hapticsKey: true,
+      UserPreferencesService.volumeActionKey: VolumeAction.shutter.toString(),
+      UserPreferencesService.localeKey: 'en',
 
-        /// Theme settings
-        UserPreferencesService.themeTypeKey: theme.index,
-        UserPreferencesService.primaryColorKey: color.value,
-        UserPreferencesService.dynamicColorKey: false,
-      });
+      /// Theme settings
+      UserPreferencesService.themeTypeKey: theme.index,
+      UserPreferencesService.primaryColorKey: color.value,
+      UserPreferencesService.dynamicColorKey: false,
     });
   }
 
-  group(
-    'Light theme',
-    () {
+  /// Generates several screenshots with the light theme
+  testWidgets(
+    'Generate light theme screenshots',
+    (tester) async {
       mockSharedPrefs(ThemeType.light, lightThemeColor);
-      testWidgets(
-        'Generate light screenshots',
-        (tester) async {
-          await tester.pumpApplication();
+      await tester.pumpApplication();
 
-          await tester.takePhoto();
-          await tester.takeScreenshot(binding, '${lightThemeColor.value}_metering_reflected');
+      await tester.takePhoto();
+      await tester.takeScreenshot(binding, '${lightThemeColor.value}_metering_reflected');
 
-          if (Platform.isAndroid) {
-            await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
-            await tester.pumpAndSettle();
-            await tester.tap(find.byType(MeteringMeasureButton));
-            await sendMockIncidentEv(7.3);
-            await tester.tap(find.byType(MeteringMeasureButton));
-            await tester.takeScreenshot(binding, '${lightThemeColor.value}_metering_incident');
-          }
+      if (Platform.isAndroid) {
+        await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(MeteringMeasureButton));
+        await sendMockIncidentEv(7.3);
+        await tester.tap(find.byType(MeteringMeasureButton));
+        await tester.takeScreenshot(binding, '${lightThemeColor.value}_metering_incident');
+      }
 
-          await tester.tap(find.byType(IsoValuePicker));
-          await tester.pumpAndSettle(Dimens.durationL);
-          await tester.takeScreenshot(binding, '${lightThemeColor.value}_metering_iso_picker');
+      await tester.tap(find.byType(IsoValuePicker));
+      await tester.pumpAndSettle(Dimens.durationL);
+      await tester.takeScreenshot(binding, '${lightThemeColor.value}_metering_iso_picker');
 
-          await tester.tapCancelButton();
-          await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
-          await tester.pumpAndSettle();
-          await tester.takeScreenshot(binding, '${lightThemeColor.value}_settings');
+      await tester.tapCancelButton();
+      await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
+      await tester.pumpAndSettle();
+      await tester.takeScreenshot(binding, '${lightThemeColor.value}_settings');
 
-          await tester.tapListTile(S.current.meteringScreenLayout);
-          await tester.takeScreenshot(binding, '${lightThemeColor.value}_settings_metering_screen_layout');
+      await tester.tapListTile(S.current.meteringScreenLayout);
+      await tester.takeScreenshot(binding, '${lightThemeColor.value}_settings_metering_screen_layout');
 
-          await tester.tapCancelButton();
-          await tester.tapListTile(S.current.equipmentProfiles);
-          await tester.tap(find.byType(EquipmentProfileContainer).first);
-          await tester.pumpAndSettle();
-          await tester.takeScreenshot(binding, '${lightThemeColor.value}-equipment_profiles');
+      await tester.tapCancelButton();
+      await tester.tapListTile(S.current.equipmentProfiles);
+      await tester.tap(find.byType(EquipmentProfileContainer).first);
+      await tester.pumpAndSettle();
+      await tester.takeScreenshot(binding, '${lightThemeColor.value}-equipment_profiles');
 
-          await tester.tap(find.byIcon(Icons.iso).first);
-          await tester.pumpAndSettle();
-          await tester.takeScreenshot(binding, '${lightThemeColor.value}_equipment_profiles_iso_picker');
-        },
-      );
+      await tester.tap(find.byIcon(Icons.iso).first);
+      await tester.pumpAndSettle();
+      await tester.takeScreenshot(binding, '${lightThemeColor.value}_equipment_profiles_iso_picker');
     },
   );
 
-  group(
-    'Dark theme',
-    () {
+  /// and the additionally the first one with the dark theme
+  testWidgets(
+    'Generate dark theme screenshots',
+    (tester) async {
       mockSharedPrefs(ThemeType.dark, darkThemeColor);
-      testWidgets(
-        'Generate dark screenshots',
-        (tester) async {
-          await tester.pumpApplication();
+      await tester.pumpApplication();
 
-          await tester.takePhoto();
-          await tester.takeScreenshot(binding, '${darkThemeColor.value}_metering_reflected');
+      await tester.takePhoto();
+      await tester.takeScreenshot(binding, '${darkThemeColor.value}_metering_reflected');
 
-          if (Platform.isAndroid) {
-            await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
-            await tester.pumpAndSettle();
-            await tester.tap(find.byType(MeteringMeasureButton));
-            await sendMockIncidentEv(7.3);
-            await tester.tap(find.byType(MeteringMeasureButton));
-            await tester.takeScreenshot(binding, '${darkThemeColor.value}_metering_incident');
-          }
-        },
-      );
+      if (Platform.isAndroid) {
+        await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(MeteringMeasureButton));
+        await sendMockIncidentEv(7.3);
+        await tester.tap(find.byType(MeteringMeasureButton));
+        await tester.takeScreenshot(binding, '${darkThemeColor.value}_metering_incident');
+      }
     },
   );
 }
