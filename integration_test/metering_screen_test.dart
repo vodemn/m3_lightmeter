@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
+import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/widget_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/light_sensor_container/widget_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
@@ -19,7 +20,6 @@ import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'mocks/paid_features_mock.dart';
@@ -27,9 +27,12 @@ import 'utils/expectations.dart';
 import 'utils/platform_channel_mock.dart';
 import 'utils/widget_tester_actions.dart';
 
-const defaultIsoValue = IsoValue(400, StopType.full);
+const defaultIsoValue = IsoValue(100, StopType.full);
 const mockPhotoEv100 = 8.3;
-const fastestExposurePairMockPhoto = "f/1.0 - 1/320";
+const mockPhotoFastestAperture = ApertureValue(1, StopType.full);
+const mockPhotoSlowestAperture = ApertureValue(45, StopType.full);
+const mockPhotoFastestShutterSpeed = ShutterSpeedValue(320, true, StopType.third);
+const mockPhotoSlowestShutterSpeed = ShutterSpeedValue(13, false, StopType.third);
 
 //https://stackoverflow.com/a/67186625/13167574
 void main() {
@@ -45,7 +48,7 @@ void main() {
           setLightSensorAvilability(hasSensor: true);
           await tester.pumpApplication(productStatus: IAPProductStatus.purchasable);
 
-          // verify no button to switch to the incident light mode
+          /// Verify that [LightSensorContainer] is shown in correspondance with the saved ev source
           expect(find.byType(LightSensorContainer), findsOneWidget);
         },
         skip: Platform.isIOS,
@@ -58,7 +61,10 @@ void main() {
           setLightSensorAvilability(hasSensor: false);
           await tester.pumpApplication(productStatus: IAPProductStatus.purchasable);
 
-          // verify no button to switch to the incident light mode
+          /// Verify that [CameraContainer] is shown instead of [LightSensorContainer]
+          expect(find.byType(CameraContainer), findsOneWidget);
+
+          /// and there is no ability to switch to the incident metering
           expect(find.byTooltip(S.current.tooltipUseLightSensor), findsNothing);
         },
         skip: Platform.isIOS,
@@ -70,7 +76,10 @@ void main() {
           SharedPreferences.setMockInitialValues({UserPreferencesService.evSourceTypeKey: EvSourceType.sensor.index});
           await tester.pumpApplication(productStatus: IAPProductStatus.purchasable);
 
-          // verify no button to switch to the incident light mode
+          /// verify no button to switch to the incident light mode
+          expect(find.byType(CameraContainer), findsOneWidget);
+
+          /// and there is no ability to switch to the incident metering
           expect(find.byTooltip(S.current.tooltipUseLightSensor), findsNothing);
         },
         skip: Platform.isAndroid,
@@ -81,18 +90,24 @@ void main() {
   group(
     '[Match extreme exposure pairs & pairs list edge values]',
     () {
+      Future<List<ExposurePair>> scrollToTheLastExposurePair(WidgetTester tester) async {
+        final exposurePairs = MeteringContainerBuidler.buildExposureValues(
+          mockPhotoEv100,
+          StopType.third,
+          defaultEquipmentProfile,
+        );
+        await tester.scrollUntilVisible(
+          find.byWidgetPredicate((widget) => widget is Row && widget.key == ValueKey(exposurePairs.length - 1)),
+          56,
+          scrollable: find.descendant(of: find.byType(ExposurePairsList), matching: find.byType(Scrollable)),
+        );
+        return exposurePairs;
+      }
+
       void expectExposurePairsListItem(int index, String aperture, String shutterSpeed) {
-        final firstPairRow = find.byWidgetPredicate(
-          (widget) => widget is Row && widget.key == ValueKey(index),
-        );
-        expect(
-          find.descendant(of: firstPairRow, matching: find.text(aperture)),
-          findsOneWidget,
-        );
-        expect(
-          find.descendant(of: firstPairRow, matching: find.text(shutterSpeed)),
-          findsOneWidget,
-        );
+        final firstPairRow = find.byWidgetPredicate((widget) => widget is Row && widget.key == ValueKey(index));
+        expect(find.descendant(of: firstPairRow, matching: find.text(aperture)), findsOneWidget);
+        expect(find.descendant(of: firstPairRow, matching: find.text(shutterSpeed)), findsOneWidget);
       }
 
       setUpAll(() {
@@ -104,18 +119,14 @@ void main() {
         (tester) async {
           await tester.pumpApplication(productStatus: IAPProductStatus.purchasable);
 
+          /// Verify that no exposure pairs are shown in [ExtremeExposurePairsContainer]
           final pickerFinder = find.byType(ExtremeExposurePairsContainer);
           expect(pickerFinder, findsOneWidget);
-          expect(
-            find.descendant(of: pickerFinder, matching: find.text(S.current.fastestExposurePair)),
-            findsOneWidget,
-          );
-          expect(
-            find.descendant(of: pickerFinder, matching: find.text(S.current.slowestExposurePair)),
-            findsOneWidget,
-          );
+          expect(find.descendant(of: pickerFinder, matching: find.text(S.current.fastestExposurePair)), findsOneWidget);
+          expect(find.descendant(of: pickerFinder, matching: find.text(S.current.slowestExposurePair)), findsOneWidget);
           expect(find.descendant(of: pickerFinder, matching: find.text('-')), findsNWidgets(2));
 
+          /// Verify that the exposure pairs list is empty
           expect(
             find.descendant(
               of: find.byType(ExposurePairsList),
@@ -137,26 +148,14 @@ void main() {
           await tester.pumpApplication(productStatus: IAPProductStatus.purchasable);
           await tester.takePhoto();
 
-          expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 6"');
-          expectExposurePairsListItem(0, 'f/1.0', '1/320');
+          /// Verify that reciprocity is not applied to the slowest exposure pair in the container
+          expectExposurePairsContainer('$mockPhotoFastestAperture - 1/320', '$mockPhotoSlowestAperture - 6"');
           expectMeasureButton(mockPhotoEv100);
 
-          final exposurePairs = MeteringContainerBuidler.buildExposureValues(
-            mockPhotoEv100,
-            StopType.third,
-            defaultEquipmentProfile,
-          );
-          await tester.scrollUntilVisible(
-            find.byWidgetPredicate(
-              (widget) => widget is Row && widget.key == ValueKey(exposurePairs.length - 1),
-            ),
-            56,
-            scrollable: find.descendant(
-              of: find.byType(ExposurePairsList),
-              matching: find.byType(Scrollable),
-            ),
-          );
-          expectExposurePairsListItem(exposurePairs.length - 1, 'f/45', '6"');
+          /// Verify that reciprocity is not applied to the slowest exposure pair in the list
+          expectExposurePairsListItem(0, '$mockPhotoFastestAperture', '1/320');
+          final exposurePairs = await scrollToTheLastExposurePair(tester);
+          expectExposurePairsListItem(exposurePairs.length - 1, '$mockPhotoSlowestAperture', '6"');
           expectMeasureButton(mockPhotoEv100);
         },
       );
@@ -167,26 +166,14 @@ void main() {
           await tester.pumpApplication(selectedFilm: mockFilms.first);
           await tester.takePhoto();
 
-          expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 12"');
-          expectExposurePairsListItem(0, 'f/1.0', '1/320');
+          /// Verify that reciprocity is applied to the slowest exposure pair in the container
+          expectExposurePairsContainer('$mockPhotoFastestAperture - 1/320', '$mockPhotoSlowestAperture - 12"');
           expectMeasureButton(mockPhotoEv100);
 
-          final exposurePairs = MeteringContainerBuidler.buildExposureValues(
-            mockPhotoEv100,
-            StopType.third,
-            defaultEquipmentProfile,
-          );
-          await tester.scrollUntilVisible(
-            find.byWidgetPredicate(
-              (widget) => widget is Row && widget.key == ValueKey(exposurePairs.length - 1),
-            ),
-            56,
-            scrollable: find.descendant(
-              of: find.byType(ExposurePairsList),
-              matching: find.byType(Scrollable),
-            ),
-          );
-          expectExposurePairsListItem(exposurePairs.length - 1, 'f/45', '12"');
+          /// Verify that reciprocity is applied to the slowest exposure pair in the list
+          expectExposurePairsListItem(0, '$mockPhotoFastestAperture', '1/320');
+          final exposurePairs = await scrollToTheLastExposurePair(tester);
+          expectExposurePairsListItem(exposurePairs.length - 1, '$mockPhotoSlowestAperture', '12"');
           expectMeasureButton(mockPhotoEv100);
         },
       );
