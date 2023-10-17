@@ -9,18 +9,8 @@ import 'package:lightmeter/screens/settings/components/shared/dialog_picker/widg
 void expectAnimatedPickerWith<T>({String? title, String? value}) {
   final pickerFinder = find.byType(T);
   expect(pickerFinder, findsOneWidget);
-  if (title != null) {
-    expect(
-      find.descendant(of: pickerFinder, matching: find.text(title)),
-      findsOneWidget,
-    );
-  }
-  if (value != null) {
-    expect(
-      find.descendant(of: pickerFinder, matching: find.text(value)),
-      findsOneWidget,
-    );
-  }
+  if (title != null) expect(find.descendant(of: pickerFinder, matching: find.text(title)), findsOneWidget);
+  if (value != null) expect(find.descendant(of: pickerFinder, matching: find.text(value)), findsOneWidget);
 }
 
 /// Finds exactly one dialog picker of the provided value type

@@ -93,7 +93,7 @@ final mockEquipmentProfiles = [
   ),
 ];
 
-const mockFilms = [_MockFilm(400, 2), _MockFilm(3, 800), _MockFilm(400, 1.5)];
+const mockFilms = [_MockFilm(100, 2), _MockFilm(400, 2), _MockFilm(3, 800), _MockFilm(400, 1.5)];
 
 class _MockFilm extends Film {
   final double reciprocityMultiplier;

@@ -32,7 +32,9 @@ const mockPhotoEv100 = 8.3;
 const mockPhotoFastestAperture = ApertureValue(1, StopType.full);
 const mockPhotoSlowestAperture = ApertureValue(45, StopType.full);
 const mockPhotoFastestShutterSpeed = ShutterSpeedValue(320, true, StopType.third);
-const mockPhotoSlowestShutterSpeed = ShutterSpeedValue(13, false, StopType.third);
+const mockPhotoSlowestShutterSpeed = ShutterSpeedValue(6, false, StopType.third);
+const mockPhotoFastestExposurePair = ExposurePair(mockPhotoFastestAperture, mockPhotoFastestShutterSpeed);
+const mockPhotoSlowestExposurePair = ExposurePair(mockPhotoSlowestAperture, mockPhotoSlowestShutterSpeed);
 
 //https://stackoverflow.com/a/67186625/13167574
 void main() {
@@ -187,26 +189,66 @@ void main() {
         testWidgets(
           'with the same ISO',
           (tester) async {
-            await tester.pumpApplication(productStatus: IAPProductStatus.purchased);
-            expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 13"');
+            await tester.pumpApplication();
+            await tester.takePhoto();
+
+            // Verify that reciprocity failure is applies for the film is not selected
+            expectAnimatedPickerWith<FilmPicker>(title: S.current.film, value: S.current.none);
+            expectExposurePairsContainer('$mockPhotoFastestExposurePair', '$mockPhotoSlowestExposurePair');
             expectMeasureButton(mockPhotoEv100);
 
             await tester.openAnimatedPicker<FilmPicker>();
-            expect(find.byType(DialogPicker<Film>), findsOneWidget);
+            await tester.tapDescendantTextOf<DialogPicker<Film>>(mockFilms.first.name);
             await tester.tapSelectButton();
-            expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 13"');
+
+            /// Verify that exposure pairs are the same, except that the reciprocity failure is applied
+            expectExposurePairsContainer(
+              '$mockPhotoFastestExposurePair',
+              '$mockPhotoSlowestAperture - ${mockFilms.first.reciprocityFailure(mockPhotoSlowestShutterSpeed)}',
+            );
             expectMeasureButton(mockPhotoEv100);
 
-            /// Make sure, that nothing is changed
-            await tester.tap(find.byType(MeteringMeasureButton));
-            await tester.tap(find.byType(MeteringMeasureButton));
-            await tester.pumpAndSettle();
-            expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 13"');
+            /// Make sure, that the EV is not changed
+            await tester.takePhoto();
+            expectExposurePairsContainer(
+              '$mockPhotoFastestExposurePair',
+              '$mockPhotoSlowestAperture - ${mockFilms.first.reciprocityFailure(mockPhotoSlowestShutterSpeed)}',
+            );
             expectMeasureButton(mockPhotoEv100);
           },
         );
 
-        /// Select film with iso > current
+        testWidgets(
+          'with greater ISO',
+          (tester) async {
+            await tester.pumpApplication();
+            await tester.takePhoto();
+
+            // Verify that reciprocity failure is applies for the film is not selected
+            expectAnimatedPickerWith<FilmPicker>(title: S.current.film, value: S.current.none);
+            expectExposurePairsContainer('$mockPhotoFastestExposurePair', '$mockPhotoSlowestExposurePair');
+            expectMeasureButton(mockPhotoEv100);
+
+            await tester.openAnimatedPicker<FilmPicker>();
+            await tester.tapDescendantTextOf<DialogPicker<Film>>(mockFilms[1].name);
+            await tester.tapSelectButton();
+
+            /// Verify that exposure pairs are the same, except that the reciprocity failure is applied
+            expectExposurePairsContainer(
+              '$mockPhotoFastestExposurePair',
+              '$mockPhotoSlowestAperture - ${mockFilms[1].reciprocityFailure(mockPhotoSlowestShutterSpeed)}',
+            );
+            expectMeasureButton(mockPhotoEv100);
+
+            /// Make sure, that the EV is not changed
+            await tester.takePhoto();
+            expectExposurePairsContainer(
+              '$mockPhotoFastestExposurePair',
+              '$mockPhotoSlowestAperture - ${mockFilms[1].reciprocityFailure(mockPhotoSlowestShutterSpeed)}',
+            );
+            expectMeasureButton(mockPhotoEv100);
+          },
+        );
       });
 
       testWidgets(
@@ -230,6 +272,7 @@ void main() {
           expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 6"');
           expectMeasureButton(8.3);
         },
+        skip: true,
       );
 
       testWidgets(
@@ -253,15 +296,8 @@ void main() {
           expectExposurePairsContainer('f/1.0 - 1/80', 'f/36 - 16"');
           expectMeasureButton(6.3);
         },
+        skip: true,
       );
     },
-    skip: true,
   );
-}
-
-extension _WidgetTesterActions on WidgetTester {
-  Future<void> tapRadioListTile<T>(String value) async {
-    expect(find.descendant(of: find.byType(RadioListTile<T>), matching: find.text(value)), findsOneWidget);
-    await tap(find.descendant(of: find.byType(RadioListTile<T>), matching: find.text(value)));
-  }
 }

@@ -54,6 +54,17 @@ extension WidgetTesterCommonActions on WidgetTester {
   }
 }
 
+extension WidgetTesterListTileActions on WidgetTester {
+  Future<void> tapRadioListTile<T>(String text) async {
+    await tap(find.descendant(of: find.byType(RadioListTile<T>), matching: find.text(text)));
+  }
+
+  /// Useful for tapping a specific [ListTile] inside a specific screen or dialog
+  Future<void> tapDescendantTextOf<T>(String text) async {
+    await tap(find.descendant(of: find.byType(T), matching: find.text(text)));
+  }
+}
+
 extension WidgetTesterTextButtonActions on WidgetTester {
   Future<void> tapSelectButton() => _tapTextButton(S.current.select);
 
