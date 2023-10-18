@@ -10,18 +10,19 @@ import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/screen_equipment_profile.dart';
+import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'utils/platform_channel_mock.dart';
-import 'utils/widget_tester_actions.dart';
+import '../integration_test/mocks/paid_features_mock.dart';
+import '../integration_test/utils/widget_tester_actions.dart';
 
 //https://stackoverflow.com/a/67186625/13167574
+
+/// Just a screenshot generator. No expectations here.
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding();
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,7 @@ void main() {
   final Color darkThemeColor = primaryColorsList[3];
 
   void mockSharedPrefs(ThemeType theme, Color color) {
+    // ignore: invalid_use_of_visible_for_testing_member
     SharedPreferences.setMockInitialValues({
       /// Metering values
       UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
@@ -74,14 +76,11 @@ void main() {
       if (Platform.isAndroid) {
         await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
         await tester.pumpAndSettle();
-        await tester.tap(find.byType(MeteringMeasureButton));
-        await sendMockIncidentEv(7.3);
-        await tester.tap(find.byType(MeteringMeasureButton));
+        await tester.toggleIncidentMetering(7.3);
         await tester.takeScreenshot(binding, '${lightThemeColor.value}_metering_incident');
       }
 
-      await tester.tap(find.byType(IsoValuePicker));
-      await tester.pumpAndSettle(Dimens.durationL);
+      await tester.openAnimatedPicker<IsoValuePicker>();
       await tester.takeScreenshot(binding, '${lightThemeColor.value}_metering_iso_picker');
 
       await tester.tapCancelButton();
@@ -89,12 +88,13 @@ void main() {
       await tester.pumpAndSettle();
       await tester.takeScreenshot(binding, '${lightThemeColor.value}_settings');
 
-      await tester.tapListTile(S.current.meteringScreenLayout);
+      await tester.tapDescendantTextOf<SettingsScreen>(S.current.meteringScreenLayout);
       await tester.takeScreenshot(binding, '${lightThemeColor.value}_settings_metering_screen_layout');
 
       await tester.tapCancelButton();
-      await tester.tapListTile(S.current.equipmentProfiles);
-      await tester.tap(find.byType(EquipmentProfileContainer).first);
+      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
+      await tester.pumpAndSettle();
+      await tester.tapDescendantTextOf<EquipmentProfilesScreen>(mockEquipmentProfiles.first.name);
       await tester.pumpAndSettle();
       await tester.takeScreenshot(binding, '${lightThemeColor.value}-equipment_profiles');
 
@@ -117,9 +117,7 @@ void main() {
       if (Platform.isAndroid) {
         await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
         await tester.pumpAndSettle();
-        await tester.tap(find.byType(MeteringMeasureButton));
-        await sendMockIncidentEv(7.3);
-        await tester.tap(find.byType(MeteringMeasureButton));
+        await tester.toggleIncidentMetering(7.3);
         await tester.takeScreenshot(binding, '${darkThemeColor.value}_metering_incident');
       }
     },
@@ -133,15 +131,6 @@ extension on WidgetTester {
       await pumpAndSettle();
     }
     await binding.takeScreenshot(name);
-    await pumpAndSettle();
-  }
-
-  Future<void> tapListTile(String title) async {
-    final listTile = find.byWidgetPredicate(
-      (widget) => widget is ListTile && widget.title is Text && (widget.title as Text?)?.data == title,
-    );
-    expect(listTile, findsOneWidget);
-    await tap(listTile);
     await pumpAndSettle();
   }
 }
