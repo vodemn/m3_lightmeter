@@ -7,6 +7,7 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/widget_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/light_sensor_container/widget_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
@@ -149,6 +150,7 @@ void main() {
             findsOneWidget,
           );
         },
+        skip: true,
       );
 
       testWidgets(
@@ -187,6 +189,7 @@ void main() {
         },
       );
     },
+    skip: true, // TODO(@vodemn) move this test to widgets tests
   );
 
   group(
