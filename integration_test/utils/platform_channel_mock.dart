@@ -3,9 +3,12 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+const _systemFeatureMethodChannel = MethodChannel('system_feature');
+const _lightSensorMethodChannel = MethodChannel("light.eventChannel");
+
 void setLightSensorAvilability({required bool hasSensor}) {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-    const MethodChannel('system_feature'),
+    _systemFeatureMethodChannel,
     (methodCall) async {
       switch (methodCall.method) {
         case "sensor":
@@ -19,7 +22,7 @@ void setLightSensorAvilability({required bool hasSensor}) {
 
 void resetLightSensorAvilability() {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-    const MethodChannel('system_feature'),
+    _systemFeatureMethodChannel,
     null,
   );
 }
@@ -28,7 +31,7 @@ Future<void> sendMockIncidentEv(double ev) => sendMockLux((2.5 * pow(2, ev)).toI
 
 Future<void> sendMockLux([int lux = 100]) async {
   await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
-    "light.eventChannel",
+    _lightSensorMethodChannel.name,
     const StandardMethodCodec().encodeSuccessEnvelope(lux),
     (ByteData? data) {},
   );
@@ -36,7 +39,7 @@ Future<void> sendMockLux([int lux = 100]) async {
 
 void setupLightSensorStreamHandler() {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-    const MethodChannel('light.eventChannel'),
+    _lightSensorMethodChannel,
     (methodCall) async {
       switch (methodCall.method) {
         case "listen":
@@ -52,7 +55,7 @@ void setupLightSensorStreamHandler() {
 
 void resetLightSensorStreamHandler() {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-    const MethodChannel('light.eventChannel'),
+    _lightSensorMethodChannel,
     null,
   );
 }
