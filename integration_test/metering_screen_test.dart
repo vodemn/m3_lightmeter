@@ -7,7 +7,6 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/widget_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/light_sensor_container/widget_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
@@ -15,7 +14,6 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/nd_picker/widget_picker_nd.dart';
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
@@ -24,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'mocks/paid_features_mock.dart';
 import 'utils/expectations.dart';
+import 'utils/metering_picker_test.dart';
 import 'utils/platform_channel_mock.dart';
 import 'utils/widget_tester_actions.dart';
 
@@ -40,9 +39,17 @@ const mockPhotoSlowestExposurePair = ExposurePair(mockPhotoSlowestAperture, mock
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
+  tearDown(() {
+    SharedPreferences.resetStatic();
+  });
+
   group(
     '[Light sensor availability]',
     () {
+      tearDown(() {
+        resetLightSensorAvilability();
+      });
+
       testWidgets(
         'Android - has sensor',
         (tester) async {
@@ -112,7 +119,7 @@ void main() {
         expect(find.descendant(of: firstPairRow, matching: find.text(shutterSpeed)), findsOneWidget);
       }
 
-      setUpAll(() {
+      setUp(() {
         SharedPreferences.setMockInitialValues({UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index});
       });
 
@@ -185,118 +192,83 @@ void main() {
   group(
     '[Pickers tests]',
     () {
-      group('Select film', () {
-        testWidgets(
-          'with the same ISO',
-          (tester) async {
-            await tester.pumpApplication();
-            await tester.takePhoto();
-
-            // Verify that reciprocity failure is applies for the film is not selected
-            expectAnimatedPickerWith<FilmPicker>(title: S.current.film, value: S.current.none);
-            expectExposurePairsContainer('$mockPhotoFastestExposurePair', '$mockPhotoSlowestExposurePair');
-            expectMeasureButton(mockPhotoEv100);
-
-            await tester.openAnimatedPicker<FilmPicker>();
-            await tester.tapDescendantTextOf<DialogPicker<Film>>(mockFilms.first.name);
-            await tester.tapSelectButton();
-
-            /// Verify that exposure pairs are the same, except that the reciprocity failure is applied
-            expectExposurePairsContainer(
-              '$mockPhotoFastestExposurePair',
-              '$mockPhotoSlowestAperture - ${mockFilms.first.reciprocityFailure(mockPhotoSlowestShutterSpeed)}',
-            );
-            expectMeasureButton(mockPhotoEv100);
-
-            /// Make sure, that the EV is not changed
-            await tester.takePhoto();
-            expectExposurePairsContainer(
-              '$mockPhotoFastestExposurePair',
-              '$mockPhotoSlowestAperture - ${mockFilms.first.reciprocityFailure(mockPhotoSlowestShutterSpeed)}',
-            );
-            expectMeasureButton(mockPhotoEv100);
-          },
-        );
-
-        testWidgets(
-          'with greater ISO',
-          (tester) async {
-            await tester.pumpApplication();
-            await tester.takePhoto();
-
-            // Verify that reciprocity failure is applies for the film is not selected
-            expectAnimatedPickerWith<FilmPicker>(title: S.current.film, value: S.current.none);
-            expectExposurePairsContainer('$mockPhotoFastestExposurePair', '$mockPhotoSlowestExposurePair');
-            expectMeasureButton(mockPhotoEv100);
-
-            await tester.openAnimatedPicker<FilmPicker>();
-            await tester.tapDescendantTextOf<DialogPicker<Film>>(mockFilms[1].name);
-            await tester.tapSelectButton();
-
-            /// Verify that exposure pairs are the same, except that the reciprocity failure is applied
-            expectExposurePairsContainer(
-              '$mockPhotoFastestExposurePair',
-              '$mockPhotoSlowestAperture - ${mockFilms[1].reciprocityFailure(mockPhotoSlowestShutterSpeed)}',
-            );
-            expectMeasureButton(mockPhotoEv100);
-
-            /// Make sure, that the EV is not changed
-            await tester.takePhoto();
-            expectExposurePairsContainer(
-              '$mockPhotoFastestExposurePair',
-              '$mockPhotoSlowestAperture - ${mockFilms[1].reciprocityFailure(mockPhotoSlowestShutterSpeed)}',
-            );
-            expectMeasureButton(mockPhotoEv100);
-          },
-        );
+      setUpAll(() {
+        setupLightSensorStreamHandler();
+        setLightSensorAvilability(hasSensor: true);
       });
 
-      testWidgets(
-        'Select ISO +1 EV',
-        (tester) async {
-          await tester.pumpApplication(productStatus: IAPProductStatus.purchased);
-          expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 13"');
-          expectMeasureButton(mockPhotoEv100);
+      tearDownAll(() {
+        resetLightSensorAvilability();
+        resetLightSensorStreamHandler();
+      });
 
-          await tester.openAnimatedPicker<IsoValuePicker>();
-          expect(find.byType(DialogPicker<IsoValue>), findsOneWidget);
-          await tester.tapRadioListTile<IsoValue>('800');
-          await tester.tapSelectButton();
-          expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 6"');
-          expectMeasureButton(8.3);
+      setUp(() {
+        SharedPreferences.setMockInitialValues({UserPreferencesService.evSourceTypeKey: EvSourceType.sensor.index});
+      });
 
-          /// Make sure, that current ISO is used in metering
-          await tester.tap(find.byType(MeteringMeasureButton));
-          await tester.tap(find.byType(MeteringMeasureButton));
-          await tester.pumpAndSettle();
-          expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 6"');
-          expectMeasureButton(8.3);
+      group(
+        'Select film',
+        () {
+          testMeteringPicker<FilmPicker, Film>(
+            'with the same ISO',
+            expectBefore: MeteringValuesExpectation(
+              mockPhotoFastestExposurePair.toString(),
+              mockPhotoSlowestExposurePair.toString(),
+              mockPhotoEv100,
+            ),
+            valueToSelect: mockFilms[0].name,
+            expectAfter: MeteringValuesExpectation(
+              mockPhotoFastestExposurePair.toString(),
+              '$mockPhotoSlowestAperture - ${mockFilms[0].reciprocityFailure(mockPhotoSlowestShutterSpeed)}',
+              mockPhotoEv100,
+            ),
+          );
+
+          testMeteringPicker<FilmPicker, Film>(
+            'with greater ISO',
+            expectBefore: MeteringValuesExpectation(
+              mockPhotoFastestExposurePair.toString(),
+              mockPhotoSlowestExposurePair.toString(),
+              mockPhotoEv100,
+            ),
+            valueToSelect: mockFilms[1].name,
+            expectAfter: MeteringValuesExpectation(
+              mockPhotoFastestExposurePair.toString(),
+              '$mockPhotoSlowestAperture - ${mockFilms[1].reciprocityFailure(mockPhotoSlowestShutterSpeed)}',
+              mockPhotoEv100,
+            ),
+          );
         },
-        skip: true,
       );
 
-      testWidgets(
+      testMeteringPicker<IsoValuePicker, IsoValue>(
+        'Select ISO +1 EV',
+        expectBefore: MeteringValuesExpectation(
+          mockPhotoFastestExposurePair.toString(),
+          mockPhotoSlowestExposurePair.toString(),
+          mockPhotoEv100,
+        ),
+        valueToSelect: '400',
+        expectAfter: MeteringValuesExpectation(
+          '$mockPhotoFastestAperture - 1/1250',
+          '$mockPhotoSlowestAperture - 1.6"',
+          mockPhotoEv100 + 2,
+        ),
+      );
+
+      testMeteringPicker<NdValuePicker, NdValue>(
         'Select ND -1 EV',
-        (tester) async {
-          await tester.pumpApplication(productStatus: IAPProductStatus.purchased);
-          expectExposurePairsContainer('f/1.0 - 1/320', 'f/45 - 13"');
-          expectMeasureButton(mockPhotoEv100);
-
-          await tester.openAnimatedPicker<NdValuePicker>();
-          expect(find.byType(DialogPicker<NdValue>), findsOneWidget);
-          await tester.tapRadioListTile<NdValue>('2');
-          await tester.tapSelectButton();
-          expectExposurePairsContainer('f/1.0 - 1/80', 'f/36 - 16"');
-          expectMeasureButton(6.3);
-
-          /// Make sure, that current ISO is used in metering
-          await tester.tap(find.byType(MeteringMeasureButton));
-          await tester.tap(find.byType(MeteringMeasureButton));
-          await tester.pumpAndSettle();
-          expectExposurePairsContainer('f/1.0 - 1/80', 'f/36 - 16"');
-          expectMeasureButton(6.3);
-        },
-        skip: true,
+        expectBefore: MeteringValuesExpectation(
+          mockPhotoFastestExposurePair.toString(),
+          mockPhotoSlowestExposurePair.toString(),
+          mockPhotoEv100,
+        ),
+        valueToSelect: '2',
+        expectAfter: MeteringValuesExpectation(
+          '$mockPhotoFastestAperture - 1/160',
+          '$mockPhotoSlowestAperture - 13"',
+          mockPhotoEv100 - 1,
+        ),
       );
     },
   );
