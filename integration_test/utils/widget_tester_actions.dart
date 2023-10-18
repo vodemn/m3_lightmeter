@@ -19,8 +19,13 @@ extension WidgetTesterCommonActions on WidgetTester {
     Film selectedFilm = const Film.other(),
   }) async {
     await pumpWidget(
-      MockIAPProductsProvider(
-        productStatus: productStatus,
+      IAPProducts(
+        products: [
+          IAPProduct(
+            storeId: IAPProductType.paidFeatures.storeId,
+            status: productStatus,
+          ),
+        ],
         child: ApplicationWrapper(
           const Environment.dev(),
           child: MockIAPProviders(
