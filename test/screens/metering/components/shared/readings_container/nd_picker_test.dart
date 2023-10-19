@@ -42,7 +42,6 @@ void main() {
       expectDialogPickerText<NdValue>(S.current.nd);
       expectDialogPickerText<NdValue>(S.current.ndFilterFactor);
     },
-    skip: true,
   );
 
   group(
