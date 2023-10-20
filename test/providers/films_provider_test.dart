@@ -110,6 +110,9 @@ void main() {
           expectFilmsCount(mockFilms.length + 1);
           expectFilmsInUseCount(mockFilms.length + 1);
           expectSelectedFilmName('');
+
+          verify(() => mockIAPStorageService.filmsInUse = mockFilms.skip(0).toList()).called(1);
+          verifyNever(() => mockIAPStorageService.selectedFilm = const Film.other());
         },
       );
 
@@ -131,6 +134,9 @@ void main() {
           expectFilmsCount(mockFilms.length + 1);
           expectFilmsInUseCount(mockFilms.length + 1);
           expectSelectedFilmName(mockFilms.first.name);
+
+          verifyNever(() => mockIAPStorageService.filmsInUse = any<List<Film>>());
+          verify(() => mockIAPStorageService.selectedFilm = mockFilms.first).called(1);
         },
       );
 
@@ -148,6 +154,7 @@ void main() {
               expectFilmsInUseCount(1);
               expectSelectedFilmName('');
 
+              verifyNever(() => mockIAPStorageService.filmsInUse = any<List<Film>>());
               verify(() => mockIAPStorageService.selectedFilm = const Film.other()).called(1);
             },
           );
@@ -163,6 +170,7 @@ void main() {
               expectFilmsInUseCount(1);
               expectSelectedFilmName('');
 
+              verifyNever(() => mockIAPStorageService.filmsInUse = any<List<Film>>());
               verifyNever(() => mockIAPStorageService.selectedFilm = const Film.other());
             },
           );
@@ -187,6 +195,9 @@ void main() {
           expectFilmsCount(mockFilms.length + 1);
           expectFilmsInUseCount((mockFilms.length - 1) + 1);
           expectSelectedFilmName('');
+
+          verify(() => mockIAPStorageService.filmsInUse = mockFilms.skip(1).toList()).called(1);
+          verify(() => mockIAPStorageService.selectedFilm = const Film.other()).called(1);
         },
       );
     },
