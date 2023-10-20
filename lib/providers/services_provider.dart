@@ -7,6 +7,7 @@ import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
 
+// coverage:ignore-start
 class ServicesProvider extends InheritedWidget {
   final CaffeineService caffeineService;
   final Environment environment;
@@ -34,3 +35,4 @@ class ServicesProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(ServicesProvider oldWidget) => false;
 }
+// coverage:ignore-end

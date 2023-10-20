@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widget_dialog_filter.dart';
 import 'package:lightmeter/screens/settings/components/shared/iap_list_tile/widget_list_tile_iap.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmsListTile extends StatelessWidget {

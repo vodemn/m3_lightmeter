@@ -1,8 +1,10 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:light_sensor/light_sensor.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:platform/platform.dart';
+
+import '../event_channel_mock.dart';
 
 class _MockLocalPlatform extends Mock implements LocalPlatform {}
 
@@ -12,68 +14,44 @@ void main() {
   late _MockLocalPlatform localPlatform;
   late LightSensorService service;
 
-  const methodChannel = MethodChannel('system_feature');
-  // TODO: add event channel mock
-  //const eventChannel = EventChannel('light.eventChannel');
-
   setUp(() {
     localPlatform = _MockLocalPlatform();
     service = LightSensorService(localPlatform);
   });
 
-  tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(methodChannel, null);
-  });
-
   group(
     'hasSensor()',
     () {
+      void setMockSensorAvailability({required bool hasSensor}) {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+          LightSensor.methodChannel,
+          (methodCall) async {
+            switch (methodCall.method) {
+              case "sensor":
+                return hasSensor;
+              default:
+                return null;
+            }
+          },
+        );
+      }
+
+      tearDown(() {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+          LightSensor.methodChannel,
+          null,
+        );
+      });
+
       test('true - Android', () async {
         when(() => localPlatform.isAndroid).thenReturn(true);
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, null);
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, (methodCall) async {
-          switch (methodCall.method) {
-            case "sensor":
-              return true;
-            default:
-              return null;
-          }
-        });
+        setMockSensorAvailability(hasSensor: true);
         expectLater(service.hasSensor(), completion(true));
       });
 
       test('false - Android', () async {
         when(() => localPlatform.isAndroid).thenReturn(true);
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, null);
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, (methodCall) async {
-          switch (methodCall.method) {
-            case "sensor":
-              return false;
-            default:
-              return null;
-          }
-        });
-        expectLater(service.hasSensor(), completion(false));
-      });
-
-      test('null - Android', () async {
-        when(() => localPlatform.isAndroid).thenReturn(true);
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, null);
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, (methodCall) async {
-          switch (methodCall.method) {
-            case "sensor":
-              return null;
-            default:
-              return null;
-          }
-        });
+        setMockSensorAvailability(hasSensor: false);
         expectLater(service.hasSensor(), completion(false));
       });
 
@@ -85,10 +63,18 @@ void main() {
   );
 
   group('luxStream', () {
-    // test('Android', () async {
-    //   when(() => localPlatform.isAndroid).thenReturn(true);
-    //   expect(service.luxStream(), const Stream.empty());
-    // });
+    test('Android', () async {
+      when(() => localPlatform.isAndroid).thenReturn(true);
+      final stream = service.luxStream();
+      final List<int> result = [];
+      final subscription = stream.listen(result.add);
+      await sendMockVolumeAction(LightSensor.eventChannel.name, 100);
+      await sendMockVolumeAction(LightSensor.eventChannel.name, 150);
+      await sendMockVolumeAction(LightSensor.eventChannel.name, 150);
+      await sendMockVolumeAction(LightSensor.eventChannel.name, 200);
+      expect(result, [100, 150, 150, 200]);
+      subscription.cancel();
+    });
 
     test('iOS', () async {
       when(() => localPlatform.isAndroid).thenReturn(false);

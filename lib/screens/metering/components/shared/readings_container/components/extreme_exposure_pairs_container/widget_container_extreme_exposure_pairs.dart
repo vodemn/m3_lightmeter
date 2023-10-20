@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/reading_value_container/widget_container_reading_value.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class ExtremeExposurePairsContainer extends StatelessWidget {
   final ExposurePair? fastest;

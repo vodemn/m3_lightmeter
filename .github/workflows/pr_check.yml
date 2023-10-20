@@ -15,7 +15,7 @@ jobs:
   analyze_and_test:
     name: Analyze & test
     runs-on: macos-11
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR

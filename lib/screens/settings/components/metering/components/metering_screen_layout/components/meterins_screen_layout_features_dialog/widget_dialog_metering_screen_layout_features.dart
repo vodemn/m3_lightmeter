@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreenLayoutFeaturesDialog extends StatefulWidget {
   const MeteringScreenLayoutFeaturesDialog({super.key});
 
   @override
-  State<MeteringScreenLayoutFeaturesDialog> createState() =>
-      _MeteringScreenLayoutFeaturesDialogState();
+  State<MeteringScreenLayoutFeaturesDialog> createState() => _MeteringScreenLayoutFeaturesDialogState();
 }
 
 class _MeteringScreenLayoutFeaturesDialogState extends State<MeteringScreenLayoutFeaturesDialog> {
-  late final _features =
-      MeteringScreenLayoutConfig.from(UserPreferencesProvider.meteringScreenConfigOf(context));
+  late final _features = MeteringScreenLayoutConfig.from(UserPreferencesProvider.meteringScreenConfigOf(context));
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +56,9 @@ class _MeteringScreenLayoutFeaturesDialogState extends State<MeteringScreenLayou
           onPressed: () {
             if (!_features[MeteringScreenLayoutFeature.equipmentProfiles]!) {
               EquipmentProfileProvider.of(context).setProfile(EquipmentProfiles.of(context).first);
+            }
+            if (!_features[MeteringScreenLayoutFeature.filmPicker]!) {
+              FilmsProvider.of(context).setFilm(const Film.other());
             }
             UserPreferencesProvider.of(context).setMeteringScreenLayout(_features);
             Navigator.of(context).pop();

@@ -11,7 +11,7 @@ class LightSensorService {
       return false;
     }
     try {
-      return await LightSensor.hasSensor ?? false;
+      return await LightSensor.hasSensor();
     } catch (_) {
       return false;
     }
@@ -21,6 +21,6 @@ class LightSensorService {
     if (!localPlatform.isAndroid) {
       return const Stream<int>.empty();
     }
-    return LightSensor.lightSensorStream;
+    return LightSensor.luxStream();
   }
 }

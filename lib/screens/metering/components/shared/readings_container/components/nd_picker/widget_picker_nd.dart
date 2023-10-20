@@ -27,14 +27,13 @@ class NdValuePicker extends StatelessWidget {
         value.value == 0 ? S.of(context).none : value.value.toString(),
       ),
       // using descending order, because ND filter darkens image & lowers EV
-      itemTrailingBuilder: (selected, value) => value.value != selected.value
-          ? Text(S.of(context).evValue(value.toStringDifference(selected)))
-          : null,
+      itemTrailingBuilder: (selected, value) =>
+          value.value != selected.value ? Text(S.of(context).evValue(value.toStringDifference(selected))) : null,
       onChanged: onChanged,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: S.of(context).nd,
-          value: selectedValue.value.toString(),
+          value: selectedValue.value == 0 ? S.of(context).none : selectedValue.value.toString(),
         ),
       ),
     );

@@ -8,14 +8,20 @@ import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/res/theme.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class UserPreferencesProvider extends StatefulWidget {
+  final bool hasLightSensor;
+  final UserPreferencesService userPreferencesService;
   final Widget child;
 
-  const UserPreferencesProvider({required this.child, super.key});
+  const UserPreferencesProvider({
+    required this.hasLightSensor,
+    required this.userPreferencesService,
+    required this.child,
+    super.key,
+  });
 
   static _UserPreferencesProviderState of(BuildContext context) {
     return context.findAncestorStateOfType<_UserPreferencesProviderState>()!;
@@ -38,8 +44,7 @@ class UserPreferencesProvider extends StatefulWidget {
   }
 
   static bool meteringScreenFeatureOf(BuildContext context, MeteringScreenLayoutFeature feature) {
-    return InheritedModel.inheritFrom<_MeteringScreenLayoutModel>(context, aspect: feature)!
-        .data[feature]!;
+    return InheritedModel.inheritFrom<_MeteringScreenLayoutModel>(context, aspect: feature)!.data[feature]!;
   }
 
   static StopType stopTypeOf(BuildContext context) {
@@ -65,28 +70,20 @@ class UserPreferencesProvider extends StatefulWidget {
   State<UserPreferencesProvider> createState() => _UserPreferencesProviderState();
 }
 
-class _UserPreferencesProviderState extends State<UserPreferencesProvider>
-    with WidgetsBindingObserver {
-  UserPreferencesService get userPreferencesService =>
-      ServicesProvider.of(context).userPreferencesService;
-
-  late bool dynamicColor = userPreferencesService.dynamicColor;
-  late EvSourceType evSourceType;
-  late MeteringScreenLayoutConfig meteringScreenLayout =
-      userPreferencesService.meteringScreenLayout;
-  late Color primaryColor = userPreferencesService.primaryColor;
-  late StopType stopType = userPreferencesService.stopType;
-  late SupportedLocale locale = userPreferencesService.locale;
-  late ThemeType themeType = userPreferencesService.themeType;
+class _UserPreferencesProviderState extends State<UserPreferencesProvider> with WidgetsBindingObserver {
+  late EvSourceType _evSourceType;
+  late StopType _stopType = widget.userPreferencesService.stopType;
+  late MeteringScreenLayoutConfig _meteringScreenLayout = widget.userPreferencesService.meteringScreenLayout;
+  late SupportedLocale _locale = widget.userPreferencesService.locale;
+  late ThemeType _themeType = widget.userPreferencesService.themeType;
+  late Color _primaryColor = widget.userPreferencesService.primaryColor;
+  late bool _dynamicColor = widget.userPreferencesService.dynamicColor;
 
   @override
   void initState() {
     super.initState();
-    evSourceType = userPreferencesService.evSourceType;
-    evSourceType = evSourceType == EvSourceType.sensor &&
-            !ServicesProvider.of(context).environment.hasLightSensor
-        ? EvSourceType.camera
-        : evSourceType;
+    _evSourceType = widget.userPreferencesService.evSourceType;
+    _evSourceType = _evSourceType == EvSourceType.sensor && !widget.hasLightSensor ? EvSourceType.camera : _evSourceType;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -109,9 +106,8 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
         late final DynamicColorState state;
         late final Color? dynamicPrimaryColor;
         if (lightDynamic != null && darkDynamic != null) {
-          if (dynamicColor) {
-            dynamicPrimaryColor =
-                (_themeBrightness == Brightness.light ? lightDynamic : darkDynamic).primary;
+          if (_dynamicColor) {
+            dynamicPrimaryColor = (_themeBrightness == Brightness.light ? lightDynamic : darkDynamic).primary;
             state = DynamicColorState.enabled;
           } else {
             dynamicPrimaryColor = null;
@@ -124,13 +120,13 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
         return _UserPreferencesModel(
           brightness: _themeBrightness,
           dynamicColorState: state,
-          evSourceType: evSourceType,
-          locale: locale,
-          primaryColor: dynamicPrimaryColor ?? primaryColor,
-          stopType: stopType,
-          themeType: themeType,
+          evSourceType: _evSourceType,
+          locale: _locale,
+          primaryColor: dynamicPrimaryColor ?? _primaryColor,
+          stopType: _stopType,
+          themeType: _themeType,
           child: _MeteringScreenLayoutModel(
-            data: meteringScreenLayout,
+            data: _meteringScreenLayout,
             child: widget.child,
           ),
         );
@@ -140,65 +136,65 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider>
 
   void enableDynamicColor(bool enable) {
     setState(() {
-      dynamicColor = enable;
+      _dynamicColor = enable;
     });
-    userPreferencesService.dynamicColor = enable;
+    widget.userPreferencesService.dynamicColor = enable;
   }
 
   void toggleEvSourceType() {
-    if (!ServicesProvider.of(context).environment.hasLightSensor) {
+    if (!widget.hasLightSensor) {
       return;
     }
     setState(() {
-      switch (evSourceType) {
+      switch (_evSourceType) {
         case EvSourceType.camera:
-          evSourceType = EvSourceType.sensor;
+          _evSourceType = EvSourceType.sensor;
         case EvSourceType.sensor:
-          evSourceType = EvSourceType.camera;
+          _evSourceType = EvSourceType.camera;
       }
     });
-    userPreferencesService.evSourceType = evSourceType;
+    widget.userPreferencesService.evSourceType = _evSourceType;
   }
 
   void setLocale(SupportedLocale locale) {
     S.load(Locale(locale.intlName)).then((value) {
       setState(() {
-        this.locale = locale;
+        _locale = locale;
       });
-      userPreferencesService.locale = locale;
+      widget.userPreferencesService.locale = locale;
     });
   }
 
   void setMeteringScreenLayout(MeteringScreenLayoutConfig config) {
     setState(() {
-      meteringScreenLayout = config;
+      _meteringScreenLayout = config;
     });
-    userPreferencesService.meteringScreenLayout = meteringScreenLayout;
+    widget.userPreferencesService.meteringScreenLayout = _meteringScreenLayout;
   }
 
   void setPrimaryColor(Color primaryColor) {
     setState(() {
-      this.primaryColor = primaryColor;
+      _primaryColor = primaryColor;
     });
-    userPreferencesService.primaryColor = primaryColor;
+    widget.userPreferencesService.primaryColor = primaryColor;
   }
 
   void setStopType(StopType stopType) {
     setState(() {
-      this.stopType = stopType;
+      _stopType = stopType;
     });
-    userPreferencesService.stopType = stopType;
+    widget.userPreferencesService.stopType = stopType;
   }
 
   void setThemeType(ThemeType themeType) {
     setState(() {
-      this.themeType = themeType;
+      _themeType = themeType;
     });
-    userPreferencesService.themeType = themeType;
+    widget.userPreferencesService.themeType = themeType;
   }
 
   Brightness get _themeBrightness {
-    switch (themeType) {
+    switch (_themeType) {
       case ThemeType.light:
         return Brightness.light;
       case ThemeType.dark:
@@ -258,8 +254,7 @@ class _UserPreferencesModel extends InheritedModel<_Aspect> {
     _UserPreferencesModel oldWidget,
     Set<_Aspect> dependencies,
   ) {
-    return (dependencies.contains(_Aspect.dynamicColorState) &&
-            dynamicColorState != oldWidget.dynamicColorState) ||
+    return (dependencies.contains(_Aspect.dynamicColorState) && dynamicColorState != oldWidget.dynamicColorState) ||
         (dependencies.contains(_Aspect.evSourceType) && evSourceType != oldWidget.evSourceType) ||
         (dependencies.contains(_Aspect.locale) && locale != oldWidget.locale) ||
         (dependencies.contains(_Aspect.stopType) && stopType != oldWidget.stopType) ||
