@@ -15,7 +15,3 @@ class RemoteConfig extends InheritedWidget {
   @override
   bool updateShouldNotify(RemoteConfig oldWidget) => true;
 }
-
-const a = """
-\u2022 Equipment profiles containing filters for aperture, shutter speed, and more\n\u2022 List of films with compensation for what's known as reciprocity failure
-""";
