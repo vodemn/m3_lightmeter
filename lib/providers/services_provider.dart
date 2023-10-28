@@ -3,6 +3,7 @@ import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/permissions_service.dart';
+import 'package:lightmeter/data/remote_config_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
@@ -14,6 +15,7 @@ class ServicesProvider extends InheritedWidget {
   final HapticsService hapticsService;
   final LightSensorService lightSensorService;
   final PermissionsService permissionsService;
+  final RemoteConfigService remoteConfigService;
   final UserPreferencesService userPreferencesService;
   final VolumeEventsService volumeEventsService;
 
@@ -23,6 +25,7 @@ class ServicesProvider extends InheritedWidget {
     required this.hapticsService,
     required this.lightSensorService,
     required this.permissionsService,
+    required this.remoteConfigService,
     required this.userPreferencesService,
     required this.volumeEventsService,
     required super.child,
