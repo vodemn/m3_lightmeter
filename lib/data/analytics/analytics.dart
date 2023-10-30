@@ -25,10 +25,10 @@ class LightmeterAnalytics {
     );
   }
 
-  Future<void> logProFeaturesPurchaseAttempt(String purchaseButtonText) async {
+  Future<void> logUnlockProFeatures(String listTileTitle) async {
     return logEvent(
       LightmeterAnalyticsEvent.unlockProFeatures,
-      parameters: {"purchaseButtonText": purchaseButtonText},
+      parameters: {"listTileTitle": listTileTitle},
     );
   }
 }

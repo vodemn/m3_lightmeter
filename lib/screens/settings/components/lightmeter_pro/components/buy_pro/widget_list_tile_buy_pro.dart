@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/feature.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/remote_config_provider.dart';
+import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/utils/show_buy_pro_dialog.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
@@ -11,17 +12,17 @@ class BuyProListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final unlockFeaturesEnabled = RemoteConfig.isEnabled(context, Feature.unlockProFeaturesText);
     final status = IAPProducts.productOf(context, IAPProductType.paidFeatures)?.status;
     final isPending = status == IAPProductStatus.purchased || status == null;
     return ListTile(
       leading: const Icon(Icons.star),
-      title: Text(
-        RemoteConfig.isEnabled(context, Feature.unlockProFeaturesText)
-            ? S.of(context).unlockProFeatures
-            : S.of(context).buyLightmeterPro,
-      ),
+      title: Text(unlockFeaturesEnabled ? S.of(context).unlockProFeatures : S.of(context).buyLightmeterPro),
       onTap: () {
         showBuyProDialog(context);
+        ServicesProvider.of(context)
+            .analytics
+            .logUnlockProFeatures(unlockFeaturesEnabled ? 'Unlock Pro features' : 'Buy Lightmeter Pro');
       },
       trailing: isPending
           ? const SizedBox(
