@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/feature.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/remote_config_provider.dart';
+import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
@@ -29,6 +30,9 @@ Future<void> showBuyProDialog(BuildContext context) {
           onPressed: () {
             Navigator.of(context).pop();
             IAPProductsProvider.of(context).buy(IAPProductType.paidFeatures);
+            ServicesProvider.of(context)
+                .analytics
+                .logProFeaturesPurchaseAttempt(unlockFeaturesEnabled ? "Unlock" : "Buy");
           },
           child: Text(unlockFeaturesEnabled ? S.of(context).unlock : S.of(context).buy),
         ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/analytics/analytics.dart';
+import 'package:lightmeter/data/analytics/api/analytics_firebase.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
@@ -36,6 +38,7 @@ class ApplicationWrapper extends StatelessWidget {
           final userPreferencesService = UserPreferencesService(snapshot.data![0] as SharedPreferences);
           final hasLightSensor = snapshot.data![1] as bool;
           return ServicesProvider(
+            analytics: const LightmeterAnalytics(api: LightmeterAnalyticsFirebase()),
             caffeineService: const CaffeineService(),
             environment: env.copyWith(hasLightSensor: hasLightSensor),
             hapticsService: const HapticsService(),
