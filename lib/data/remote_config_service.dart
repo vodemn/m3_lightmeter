@@ -41,7 +41,7 @@ class RemoteConfigService {
     for (final value in FirebaseRemoteConfig.instance.getAll().entries) {
       try {
         final feature = Feature.values.firstWhere((f) => f.name == value.key);
-        result[feature] = MapEntry(feature, value.value.toValue(feature));
+        result[feature] = value.value.toValue(feature);
       } catch (e) {
         log(e.toString());
       }
