@@ -34,9 +34,48 @@ class RemoteConfigService {
     }
   }
 
+  dynamic getValue(Feature feature) => FirebaseRemoteConfig.instance.getValue(feature.name).toValue(feature);
+
+  Map<Feature, dynamic> getAll() {
+    final Map<Feature, dynamic> result = {};
+    for (final value in FirebaseRemoteConfig.instance.getAll().entries) {
+      try {
+        final feature = Feature.values.firstWhere((f) => f.name == value.key);
+        result[feature] = MapEntry(feature, value.value.toValue(feature));
+      } catch (e) {
+        log(e.toString());
+      }
+    }
+    return result;
+  }
+
+  Stream<Set<Feature>> onConfigUpdated() => FirebaseRemoteConfig.instance.onConfigUpdated.asyncMap(
+        (event) async {
+          await FirebaseRemoteConfig.instance.activate();
+          final Set<Feature> updatedFeatures = {};
+          for (final key in event.updatedKeys) {
+            try {
+              updatedFeatures.add(Feature.values.firstWhere((element) => element.name == key));
+            } catch (e) {
+              log(e.toString());
+            }
+          }
+          return updatedFeatures;
+        },
+      );
+
   bool isEnabled(Feature feature) => FirebaseRemoteConfig.instance.getBool(feature.name);
 
   void _logError(dynamic throwable, {StackTrace? stackTrace}) {
     FirebaseCrashlytics.instance.recordError(throwable, stackTrace);
+  }
+}
+
+extension on RemoteConfigValue {
+  dynamic toValue(Feature feature) {
+    switch (feature) {
+      case Feature.unlockProFeaturesText:
+        return asBool();
+    }
   }
 }

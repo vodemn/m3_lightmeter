@@ -44,10 +44,10 @@ class ApplicationWrapper extends StatelessWidget {
             hapticsService: const HapticsService(),
             lightSensorService: const LightSensorService(LocalPlatform()),
             permissionsService: const PermissionsService(),
-            remoteConfigService: const RemoteConfigService(),
             userPreferencesService: userPreferencesService,
             volumeEventsService: const VolumeEventsService(LocalPlatform()),
-            child: RemoteConfig(
+            child: RemoteConfigProvider(
+              remoteConfigService: const RemoteConfigService(),
               child: EquipmentProfileProvider(
                 storageService: iapService,
                 child: FilmsProvider(
