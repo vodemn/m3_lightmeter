@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
@@ -9,6 +10,7 @@ import 'package:lightmeter/environment.dart';
 
 // coverage:ignore-start
 class ServicesProvider extends InheritedWidget {
+  final LightmeterAnalytics analytics;
   final CaffeineService caffeineService;
   final Environment environment;
   final HapticsService hapticsService;
@@ -18,6 +20,7 @@ class ServicesProvider extends InheritedWidget {
   final VolumeEventsService volumeEventsService;
 
   const ServicesProvider({
+    required this.analytics,
     required this.caffeineService,
     required this.environment,
     required this.hapticsService,

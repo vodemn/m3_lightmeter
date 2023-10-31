@@ -1,0 +1,3 @@
+enum LightmeterAnalyticsEvent {
+  unlockProFeatures,
+}
