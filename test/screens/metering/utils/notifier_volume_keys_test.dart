@@ -6,13 +6,9 @@ import 'package:lightmeter/screens/metering/utils/notifier_volume_keys.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
+import '../../../function_mock.dart';
+
 class _MockVolumeEventsService extends Mock implements VolumeEventsService {}
-
-class _ValueChanged {
-  void onChanged(VolumeKey value) {}
-}
-
-class _MockValueChanged extends Mock implements _ValueChanged {}
 
 void main() {
   late _MockVolumeEventsService mockVolumeEventsService;
@@ -28,7 +24,7 @@ void main() {
       when(() => mockVolumeEventsService.volumeButtonsEventStream()).thenAnswer((_) => volumeButtonsEvents.stream);
 
       final volumeKeysNotifier = VolumeKeysNotifier(mockVolumeEventsService);
-      final functions = _MockValueChanged();
+      final functions = MockValueChanged<VolumeKey>();
       volumeKeysNotifier.addListener(() => functions.onChanged(volumeKeysNotifier.value));
       expect(volumeKeysNotifier.value, VolumeKey.up);
 

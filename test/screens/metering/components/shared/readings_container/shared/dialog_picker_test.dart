@@ -7,16 +7,11 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../../../application_mock.dart';
+import '../../../../../../function_mock.dart';
 import '../utils.dart';
 
-class _ValueChanged {
-  void onChanged<T>(T value) {}
-}
-
-class _MockValueChanged extends Mock implements _ValueChanged {}
-
 void main() {
-  final functions = _MockValueChanged();
+  final functions = MockValueChanged<int>();
 
   group(
     'onChanged',
