@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
-import 'package:lightmeter/screens/metering/utils/listsner_equipment_profiles.dart';
+import 'package:lightmeter/screens/metering/utils/listener_equipment_profiles.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
@@ -65,13 +65,13 @@ void main() {
 
       /// Verify that updating the current profile triggers the callback
       final updatedProfile1 = _customProfiles[0].copyWith(name: 'Test 1 updated');
-      equipmentProfileProviderKey.currentState!.updateProdile(updatedProfile1);
+      equipmentProfileProviderKey.currentState!.updateProfile(updatedProfile1);
       await tester.pump();
       verify(() => onDidChangeDependencies.onChanged(updatedProfile1)).called(1);
 
       /// Verify that updating the not selected profile doesn't trigger the callback
       final updatedProfile2 = _customProfiles[1].copyWith(name: 'Test 2 updated');
-      equipmentProfileProviderKey.currentState!.updateProdile(updatedProfile2);
+      equipmentProfileProviderKey.currentState!.updateProfile(updatedProfile2);
       await tester.pump();
       verifyNever(() => onDidChangeDependencies.onChanged(updatedProfile2));
     },
