@@ -12,21 +12,16 @@ class _MockIAPStorageService extends Mock implements IAPStorageService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  late _MockIAPStorageService storageService;
+  final storageService = _MockIAPStorageService();
   final equipmentProfileProviderKey = GlobalKey<EquipmentProfileProviderState>();
-
-  setUpAll(() {
-    storageService = _MockIAPStorageService();
-  });
+  final onDidChangeDependencies = MockValueChanged<EquipmentProfile>();
 
   tearDown(() {
+    reset(onDidChangeDependencies);
     reset(storageService);
   });
 
-  Future<void> pumpTestWidget(
-    WidgetTester tester,
-    ValueChanged<EquipmentProfile> onDidChangeDependencies,
-  ) async {
+  Future<void> pumpTestWidget(WidgetTester tester) async {
     await tester.pumpWidget(
       IAPProducts(
         products: [
@@ -40,7 +35,7 @@ void main() {
           storageService: storageService,
           child: MaterialApp(
             home: EquipmentProfileListener(
-              onDidChangeDependencies: onDidChangeDependencies,
+              onDidChangeDependencies: onDidChangeDependencies.onChanged,
               child: Builder(builder: (context) => Text(EquipmentProfiles.selectedOf(context).name)),
             ),
           ),
@@ -50,26 +45,45 @@ void main() {
   }
 
   testWidgets(
-    'Listen to equipment profile selection and edit',
+    'Trigger `onDidChangeDependencies` by selecting a new profile',
     (tester) async {
       when(() => storageService.equipmentProfiles).thenReturn(List.from(_customProfiles));
       when(() => storageService.selectedEquipmentProfileId).thenReturn('');
-      final onDidChangeDependencies = MockValueChanged<EquipmentProfile>();
+      await pumpTestWidget(tester);
 
-      await pumpTestWidget(tester, onDidChangeDependencies.onChanged);
-
-      /// Verify that selecting a new profile triggers the callback
       equipmentProfileProviderKey.currentState!.setProfile(_customProfiles[0]);
       await tester.pump();
       verify(() => onDidChangeDependencies.onChanged(_customProfiles[0])).called(1);
+    },
+  );
 
-      /// Verify that updating the current profile triggers the callback
+  testWidgets(
+    'Trigger `onDidChangeDependencies` by updating the selected profile',
+    (tester) async {
+      when(() => storageService.equipmentProfiles).thenReturn(List.from(_customProfiles));
+      when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles[0].id);
+      await pumpTestWidget(tester);
+
       final updatedProfile1 = _customProfiles[0].copyWith(name: 'Test 1 updated');
       equipmentProfileProviderKey.currentState!.updateProfile(updatedProfile1);
       await tester.pump();
       verify(() => onDidChangeDependencies.onChanged(updatedProfile1)).called(1);
 
       /// Verify that updating the not selected profile doesn't trigger the callback
+      final updatedProfile2 = _customProfiles[1].copyWith(name: 'Test 2 updated');
+      equipmentProfileProviderKey.currentState!.updateProfile(updatedProfile2);
+      await tester.pump();
+      verifyNever(() => onDidChangeDependencies.onChanged(updatedProfile2));
+    },
+  );
+
+  testWidgets(
+    "Don't trigger `onDidChangeDependencies` by updating the unselected profile",
+    (tester) async {
+      when(() => storageService.equipmentProfiles).thenReturn(List.from(_customProfiles));
+      when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles[0].id);
+      await pumpTestWidget(tester);
+
       final updatedProfile2 = _customProfiles[1].copyWith(name: 'Test 2 updated');
       equipmentProfileProviderKey.currentState!.updateProfile(updatedProfile2);
       await tester.pump();
