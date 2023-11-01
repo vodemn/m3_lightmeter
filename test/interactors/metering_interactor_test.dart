@@ -236,7 +236,7 @@ void main() {
   );
 
   group(
-    'Haptics',
+    'Light sensor',
     () {
       test('hasAmbientLightSensor() - true', () async {
         when(() => mockLightSensorService.hasSensor()).thenAnswer((_) async => true);
