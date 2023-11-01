@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:platform/platform.dart';
 
 class VolumeEventsService {
-  final LocalPlatform localPlatform;
+  final LocalPlatform _localPlatform;
 
   @visibleForTesting
   static const volumeHandlingChannel = MethodChannel("com.vodemn.lightmeter/volumeHandling");
@@ -11,12 +11,12 @@ class VolumeEventsService {
   @visibleForTesting
   static const volumeEventsChannel = EventChannel("com.vodemn.lightmeter/volumeEvents");
 
-  const VolumeEventsService(this.localPlatform);
+  const VolumeEventsService(this._localPlatform);
 
   /// If set to `false` we allow system to handle key events.
   /// Returns current status of volume handling.
   Future<bool> setVolumeHandling(bool enableHandling) async {
-    if (!localPlatform.isAndroid) {
+    if (!_localPlatform.isAndroid) {
       return false;
     }
     return volumeHandlingChannel
@@ -29,7 +29,7 @@ class VolumeEventsService {
   /// KEYCODE_VOLUME_DOWN = 25;
   /// pressed
   Stream<int> volumeButtonsEventStream() {
-    if (!localPlatform.isAndroid) {
+    if (!_localPlatform.isAndroid) {
       return const Stream.empty();
     }
     return volumeEventsChannel
