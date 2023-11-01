@@ -4,7 +4,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/remote_config_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/settings/components/utils/show_buy_pro_dialog.dart';
+import 'package:lightmeter/screens/settings/utils/show_buy_pro_dialog.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class BuyProListTile extends StatelessWidget {

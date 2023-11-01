@@ -28,7 +28,7 @@ Future<void> showBuyProDialog(BuildContext context) {
         FilledButton(
           onPressed: () {
             Navigator.of(context).pop();
-            IAPProductsProvider.of(context).buy(IAPProductType.paidFeatures);
+            IAPProductsProvider.maybeOf(context)?.buy(IAPProductType.paidFeatures);
           },
           child: Text(unlockFeaturesEnabled ? S.of(context).unlock : S.of(context).buy),
         ),
