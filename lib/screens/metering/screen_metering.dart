@@ -13,7 +13,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/provider
 import 'package:lightmeter/screens/metering/components/light_sensor_container/provider_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
-import 'package:lightmeter/screens/metering/utils/listsner_equipment_profiles.dart';
+import 'package:lightmeter/screens/metering/utils/listener_equipment_profiles.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreen extends StatelessWidget {

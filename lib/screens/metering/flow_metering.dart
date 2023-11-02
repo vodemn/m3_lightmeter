@@ -4,8 +4,8 @@ import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
-import 'package:lightmeter/screens/metering/components/shared/volume_keys_notifier/notifier_volume_keys.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
+import 'package:lightmeter/screens/metering/utils/notifier_volume_keys.dart';
 
 class MeteringFlow extends StatefulWidget {
   const MeteringFlow({super.key});

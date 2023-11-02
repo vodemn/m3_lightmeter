@@ -54,9 +54,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
         _defaultProfile,
         if (IAPProducts.isPurchased(context, IAPProductType.paidFeatures)) ..._customProfiles,
       ],
-      selected: IAPProducts.isPurchased(context, IAPProductType.paidFeatures)
-          ? _selectedProfile
-          : _defaultProfile,
+      selected: IAPProducts.isPurchased(context, IAPProductType.paidFeatures) ? _selectedProfile : _defaultProfile,
       child: widget.child,
     );
   }
@@ -85,7 +83,7 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     _refreshSavedProfiles();
   }
 
-  void updateProdile(EquipmentProfile data) {
+  void updateProfile(EquipmentProfile data) {
     final indexToUpdate = _customProfiles.indexWhere((element) => element.id == data.id);
     if (indexToUpdate >= 0) {
       _customProfiles[indexToUpdate] = data;
@@ -118,13 +116,14 @@ class EquipmentProfiles extends SelectableInheritedModel<EquipmentProfile> {
 
   /// [_defaultProfile] + profiles created by the user
   static List<EquipmentProfile> of(BuildContext context) {
-    return InheritedModel.inheritFrom<EquipmentProfiles>(context, aspect: SelectableAspect.list)!
-        .values;
+    return InheritedModel.inheritFrom<EquipmentProfiles>(context, aspect: SelectableAspect.list)!.values;
   }
 
   static EquipmentProfile selectedOf(BuildContext context) {
-    return InheritedModel.inheritFrom<EquipmentProfiles>(context,
-            aspect: SelectableAspect.selected,)!
+    return InheritedModel.inheritFrom<EquipmentProfiles>(
+      context,
+      aspect: SelectableAspect.selected,
+    )!
         .selected;
   }
 }

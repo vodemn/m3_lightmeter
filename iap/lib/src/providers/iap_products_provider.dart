@@ -6,8 +6,10 @@ class IAPProductsProvider extends StatefulWidget {
 
   const IAPProductsProvider({required this.child, super.key});
 
-  static IAPProductsProviderState of(BuildContext context) {
-    return context.findAncestorStateOfType<IAPProductsProviderState>()!;
+  static IAPProductsProviderState of(BuildContext context) => IAPProductsProvider.maybeOf(context)!;
+
+  static IAPProductsProviderState? maybeOf(BuildContext context) {
+    return context.findAncestorStateOfType<IAPProductsProviderState>();
   }
 
   @override
@@ -54,8 +56,7 @@ class IAPProducts extends InheritedModel<IAPProductType> {
   bool updateShouldNotify(IAPProducts oldWidget) => false;
 
   @override
-  bool updateShouldNotifyDependent(IAPProducts oldWidget, Set<IAPProductType> dependencies) =>
-      false;
+  bool updateShouldNotifyDependent(IAPProducts oldWidget, Set<IAPProductType> dependencies) => false;
 
   IAPProduct? _findProduct(IAPProductType type) {
     try {

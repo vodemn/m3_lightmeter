@@ -90,7 +90,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   }
 
   void _updateProfileAt(EquipmentProfile data) {
-    EquipmentProfileProvider.of(context).updateProdile(data);
+    EquipmentProfileProvider.of(context).updateProfile(data);
   }
 
   void _removeProfileAt(EquipmentProfile data) {
