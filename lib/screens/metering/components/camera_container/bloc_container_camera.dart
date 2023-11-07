@@ -11,10 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
-import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
-    as communication_event;
-import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
-    as communication_states;
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_event;
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
 import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
@@ -57,6 +55,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     on<ZoomChangedEvent>(_onZoomChanged);
     on<ExposureOffsetChangedEvent>(_onExposureOffsetChanged);
     on<ExposureOffsetResetEvent>(_onExposureOffsetResetEvent);
+    on<ExposureSpotChangedEvent>(_onExposureSpotChangedEvent);
   }
 
   @override
@@ -166,9 +165,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
-    if (_cameraController != null &&
-        event.value >= _zoomRange!.start &&
-        event.value <= _zoomRange!.end) {
+    if (_cameraController != null && event.value >= _zoomRange!.start && event.value <= _zoomRange!.end) {
       _cameraController!.setZoomLevel(event.value);
       _currentZoom = event.value;
       _emitActiveState(emit);
@@ -186,6 +183,14 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   Future<void> _onExposureOffsetResetEvent(ExposureOffsetResetEvent event, Emitter emit) async {
     _meteringInteractor.quickVibration();
     add(const ExposureOffsetChangedEvent(0));
+  }
+
+  Future<void> _onExposureSpotChangedEvent(ExposureSpotChangedEvent event, Emitter emit) async {
+    if (_cameraController != null) {
+      _cameraController!.setExposurePoint(event.offset);
+      _cameraController!.setFocusPoint(event.offset);
+      _emitActiveState(emit);
+    }
   }
 
   void _emitActiveState(Emitter emit) {

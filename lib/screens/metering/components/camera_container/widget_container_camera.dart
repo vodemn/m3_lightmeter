@@ -143,6 +143,9 @@ class _CameraViewBuilder extends StatelessWidget {
       builder: (context, state) => CameraPreview(
         controller: state is CameraInitializedState ? state.controller : null,
         error: state is CameraErrorState ? state.error : null,
+        onSpotTap: (value) {
+          context.read<CameraContainerBloc>().add(ExposureSpotChangedEvent(value));
+        },
       ),
     );
   }
