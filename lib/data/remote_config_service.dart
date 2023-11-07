@@ -24,7 +24,6 @@ class RemoteConfigService {
       await remoteConfig.setDefaults(featuresDefaultValues.map((key, value) => MapEntry(key.name, value)));
       await remoteConfig.activate();
       await remoteConfig.ensureInitialized();
-      unawaited(remoteConfig.fetch());
 
       log('Firebase remote config initialized successfully');
     } on FirebaseException catch (e) {
@@ -33,6 +32,8 @@ class RemoteConfigService {
       _logError('Error during Firebase Remote Config initialization: $e');
     }
   }
+
+  Future<void> fetchConfig() => FirebaseRemoteConfig.instance.fetch();
 
   dynamic getValue(Feature feature) => FirebaseRemoteConfig.instance.getValue(feature.name).toValue(feature);
 
