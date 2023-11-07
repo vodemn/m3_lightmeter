@@ -18,12 +18,14 @@ class BuyProListTile extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.star),
       title: Text(unlockFeaturesEnabled ? S.of(context).unlockProFeatures : S.of(context).buyLightmeterPro),
-      onTap: () {
-        showBuyProDialog(context);
-        ServicesProvider.of(context)
-            .analytics
-            .logUnlockProFeatures(unlockFeaturesEnabled ? 'Unlock Pro features' : 'Buy Lightmeter Pro');
-      },
+      onTap: !isPending
+          ? () {
+              showBuyProDialog(context);
+              ServicesProvider.of(context)
+                  .analytics
+                  .logUnlockProFeatures(unlockFeaturesEnabled ? 'Unlock Pro features' : 'Buy Lightmeter Pro');
+            }
+          : null,
       trailing: isPending
           ? const SizedBox(
               height: Dimens.grid24,
