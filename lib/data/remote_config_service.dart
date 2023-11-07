@@ -33,7 +33,11 @@ class RemoteConfigService {
     }
   }
 
-  Future<void> fetchConfig() => FirebaseRemoteConfig.instance.fetch();
+  Future<void> fetchConfig() async {
+    // https://github.com/firebase/flutterfire/issues/6196#issuecomment-927751667
+    await Future.delayed(const Duration(seconds: 1));
+    await FirebaseRemoteConfig.instance.fetch();
+  }
 
   dynamic getValue(Feature feature) => FirebaseRemoteConfig.instance.getValue(feature.name).toValue(feature);
 

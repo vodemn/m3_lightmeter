@@ -18,6 +18,7 @@ void main() {
   });
 
   setUp(() {
+    when(() => mockRemoteConfigService.fetchConfig()).thenAnswer((_) async {});
     when(() => mockRemoteConfigService.getValue(Feature.unlockProFeaturesText)).thenReturn(false);
     when(() => mockRemoteConfigService.getAll()).thenReturn({Feature.unlockProFeaturesText: false});
   });
