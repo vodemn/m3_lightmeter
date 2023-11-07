@@ -26,6 +26,8 @@ class RemoteConfigProviderState extends State<RemoteConfigProvider> {
   @override
   void initState() {
     super.initState();
+    // https://github.com/firebase/flutterfire/issues/6196#issuecomment-927751667
+    Future.delayed(const Duration(seconds: 1)).then((_) => widget.remoteConfigService.fetchConfig());
     _updatesSubscription = widget.remoteConfigService.onConfigUpdated().listen(
           _updateFeatures,
           onError: (e) => log(e.toString()),
