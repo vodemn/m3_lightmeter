@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/feature.dart';
@@ -25,7 +26,10 @@ class RemoteConfigProviderState extends State<RemoteConfigProvider> {
   @override
   void initState() {
     super.initState();
-    _updatesSubscription = widget.remoteConfigService.onConfigUpdated().listen(_updateFeatures);
+    _updatesSubscription = widget.remoteConfigService.onConfigUpdated().listen(
+          _updateFeatures,
+          onError: (e) => log(e.toString()),
+        );
   }
 
   @override
