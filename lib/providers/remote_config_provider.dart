@@ -26,7 +26,6 @@ class RemoteConfigProviderState extends State<RemoteConfigProvider> {
   @override
   void initState() {
     super.initState();
-    widget.remoteConfigService.fetchConfig();
     _updatesSubscription = widget.remoteConfigService.onConfigUpdated().listen(
           _updateFeatures,
           onError: (e) => log(e.toString()),
