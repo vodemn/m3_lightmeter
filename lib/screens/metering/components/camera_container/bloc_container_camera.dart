@@ -189,7 +189,6 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     if (_cameraController != null) {
       _cameraController!.setExposurePoint(event.offset);
       _cameraController!.setFocusPoint(event.offset);
-      _emitActiveState(emit);
     }
   }
 
