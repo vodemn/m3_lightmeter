@@ -13,7 +13,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/models/c
 class CameraPreview extends StatefulWidget {
   final CameraController? controller;
   final CameraErrorType? error;
-  final ValueChanged<Offset> onSpotTap;
+  final ValueChanged<Offset?> onSpotTap;
 
   const CameraPreview({
     this.controller,
@@ -53,7 +53,7 @@ class _CameraPreviewState extends State<CameraPreview> {
 
 class _CameraPreviewBuilder extends StatefulWidget {
   final CameraController controller;
-  final ValueChanged<Offset> onSpotTap;
+  final ValueChanged<Offset?> onSpotTap;
 
   const _CameraPreviewBuilder({
     required this.controller,

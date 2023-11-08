@@ -57,7 +57,7 @@ class ExposureOffsetResetEvent extends CameraContainerEvent {
 }
 
 class ExposureSpotChangedEvent extends CameraContainerEvent {
-  final Offset offset;
+  final Offset? offset;
 
   const ExposureSpotChangedEvent(this.offset);
 

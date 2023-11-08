@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 class CameraSpotDetector extends StatefulWidget {
-  final ValueChanged<Offset> onSpotTap;
+  final ValueChanged<Offset?> onSpotTap;
 
   const CameraSpotDetector({
     required this.onSpotTap,
@@ -22,6 +22,7 @@ class _CameraSpotDetectorState extends State<CameraSpotDetector> {
       builder: (_, constraints) => GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTapDown: (TapDownDetails details) => onViewFinderTap(details, constraints),
+        onLongPress: () => onViewFinderTap(null, constraints),
         child: Stack(
           children: [
             if (spot != null)
@@ -39,16 +40,18 @@ class _CameraSpotDetectorState extends State<CameraSpotDetector> {
     );
   }
 
-  void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
+  void onViewFinderTap(TapDownDetails? details, BoxConstraints constraints) {
     setState(() {
-      spot = details.localPosition;
+      spot = details?.localPosition;
     });
 
     widget.onSpotTap(
-      Offset(
-        details.localPosition.dx / constraints.maxWidth,
-        details.localPosition.dy / constraints.maxHeight,
-      ),
+      details != null
+          ? Offset(
+              details.localPosition.dx / constraints.maxWidth,
+              details.localPosition.dy / constraints.maxHeight,
+            )
+          : null,
     );
   }
 }
