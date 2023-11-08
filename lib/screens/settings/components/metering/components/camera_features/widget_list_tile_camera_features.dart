@@ -19,20 +19,26 @@ class CameraFeaturesListTile extends StatelessWidget {
             icon: Icons.layers_outlined,
             title: S.of(context).cameraFeatures,
             values: UserPreferencesProvider.cameraConfigOf(context),
-            titleAdapter: _toStringLocalized,
+            titleAdapter: (context, feature) {
+              switch (feature) {
+                case CameraFeature.spotMetering:
+                  return S.of(context).cameraFeatureSpotMetering;
+                case CameraFeature.histogram:
+                  return S.of(context).cameraFeatureHistogram;
+              }
+            },
+            subtitleAdapter: (context, feature) {
+              switch (feature) {
+                case CameraFeature.spotMetering:
+                  return S.of(context).cameraFeatureSpotMeteringHint;
+                case CameraFeature.histogram:
+                  return S.of(context).cameraFeatureHistogramHint;
+              }
+            },
             onSave: UserPreferencesProvider.of(context).setCameraFeature,
           ),
         );
       },
     );
-  }
-
-  String _toStringLocalized(BuildContext context, CameraFeature feature) {
-    switch (feature) {
-      case CameraFeature.spotMetering:
-        return S.of(context).cameraFeatureSpotMetering;
-      case CameraFeature.histogram:
-        return S.of(context).cameraFeatureHistogram;
-    }
   }
 }

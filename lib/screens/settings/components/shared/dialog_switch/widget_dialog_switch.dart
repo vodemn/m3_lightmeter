@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
+typedef StringAdapter<T> = String Function(BuildContext context, T value);
+
 class DialogSwitch<T> extends StatefulWidget {
   final IconData icon;
   final String title;
   final String? description;
   final Map<T, bool> values;
-  final String Function(BuildContext context, T value) titleAdapter;
+  final StringAdapter<T> titleAdapter;
+  final StringAdapter<T>? subtitleAdapter;
   final ValueChanged<Map<T, bool>> onSave;
 
   const DialogSwitch({
@@ -16,6 +19,7 @@ class DialogSwitch<T> extends StatefulWidget {
     this.description,
     required this.values,
     required this.titleAdapter,
+    this.subtitleAdapter,
     required this.onSave,
     super.key,
   });
@@ -53,6 +57,12 @@ class _DialogSwitchState<T> extends State<DialogSwitch<T>> {
                     (entry) => SwitchListTile(
                       contentPadding: EdgeInsets.symmetric(horizontal: Dimens.dialogTitlePadding.left),
                       title: Text(widget.titleAdapter(context, entry.key)),
+                      subtitle: widget.subtitleAdapter != null
+                          ? Text(
+                              widget.subtitleAdapter!.call(context, entry.key),
+                              style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                            )
+                          : null,
                       value: _features[entry.key]!,
                       onChanged: (value) {
                         setState(() {
