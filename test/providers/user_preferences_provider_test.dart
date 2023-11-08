@@ -216,6 +216,53 @@ void main() {
   );
 
   testWidgets(
+    'Set camera features config',
+    (tester) async {
+      await pumpTestWidget(
+        tester,
+        builder: (context) {
+          final config = UserPreferencesProvider.cameraConfigOf(context);
+          return Column(
+            children: [
+              ...List.generate(
+                config.length,
+                (index) => Text('${config.keys.toList()[index]}: ${config.values.toList()[index]}'),
+              ),
+              ...List.generate(
+                CameraFeature.values.length,
+                (index) => Text(
+                  '${CameraFeature.values[index]}: ${UserPreferencesProvider.cameraFeatureOf(context, CameraFeature.values[index])}',
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => UserPreferencesProvider.of(context).setCameraFeature({
+                  CameraFeature.spotMetering: true,
+                  CameraFeature.histogram: false,
+                }),
+                child: const Text(''),
+              ),
+            ],
+          );
+        },
+      );
+      // Match `findsNWidgets(2)` to verify that `cameraFeatureOf` specific results are the same as the whole config
+      expect(find.text("${CameraFeature.spotMetering}: true"), findsNWidgets(2));
+      expect(find.text("${CameraFeature.histogram}: true"), findsNWidgets(2));
+
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+      expect(find.text("${CameraFeature.spotMetering}: true"), findsNWidgets(2));
+      expect(find.text("${CameraFeature.histogram}: false"), findsNWidgets(2));
+      verify(
+        () => mockUserPreferencesService.cameraFeatures = {
+          CameraFeature.spotMetering: true,
+          CameraFeature.histogram: false,
+        },
+      ).called(1);
+    },
+  );
+
+  testWidgets(
     'Set different locale',
     (tester) async {
       when(() => mockUserPreferencesService.locale).thenReturn(SupportedLocale.en);
