@@ -47,8 +47,6 @@ class MeteringScreenLayoutListTile extends StatelessWidget {
         return S.of(context).meteringScreenFeatureExtremeExposurePairs;
       case MeteringScreenLayoutFeature.filmPicker:
         return S.of(context).meteringScreenFeatureFilmPicker;
-      case MeteringScreenLayoutFeature.histogram:
-        return S.of(context).meteringScreenFeatureHistogram;
     }
   }
 }

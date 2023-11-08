@@ -31,7 +31,6 @@ void main() {
       MeteringScreenLayoutFeature.extremeExposurePairs: true,
       MeteringScreenLayoutFeature.filmPicker: true,
       MeteringScreenLayoutFeature.equipmentProfiles: true,
-      MeteringScreenLayoutFeature.histogram: true,
     });
     when(() => mockUserPreferencesService.locale).thenReturn(SupportedLocale.en);
     when(() => mockUserPreferencesService.themeType).thenReturn(ThemeType.light);
@@ -184,7 +183,6 @@ void main() {
                   MeteringScreenLayoutFeature.equipmentProfiles: true,
                   MeteringScreenLayoutFeature.extremeExposurePairs: false,
                   MeteringScreenLayoutFeature.filmPicker: false,
-                  MeteringScreenLayoutFeature.histogram: true,
                 }),
                 child: const Text(''),
               ),
@@ -196,20 +194,17 @@ void main() {
       expect(find.text("${MeteringScreenLayoutFeature.equipmentProfiles}: true"), findsNWidgets(2));
       expect(find.text("${MeteringScreenLayoutFeature.extremeExposurePairs}: true"), findsNWidgets(2));
       expect(find.text("${MeteringScreenLayoutFeature.filmPicker}: true"), findsNWidgets(2));
-      expect(find.text("${MeteringScreenLayoutFeature.histogram}: true"), findsNWidgets(2));
 
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
       expect(find.text("${MeteringScreenLayoutFeature.equipmentProfiles}: true"), findsNWidgets(2));
       expect(find.text("${MeteringScreenLayoutFeature.extremeExposurePairs}: false"), findsNWidgets(2));
       expect(find.text("${MeteringScreenLayoutFeature.filmPicker}: false"), findsNWidgets(2));
-      expect(find.text("${MeteringScreenLayoutFeature.histogram}: true"), findsNWidgets(2));
       verify(
         () => mockUserPreferencesService.meteringScreenLayout = {
           MeteringScreenLayoutFeature.extremeExposurePairs: false,
           MeteringScreenLayoutFeature.filmPicker: false,
           MeteringScreenLayoutFeature.equipmentProfiles: true,
-          MeteringScreenLayoutFeature.histogram: true,
         },
       ).called(1);
     },

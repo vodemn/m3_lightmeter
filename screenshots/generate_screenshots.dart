@@ -46,7 +46,6 @@ void main() {
           MeteringScreenLayoutFeature.equipmentProfiles: true,
           MeteringScreenLayoutFeature.extremeExposurePairs: true,
           MeteringScreenLayoutFeature.filmPicker: true,
-          MeteringScreenLayoutFeature.histogram: false,
         }.toJson(),
       ),
 

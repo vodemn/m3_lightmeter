@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
+import 'package:lightmeter/data/models/camera_feature.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
@@ -92,9 +92,9 @@ class _CameraPreviewBuilderState extends State<_CameraPreviewBuilder> {
               alignment: Alignment.bottomCenter,
               children: [
                 CameraView(controller: widget.controller),
-                if (UserPreferencesProvider.meteringScreenFeatureOf(
+                if (UserPreferencesProvider.cameraFeatureOf(
                   context,
-                  MeteringScreenLayoutFeature.histogram,
+                  CameraFeature.histogram,
                 ))
                   Positioned(
                     left: Dimens.grid8,
@@ -102,7 +102,11 @@ class _CameraPreviewBuilderState extends State<_CameraPreviewBuilder> {
                     bottom: Dimens.grid16,
                     child: CameraHistogram(controller: widget.controller),
                   ),
-                CameraSpotDetector(onSpotTap: widget.onSpotTap)
+                if (UserPreferencesProvider.cameraFeatureOf(
+                  context,
+                  CameraFeature.spotMetering,
+                ))
+                  CameraSpotDetector(onSpotTap: widget.onSpotTap)
               ],
             )
           : const SizedBox.shrink(),
