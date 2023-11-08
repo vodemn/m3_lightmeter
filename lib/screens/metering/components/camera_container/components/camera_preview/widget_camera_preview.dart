@@ -9,6 +9,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/componen
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/components/camera_view_placeholder/widget_placeholder_camera_view.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/components/histogram/widget_histogram.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class CameraPreview extends StatefulWidget {
   final CameraController? controller;
@@ -92,21 +93,23 @@ class _CameraPreviewBuilderState extends State<_CameraPreviewBuilder> {
               alignment: Alignment.bottomCenter,
               children: [
                 CameraView(controller: widget.controller),
-                if (UserPreferencesProvider.cameraFeatureOf(
-                  context,
-                  CameraFeature.histogram,
-                ))
-                  Positioned(
-                    left: Dimens.grid8,
-                    right: Dimens.grid8,
-                    bottom: Dimens.grid16,
-                    child: CameraHistogram(controller: widget.controller),
-                  ),
-                if (UserPreferencesProvider.cameraFeatureOf(
-                  context,
-                  CameraFeature.spotMetering,
-                ))
-                  CameraSpotDetector(onSpotTap: widget.onSpotTap)
+                if (IAPProducts.isPurchased(context, IAPProductType.paidFeatures)) ...[
+                  if (UserPreferencesProvider.cameraFeatureOf(
+                    context,
+                    CameraFeature.histogram,
+                  ))
+                    Positioned(
+                      left: Dimens.grid8,
+                      right: Dimens.grid8,
+                      bottom: Dimens.grid16,
+                      child: CameraHistogram(controller: widget.controller),
+                    ),
+                  if (UserPreferencesProvider.cameraFeatureOf(
+                    context,
+                    CameraFeature.spotMetering,
+                  ))
+                    CameraSpotDetector(onSpotTap: widget.onSpotTap)
+                ],
               ],
             )
           : const SizedBox.shrink(),
