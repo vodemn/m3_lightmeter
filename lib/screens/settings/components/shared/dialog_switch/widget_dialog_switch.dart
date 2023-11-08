@@ -5,7 +5,7 @@ import 'package:lightmeter/res/dimens.dart';
 class DialogSwitch<T> extends StatefulWidget {
   final IconData icon;
   final String title;
-  final String description;
+  final String? description;
   final Map<T, bool> values;
   final String Function(BuildContext context, T value) titleAdapter;
   final ValueChanged<Map<T, bool>> onSave;
@@ -13,7 +13,7 @@ class DialogSwitch<T> extends StatefulWidget {
   const DialogSwitch({
     required this.icon,
     required this.title,
-    required this.description,
+    this.description,
     required this.values,
     required this.titleAdapter,
     required this.onSave,
@@ -39,11 +39,13 @@ class _DialogSwitchState<T> extends State<DialogSwitch<T>> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
-              child: Text(widget.description),
-            ),
-            const SizedBox(height: Dimens.grid16),
+            if (widget.description != null) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
+                child: Text(widget.description!),
+              ),
+              const SizedBox(height: Dimens.grid16)
+            ],
             ListView(
               shrinkWrap: true,
               children: _features.entries

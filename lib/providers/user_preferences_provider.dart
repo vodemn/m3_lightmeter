@@ -1,6 +1,7 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:lightmeter/data/models/camera_feature.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
@@ -9,6 +10,7 @@ import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/utils/map_model.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class UserPreferencesProvider extends StatefulWidget {
@@ -51,6 +53,14 @@ class UserPreferencesProvider extends StatefulWidget {
     return _inheritFromEnumsModel(context, _Aspect.stopType).stopType;
   }
 
+  static CameraFeaturesConfig cameraConfigOf(BuildContext context) {
+    return context.findAncestorWidgetOfExactType<_CameraFeaturesModel>()!.data;
+  }
+
+  static bool cameraFeatureOf(BuildContext context, CameraFeature feature) {
+    return InheritedModel.inheritFrom<_CameraFeaturesModel>(context, aspect: feature)!.data[feature]!;
+  }
+
   static ThemeData themeOf(BuildContext context) {
     return _inheritFromEnumsModel(context, _Aspect.theme).theme;
   }
@@ -74,6 +84,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider> with 
   late EvSourceType _evSourceType;
   late StopType _stopType = widget.userPreferencesService.stopType;
   late MeteringScreenLayoutConfig _meteringScreenLayout = widget.userPreferencesService.meteringScreenLayout;
+  late CameraFeaturesConfig _cameraFeatures = widget.userPreferencesService.cameraFeatures;
   late SupportedLocale _locale = widget.userPreferencesService.locale;
   late ThemeType _themeType = widget.userPreferencesService.themeType;
   late Color _primaryColor = widget.userPreferencesService.primaryColor;
@@ -83,7 +94,8 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider> with 
   void initState() {
     super.initState();
     _evSourceType = widget.userPreferencesService.evSourceType;
-    _evSourceType = _evSourceType == EvSourceType.sensor && !widget.hasLightSensor ? EvSourceType.camera : _evSourceType;
+    _evSourceType =
+        _evSourceType == EvSourceType.sensor && !widget.hasLightSensor ? EvSourceType.camera : _evSourceType;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -127,7 +139,10 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider> with 
           themeType: _themeType,
           child: _MeteringScreenLayoutModel(
             data: _meteringScreenLayout,
-            child: widget.child,
+            child: _CameraFeaturesModel(
+              data: _cameraFeatures,
+              child: widget.child,
+            ),
           ),
         );
       },
@@ -170,6 +185,13 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider> with 
       _meteringScreenLayout = config;
     });
     widget.userPreferencesService.meteringScreenLayout = _meteringScreenLayout;
+  }
+
+  void setCameraFeature(CameraFeaturesConfig config) {
+    setState(() {
+      _cameraFeatures = config;
+    });
+    widget.userPreferencesService.cameraFeatures = _cameraFeatures;
   }
 
   void setPrimaryColor(Color primaryColor) {
@@ -264,27 +286,16 @@ class _UserPreferencesModel extends InheritedModel<_Aspect> {
   }
 }
 
-class _MeteringScreenLayoutModel extends InheritedModel<MeteringScreenLayoutFeature> {
-  final Map<MeteringScreenLayoutFeature, bool> data;
-
+class _MeteringScreenLayoutModel extends MapModel<MeteringScreenLayoutFeature> {
   const _MeteringScreenLayoutModel({
-    required this.data,
+    required super.data,
     required super.child,
   });
+}
 
-  @override
-  bool updateShouldNotify(_MeteringScreenLayoutModel oldWidget) => oldWidget.data != data;
-
-  @override
-  bool updateShouldNotifyDependent(
-    _MeteringScreenLayoutModel oldWidget,
-    Set<MeteringScreenLayoutFeature> dependencies,
-  ) {
-    for (final dependecy in dependencies) {
-      if (oldWidget.data[dependecy] != data[dependecy]) {
-        return true;
-      }
-    }
-    return false;
-  }
+class _CameraFeaturesModel extends MapModel<CameraFeature> {
+  const _CameraFeaturesModel({
+    required super.data,
+    required super.child,
+  });
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/calibration/widget_list_tile_calibration.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/camera_features/widget_list_tile_camera_features.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/widget_list_tile_equipment_profiles.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/films/widget_list_tile_films.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/fractional_stops/widget_list_tile_fractional_stops.dart';
@@ -20,6 +21,7 @@ class MeteringSettingsSection extends StatelessWidget {
         MeteringScreenLayoutListTile(),
         EquipmentProfilesListTile(),
         FilmsListTile(),
+        CameraFeaturesListTile(),
       ],
     );
   }

@@ -1,6 +1,6 @@
 enum CameraFeature {
-  histogram,
   spotMetering,
+  histogram,
 }
 
 typedef CameraFeaturesConfig = Map<CameraFeature, bool>;
