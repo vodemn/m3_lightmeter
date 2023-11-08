@@ -1,6 +1,7 @@
 import 'package:dynamic_color/test_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lightmeter/data/models/camera_feature.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
@@ -31,6 +32,10 @@ void main() {
       MeteringScreenLayoutFeature.extremeExposurePairs: true,
       MeteringScreenLayoutFeature.filmPicker: true,
       MeteringScreenLayoutFeature.equipmentProfiles: true,
+    });
+    when(() => mockUserPreferencesService.cameraFeatures).thenReturn({
+      CameraFeature.spotMetering: true,
+      CameraFeature.histogram: true,
     });
     when(() => mockUserPreferencesService.locale).thenReturn(SupportedLocale.en);
     when(() => mockUserPreferencesService.themeType).thenReturn(ThemeType.light);
