@@ -7,9 +7,26 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:lightmeter/data/models/feature.dart';
 
-class RemoteConfigService {
+abstract class IRemoteConfigService {
+  const IRemoteConfigService();
+
+  Future<void> activeAndFetchFeatures();
+
+  Future<void> fetchConfig();
+
+  dynamic getValue(Feature feature);
+
+  Map<Feature, dynamic> getAll();
+
+  Stream<Set<Feature>> onConfigUpdated();
+
+  bool isEnabled(Feature feature);
+}
+
+class RemoteConfigService implements IRemoteConfigService {
   const RemoteConfigService();
 
+  @override
   Future<void> activeAndFetchFeatures() async {
     final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.instance;
     const cacheStaleDuration = kDebugMode ? Duration(minutes: 1) : Duration(hours: 12);
@@ -28,19 +45,22 @@ class RemoteConfigService {
       log('Firebase remote config initialized successfully');
     } on FirebaseException catch (e) {
       _logError('Firebase exception during Firebase Remote Config initialization: $e');
-    } on Exception catch (e) {
+    } catch (e) {
       _logError('Error during Firebase Remote Config initialization: $e');
     }
   }
 
+  @override
   Future<void> fetchConfig() async {
     // https://github.com/firebase/flutterfire/issues/6196#issuecomment-927751667
     await Future.delayed(const Duration(seconds: 1));
     await FirebaseRemoteConfig.instance.fetch();
   }
 
+  @override
   dynamic getValue(Feature feature) => FirebaseRemoteConfig.instance.getValue(feature.name).toValue(feature);
 
+  @override
   Map<Feature, dynamic> getAll() {
     final Map<Feature, dynamic> result = {};
     for (final value in FirebaseRemoteConfig.instance.getAll().entries) {
@@ -54,6 +74,7 @@ class RemoteConfigService {
     return result;
   }
 
+  @override
   Stream<Set<Feature>> onConfigUpdated() => FirebaseRemoteConfig.instance.onConfigUpdated.asyncMap(
         (event) async {
           await FirebaseRemoteConfig.instance.activate();
@@ -69,11 +90,35 @@ class RemoteConfigService {
         },
       );
 
+  @override
   bool isEnabled(Feature feature) => FirebaseRemoteConfig.instance.getBool(feature.name);
 
   void _logError(dynamic throwable, {StackTrace? stackTrace}) {
     FirebaseCrashlytics.instance.recordError(throwable, stackTrace);
   }
+}
+
+class MockRemoteConfigService implements IRemoteConfigService {
+  const MockRemoteConfigService();
+
+  @override
+  Future<void> activeAndFetchFeatures() async {}
+
+  @override
+  Future<void> fetchConfig() async {}
+
+  @override
+  Map<Feature, dynamic> getAll() => featuresDefaultValues;
+
+  @override
+  dynamic getValue(Feature feature) => featuresDefaultValues[feature];
+
+  @override
+  // ignore: cast_nullable_to_non_nullable
+  bool isEnabled(Feature feature) => featuresDefaultValues[feature] as bool;
+
+  @override
+  Stream<Set<Feature>> onConfigUpdated() => const Stream.empty();
 }
 
 extension on RemoteConfigValue {

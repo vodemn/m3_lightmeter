@@ -6,7 +6,7 @@ import 'package:lightmeter/data/models/feature.dart';
 import 'package:lightmeter/data/remote_config_service.dart';
 
 class RemoteConfigProvider extends StatefulWidget {
-  final RemoteConfigService remoteConfigService;
+  final IRemoteConfigService remoteConfigService;
   final Widget child;
 
   const RemoteConfigProvider({

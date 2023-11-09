@@ -30,7 +30,7 @@ class ApplicationWrapper extends StatelessWidget {
       future: Future.wait<dynamic>([
         SharedPreferences.getInstance(),
         const LightSensorService(LocalPlatform()).hasSensor(),
-        const RemoteConfigService().activeAndFetchFeatures(),
+        if (env.buildType != BuildType.dev) const RemoteConfigService().activeAndFetchFeatures(),
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
@@ -47,7 +47,8 @@ class ApplicationWrapper extends StatelessWidget {
             userPreferencesService: userPreferencesService,
             volumeEventsService: const VolumeEventsService(LocalPlatform()),
             child: RemoteConfigProvider(
-              remoteConfigService: const RemoteConfigService(),
+              remoteConfigService:
+                  env.buildType != BuildType.dev ? const RemoteConfigService() : const MockRemoteConfigService(),
               child: EquipmentProfileProvider(
                 storageService: iapService,
                 child: FilmsProvider(
