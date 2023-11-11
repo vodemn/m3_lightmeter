@@ -1,3 +1,5 @@
+import 'package:flutter/gestures.dart';
+
 abstract class CameraContainerEvent {
   const CameraContainerEvent();
 }
@@ -52,4 +54,20 @@ class ExposureOffsetChangedEvent extends CameraContainerEvent {
 
 class ExposureOffsetResetEvent extends CameraContainerEvent {
   const ExposureOffsetResetEvent();
+}
+
+class ExposureSpotChangedEvent extends CameraContainerEvent {
+  final Offset? offset;
+
+  const ExposureSpotChangedEvent(this.offset);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is ExposureSpotChangedEvent && other.offset == offset;
+  }
+
+  @override
+  int get hashCode => Object.hash(offset, runtimeType);
 }

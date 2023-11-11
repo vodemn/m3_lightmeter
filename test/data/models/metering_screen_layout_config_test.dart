@@ -18,7 +18,6 @@ void main() {
           {
             MeteringScreenLayoutFeature.extremeExposurePairs: true,
             MeteringScreenLayoutFeature.filmPicker: true,
-            MeteringScreenLayoutFeature.histogram: true,
             MeteringScreenLayoutFeature.equipmentProfiles: true,
           },
         );
@@ -35,7 +34,6 @@ void main() {
           {
             MeteringScreenLayoutFeature.extremeExposurePairs: false,
             MeteringScreenLayoutFeature.filmPicker: false,
-            MeteringScreenLayoutFeature.histogram: true,
             MeteringScreenLayoutFeature.equipmentProfiles: true,
           },
         );
@@ -53,7 +51,6 @@ void main() {
           {
             MeteringScreenLayoutFeature.extremeExposurePairs: false,
             MeteringScreenLayoutFeature.filmPicker: false,
-            MeteringScreenLayoutFeature.histogram: false,
             MeteringScreenLayoutFeature.equipmentProfiles: true,
           },
         );
@@ -67,13 +64,11 @@ void main() {
         MeteringScreenLayoutFeature.equipmentProfiles: true,
         MeteringScreenLayoutFeature.extremeExposurePairs: true,
         MeteringScreenLayoutFeature.filmPicker: true,
-        MeteringScreenLayoutFeature.histogram: true,
       }.toJson(),
       {
-        '3': true,
-        '0': true,
-        '1': true,
-        '2': true,
+        'equipmentProfiles': true,
+        'extremeExposurePairs': true,
+        'filmPicker': true,
       },
     );
   });

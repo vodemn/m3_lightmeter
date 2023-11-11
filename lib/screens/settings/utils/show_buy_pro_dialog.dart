@@ -7,6 +7,31 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 Future<void> showBuyProDialog(BuildContext context) {
   final unlockFeaturesEnabled = RemoteConfig.isEnabled(context, Feature.unlockProFeaturesText);
+
+  Widget splitDescription() {
+    final description =
+        unlockFeaturesEnabled ? S.of(context).unlockProFeaturesDescription : S.of(context).lightmeterProDescription;
+    final paragraphs = description.split('\n\n');
+    final features = paragraphs.first.split('\n \u2022 ').sublist(1);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(paragraphs.first.split('\n \u2022 ').first),
+        ...features.map(
+          (f) => Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('\u2022 '),
+              Flexible(child: Text(f)),
+            ],
+          ),
+        ),
+        Text('\n${paragraphs.last}'),
+      ],
+    );
+  }
+
   return showDialog(
     context: context,
     builder: (_) => AlertDialog(
@@ -14,11 +39,7 @@ Future<void> showBuyProDialog(BuildContext context) {
       titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(unlockFeaturesEnabled ? S.of(context).proFeatures : S.of(context).lightmeterPro),
       contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
-      content: SingleChildScrollView(
-        child: Text(
-          unlockFeaturesEnabled ? S.of(context).unlockProFeaturesDescription : S.of(context).lightmeterProDescription,
-        ),
-      ),
+      content: SingleChildScrollView(child: splitDescription()),
       actionsPadding: Dimens.dialogActionsPadding,
       actions: [
         TextButton(

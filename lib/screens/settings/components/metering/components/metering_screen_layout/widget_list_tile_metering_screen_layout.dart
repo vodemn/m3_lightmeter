@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/generated/l10n.dart';
-
-import 'package:lightmeter/screens/settings/components/metering/components/metering_screen_layout/components/meterins_screen_layout_features_dialog/widget_dialog_metering_screen_layout_features.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/films_provider.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_switch/widget_dialog_switch.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreenLayoutListTile extends StatelessWidget {
   const MeteringScreenLayoutListTile({super.key});
@@ -14,9 +18,35 @@ class MeteringScreenLayoutListTile extends StatelessWidget {
       onTap: () {
         showDialog(
           context: context,
-          builder: (_) => const MeteringScreenLayoutFeaturesDialog(),
+          builder: (_) => DialogSwitch<MeteringScreenLayoutFeature>(
+            icon: Icons.layers_outlined,
+            title: S.of(context).meteringScreenLayout,
+            description: S.of(context).meteringScreenLayoutHint,
+            values: UserPreferencesProvider.meteringScreenConfigOf(context),
+            titleAdapter: _toStringLocalized,
+            onSave: (value) {
+              if (!value[MeteringScreenLayoutFeature.equipmentProfiles]!) {
+                EquipmentProfileProvider.of(context).setProfile(EquipmentProfiles.of(context).first);
+              }
+              if (!value[MeteringScreenLayoutFeature.filmPicker]!) {
+                FilmsProvider.of(context).setFilm(const Film.other());
+              }
+              UserPreferencesProvider.of(context).setMeteringScreenLayout(value);
+            },
+          ),
         );
       },
     );
+  }
+
+  String _toStringLocalized(BuildContext context, MeteringScreenLayoutFeature feature) {
+    switch (feature) {
+      case MeteringScreenLayoutFeature.equipmentProfiles:
+        return S.of(context).meteringScreenLayoutHintEquipmentProfiles;
+      case MeteringScreenLayoutFeature.extremeExposurePairs:
+        return S.of(context).meteringScreenFeatureExtremeExposurePairs;
+      case MeteringScreenLayoutFeature.filmPicker:
+        return S.of(context).meteringScreenFeatureFilmPicker;
+    }
   }
 }
