@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
@@ -34,18 +35,20 @@ class _DialogFilterState<T> extends State<DialogFilter<T>> {
   bool get _hasAnySelected => checkboxValues.contains(true);
   bool get _hasAnyUnselected => checkboxValues.contains(false);
 
-  late final ScrollController _scrollController;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    int i = 0;
-    for (; i < checkboxValues.length; i++) {
-      if (checkboxValues[i]) {
-        break;
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      int i = 0;
+      for (; i < checkboxValues.length; i++) {
+        if (checkboxValues[i]) {
+          break;
+        }
       }
-    }
-    _scrollController = ScrollController(initialScrollOffset: Dimens.grid56 * i);
+      _scrollController.jumpTo((Dimens.grid56 * i).clamp(0, _scrollController.position.maxScrollExtent));
+    });
   }
 
   @override
