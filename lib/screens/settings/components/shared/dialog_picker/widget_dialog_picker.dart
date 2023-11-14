@@ -32,24 +32,28 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
       titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(widget.title),
       contentPadding: EdgeInsets.zero,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: widget.values
-            .map(
-              (e) => RadioListTile(
-                value: e,
-                groupValue: _selected,
-                title: Text(widget.titleAdapter(context, e)),
-                onChanged: (T? value) {
-                  if (value != null) {
-                    setState(() {
-                      _selected = value;
-                    });
-                  }
-                },
-              ),
-            )
-            .toList(),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: widget.values
+              .map(
+                (e) => RadioListTile(
+                  value: e,
+                  groupValue: _selected,
+                  title: Text(widget.titleAdapter(context, e)),
+                  onChanged: (T? value) {
+                    if (value != null) {
+                      setState(() {
+                        _selected = value;
+                      });
+                    }
+                  },
+                ),
+              )
+              .toList(),
+        ),
       ),
       actionsPadding: Dimens.dialogActionsPadding,
       actions: [

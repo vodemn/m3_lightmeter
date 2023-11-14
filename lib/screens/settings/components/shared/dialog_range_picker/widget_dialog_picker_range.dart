@@ -36,47 +36,50 @@ class _DialogRangePickerState<T extends PhotographyValue> extends State<DialogRa
       titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(widget.title),
       contentPadding: EdgeInsets.zero,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: Dimens.dialogIconTitlePadding,
-            child: Text(widget.description),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
-            child: DefaultTextStyle(
-              style: Theme.of(context).textTheme.bodyLarge!,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(widget.values[_start].toString()),
-                  Text(widget.values[_end].toString()),
-                ],
-              ),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: Dimens.dialogIconTitlePadding,
+              child: Text(widget.description),
             ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: RangeSlider(
-                  values: RangeValues(
-                    _start.toDouble(),
-                    _end.toDouble(),
-                  ),
-                  max: widget.values.length.toDouble() - 1,
-                  divisions: widget.values.length - 1,
-                  onChanged: (value) {
-                    setState(() {
-                      _start = value.start.round();
-                      _end = value.end.round();
-                    });
-                  },
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
+              child: DefaultTextStyle(
+                style: Theme.of(context).textTheme.bodyLarge!,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(widget.values[_start].toString()),
+                    Text(widget.values[_end].toString()),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: RangeSlider(
+                    values: RangeValues(
+                      _start.toDouble(),
+                      _end.toDouble(),
+                    ),
+                    max: widget.values.length.toDouble() - 1,
+                    divisions: widget.values.length - 1,
+                    onChanged: (value) {
+                      setState(() {
+                        _start = value.start.round();
+                        _end = value.end.round();
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
       actionsPadding: Dimens.dialogActionsPadding,
       actions: [
