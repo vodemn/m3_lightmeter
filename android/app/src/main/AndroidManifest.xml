@@ -3,7 +3,7 @@
     package="com.vodemn.lightmeter">
 
     <application
-        android:label="Lightmeter"
+        android:label="@string/app_name"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
