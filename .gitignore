@@ -60,4 +60,5 @@ ios/Runner/GoogleService-Info.plist
 /lib/firebase_options.dart
 
 coverage/
-screenshots/
+test/coverage_helper_test.dart
+screenshots/*.png

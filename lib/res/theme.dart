@@ -23,7 +23,7 @@ const primaryColorsList = [
 
 ThemeData themeFrom(Color primaryColor, Brightness brightness) {
   final scheme = _colorSchemeFromColor(primaryColor, brightness);
-  return ThemeData(
+  final theme = ThemeData(
     useMaterial3: true,
     brightness: scheme.brightness,
     primaryColor: primaryColor,
@@ -60,12 +60,18 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
     ),
     scaffoldBackgroundColor: scheme.surface,
   );
+  return theme.copyWith(
+    listTileTheme: ListTileThemeData(
+      style: ListTileStyle.list,
+      iconColor: scheme.onSurface,
+      textColor: scheme.onSurface,
+      subtitleTextStyle: theme.textTheme.bodyMedium!.copyWith(color: scheme.onSurfaceVariant),
+    ),
+  );
 }
 
 ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
-  final scheme = brightness == Brightness.light
-      ? Scheme.light(primaryColor.value)
-      : Scheme.dark(primaryColor.value);
+  final scheme = brightness == Brightness.light ? Scheme.light(primaryColor.value) : Scheme.dark(primaryColor.value);
 
   return ColorScheme(
     brightness: brightness,

@@ -12,14 +12,17 @@ class CameraView extends StatelessWidget {
     final value = controller.value;
     return ValueListenableBuilder<CameraValue>(
       valueListenable: controller,
-      builder: (_, __, ___) => AspectRatio(
+      builder: (_, __, Widget? child) => AspectRatio(
         aspectRatio: _isLandscape(value) ? value.aspectRatio : (1 / value.aspectRatio),
-        child: value.isInitialized
-            ? RotatedBox(
-                quarterTurns: _getQuarterTurns(value),
-                child: controller.buildPreview(),
-              )
-            : const SizedBox.shrink(),
+        child: Stack(
+          children: [
+            RotatedBox(
+              quarterTurns: _getQuarterTurns(value),
+              child: controller.buildPreview(),
+            ),
+            child ?? const SizedBox(),
+          ],
+        ),
       ),
     );
   }
@@ -42,8 +45,6 @@ class CameraView extends StatelessWidget {
   DeviceOrientation _getApplicableOrientation(CameraValue value) {
     return value.isRecordingVideo
         ? value.recordingOrientation!
-        : (value.previewPauseOrientation ??
-            value.lockedCaptureOrientation ??
-            value.deviceOrientation);
+        : (value.previewPauseOrientation ?? value.lockedCaptureOrientation ?? value.deviceOrientation);
   }
 }

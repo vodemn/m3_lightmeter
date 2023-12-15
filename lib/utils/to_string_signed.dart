@@ -1,13 +1,4 @@
-extension SignedString on num {
-  String toStringSigned() {
-    if (this > 0) {
-      return "+${toString()}";
-    } else {
-      return toString();
-    }
-  }
-}
-
+/// Returns value in form -1 or + 1. The only exception - 0.
 extension SignedStringDouble on double {
   String toStringSignedAsFixed(int fractionDigits) {
     if (this > 0) {

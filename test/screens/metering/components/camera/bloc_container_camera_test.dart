@@ -4,10 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
-import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
-    as communication_events;
-import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
-    as communication_states;
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_events;
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
 import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
@@ -16,9 +14,9 @@ import 'package:mocktail/mocktail.dart';
 
 class _MockMeteringInteractor extends Mock implements MeteringInteractor {}
 
-class _MockMeteringCommunicationBloc extends MockBloc<
-    communication_events.MeteringCommunicationEvent,
-    communication_states.MeteringCommunicationState> implements MeteringCommunicationBloc {}
+class _MockMeteringCommunicationBloc
+    extends MockBloc<communication_events.MeteringCommunicationEvent, communication_states.MeteringCommunicationState>
+    implements MeteringCommunicationBloc {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -147,8 +145,7 @@ void main() {
           verify(() => meteringInteractor.requestCameraPermission()).called(1);
         },
         expect: () => [
-          isA<CameraErrorState>()
-              .having((state) => state.error, "error", CameraErrorType.permissionNotGranted),
+          isA<CameraErrorState>().having((state) => state.error, "error", CameraErrorType.permissionNotGranted),
         ],
       );
 
@@ -166,8 +163,7 @@ void main() {
         },
         expect: () => [
           isA<CameraLoadingState>(),
-          isA<CameraErrorState>()
-              .having((state) => state.error, "error", CameraErrorType.permissionNotGranted),
+          isA<CameraErrorState>().having((state) => state.error, "error", CameraErrorType.permissionNotGranted),
         ],
       );
 
@@ -215,8 +211,7 @@ void main() {
         'No cameras detected error',
         setUp: () {
           when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-              .setMockMethodCallHandler(
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
             cameraMethodChannel,
             (methodCall) async => cameraMethodCallSuccessHandler(methodCall, cameras: const []),
           );
@@ -232,8 +227,7 @@ void main() {
         },
         expect: () => [
           isA<CameraLoadingState>(),
-          isA<CameraErrorState>()
-              .having((state) => state.error, "error", CameraErrorType.noCamerasDetected),
+          isA<CameraErrorState>().having((state) => state.error, "error", CameraErrorType.noCamerasDetected),
         ],
       );
 
@@ -241,8 +235,7 @@ void main() {
         'No back facing cameras available',
         setUp: () {
           when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-              .setMockMethodCallHandler(
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
             cameraMethodChannel,
             (methodCall) async => cameraMethodCallSuccessHandler(methodCall, cameras: frontCameras),
           );
@@ -263,8 +256,7 @@ void main() {
         'Catch other initialization errors',
         setUp: () {
           when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-              .setMockMethodCallHandler(
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
             cameraMethodChannel,
             (methodCall) async {
               switch (methodCall.method) {
@@ -300,10 +292,8 @@ void main() {
         act: (bloc) async {
           bloc.add(const InitializeEvent());
           await Future.delayed(Duration.zero);
-          TestWidgetsFlutterBinding.instance
-              .handleAppLifecycleStateChanged(AppLifecycleState.detached);
-          TestWidgetsFlutterBinding.instance
-              .handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+          TestWidgetsFlutterBinding.instance.handleAppLifecycleStateChanged(AppLifecycleState.detached);
+          TestWidgetsFlutterBinding.instance.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
         },
         verify: (_) {
           verify(() => meteringInteractor.checkCameraPermission()).called(2);
@@ -497,6 +487,29 @@ void main() {
               .having((state) => state.exposureOffsetStep, 'exposureOffsetStep', 0.1666666)
               .having((state) => state.currentExposureOffset, 'currentExposureOffset', 0.0),
         ],
+      );
+    },
+  );
+
+  group(
+    '`ExposureSpotChangedEvent`',
+    () {
+      blocTest<CameraContainerBloc, CameraContainerState>(
+        'Set exposure spot multiple times',
+        setUp: () {
+          when(() => meteringInteractor.checkCameraPermission()).thenAnswer((_) async => true);
+        },
+        build: () => bloc,
+        act: (bloc) async {
+          bloc.add(const InitializeEvent());
+          await Future.delayed(Duration.zero);
+          bloc.add(const ExposureSpotChangedEvent(Offset(0.1, 0.1)));
+          bloc.add(const ExposureSpotChangedEvent(Offset(1.0, 0.5)));
+        },
+        verify: (_) {
+          verify(() => meteringInteractor.checkCameraPermission()).called(1);
+        },
+        expect: () => [...initializedStateSequence],
       );
     },
   );

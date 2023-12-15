@@ -4,6 +4,8 @@ import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:platform/platform.dart';
 
+import '../event_channel_mock.dart';
+
 class _MockLocalPlatform extends Mock implements LocalPlatform {}
 
 void main() {
@@ -60,10 +62,18 @@ void main() {
   });
 
   group('volumeButtonsEventStream', () {
-    // test('Android', () async {
-    //   when(() => localPlatform.isAndroid).thenReturn(true);
-    //   expect(service.volumeButtonsEventStream(), const Stream.empty());
-    // });
+    test('Android', () async {
+      when(() => localPlatform.isAndroid).thenReturn(true);
+      final stream = service.volumeButtonsEventStream();
+      final List<int> result = [];
+      final subscription = stream.listen(result.add);
+      await sendMockVolumeAction(VolumeEventsService.volumeEventsChannel.name, 24);
+      await sendMockVolumeAction(VolumeEventsService.volumeEventsChannel.name, 25);
+      await sendMockVolumeAction(VolumeEventsService.volumeEventsChannel.name, 20);
+      await sendMockVolumeAction(VolumeEventsService.volumeEventsChannel.name, 24);
+      expect(result, [24, 25, 24]);
+      subscription.cancel();
+    });
 
     test('iOS', () async {
       when(() => localPlatform.isAndroid).thenReturn(false);

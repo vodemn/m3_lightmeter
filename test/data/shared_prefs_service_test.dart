@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lightmeter/data/models/camera_feature.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
+import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/res/theme.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -99,8 +101,7 @@ void main() {
     });
 
     test('set', () {
-      when(() => sharedPreferences.setInt(UserPreferencesService.isoKey, 200))
-          .thenAnswer((_) => Future.value(true));
+      when(() => sharedPreferences.setInt(UserPreferencesService.isoKey, 200)).thenAnswer((_) => Future.value(true));
       service.iso = const IsoValue(200, StopType.full);
       verify(() => sharedPreferences.setInt(UserPreferencesService.isoKey, 200)).called(1);
     });
@@ -118,8 +119,7 @@ void main() {
     });
 
     test('set', () {
-      when(() => sharedPreferences.setInt(UserPreferencesService.ndFilterKey, 0))
-          .thenAnswer((_) => Future.value(true));
+      when(() => sharedPreferences.setInt(UserPreferencesService.ndFilterKey, 0)).thenAnswer((_) => Future.value(true));
       service.ndFilter = const NdValue(0);
       verify(() => sharedPreferences.setInt(UserPreferencesService.ndFilterKey, 0)).called(1);
     });
@@ -175,8 +175,7 @@ void main() {
     });
 
     test('set', () {
-      when(() => sharedPreferences.setInt(UserPreferencesService.stopTypeKey, 0))
-          .thenAnswer((_) => Future.value(true));
+      when(() => sharedPreferences.setInt(UserPreferencesService.stopTypeKey, 0)).thenAnswer((_) => Future.value(true));
       service.stopType = StopType.full;
       verify(() => sharedPreferences.setInt(UserPreferencesService.stopTypeKey, 0)).called(1);
     });
@@ -193,12 +192,11 @@ void main() {
           MeteringScreenLayoutFeature.extremeExposurePairs: true,
           MeteringScreenLayoutFeature.filmPicker: true,
           MeteringScreenLayoutFeature.equipmentProfiles: true,
-          MeteringScreenLayoutFeature.histogram: true,
         },
       );
     });
 
-    test('get', () {
+    test('get (legacy)', () {
       when(
         () => sharedPreferences.getString(UserPreferencesService.meteringScreenLayoutKey),
       ).thenReturn("""{"0":false,"1":true}""");
@@ -208,7 +206,20 @@ void main() {
           MeteringScreenLayoutFeature.extremeExposurePairs: false,
           MeteringScreenLayoutFeature.filmPicker: true,
           MeteringScreenLayoutFeature.equipmentProfiles: true,
-          MeteringScreenLayoutFeature.histogram: true,
+        },
+      );
+    });
+
+    test('get', () {
+      when(
+        () => sharedPreferences.getString(UserPreferencesService.meteringScreenLayoutKey),
+      ).thenReturn("""{"extremeExposurePairs":false,"filmPicker":true}""");
+      expect(
+        service.meteringScreenLayout,
+        {
+          MeteringScreenLayoutFeature.extremeExposurePairs: false,
+          MeteringScreenLayoutFeature.filmPicker: true,
+          MeteringScreenLayoutFeature.equipmentProfiles: true,
         },
       );
     });
@@ -217,19 +228,62 @@ void main() {
       when(
         () => sharedPreferences.setString(
           UserPreferencesService.meteringScreenLayoutKey,
-          """{"0":false,"1":true,"2":true,"3":true}""",
+          """{"extremeExposurePairs":false,"filmPicker":true,"equipmentProfiles":true}""",
         ),
       ).thenAnswer((_) => Future.value(true));
       service.meteringScreenLayout = {
         MeteringScreenLayoutFeature.extremeExposurePairs: false,
         MeteringScreenLayoutFeature.filmPicker: true,
-        MeteringScreenLayoutFeature.histogram: true,
         MeteringScreenLayoutFeature.equipmentProfiles: true,
       };
       verify(
         () => sharedPreferences.setString(
           UserPreferencesService.meteringScreenLayoutKey,
-          """{"0":false,"1":true,"2":true,"3":true}""",
+          """{"extremeExposurePairs":false,"filmPicker":true,"equipmentProfiles":true}""",
+        ),
+      ).called(1);
+    });
+  });
+
+  group('cameraFeatures', () {
+    test('get default', () {
+      when(() => sharedPreferences.getString(UserPreferencesService.cameraFeaturesKey)).thenReturn(null);
+      expect(
+        service.cameraFeatures,
+        {
+          CameraFeature.spotMetering: false,
+          CameraFeature.histogram: false,
+        },
+      );
+    });
+
+    test('get', () {
+      when(() => sharedPreferences.getString(UserPreferencesService.cameraFeaturesKey))
+          .thenReturn("""{"spotMetering":false,"histogram":true}""");
+      expect(
+        service.cameraFeatures,
+        {
+          CameraFeature.spotMetering: false,
+          CameraFeature.histogram: true,
+        },
+      );
+    });
+
+    test('set', () {
+      when(
+        () => sharedPreferences.setString(
+          UserPreferencesService.cameraFeaturesKey,
+          """{"spotMetering":false,"histogram":true}""",
+        ),
+      ).thenAnswer((_) => Future.value(true));
+      service.cameraFeatures = {
+        CameraFeature.spotMetering: false,
+        CameraFeature.histogram: true,
+      };
+      verify(
+        () => sharedPreferences.setString(
+          UserPreferencesService.cameraFeaturesKey,
+          """{"spotMetering":false,"histogram":true}""",
         ),
       ).called(1);
     });
@@ -253,6 +307,26 @@ void main() {
       verify(() => sharedPreferences.setBool(UserPreferencesService.hapticsKey, false)).called(1);
     });
   });
+  group('volumeAction', () {
+    test('get default', () {
+      when(() => sharedPreferences.getBool(UserPreferencesService.volumeActionKey)).thenReturn(null);
+      expect(service.volumeAction, VolumeAction.shutter);
+    });
+
+    test('get', () {
+      when(() => sharedPreferences.getString(UserPreferencesService.volumeActionKey))
+          .thenReturn(VolumeAction.shutter.toString());
+      expect(service.volumeAction, VolumeAction.shutter);
+    });
+
+    test('set', () {
+      when(() => sharedPreferences.setString(UserPreferencesService.volumeActionKey, VolumeAction.shutter.toString()))
+          .thenAnswer((_) => Future.value(true));
+      service.volumeAction = VolumeAction.shutter;
+      verify(() => sharedPreferences.setString(UserPreferencesService.volumeActionKey, VolumeAction.shutter.toString()))
+          .called(1);
+    });
+  });
 
   group('locale', () {
     test('get default', () {
@@ -261,8 +335,7 @@ void main() {
     });
 
     test('get', () {
-      when(() => sharedPreferences.getString(UserPreferencesService.localeKey))
-          .thenReturn('SupportedLocale.ru');
+      when(() => sharedPreferences.getString(UserPreferencesService.localeKey)).thenReturn('SupportedLocale.ru');
       expect(service.locale, SupportedLocale.ru);
     });
 
@@ -279,14 +352,12 @@ void main() {
 
   group('cameraEvCalibration', () {
     test('get default', () {
-      when(() => sharedPreferences.getDouble(UserPreferencesService.cameraEvCalibrationKey))
-          .thenReturn(null);
+      when(() => sharedPreferences.getDouble(UserPreferencesService.cameraEvCalibrationKey)).thenReturn(null);
       expect(service.cameraEvCalibration, 0.0);
     });
 
     test('get', () {
-      when(() => sharedPreferences.getDouble(UserPreferencesService.cameraEvCalibrationKey))
-          .thenReturn(2.0);
+      when(() => sharedPreferences.getDouble(UserPreferencesService.cameraEvCalibrationKey)).thenReturn(2.0);
       expect(service.cameraEvCalibration, 2.0);
     });
 
@@ -303,14 +374,12 @@ void main() {
 
   group('lightSensorEvCalibration', () {
     test('get default', () {
-      when(() => sharedPreferences.getDouble(UserPreferencesService.lightSensorEvCalibrationKey))
-          .thenReturn(null);
+      when(() => sharedPreferences.getDouble(UserPreferencesService.lightSensorEvCalibrationKey)).thenReturn(null);
       expect(service.lightSensorEvCalibration, 0.0);
     });
 
     test('get', () {
-      when(() => sharedPreferences.getDouble(UserPreferencesService.lightSensorEvCalibrationKey))
-          .thenReturn(2.0);
+      when(() => sharedPreferences.getDouble(UserPreferencesService.lightSensorEvCalibrationKey)).thenReturn(2.0);
       expect(service.lightSensorEvCalibration, 2.0);
     });
 
@@ -354,8 +423,7 @@ void main() {
     });
 
     test('get', () {
-      when(() => sharedPreferences.getInt(UserPreferencesService.primaryColorKey))
-          .thenReturn(0xff9c27b0);
+      when(() => sharedPreferences.getInt(UserPreferencesService.primaryColorKey)).thenReturn(0xff9c27b0);
       expect(service.primaryColor, primaryColorsList[2]);
     });
 
@@ -372,14 +440,12 @@ void main() {
 
   group('dynamicColor', () {
     test('get default', () {
-      when(() => sharedPreferences.getBool(UserPreferencesService.dynamicColorKey))
-          .thenReturn(null);
+      when(() => sharedPreferences.getBool(UserPreferencesService.dynamicColorKey)).thenReturn(null);
       expect(service.dynamicColor, false);
     });
 
     test('get', () {
-      when(() => sharedPreferences.getBool(UserPreferencesService.dynamicColorKey))
-          .thenReturn(true);
+      when(() => sharedPreferences.getBool(UserPreferencesService.dynamicColorKey)).thenReturn(true);
       expect(service.dynamicColor, true);
     });
 
@@ -387,8 +453,7 @@ void main() {
       when(() => sharedPreferences.setBool(UserPreferencesService.dynamicColorKey, false))
           .thenAnswer((_) => Future.value(true));
       service.dynamicColor = false;
-      verify(() => sharedPreferences.setBool(UserPreferencesService.dynamicColorKey, false))
-          .called(1);
+      verify(() => sharedPreferences.setBool(UserPreferencesService.dynamicColorKey, false)).called(1);
     });
   });
 }

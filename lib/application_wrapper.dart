@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/analytics/analytics.dart';
+import 'package:lightmeter/data/analytics/api/analytics_firebase.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/permissions_service.dart';
+import 'package:lightmeter/data/remote_config_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/films_provider.dart';
+import 'package:lightmeter/providers/remote_config_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
@@ -21,25 +27,38 @@ class ApplicationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.wait([
+      future: Future.wait<dynamic>([
         SharedPreferences.getInstance(),
         const LightSensorService(LocalPlatform()).hasSensor(),
+        if (env.buildType != BuildType.dev) const RemoteConfigService().activeAndFetchFeatures(),
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
-          return IAPProviders(
-            sharedPreferences: snapshot.data![0] as SharedPreferences,
-            child: ServicesProvider(
-              caffeineService: const CaffeineService(),
-              environment: env.copyWith(hasLightSensor: snapshot.data![1] as bool),
-              hapticsService: const HapticsService(),
-              lightSensorService: const LightSensorService(LocalPlatform()),
-              permissionsService: const PermissionsService(),
-              userPreferencesService:
-                  UserPreferencesService(snapshot.data![0] as SharedPreferences),
-              volumeEventsService: const VolumeEventsService(LocalPlatform()),
-              child: UserPreferencesProvider(
-                child: child,
+          final iapService = IAPStorageService(snapshot.data![0] as SharedPreferences);
+          final userPreferencesService = UserPreferencesService(snapshot.data![0] as SharedPreferences);
+          final hasLightSensor = snapshot.data![1] as bool;
+          return ServicesProvider(
+            analytics: const LightmeterAnalytics(api: LightmeterAnalyticsFirebase()),
+            caffeineService: const CaffeineService(),
+            environment: env.copyWith(hasLightSensor: hasLightSensor),
+            hapticsService: const HapticsService(),
+            lightSensorService: const LightSensorService(LocalPlatform()),
+            permissionsService: const PermissionsService(),
+            userPreferencesService: userPreferencesService,
+            volumeEventsService: const VolumeEventsService(LocalPlatform()),
+            child: RemoteConfigProvider(
+              remoteConfigService:
+                  env.buildType != BuildType.dev ? const RemoteConfigService() : const MockRemoteConfigService(),
+              child: EquipmentProfileProvider(
+                storageService: iapService,
+                child: FilmsProvider(
+                  storageService: iapService,
+                  child: UserPreferencesProvider(
+                    hasLightSensor: hasLightSensor,
+                    userPreferencesService: userPreferencesService,
+                    child: child,
+                  ),
+                ),
               ),
             ),
           );

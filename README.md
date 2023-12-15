@@ -1,5 +1,8 @@
 <img src="resources/social_preview.png" width="100%" />
 
+![](https://github.com/vodemn/m3_lightmeter/actions/workflows/pr_check.yml/badge.svg)
+![](https://github.com/vodemn/m3_lightmeter/actions/workflows/create_release.yml/badge.svg)
+
 # Table of contents
 
 - [Table of contents](#table-of-contents)
