@@ -72,14 +72,16 @@ class _ReadingValueBuilder extends StatelessWidget {
           softWrap: false,
         ),
         const SizedBox(height: Dimens.grid4),
-        AnimatedSwitcher(
-          duration: Dimens.switchDuration,
-          child: Text(
-            reading.value,
-            style: textTheme.titleMedium?.copyWith(color: textColor),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            softWrap: false,
+        RepaintBoundary(
+          child: AnimatedSwitcher(
+            duration: Dimens.switchDuration,
+            child: Text(
+              reading.value,
+              style: textTheme.titleMedium?.copyWith(color: textColor),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+            ),
           ),
         )
       ],

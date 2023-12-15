@@ -82,5 +82,18 @@
             ],
             "program": "${workspaceFolder}/lib/main_dev.dart",
         },
+        {
+            "name": "Integration Test",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": [
+                "--flavor",
+                "prod",
+                "--dart-define",
+                "cameraPreviewAspectRatio=240/320",
+            ],
+            "program": "${workspaceFolder}/integration_test/widget_dialog_animated_test.dart",
+          },
     ],
 }

@@ -1,0 +1,14 @@
+{
+    "buildTime": {
+        "averageFrameTimeMs": 10.006865276698612,
+        "percentile90FrameTimeMs": 21.645888888888887,
+        "percentile99FrameTimeMs": 21.645888888888887,
+        "worstFrameTimeMs": 26.134444444444448
+    },
+    "rasterizerTime": {
+        "averageFrameTimeMs": 23.913184792368128,
+        "percentile90FrameTimeMs": 57.51240740740741,
+        "percentile99FrameTimeMs": 57.51240740740741,
+        "worstFrameTimeMs": 78.87037037037038
+    }
+}
