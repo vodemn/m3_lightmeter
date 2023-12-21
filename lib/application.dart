@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
@@ -17,13 +18,13 @@ class Application extends StatelessWidget {
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarBrightness:
-            systemIconsBrightness == Brightness.light ? Brightness.dark : Brightness.light,
+        statusBarBrightness: systemIconsBrightness == Brightness.light ? Brightness.dark : Brightness.light,
         statusBarIconBrightness: systemIconsBrightness,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness: systemIconsBrightness,
       ),
       child: MaterialApp(
+        debugShowCheckedModeBanner: !PlatformConfig.isTest,
         theme: theme,
         locale: Locale(UserPreferencesProvider.localeOf(context).intlName),
         localizationsDelegates: const [

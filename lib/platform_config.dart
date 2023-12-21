@@ -7,4 +7,6 @@ class PlatformConfig {
   }
 
   static String get cameraStubImage => const String.fromEnvironment('cameraStubImage');
+
+  static bool get isTest => cameraStubImage.isNotEmpty;
 }

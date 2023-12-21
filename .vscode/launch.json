@@ -82,5 +82,20 @@
             ],
             "program": "${workspaceFolder}/lib/main_dev.dart",
         },
+        {
+            "name": "dev-simulator",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "--flavor",
+                "dev",
+                "--dart-define",
+                "cameraPreviewAspectRatio=240/320",
+                "--dart-define",
+                "cameraStubImage=assets/camera_stub_image.jpg"
+            ],
+            "program": "${workspaceFolder}/lib/main_dev.dart",
+        },
     ],
 }
