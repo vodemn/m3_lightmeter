@@ -30,8 +30,5 @@ As a user I want to see the most relevant screenshots in the store, so that I ca
 
 ## Run the generator
 
-```console
-sh screenshots/generate_screenshots.sh
-```
-
-Screenshots will be stored in the _screenshots/_ folder.
+- Android
+- [iOS](screenshots/ios/README.md)

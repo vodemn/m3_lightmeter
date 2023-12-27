@@ -131,7 +131,7 @@ extension on WidgetTester {
       await binding.convertFlutterSurfaceToImage();
       await pumpAndSettle();
     }
-    await binding.takeScreenshot("$_platformFolder/$name");
+    await binding.takeScreenshot("$_platformFolder/${const String.fromEnvironment('deviceName')}/$name");
     await pumpAndSettle();
   }
 }
