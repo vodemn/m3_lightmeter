@@ -1,6 +1,6 @@
 **Privacy Policy**
 
-I, Vodemn, built the Material Lightmeter app as a Free app. This app is provided at no cost and is intended for use as is.
+I, Vadim Turko, built the Material Lightmeter app as a Free app. This app is provided at no cost and is intended for use as is.
 
 **Information Collection and Use**
 
@@ -20,7 +20,7 @@ This app contains links to other sites. If you click on a third-party link, you 
 
 I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
 
-This policy is effective as of 2023-02-24
+This policy is effective as of 2024-01-04
 
 **Contact Us**
 
