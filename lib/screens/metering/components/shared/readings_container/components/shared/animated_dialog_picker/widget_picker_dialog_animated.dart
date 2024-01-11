@@ -13,7 +13,7 @@ class AnimatedDialogPicker<T> extends StatefulWidget {
   final DialogPickerItemTitleBuilder<T> itemTitleBuilder;
   final DialogPickerItemTrailingBuilder<T>? itemTrailingBuilder;
   final ValueChanged<T> onChanged;
-  final Widget closedChild;
+  final AnimatedDialogClosedChild closedChild;
 
   const AnimatedDialogPicker({
     required this.icon,

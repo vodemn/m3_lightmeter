@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/animated_dialog/widget_dialog_animated.dart';
 
 class ReadingValue {
   final String label;
@@ -11,7 +12,7 @@ class ReadingValue {
   });
 }
 
-class ReadingValueContainer extends StatelessWidget {
+class ReadingValueContainer extends StatelessWidget implements AnimatedDialogClosedChild {
   late final List<Widget> _items;
   final Color? color;
 
@@ -36,11 +37,14 @@ class ReadingValueContainer extends StatelessWidget {
   }) : _items = [_ReadingValueBuilder(value)];
 
   @override
+  Color backgroundColor(BuildContext context) => color ?? Theme.of(context).colorScheme.primaryContainer;
+
+  @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
       child: ColoredBox(
-        color: color ?? Theme.of(context).colorScheme.primaryContainer,
+        color: backgroundColor(context),
         child: Padding(
           padding: const EdgeInsets.all(Dimens.paddingM),
           child: Column(

@@ -1,9 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
 
+mixin AnimatedDialogClosedChild on Widget {
+  Color backgroundColor(BuildContext context);
+}
+
 class AnimatedDialog extends StatefulWidget {
   final Size? openedSize;
-  final Widget? closedChild;
+  final AnimatedDialogClosedChild? closedChild;
   final Widget? openedChild;
   final Widget? child;
 
@@ -95,7 +101,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
   void didChangeDependencies() {
     super.didChangeDependencies();
     _foregroundColorAnimation = ColorTween(
-      begin: Theme.of(context).colorScheme.primaryContainer,
+      begin: widget.closedChild?.backgroundColor(context) ?? Theme.of(context).colorScheme.primaryContainer,
       end: Theme.of(context).colorScheme.surface,
     ).animate(_defaultCurvedAnimation);
 
@@ -135,13 +141,14 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
       if (renderBox != null) {
         final size = MediaQuery.sizeOf(context);
         final padding = MediaQuery.paddingOf(context);
+        final maxWidth = size.width - padding.horizontal - Dimens.dialogMargin.horizontal;
+        final maxHeight = size.height - padding.vertical - Dimens.dialogMargin.vertical;
         _closedSize = _key.currentContext!.size!;
         _sizeTween = SizeTween(
           begin: _closedSize,
-          end: widget.openedSize ??
-              Size(
-                size.width - padding.horizontal - Dimens.dialogMargin.horizontal,
-                size.height - padding.vertical - Dimens.dialogMargin.vertical,
+          end: Size(
+                min(widget.openedSize?.width ?? double.maxFinite, maxWidth),
+                min(widget.openedSize?.height ?? double.maxFinite, maxHeight),
               ),
         );
         _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
