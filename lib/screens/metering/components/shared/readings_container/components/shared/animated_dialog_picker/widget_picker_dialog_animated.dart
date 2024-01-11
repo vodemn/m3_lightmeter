@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/animated_dialog/widget_dialog_animated.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
 
-// Has to be stateful, so that [GlobalKey] is not recreated. 
+// Has to be stateful, so that [GlobalKey] is not recreated.
 // Otherwise use will no be able to close the dialog after EV value has changed.
 class AnimatedDialogPicker<T> extends StatefulWidget {
   final IconData icon;
@@ -37,24 +37,26 @@ class _AnimatedDialogPickerState<T> extends State<AnimatedDialogPicker<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final dialogPicker = DialogPicker<T>(
+      icon: widget.icon,
+      title: widget.title,
+      subtitle: widget.subtitle,
+      initialValue: widget.selectedValue,
+      values: widget.values,
+      itemTitleBuilder: widget.itemTitleBuilder,
+      itemTrailingBuilder: widget.itemTrailingBuilder,
+      onCancel: () {
+        _key.currentState?.close();
+      },
+      onSelect: (value) {
+        _key.currentState?.close().then((_) => widget.onChanged(value));
+      },
+    );
     return AnimatedDialog(
       key: _key,
       closedChild: widget.closedChild,
-      openedChild: DialogPicker<T>(
-        icon: widget.icon,
-        title: widget.title,
-        subtitle: widget.subtitle,
-        initialValue: widget.selectedValue,
-        values: widget.values,
-        itemTitleBuilder: widget.itemTitleBuilder,
-        itemTrailingBuilder: widget.itemTrailingBuilder,
-        onCancel: () {
-          _key.currentState?.close();
-        },
-        onSelect: (value) {
-          _key.currentState?.close().then((_) => widget.onChanged(value));
-        },
-      ),
+      openedChild: dialogPicker,
+      openedSize: Size.fromHeight(dialogPicker.height(context)),
     );
   }
 }

@@ -29,6 +29,30 @@ class DialogPicker<T> extends StatefulWidget {
     super.key,
   });
 
+  double height(BuildContext context) {
+    double textHeight(BuildContext context, String text, TextStyle? style) {
+      final TextPainter titlePainter = TextPainter(
+        text: TextSpan(
+          text: text,
+          style: style,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(maxWidth: MediaQuery.of(context).size.width - Dimens.dialogIconTitlePadding.horizontal);
+      return titlePainter.size.height + Dimens.dialogIconTitlePadding.vertical;
+    }
+
+    final titleHeight = textHeight(context, title, Theme.of(context).textTheme.headlineSmall);
+    final subtitleHeight =
+        subtitle != null ? textHeight(context, subtitle!, Theme.of(context).textTheme.bodyMedium) : 0;
+
+    return (IconTheme.of(context).size! + Dimens.dialogTitlePadding.vertical) + // icon + icon padding
+        titleHeight + // title + title padding
+        subtitleHeight + // subtitle + subtitle padding
+        Dimens.grid56 * values.length + // values summary height
+        1 + // dividers
+        (48 + Dimens.dialogActionsPadding.vertical); // actions + actions padding
+  }
+
   @override
   State<DialogPicker<T>> createState() => _DialogPickerState<T>();
 }
@@ -66,12 +90,7 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
             ),
             if (widget.subtitle != null)
               Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  Dimens.paddingL,
-                  0,
-                  Dimens.paddingL,
-                  Dimens.paddingM,
-                ),
+                padding: Dimens.dialogIconTitlePadding,
                 child: Text(
                   widget.subtitle!,
                   style: Theme.of(context).textTheme.bodyMedium,
