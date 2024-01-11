@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
-import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/lightmeter_pro/widget_lightmeter_pro.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/nd_picker/widget_picker_nd.dart';
+import 'package:lightmeter/utils/context_utils.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class ReadingsContainer extends StatelessWidget {
@@ -31,30 +33,26 @@ class ReadingsContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPro = IAPProducts.isPurchased(context, IAPProductType.paidFeatures);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (UserPreferencesProvider.meteringScreenFeatureOf(
-          context,
-          MeteringScreenLayoutFeature.equipmentProfiles,
-        )) ...[
+        if (!isPro) ...[
+          const LightmeterProAnimatedDialog(),
+          const _InnerPadding(),
+        ],
+        if (isPro && context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) ...[
           const EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
-        if (UserPreferencesProvider.meteringScreenFeatureOf(
-          context,
-          MeteringScreenLayoutFeature.extremeExposurePairs,
-        )) ...[
+        if (context.meteringFeature(MeteringScreenLayoutFeature.extremeExposurePairs)) ...[
           ExtremeExposurePairsContainer(
             fastest: fastest,
             slowest: slowest,
           ),
           const _InnerPadding(),
         ],
-        if (UserPreferencesProvider.meteringScreenFeatureOf(
-          context,
-          MeteringScreenLayoutFeature.filmPicker,
-        )) ...[
+        if (isPro && context.meteringFeature(MeteringScreenLayoutFeature.filmPicker)) ...[
           FilmPicker(selectedIso: iso),
           const _InnerPadding(),
         ],
