@@ -4,7 +4,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/remote_config_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/settings/utils/show_buy_pro_dialog.dart';
+import 'package:lightmeter/screens/shared/pro_features_dialog/widget_dialog_pro_features.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class BuyProListTile extends StatelessWidget {
@@ -20,7 +20,10 @@ class BuyProListTile extends StatelessWidget {
       title: Text(unlockFeaturesEnabled ? S.of(context).unlockProFeatures : S.of(context).buyLightmeterPro),
       onTap: !isPending
           ? () {
-              showBuyProDialog(context);
+              showDialog(
+                context: context,
+                builder: (_) => const Dialog(child: ProFeaturesDialog()),
+              );
               ServicesProvider.of(context)
                   .analytics
                   .logUnlockProFeatures(unlockFeaturesEnabled ? 'Unlock Pro features' : 'Buy Lightmeter Pro');

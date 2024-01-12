@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/utils/text_height.dart';
 
 class TransparentDialog extends StatelessWidget {
   final IconData icon;
@@ -18,6 +19,35 @@ class TransparentDialog extends StatelessWidget {
     this.actions = const [],
     super.key,
   });
+
+  static double height(
+    BuildContext context, {
+    required String title,
+    String? subtitle,
+    required double contextHeight,
+    bool scrollableContent = false,
+  }) {
+    double height = IconTheme.of(context).size! + Dimens.dialogTitlePadding.vertical;
+    height += dialogTextHeight(
+          context,
+          title,
+          Theme.of(context).textTheme.headlineSmall,
+          Dimens.dialogIconTitlePadding.horizontal,
+        ) +
+        Dimens.dialogIconTitlePadding.vertical;
+    if (subtitle != null) {
+      height += dialogTextHeight(
+            context,
+            subtitle,
+            Theme.of(context).textTheme.bodyMedium,
+            Dimens.dialogIconTitlePadding.horizontal,
+          ) +
+          Dimens.dialogIconTitlePadding.vertical;
+    }
+    height += contextHeight;
+    if (scrollableContent) height += 1;
+    return height += 48 + Dimens.dialogActionsPadding.vertical;
+  }
 
   @override
   Widget build(BuildContext context) {
