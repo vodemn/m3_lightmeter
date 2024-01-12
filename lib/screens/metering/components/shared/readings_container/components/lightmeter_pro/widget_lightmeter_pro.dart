@@ -18,11 +18,8 @@ class _LightmeterProAnimatedDialogState extends State<LightmeterProAnimatedDialo
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        IAPProductsProvider.maybeOf(context)?.buy(IAPProductType.paidFeatures);
-      },
-      child: ReadingValueContainer(
+    return AnimatedDialog(
+      closedChild: ReadingValueContainer(
         color: Theme.of(context).colorScheme.errorContainer,
         values: [
           ReadingValue(
@@ -31,6 +28,44 @@ class _LightmeterProAnimatedDialogState extends State<LightmeterProAnimatedDialo
           ),
         ],
       ),
+      openedChild: ProFeaturesDialog(),
+      openedSize: Size.fromHeight(height(context)),
     );
+  }
+
+  double height(BuildContext context) {
+    double textHeight(
+      BuildContext context,
+      String text,
+      TextStyle? style,
+      double horizontalPadding,
+    ) {
+      final TextPainter titlePainter = TextPainter(
+        text: TextSpan(
+          text: text,
+          style: style,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(maxWidth: MediaQuery.of(context).size.width - Dimens.dialogMargin.horizontal - horizontalPadding);
+      return titlePainter.size.height;
+    }
+
+    final titleHeight = textHeight(
+      context,
+      S.of(context).unlockProFeatures,
+      Theme.of(context).textTheme.headlineSmall,
+      Dimens.dialogIconTitlePadding.horizontal,
+    );
+    final contentHeight = textHeight(
+      context,
+      S.of(context).unlockProFeaturesDescription,
+      Theme.of(context).textTheme.bodyMedium,
+      Dimens.paddingL * 2,
+    );
+
+    return (IconTheme.of(context).size! + Dimens.dialogTitlePadding.vertical) + // icon + icon padding
+        (titleHeight + Dimens.dialogIconTitlePadding.vertical) + // title + title padding
+        contentHeight +
+        (48 + Dimens.dialogActionsPadding.vertical); // actions + actions padding
   }
 }

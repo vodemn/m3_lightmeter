@@ -21,6 +21,9 @@ class AnimatedDialog extends StatefulWidget {
     super.key,
   });
 
+  static Future<void>? maybeClose(BuildContext context) =>
+      context.findAncestorWidgetOfExactType<_AnimatedOverlay>()?.onDismiss();
+
   @override
   State<AnimatedDialog> createState() => AnimatedDialogState();
 }
@@ -147,9 +150,9 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         _sizeTween = SizeTween(
           begin: _closedSize,
           end: Size(
-                min(widget.openedSize?.width ?? double.maxFinite, maxWidth),
-                min(widget.openedSize?.height ?? double.maxFinite, maxHeight),
-              ),
+            min(widget.openedSize?.width ?? double.maxFinite, maxWidth),
+            min(widget.openedSize?.height ?? double.maxFinite, maxHeight),
+          ),
         );
         _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
 
@@ -230,7 +233,7 @@ class _AnimatedOverlay extends StatelessWidget {
   final Animation<double> borderRadiusAnimation;
   final Animation<Color?> foregroundColorAnimation;
   final Animation<double> elevationAnimation;
-  final VoidCallback onDismiss;
+  final Future<void> Function() onDismiss;
   final Widget? child;
   final Widget Function(BuildContext context)? builder;
 
