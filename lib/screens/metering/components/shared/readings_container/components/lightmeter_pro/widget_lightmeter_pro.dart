@@ -12,6 +12,7 @@ class LightmeterProAnimatedDialog extends StatelessWidget {
     return AnimatedDialog(
       closedChild: ReadingValueContainer(
         color: Theme.of(context).colorScheme.errorContainer,
+        textColor: Theme.of(context).colorScheme.onErrorContainer,
         values: [
           ReadingValue(
             label: S.of(context).proFeatures,

@@ -15,10 +15,12 @@ class ReadingValue {
 class ReadingValueContainer extends StatelessWidget implements AnimatedDialogClosedChild {
   late final List<Widget> _items;
   final Color? color;
+  final Color? textColor;
 
   ReadingValueContainer({
     required List<ReadingValue> values,
     this.color,
+    this.textColor,
     super.key,
   }) {
     _items = [];
@@ -26,15 +28,16 @@ class ReadingValueContainer extends StatelessWidget implements AnimatedDialogClo
       if (i > 0) {
         _items.add(const SizedBox(height: Dimens.grid8));
       }
-      _items.add(_ReadingValueBuilder(values[i]));
+      _items.add(_ReadingValueBuilder(values[i], textColor: textColor));
     }
   }
 
   ReadingValueContainer.singleValue({
     required ReadingValue value,
     this.color,
+    this.textColor,
     super.key,
-  }) : _items = [_ReadingValueBuilder(value)];
+  }) : _items = [_ReadingValueBuilder(value, textColor: textColor)];
 
   @override
   Color backgroundColor(BuildContext context) => color ?? Theme.of(context).colorScheme.primaryContainer;
@@ -60,20 +63,21 @@ class ReadingValueContainer extends StatelessWidget implements AnimatedDialogClo
 
 class _ReadingValueBuilder extends StatelessWidget {
   final ReadingValue reading;
+  final Color? textColor;
 
-  const _ReadingValueBuilder(this.reading);
+  const _ReadingValueBuilder(this.reading, {this.textColor});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final textColor = Theme.of(context).colorScheme.onPrimaryContainer;
+    final color = textColor ?? Theme.of(context).colorScheme.onPrimaryContainer;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           reading.label,
-          style: textTheme.labelMedium?.copyWith(color: textColor),
+          style: textTheme.labelMedium?.copyWith(color: color),
           maxLines: 1,
           overflow: TextOverflow.visible,
           softWrap: false,
@@ -83,7 +87,7 @@ class _ReadingValueBuilder extends StatelessWidget {
           duration: Dimens.switchDuration,
           child: Text(
             reading.value,
-            style: textTheme.titleMedium?.copyWith(color: textColor),
+            style: textTheme.titleMedium?.copyWith(color: color),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             softWrap: false,
