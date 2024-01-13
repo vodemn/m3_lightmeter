@@ -9,7 +9,7 @@
 - [Backstory](#backstory)
 - [Screenshots](#screenshots)
 - [Development](#development)
-- [Contribution](#contribution)
+- [Support](#support)
 - [iOS Limitations](#ios-limitations)
 
 # Backstory
@@ -36,7 +36,7 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 
 To build this app you need to install Flutter 3.10.0 stable. [How to install](https://docs.flutter.dev/get-started/install).
 
-### 3. Project setup
+### 2. Project setup
 
 As part of the app's functionallity is in the private repo, you have to replace these lines in _pubspec.yaml_:
 
@@ -69,11 +69,11 @@ flutter pub get
 flutter pub run intl_utils:generate
 ```
 
-### 4. (Optional) Install Firebase
+### 3. (Optional) Install Firebase
 
 Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics to your local build please follow [this guide](https://firebase.google.com/docs/flutter/setup).
 
-### 5. Build
+### 4. Build
 
 #### Android
 
@@ -87,11 +87,11 @@ flutter build apk --release --flavor dev --dart-define cameraPreviewAspectRatio=
 
 TBD
 
-# Contribution
+# Support
 
-To report a bug or suggest a new feature open a new [issue](https://github.com/vodemn/m3_lightmeter/issues).
+To report a bug or suggest a new feature open a new [issue](https://github.com/vodemn/m3_lightmeter/issues). To contribute to the project feel free to open a Pull Request, but you need to follow this [style guide](doc/style_guide.md).
 
-In case you want to help develop this project feel free to open a Pull Request, but you need to follow this [style guide](doc/style_guide.md).
+In case you have any other questions please contact me via [email](mailto:contact.vodemn@gmail.com?subject="Lightmeter").
 
 # iOS Limitations
 
