@@ -191,7 +191,6 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
             onDismiss: close,
             builder: widget.closedChild != null && widget.openedChild != null
                 ? (_) => _AnimatedSwitcher(
-                      sizeAnimation: _sizeAnimation,
                       closedOpacityAnimation: _closedOpacityAnimation,
                       openedOpacityAnimation: _openedOpacityAnimation,
                       closedSize: _sizeTween.begin!,
@@ -291,7 +290,6 @@ class _AnimatedOverlay extends StatelessWidget {
 }
 
 class _AnimatedSwitcher extends StatelessWidget {
-  final Animation<Size?> sizeAnimation;
   final Animation<double> closedOpacityAnimation;
   final Animation<double> openedOpacityAnimation;
   final Size closedSize;
@@ -300,7 +298,6 @@ class _AnimatedSwitcher extends StatelessWidget {
   final Widget openedChild;
 
   const _AnimatedSwitcher({
-    required this.sizeAnimation,
     required this.closedOpacityAnimation,
     required this.openedOpacityAnimation,
     required this.closedSize,
@@ -316,17 +313,21 @@ class _AnimatedSwitcher extends StatelessWidget {
       children: [
         Opacity(
           opacity: closedOpacityAnimation.value,
-          child: Transform.scale(
-            scale: sizeAnimation.value!.width / closedSize.width,
-            child: SizedBox(
-              width: closedSize.width,
+          child: FittedBox(
+            child: SizedBox.fromSize(
+              size: closedSize,
               child: closedChild,
             ),
           ),
         ),
         Opacity(
           opacity: openedOpacityAnimation.value,
-          child: openedChild,
+          child: FittedBox(
+            child: SizedBox.fromSize(
+              size: openedSize,
+              child: openedChild,
+            ),
+          ),
         ),
       ],
     );
