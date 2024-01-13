@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/animated_dialog/widget_dialog_animated.dart';
 
 class ReadingValue {
   final String label;
@@ -11,11 +12,15 @@ class ReadingValue {
   });
 }
 
-class ReadingValueContainer extends StatelessWidget {
+class ReadingValueContainer extends StatelessWidget implements AnimatedDialogClosedChild {
   late final List<Widget> _items;
+  final Color? color;
+  final Color? textColor;
 
   ReadingValueContainer({
     required List<ReadingValue> values,
+    this.color,
+    this.textColor,
     super.key,
   }) {
     _items = [];
@@ -23,21 +28,26 @@ class ReadingValueContainer extends StatelessWidget {
       if (i > 0) {
         _items.add(const SizedBox(height: Dimens.grid8));
       }
-      _items.add(_ReadingValueBuilder(values[i]));
+      _items.add(_ReadingValueBuilder(values[i], textColor: textColor));
     }
   }
 
   ReadingValueContainer.singleValue({
     required ReadingValue value,
+    this.color,
+    this.textColor,
     super.key,
-  }) : _items = [_ReadingValueBuilder(value)];
+  }) : _items = [_ReadingValueBuilder(value, textColor: textColor)];
+
+  @override
+  Color backgroundColor(BuildContext context) => color ?? Theme.of(context).colorScheme.primaryContainer;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
       child: ColoredBox(
-        color: Theme.of(context).colorScheme.primaryContainer,
+        color: backgroundColor(context),
         child: Padding(
           padding: const EdgeInsets.all(Dimens.paddingM),
           child: Column(
@@ -53,20 +63,21 @@ class ReadingValueContainer extends StatelessWidget {
 
 class _ReadingValueBuilder extends StatelessWidget {
   final ReadingValue reading;
+  final Color? textColor;
 
-  const _ReadingValueBuilder(this.reading);
+  const _ReadingValueBuilder(this.reading, {this.textColor});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final textColor = Theme.of(context).colorScheme.onPrimaryContainer;
+    final color = textColor ?? Theme.of(context).colorScheme.onPrimaryContainer;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           reading.label,
-          style: textTheme.labelMedium?.copyWith(color: textColor),
+          style: textTheme.labelMedium?.copyWith(color: color),
           maxLines: 1,
           overflow: TextOverflow.visible,
           softWrap: false,
@@ -76,7 +87,7 @@ class _ReadingValueBuilder extends StatelessWidget {
           duration: Dimens.switchDuration,
           child: Text(
             reading.value,
-            style: textTheme.titleMedium?.copyWith(color: textColor),
+            style: textTheme.titleMedium?.copyWith(color: color),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             softWrap: false,
