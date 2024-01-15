@@ -34,6 +34,7 @@
     "calibrationMessageCameraOnly": "La précision des lectures mesurées par cette application dépend entièrement de la caméra arrière de l'appareil. Par conséquent, envisagez de tester cette application et de configurer une valeur d'étalonnage EV qui vous donnera les résultats de mesure souhaités.",
     "camera": "Caméra",
     "lightSensor": "Capteur de lumière",
+    "showEv100": "Montrer EV\u2081\u2080\u2080",
     "meteringScreenLayout": "Disposition de l'écran de mesure",
     "meteringScreenLayoutHint": "Masquer les éléments sur l'écran de mesure dont vous n'avez pas besoin pour qu'ils ne gaspillent pas de l'espace dans les paires d'exposition.",
     "meteringScreenLayoutHintEquipmentProfiles": "Sélecteur de profil de l'équipement",

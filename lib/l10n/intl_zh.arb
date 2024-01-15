@@ -34,6 +34,7 @@
     "calibrationMessageCameraOnly": "此应用程序测量读数的准确s性完全取决于设备的后置摄像头。因此，请考虑测试此应用并手动设置 EV 校准，以获得准确的测量结果。",
     "camera": "摄像头",
     "lightSensor": "光传感器",
+    "showEv100": "显示 EV\u2081\u2080\u2080",
     "meteringScreenLayout": "布局",
     "meteringScreenLayoutHint": "隐藏不需要的元素，以免浪费曝光列表空间",
     "meteringScreenLayoutHintEquipmentProfiles": "设备配置选择",
