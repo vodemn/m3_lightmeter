@@ -52,9 +52,15 @@ class RemoteConfigService implements IRemoteConfigService {
 
   @override
   Future<void> fetchConfig() async {
-    // https://github.com/firebase/flutterfire/issues/6196#issuecomment-927751667
-    await Future.delayed(const Duration(seconds: 1));
-    await FirebaseRemoteConfig.instance.fetch();
+    try {
+      // https://github.com/firebase/flutterfire/issues/6196#issuecomment-927751667
+      await Future.delayed(const Duration(seconds: 1));
+      await FirebaseRemoteConfig.instance.fetch();
+    } on FirebaseException catch (e) {
+      _logError('Firebase exception during Firebase Remote Config fetch: $e');
+    } catch (e) {
+      _logError('Error during Firebase Remote Config fetch: $e');
+    }
   }
 
   @override
