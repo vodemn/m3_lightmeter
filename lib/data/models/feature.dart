@@ -1,5 +1,5 @@
-enum Feature { unlockProFeaturesText }
+enum Feature { showUnlockProOnMainScreen }
 
 const featuresDefaultValues = {
-  Feature.unlockProFeaturesText: true,
+  Feature.showUnlockProOnMainScreen: false,
 };

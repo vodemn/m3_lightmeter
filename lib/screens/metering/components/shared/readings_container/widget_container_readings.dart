@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/data/models/feature.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/remote_config_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
@@ -35,7 +37,7 @@ class ReadingsContainer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (!context.isPro) ...[
+        if (!context.isPro && RemoteConfig.isEnabled(context, Feature.showUnlockProOnMainScreen)) ...[
           const LightmeterProAnimatedDialog(),
           const _InnerPadding(),
         ],
