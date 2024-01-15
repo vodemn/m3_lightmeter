@@ -3,6 +3,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/filled_circle/widget_circle_filled.dart';
+import 'package:lightmeter/utils/context_utils.dart';
 
 const String _subscript100 = '\u2081\u2080\u2080';
 
@@ -106,7 +107,7 @@ class _EvValueText extends StatelessWidget {
   }
 
   String _text(BuildContext context) {
-    final bool showEv100 = UserPreferencesProvider.showEv100Of(context);
+    final bool showEv100 = context.isPro && UserPreferencesProvider.showEv100Of(context);
     final StringBuffer buffer = StringBuffer()
       ..writeAll([
         (showEv100 ? ev100 : ev).toStringAsFixed(1),
