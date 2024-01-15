@@ -207,7 +207,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider> with 
     widget.userPreferencesService.primaryColor = primaryColor;
   }
 
-  void toggleShowEV100() {
+  void toggleShowEv100() {
     setState(() {
       _showEv100 = !_showEv100;
     });

@@ -16,7 +16,7 @@ class ShowEv100ListTile extends StatelessWidget {
         secondary: const Icon(Icons.adjust),
         title: Text(S.of(context).showEv100),
         value: context.isPro && UserPreferencesProvider.showEv100Of(context),
-        onChanged: (_) => UserPreferencesProvider.of(context).toggleShowEV100(),
+        onChanged: (_) => UserPreferencesProvider.of(context).toggleShowEv100(),
         contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
       ),
     );

@@ -166,13 +166,13 @@ void main() {
   );
 
   testWidgets(
-    'Toggle EV100',
+    'Toggle Ev100',
     (tester) async {
       when(() => mockUserPreferencesService.showEv100).thenReturn(false);
       await pumpTestWidget(
         tester,
         builder: (context) => ElevatedButton(
-          onPressed: () => UserPreferencesProvider.of(context).toggleShowEV100(),
+          onPressed: () => UserPreferencesProvider.of(context).toggleShowEv100(),
           child: Text('${UserPreferencesProvider.showEv100Of(context)}'),
         ),
       );
