@@ -27,6 +27,7 @@ void main() {
 
   setUp(() {
     when(() => mockUserPreferencesService.evSourceType).thenReturn(EvSourceType.camera);
+    when(() => mockUserPreferencesService.showEv100).thenReturn(false);
     when(() => mockUserPreferencesService.stopType).thenReturn(StopType.third);
     when(() => mockUserPreferencesService.meteringScreenLayout).thenReturn({
       MeteringScreenLayoutFeature.extremeExposurePairs: true,
