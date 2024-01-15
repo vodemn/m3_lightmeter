@@ -16,6 +16,7 @@ class UserPreferencesService {
 
   static const evSourceTypeKey = "evSourceType";
   static const stopTypeKey = "stopType";
+  static const showEv100Key = "showEv100";
   static const cameraEvCalibrationKey = "cameraEvCalibration";
   static const lightSensorEvCalibrationKey = "lightSensorEvCalibration";
   static const meteringScreenLayoutKey = "meteringScreenLayout";
@@ -83,6 +84,9 @@ class UserPreferencesService {
 
   StopType get stopType => StopType.values[_sharedPreferences.getInt(stopTypeKey) ?? 2];
   set stopType(StopType value) => _sharedPreferences.setInt(stopTypeKey, value.index);
+
+  bool get showEv100 => _sharedPreferences.getBool(showEv100Key) ?? false;
+  set showEv100(bool value) => _sharedPreferences.setBool(showEv100Key, value);
 
   MeteringScreenLayoutConfig get meteringScreenLayout {
     final configJson = _sharedPreferences.getString(meteringScreenLayoutKey);

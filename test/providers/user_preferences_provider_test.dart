@@ -165,6 +165,27 @@ void main() {
   );
 
   testWidgets(
+    'Toggle EV100',
+    (tester) async {
+      when(() => mockUserPreferencesService.showEv100).thenReturn(false);
+      await pumpTestWidget(
+        tester,
+        builder: (context) => ElevatedButton(
+          onPressed: () => UserPreferencesProvider.of(context).toggleShowEV100(),
+          child: Text('${UserPreferencesProvider.showEv100Of(context)}'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text("${false}"), findsOneWidget);
+
+      await tester.tap(find.text("${false}"));
+      await tester.pumpAndSettle();
+      expect(find.text("${true}"), findsOneWidget);
+      verify(() => mockUserPreferencesService.showEv100 = true).called(1);
+    },
+  );
+
+  testWidgets(
     'Set metering screen layout config',
     (tester) async {
       await pumpTestWidget(
