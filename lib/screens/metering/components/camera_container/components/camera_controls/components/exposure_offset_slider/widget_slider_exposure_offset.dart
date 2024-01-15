@@ -72,7 +72,7 @@ class _Ruler extends StatelessWidget {
             children: [
               if (showValue)
                 Text(
-                  (index + min).toStringSigned(),
+                  (index + min).toStringSignedAsFixed(0),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               const SizedBox(width: Dimens.grid8),

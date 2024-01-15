@@ -4,22 +4,21 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:camera/camera.dart';
-import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
-import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
-    as communication_event;
-import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
-    as communication_states;
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_event;
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
 import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
-import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+import 'package:lightmeter/utils/ev_from_bytes.dart';
+
+part 'mock_bloc_container_camera.dart';
 
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;
@@ -57,6 +56,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     on<ZoomChangedEvent>(_onZoomChanged);
     on<ExposureOffsetChangedEvent>(_onExposureOffsetChanged);
     on<ExposureOffsetResetEvent>(_onExposureOffsetResetEvent);
+    on<ExposureSpotChangedEvent>(_onExposureSpotChangedEvent);
   }
 
   @override
@@ -166,9 +166,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
-    if (_cameraController != null &&
-        event.value >= _zoomRange!.start &&
-        event.value <= _zoomRange!.end) {
+    if (_cameraController != null && event.value >= _zoomRange!.start && event.value <= _zoomRange!.end) {
       _cameraController!.setZoomLevel(event.value);
       _currentZoom = event.value;
       _emitActiveState(emit);
@@ -186,6 +184,13 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   Future<void> _onExposureOffsetResetEvent(ExposureOffsetResetEvent event, Emitter emit) async {
     _meteringInteractor.quickVibration();
     add(const ExposureOffsetChangedEvent(0));
+  }
+
+  Future<void> _onExposureSpotChangedEvent(ExposureSpotChangedEvent event, Emitter emit) async {
+    if (_cameraController != null) {
+      _cameraController!.setExposurePoint(event.offset);
+      _cameraController!.setFocusPoint(event.offset);
+    }
   }
 
   void _emitActiveState(Emitter emit) {
@@ -209,33 +214,15 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   Future<double?> _takePhoto() async {
     try {
       // https://github.com/flutter/flutter/issues/84957#issuecomment-1661155095
+      await _cameraController!.setFocusMode(FocusMode.locked);
+      await _cameraController!.setExposureMode(ExposureMode.locked);
+      final file = await _cameraController!.takePicture();
+      await _cameraController!.setFocusMode(FocusMode.auto);
+      await _cameraController!.setExposureMode(ExposureMode.auto);
+      final bytes = await file.readAsBytes();
+      Directory(file.path).deleteSync(recursive: true);
 
-      late final Uint8List bytes;
-      if (PlatformConfig.cameraStubImage.isNotEmpty) {
-        bytes = (await rootBundle.load(PlatformConfig.cameraStubImage)).buffer.asUint8List();
-      } else {
-        await _cameraController!.setFocusMode(FocusMode.locked);
-        await _cameraController!.setExposureMode(ExposureMode.locked);
-        final file = await _cameraController!.takePicture();
-        await _cameraController!.setFocusMode(FocusMode.auto);
-        await _cameraController!.setExposureMode(ExposureMode.auto);
-        bytes = await file.readAsBytes();
-        Directory(file.path).deleteSync(recursive: true);
-      }
-
-      final tags = await readExifFromBytes(bytes);
-      final iso = double.tryParse("${tags["EXIF ISOSpeedRatings"]}");
-      final apertureValueRatio = (tags["EXIF FNumber"]?.values as IfdRatios?)?.ratios.first;
-      final speedValueRatio = (tags["EXIF ExposureTime"]?.values as IfdRatios?)?.ratios.first;
-      if (iso == null || apertureValueRatio == null || speedValueRatio == null) {
-        log('Error parsing EXIF: ${tags.keys}');
-        return null;
-      }
-
-      final aperture = apertureValueRatio.numerator / apertureValueRatio.denominator;
-      final speed = speedValueRatio.numerator / speedValueRatio.denominator;
-
-      return log2(math.pow(aperture, 2)) - log2(speed) - log2(iso / 100);
+      return await evFromImage(bytes);
     } catch (e) {
       log(e.toString());
       return null;

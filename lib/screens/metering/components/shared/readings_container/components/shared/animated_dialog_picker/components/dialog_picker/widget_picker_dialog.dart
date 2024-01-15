@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/shared/transparent_dialog/widget_dialog_transparent.dart';
 
 typedef DialogPickerItemTitleBuilder<T> = Widget Function(BuildContext context, T value);
 typedef DialogPickerItemTrailingBuilder<T> = Widget? Function(T selected, T value);
@@ -29,6 +30,14 @@ class DialogPicker<T> extends StatefulWidget {
     super.key,
   });
 
+  double height(BuildContext context) => TransparentDialog.height(
+        context,
+        title: title,
+        subtitle: subtitle,
+        scrollableContent: true,
+        contextHeight: Dimens.grid56 * values.length,
+      );
+
   @override
   State<DialogPicker<T>> createState() => _DialogPickerState<T>();
 }
@@ -46,83 +55,43 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: Dimens.dialogTitlePadding,
-              child: Icon(widget.icon),
+    return TransparentDialog(
+      icon: widget.icon,
+      title: widget.title,
+      subtitle: widget.subtitle,
+      content: Expanded(
+        child: ListView.builder(
+          controller: _scrollController,
+          padding: EdgeInsets.zero,
+          itemCount: widget.values.length,
+          itemExtent: Dimens.grid56,
+          itemBuilder: (context, index) => RadioListTile(
+            value: widget.values[index],
+            groupValue: _selectedValue,
+            title: DefaultTextStyle(
+              style: Theme.of(context).textTheme.bodyLarge!,
+              child: widget.itemTitleBuilder(context, widget.values[index]),
             ),
-            Padding(
-              padding: Dimens.dialogIconTitlePadding,
-              child: Text(
-                widget.title,
-                style: Theme.of(context).textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            if (widget.subtitle != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  Dimens.paddingL,
-                  0,
-                  Dimens.paddingL,
-                  Dimens.paddingM,
-                ),
-                child: Text(
-                  widget.subtitle!,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-          ],
-        ),
-        const Divider(),
-        Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            padding: EdgeInsets.zero,
-            itemCount: widget.values.length,
-            itemExtent: Dimens.grid56,
-            itemBuilder: (context, index) => RadioListTile(
-              value: widget.values[index],
-              groupValue: _selectedValue,
-              title: DefaultTextStyle(
-                style: Theme.of(context).textTheme.bodyLarge!,
-                child: widget.itemTitleBuilder(context, widget.values[index]),
-              ),
-              secondary: widget.itemTrailingBuilder?.call(_selectedValue, widget.values[index]),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _selectedValue = value;
-                  });
-                }
-              },
-            ),
+            secondary: widget.itemTrailingBuilder?.call(_selectedValue, widget.values[index]),
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  _selectedValue = value;
+                });
+              }
+            },
           ),
         ),
-        const Divider(),
-        Padding(
-          padding: Dimens.dialogActionsPadding,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const Spacer(),
-              TextButton(
-                onPressed: widget.onCancel,
-                child: Text(S.of(context).cancel),
-              ),
-              const SizedBox(width: Dimens.grid16),
-              TextButton(
-                onPressed: () => widget.onSelect(_selectedValue),
-                child: Text(S.of(context).select),
-              ),
-            ],
-          ),
+      ),
+      scrollableContent: true,
+      actions: [
+        TextButton(
+          onPressed: widget.onCancel,
+          child: Text(S.of(context).cancel),
+        ),
+        TextButton(
+          onPressed: () => widget.onSelect(_selectedValue),
+          child: Text(S.of(context).select),
         ),
       ],
     );

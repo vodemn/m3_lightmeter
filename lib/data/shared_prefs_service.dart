@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/models/camera_feature.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
@@ -15,9 +16,11 @@ class UserPreferencesService {
 
   static const evSourceTypeKey = "evSourceType";
   static const stopTypeKey = "stopType";
+  static const showEv100Key = "showEv100";
   static const cameraEvCalibrationKey = "cameraEvCalibration";
   static const lightSensorEvCalibrationKey = "lightSensorEvCalibration";
   static const meteringScreenLayoutKey = "meteringScreenLayout";
+  static const cameraFeaturesKey = "cameraFeatures";
 
   static const caffeineKey = "caffeine";
   static const hapticsKey = "haptics";
@@ -70,20 +73,20 @@ class UserPreferencesService {
     }
   }
 
-  IsoValue get iso =>
-      IsoValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(isoKey) ?? 100));
+  IsoValue get iso => IsoValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(isoKey) ?? 100));
   set iso(IsoValue value) => _sharedPreferences.setInt(isoKey, value.value);
 
-  NdValue get ndFilter =>
-      NdValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(ndFilterKey) ?? 0));
+  NdValue get ndFilter => NdValue.values.firstWhere((v) => v.value == (_sharedPreferences.getInt(ndFilterKey) ?? 0));
   set ndFilter(NdValue value) => _sharedPreferences.setInt(ndFilterKey, value.value);
 
-  EvSourceType get evSourceType =>
-      EvSourceType.values[_sharedPreferences.getInt(evSourceTypeKey) ?? 0];
+  EvSourceType get evSourceType => EvSourceType.values[_sharedPreferences.getInt(evSourceTypeKey) ?? 0];
   set evSourceType(EvSourceType value) => _sharedPreferences.setInt(evSourceTypeKey, value.index);
 
   StopType get stopType => StopType.values[_sharedPreferences.getInt(stopTypeKey) ?? 2];
   set stopType(StopType value) => _sharedPreferences.setInt(stopTypeKey, value.index);
+
+  bool get showEv100 => _sharedPreferences.getBool(showEv100Key) ?? false;
+  set showEv100(bool value) => _sharedPreferences.setBool(showEv100Key, value);
 
   MeteringScreenLayoutConfig get meteringScreenLayout {
     final configJson = _sharedPreferences.getString(meteringScreenLayoutKey);
@@ -96,13 +99,27 @@ class UserPreferencesService {
         MeteringScreenLayoutFeature.equipmentProfiles: true,
         MeteringScreenLayoutFeature.extremeExposurePairs: true,
         MeteringScreenLayoutFeature.filmPicker: true,
-        MeteringScreenLayoutFeature.histogram: true,
       };
     }
   }
 
   set meteringScreenLayout(MeteringScreenLayoutConfig value) =>
       _sharedPreferences.setString(meteringScreenLayoutKey, json.encode(value.toJson()));
+
+  CameraFeaturesConfig get cameraFeatures {
+    final configJson = _sharedPreferences.getString(cameraFeaturesKey);
+    if (configJson != null) {
+      return CameraFeaturesConfigJson.fromJson(json.decode(configJson) as Map<String, dynamic>);
+    } else {
+      return {
+        CameraFeature.spotMetering: false,
+        CameraFeature.histogram: false,
+      };
+    }
+  }
+
+  set cameraFeatures(CameraFeaturesConfig value) =>
+      _sharedPreferences.setString(cameraFeaturesKey, json.encode(value.toJson()));
 
   bool get caffeine => _sharedPreferences.getBool(caffeineKey) ?? false;
   set caffeine(bool value) => _sharedPreferences.setBool(caffeineKey, value);
@@ -114,8 +131,7 @@ class UserPreferencesService {
         (e) => e.toString() == _sharedPreferences.getString(volumeActionKey),
         orElse: () => VolumeAction.shutter,
       );
-  set volumeAction(VolumeAction value) =>
-      _sharedPreferences.setString(volumeActionKey, value.toString());
+  set volumeAction(VolumeAction value) => _sharedPreferences.setString(volumeActionKey, value.toString());
 
   SupportedLocale get locale => SupportedLocale.values.firstWhere(
         (e) => e.toString() == _sharedPreferences.getString(localeKey),
@@ -124,13 +140,10 @@ class UserPreferencesService {
   set locale(SupportedLocale value) => _sharedPreferences.setString(localeKey, value.toString());
 
   double get cameraEvCalibration => _sharedPreferences.getDouble(cameraEvCalibrationKey) ?? 0.0;
-  set cameraEvCalibration(double value) =>
-      _sharedPreferences.setDouble(cameraEvCalibrationKey, value);
+  set cameraEvCalibration(double value) => _sharedPreferences.setDouble(cameraEvCalibrationKey, value);
 
-  double get lightSensorEvCalibration =>
-      _sharedPreferences.getDouble(lightSensorEvCalibrationKey) ?? 0.0;
-  set lightSensorEvCalibration(double value) =>
-      _sharedPreferences.setDouble(lightSensorEvCalibrationKey, value);
+  double get lightSensorEvCalibration => _sharedPreferences.getDouble(lightSensorEvCalibrationKey) ?? 0.0;
+  set lightSensorEvCalibration(double value) => _sharedPreferences.setDouble(lightSensorEvCalibrationKey, value);
 
   ThemeType get themeType => ThemeType.values[_sharedPreferences.getInt(themeTypeKey) ?? 0];
   set themeType(ThemeType value) => _sharedPreferences.setInt(themeTypeKey, value.index);

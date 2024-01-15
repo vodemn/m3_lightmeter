@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/settings/components/shared/disable/widget_disable.dart';
+import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 /// Depends on the product status and replaces [onTap] with purchase callback
@@ -22,13 +23,12 @@ class IAPListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPurchased = IAPProducts.isPurchased(context, IAPProductType.paidFeatures);
-    return Opacity(
-      opacity: isPurchased ? Dimens.enabledOpacity : Dimens.disabledOpacity,
+    return Disable(
+      disable: !context.isPro,
       child: ListTile(
         leading: leading,
         title: title,
-        onTap: isPurchased ? onTap : null,
+        onTap: onTap,
       ),
     );
   }

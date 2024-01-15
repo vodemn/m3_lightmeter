@@ -1,6 +1,7 @@
 import 'package:dynamic_color/test_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lightmeter/data/models/camera_feature.dart';
 import 'package:lightmeter/data/models/dynamic_colors_state.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
@@ -26,12 +27,16 @@ void main() {
 
   setUp(() {
     when(() => mockUserPreferencesService.evSourceType).thenReturn(EvSourceType.camera);
+    when(() => mockUserPreferencesService.showEv100).thenReturn(false);
     when(() => mockUserPreferencesService.stopType).thenReturn(StopType.third);
     when(() => mockUserPreferencesService.meteringScreenLayout).thenReturn({
       MeteringScreenLayoutFeature.extremeExposurePairs: true,
       MeteringScreenLayoutFeature.filmPicker: true,
       MeteringScreenLayoutFeature.equipmentProfiles: true,
-      MeteringScreenLayoutFeature.histogram: true,
+    });
+    when(() => mockUserPreferencesService.cameraFeatures).thenReturn({
+      CameraFeature.spotMetering: true,
+      CameraFeature.histogram: true,
     });
     when(() => mockUserPreferencesService.locale).thenReturn(SupportedLocale.en);
     when(() => mockUserPreferencesService.themeType).thenReturn(ThemeType.light);
@@ -161,6 +166,27 @@ void main() {
   );
 
   testWidgets(
+    'Toggle Ev100',
+    (tester) async {
+      when(() => mockUserPreferencesService.showEv100).thenReturn(false);
+      await pumpTestWidget(
+        tester,
+        builder: (context) => ElevatedButton(
+          onPressed: () => UserPreferencesProvider.of(context).toggleShowEv100(),
+          child: Text('${UserPreferencesProvider.showEv100Of(context)}'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text("${false}"), findsOneWidget);
+
+      await tester.tap(find.text("${false}"));
+      await tester.pumpAndSettle();
+      expect(find.text("${true}"), findsOneWidget);
+      verify(() => mockUserPreferencesService.showEv100 = true).called(1);
+    },
+  );
+
+  testWidgets(
     'Set metering screen layout config',
     (tester) async {
       await pumpTestWidget(
@@ -184,7 +210,6 @@ void main() {
                   MeteringScreenLayoutFeature.equipmentProfiles: true,
                   MeteringScreenLayoutFeature.extremeExposurePairs: false,
                   MeteringScreenLayoutFeature.filmPicker: false,
-                  MeteringScreenLayoutFeature.histogram: true,
                 }),
                 child: const Text(''),
               ),
@@ -196,20 +221,64 @@ void main() {
       expect(find.text("${MeteringScreenLayoutFeature.equipmentProfiles}: true"), findsNWidgets(2));
       expect(find.text("${MeteringScreenLayoutFeature.extremeExposurePairs}: true"), findsNWidgets(2));
       expect(find.text("${MeteringScreenLayoutFeature.filmPicker}: true"), findsNWidgets(2));
-      expect(find.text("${MeteringScreenLayoutFeature.histogram}: true"), findsNWidgets(2));
 
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
       expect(find.text("${MeteringScreenLayoutFeature.equipmentProfiles}: true"), findsNWidgets(2));
       expect(find.text("${MeteringScreenLayoutFeature.extremeExposurePairs}: false"), findsNWidgets(2));
       expect(find.text("${MeteringScreenLayoutFeature.filmPicker}: false"), findsNWidgets(2));
-      expect(find.text("${MeteringScreenLayoutFeature.histogram}: true"), findsNWidgets(2));
       verify(
         () => mockUserPreferencesService.meteringScreenLayout = {
           MeteringScreenLayoutFeature.extremeExposurePairs: false,
           MeteringScreenLayoutFeature.filmPicker: false,
           MeteringScreenLayoutFeature.equipmentProfiles: true,
-          MeteringScreenLayoutFeature.histogram: true,
+        },
+      ).called(1);
+    },
+  );
+
+  testWidgets(
+    'Set camera features config',
+    (tester) async {
+      await pumpTestWidget(
+        tester,
+        builder: (context) {
+          final config = UserPreferencesProvider.cameraConfigOf(context);
+          return Column(
+            children: [
+              ...List.generate(
+                config.length,
+                (index) => Text('${config.keys.toList()[index]}: ${config.values.toList()[index]}'),
+              ),
+              ...List.generate(
+                CameraFeature.values.length,
+                (index) => Text(
+                  '${CameraFeature.values[index]}: ${UserPreferencesProvider.cameraFeatureOf(context, CameraFeature.values[index])}',
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => UserPreferencesProvider.of(context).setCameraFeature({
+                  CameraFeature.spotMetering: true,
+                  CameraFeature.histogram: false,
+                }),
+                child: const Text(''),
+              ),
+            ],
+          );
+        },
+      );
+      // Match `findsNWidgets(2)` to verify that `cameraFeatureOf` specific results are the same as the whole config
+      expect(find.text("${CameraFeature.spotMetering}: true"), findsNWidgets(2));
+      expect(find.text("${CameraFeature.histogram}: true"), findsNWidgets(2));
+
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+      expect(find.text("${CameraFeature.spotMetering}: true"), findsNWidgets(2));
+      expect(find.text("${CameraFeature.histogram}: false"), findsNWidgets(2));
+      verify(
+        () => mockUserPreferencesService.cameraFeatures = {
+          CameraFeature.spotMetering: true,
+          CameraFeature.histogram: false,
         },
       ).called(1);
     },

@@ -260,7 +260,7 @@ class _Application extends StatelessWidget {
         ElevatedButton(
           key: updateProfileButtonKey(profile.id),
           onPressed: () {
-            EquipmentProfileProvider.of(context).updateProdile(
+            EquipmentProfileProvider.of(context).updateProfile(
               profile.copyWith(
                 name: '${profile.name} updated',
                 isoValues: _customProfiles.first.isoValues,

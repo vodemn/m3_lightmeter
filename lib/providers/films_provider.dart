@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/utils/context_utils.dart';
 import 'package:lightmeter/utils/selectable_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -44,11 +45,9 @@ class FilmsProviderState extends State<FilmsProvider> {
       ],
       filmsInUse: [
         const Film.other(),
-        if (IAPProducts.isPurchased(context, IAPProductType.paidFeatures)) ..._filmsInUse,
+        if (context.isPro) ..._filmsInUse,
       ],
-      selected: IAPProducts.isPurchased(context, IAPProductType.paidFeatures)
-          ? _selected
-          : const Film.other(),
+      selected: context.isPro ? _selected : const Film.other(),
       child: widget.child,
     );
   }

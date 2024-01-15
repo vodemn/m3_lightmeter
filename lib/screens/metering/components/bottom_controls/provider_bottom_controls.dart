@@ -5,6 +5,7 @@ import 'package:lightmeter/screens/metering/components/bottom_controls/widget_bo
 
 class MeteringBottomControlsProvider extends StatelessWidget {
   final double? ev;
+  final double? ev100;
   final bool isMetering;
   final VoidCallback? onSwitchEvSourceType;
   final VoidCallback onMeasure;
@@ -12,6 +13,7 @@ class MeteringBottomControlsProvider extends StatelessWidget {
 
   const MeteringBottomControlsProvider({
     required this.ev,
+    required this.ev100,
     required this.isMetering,
     required this.onSwitchEvSourceType,
     required this.onMeasure,
@@ -35,6 +37,7 @@ class MeteringBottomControlsProvider extends StatelessWidget {
       ),
       child: MeteringBottomControls(
         ev: ev,
+        ev100: ev100,
         isMetering: isMetering,
         onSwitchEvSourceType: onSwitchEvSourceType,
         onMeasure: onMeasure,
