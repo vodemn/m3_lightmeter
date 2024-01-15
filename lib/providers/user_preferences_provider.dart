@@ -53,6 +53,10 @@ class UserPreferencesProvider extends StatefulWidget {
     return _inheritFromEnumsModel(context, _Aspect.stopType).stopType;
   }
 
+  static bool showEv100Of(BuildContext context) {
+    return _inheritFromEnumsModel(context, _Aspect.showEv100).showEv100;
+  }
+
   static CameraFeaturesConfig cameraConfigOf(BuildContext context) {
     return context.findAncestorWidgetOfExactType<_CameraFeaturesModel>()!.data;
   }
@@ -83,6 +87,7 @@ class UserPreferencesProvider extends StatefulWidget {
 class _UserPreferencesProviderState extends State<UserPreferencesProvider> with WidgetsBindingObserver {
   late EvSourceType _evSourceType;
   late StopType _stopType = widget.userPreferencesService.stopType;
+  late bool _showEv100 = widget.userPreferencesService.showEv100;
   late MeteringScreenLayoutConfig _meteringScreenLayout = widget.userPreferencesService.meteringScreenLayout;
   late CameraFeaturesConfig _cameraFeatures = widget.userPreferencesService.cameraFeatures;
   late SupportedLocale _locale = widget.userPreferencesService.locale;
@@ -135,6 +140,7 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider> with 
           evSourceType: _evSourceType,
           locale: _locale,
           primaryColor: dynamicPrimaryColor ?? _primaryColor,
+          showEv100: _showEv100,
           stopType: _stopType,
           themeType: _themeType,
           child: _MeteringScreenLayoutModel(
@@ -201,6 +207,13 @@ class _UserPreferencesProviderState extends State<UserPreferencesProvider> with 
     widget.userPreferencesService.primaryColor = primaryColor;
   }
 
+  void toggleShowEv100() {
+    setState(() {
+      _showEv100 = !_showEv100;
+    });
+    widget.userPreferencesService.showEv100 = _showEv100;
+  }
+
   void setStopType(StopType stopType) {
     setState(() {
       _stopType = stopType;
@@ -231,6 +244,7 @@ enum _Aspect {
   dynamicColorState,
   evSourceType,
   locale,
+  showEv100,
   stopType,
   theme,
   themeType,
@@ -240,6 +254,7 @@ class _UserPreferencesModel extends InheritedModel<_Aspect> {
   final DynamicColorState dynamicColorState;
   final EvSourceType evSourceType;
   final SupportedLocale locale;
+  final bool showEv100;
   final StopType stopType;
   final ThemeType themeType;
 
@@ -252,6 +267,7 @@ class _UserPreferencesModel extends InheritedModel<_Aspect> {
     required this.evSourceType,
     required this.locale,
     required Color primaryColor,
+    required this.showEv100,
     required this.stopType,
     required this.themeType,
     required super.child,
@@ -267,6 +283,7 @@ class _UserPreferencesModel extends InheritedModel<_Aspect> {
         evSourceType != oldWidget.evSourceType ||
         locale != oldWidget.locale ||
         _primaryColor != oldWidget._primaryColor ||
+        showEv100 != oldWidget.showEv100 ||
         stopType != oldWidget.stopType ||
         themeType != oldWidget.themeType;
   }
@@ -279,6 +296,7 @@ class _UserPreferencesModel extends InheritedModel<_Aspect> {
     return (dependencies.contains(_Aspect.dynamicColorState) && dynamicColorState != oldWidget.dynamicColorState) ||
         (dependencies.contains(_Aspect.evSourceType) && evSourceType != oldWidget.evSourceType) ||
         (dependencies.contains(_Aspect.locale) && locale != oldWidget.locale) ||
+        (dependencies.contains(_Aspect.showEv100) && showEv100 != oldWidget.showEv100) ||
         (dependencies.contains(_Aspect.stopType) && stopType != oldWidget.stopType) ||
         (dependencies.contains(_Aspect.theme) &&
             (_brightness != oldWidget._brightness || _primaryColor != oldWidget._primaryColor)) ||

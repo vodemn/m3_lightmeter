@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/filled_circle/widget_circle_filled.dart';
+import 'package:lightmeter/utils/context_utils.dart';
+
+const String _subscript100 = '\u2081\u2080\u2080';
 
 class MeteringMeasureButton extends StatefulWidget {
   final double? ev;
+  final double? ev100;
   final bool isMetering;
   final VoidCallback onTap;
 
   const MeteringMeasureButton({
     required this.ev,
+    required this.ev100,
     required this.isMetering,
     required this.onTap,
     super.key,
@@ -61,7 +67,7 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
                   color: Theme.of(context).colorScheme.onSurface,
                   size: Dimens.grid72 - Dimens.grid8,
                   child: Center(
-                    child: widget.ev != null ? _EvValueText(ev: widget.ev!) : null,
+                    child: widget.ev != null ? _EvValueText(ev: widget.ev!, ev100: widget.ev100!) : null,
                   ),
                 ),
               ),
@@ -83,16 +89,32 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
 
 class _EvValueText extends StatelessWidget {
   final double ev;
+  final double ev100;
 
-  const _EvValueText({required this.ev});
+  const _EvValueText({
+    required this.ev,
+    required this.ev100,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Text(
-      '${ev.toStringAsFixed(1)}\n${S.of(context).ev}',
+      _text(context),
       style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.surface),
       textAlign: TextAlign.center,
     );
+  }
+
+  String _text(BuildContext context) {
+    final bool showEv100 = context.isPro && UserPreferencesProvider.showEv100Of(context);
+    final StringBuffer buffer = StringBuffer()
+      ..writeAll([
+        (showEv100 ? ev100 : ev).toStringAsFixed(1),
+        '\n',
+        S.of(context).ev,
+        if (showEv100) _subscript100,
+      ]);
+    return buffer.toString();
   }
 }

@@ -181,6 +181,25 @@ void main() {
     });
   });
 
+  group('showEv100', () {
+    test('get default', () {
+      when(() => sharedPreferences.getBool(UserPreferencesService.showEv100Key)).thenReturn(null);
+      expect(service.showEv100, false);
+    });
+
+    test('get', () {
+      when(() => sharedPreferences.getBool(UserPreferencesService.showEv100Key)).thenReturn(true);
+      expect(service.showEv100, true);
+    });
+
+    test('set', () {
+      when(() => sharedPreferences.setBool(UserPreferencesService.showEv100Key, false))
+          .thenAnswer((_) => Future.value(true));
+      service.showEv100 = false;
+      verify(() => sharedPreferences.setBool(UserPreferencesService.showEv100Key, false)).called(1);
+    });
+  });
+
   group('meteringScreenLayout', () {
     test('get default', () {
       when(

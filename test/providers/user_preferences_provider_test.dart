@@ -27,6 +27,7 @@ void main() {
 
   setUp(() {
     when(() => mockUserPreferencesService.evSourceType).thenReturn(EvSourceType.camera);
+    when(() => mockUserPreferencesService.showEv100).thenReturn(false);
     when(() => mockUserPreferencesService.stopType).thenReturn(StopType.third);
     when(() => mockUserPreferencesService.meteringScreenLayout).thenReturn({
       MeteringScreenLayoutFeature.extremeExposurePairs: true,
@@ -161,6 +162,27 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text("Stop type: ${StopType.full}"), findsOneWidget);
       verify(() => mockUserPreferencesService.stopType = StopType.full).called(1);
+    },
+  );
+
+  testWidgets(
+    'Toggle Ev100',
+    (tester) async {
+      when(() => mockUserPreferencesService.showEv100).thenReturn(false);
+      await pumpTestWidget(
+        tester,
+        builder: (context) => ElevatedButton(
+          onPressed: () => UserPreferencesProvider.of(context).toggleShowEv100(),
+          child: Text('${UserPreferencesProvider.showEv100Of(context)}'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text("${false}"), findsOneWidget);
+
+      await tester.tap(find.text("${false}"));
+      await tester.pumpAndSettle();
+      expect(find.text("${true}"), findsOneWidget);
+      verify(() => mockUserPreferencesService.showEv100 = true).called(1);
     },
   );
 

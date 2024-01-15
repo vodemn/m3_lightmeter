@@ -17,7 +17,6 @@ import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_lis
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/widget_top_bar_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';
 import 'package:lightmeter/utils/context_utils.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class CameraContainer extends StatelessWidget {
@@ -102,9 +101,8 @@ class CameraContainer extends StatelessWidget {
   }
 
   double _meteringContainerHeight(BuildContext context) {
-    final isPro = IAPProducts.isPurchased(context, IAPProductType.paidFeatures);
     double enabledFeaturesHeight = 0;
-    if (!isPro) {
+    if (!context.isPro) {
       enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
       enabledFeaturesHeight += Dimens.paddingS;
     } else {

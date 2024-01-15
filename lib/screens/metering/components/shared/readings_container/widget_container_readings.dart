@@ -10,7 +10,6 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/lightmeter_pro/widget_lightmeter_pro.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/nd_picker/widget_picker_nd.dart';
 import 'package:lightmeter/utils/context_utils.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class ReadingsContainer extends StatelessWidget {
@@ -33,15 +32,14 @@ class ReadingsContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPro = IAPProducts.isPurchased(context, IAPProductType.paidFeatures);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (!isPro) ...[
+        if (!context.isPro) ...[
           const LightmeterProAnimatedDialog(),
           const _InnerPadding(),
         ],
-        if (isPro && context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) ...[
+        if (context.isPro && context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) ...[
           const EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
@@ -52,7 +50,7 @@ class ReadingsContainer extends StatelessWidget {
           ),
           const _InnerPadding(),
         ],
-        if (isPro && context.meteringFeature(MeteringScreenLayoutFeature.filmPicker)) ...[
+        if (context.isPro && context.meteringFeature(MeteringScreenLayoutFeature.filmPicker)) ...[
           FilmPicker(selectedIso: iso),
           const _InnerPadding(),
         ],
