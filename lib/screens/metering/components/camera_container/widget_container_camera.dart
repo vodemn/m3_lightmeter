@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/data/models/feature.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/platform_config.dart';
+import 'package:lightmeter/providers/remote_config_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls/widget_camera_controls.dart';
@@ -103,8 +105,10 @@ class CameraContainer extends StatelessWidget {
   double _meteringContainerHeight(BuildContext context) {
     double enabledFeaturesHeight = 0;
     if (!context.isPro) {
-      enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
-      enabledFeaturesHeight += Dimens.paddingS;
+      if (RemoteConfig.isEnabled(context, Feature.showUnlockProOnMainScreen)) {
+        enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+        enabledFeaturesHeight += Dimens.paddingS;
+      }
     } else {
       if (context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) {
         enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;

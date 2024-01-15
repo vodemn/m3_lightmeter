@@ -130,7 +130,7 @@ class MockRemoteConfigService implements IRemoteConfigService {
 extension on RemoteConfigValue {
   dynamic toValue(Feature feature) {
     switch (feature) {
-      case Feature.unlockProFeaturesText:
+      case Feature.showUnlockProOnMainScreen:
         return asBool();
     }
   }
