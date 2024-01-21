@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/utils/context_utils.dart';
 import 'package:lightmeter/utils/selectable_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -52,9 +53,9 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     return EquipmentProfiles(
       values: [
         _defaultProfile,
-        if (IAPProducts.isPurchased(context, IAPProductType.paidFeatures)) ..._customProfiles,
+        if (context.isPro) ..._customProfiles,
       ],
-      selected: IAPProducts.isPurchased(context, IAPProductType.paidFeatures) ? _selectedProfile : _defaultProfile,
+      selected: context.isPro ? _selectedProfile : _defaultProfile,
       child: widget.child,
     );
   }

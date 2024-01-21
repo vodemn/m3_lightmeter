@@ -34,6 +34,7 @@
     "calibrationMessageCameraOnly": "The accuracy of the readings measured by this application depends entirely on the rear camera of the device. Therefore, consider testing this application and setting up an EV calibration value that will give you the desired measurement results.",
     "camera": "Camera",
     "lightSensor": "Light sensor",
+    "showEv100": "Show EV\u2081\u2080\u2080",
     "meteringScreenLayout": "Metering screen layout",
     "meteringScreenLayoutHint": "Hide elements on the metering screen that you don't need so that they don't waste exposure pairs list space.",
     "meteringScreenLayoutHintEquipmentProfiles": "Equipment profile picker",
@@ -47,7 +48,7 @@
     "film": "Film",
     "filmPush": "Film (push)",
     "filmPull": "Film (pull)",
-    "filmReciprocityHint": "Applies correction for shutter speeds grater than 1 second",
+    "filmReciprocityHint": "Applies correction for shutter speeds greater than 1 second",
     "equipmentProfileName": "Equipment profile name",
     "equipmentProfileNameHint": "Praktica MTL5B",
     "equipmentProfileAllValues": "All",
@@ -96,10 +97,6 @@
             }
         }
     },
-    "lightmeterPro": "Lightmeter Pro",
-    "buyLightmeterPro": "Buy Lightmeter Pro",
-    "lightmeterProDescription": "Unlocks extra features:\n \u2022 Equipment profiles containing filters for aperture, shutter speed, and more\n \u2022 List of films with compensation for what's known as reciprocity failure\n \u2022 Spot metering\n \u2022 Histogram\n\nThe source code of Lightmeter is available on GitHub. You are welcome to compile it yourself. However, if you want to support the development and receive new features and updates, consider purchasing Lightmeter Pro.",
-    "buy": "Buy",
     "proFeatures": "Pro features",
     "unlockProFeatures": "Unlock Pro features",
     "unlockProFeaturesDescription": "Unlock professional features:\n \u2022 Equipment profiles containing filters for aperture, shutter speed, and more\n \u2022 List of films with compensation for what's known as reciprocity failure\n \u2022 Spot metering\n \u2022 Histogram\n\nBy unlocking Pro features you support the development and make it possible to add new features to the app.",

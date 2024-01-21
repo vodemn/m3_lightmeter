@@ -19,8 +19,8 @@ void main() {
 
   setUp(() {
     when(() => mockRemoteConfigService.fetchConfig()).thenAnswer((_) async {});
-    when(() => mockRemoteConfigService.getValue(Feature.unlockProFeaturesText)).thenReturn(false);
-    when(() => mockRemoteConfigService.getAll()).thenReturn({Feature.unlockProFeaturesText: false});
+    when(() => mockRemoteConfigService.getValue(Feature.showUnlockProOnMainScreen)).thenReturn(false);
+    when(() => mockRemoteConfigService.getAll()).thenReturn({Feature.showUnlockProOnMainScreen: false});
   });
 
   tearDown(() {
@@ -42,7 +42,7 @@ void main() {
       when(() => mockRemoteConfigService.onConfigUpdated()).thenAnswer((_) => const Stream.empty());
 
       await pumpTestWidget(tester);
-      expect(find.text('unlockProFeaturesText: false'), findsOneWidget);
+      expect(find.text('showUnlockProOnMainScreen: false'), findsOneWidget);
     },
   );
 
@@ -53,34 +53,34 @@ void main() {
       when(() => mockRemoteConfigService.onConfigUpdated()).thenAnswer((_) => remoteConfigUpdateController.stream);
 
       await pumpTestWidget(tester);
-      expect(find.text('unlockProFeaturesText: false'), findsOneWidget);
+      expect(find.text('showUnlockProOnMainScreen: false'), findsOneWidget);
 
-      when(() => mockRemoteConfigService.getValue(Feature.unlockProFeaturesText)).thenReturn(true);
-      remoteConfigUpdateController.add({Feature.unlockProFeaturesText});
+      when(() => mockRemoteConfigService.getValue(Feature.showUnlockProOnMainScreen)).thenReturn(true);
+      remoteConfigUpdateController.add({Feature.showUnlockProOnMainScreen});
       await tester.pumpAndSettle();
-      expect(find.text('unlockProFeaturesText: true'), findsOneWidget);
+      expect(find.text('showUnlockProOnMainScreen: true'), findsOneWidget);
 
       await remoteConfigUpdateController.close();
     },
   );
 
   test('RemoteConfig.updateShouldNotifyDependent', () {
-    const config = RemoteConfig(config: {Feature.unlockProFeaturesText: false}, child: SizedBox());
+    const config = RemoteConfig(config: {Feature.showUnlockProOnMainScreen: false}, child: SizedBox());
     expect(
       config.updateShouldNotifyDependent(config, {}),
       false,
     );
     expect(
       config.updateShouldNotifyDependent(
-        const RemoteConfig(config: {Feature.unlockProFeaturesText: false}, child: SizedBox()),
-        {Feature.unlockProFeaturesText},
+        const RemoteConfig(config: {Feature.showUnlockProOnMainScreen: false}, child: SizedBox()),
+        {Feature.showUnlockProOnMainScreen},
       ),
       false,
     );
     expect(
       config.updateShouldNotifyDependent(
-        const RemoteConfig(config: {Feature.unlockProFeaturesText: true}, child: SizedBox()),
-        {Feature.unlockProFeaturesText},
+        const RemoteConfig(config: {Feature.showUnlockProOnMainScreen: true}, child: SizedBox()),
+        {Feature.showUnlockProOnMainScreen},
       ),
       true,
     );
@@ -96,7 +96,7 @@ class _Application extends StatelessWidget {
       home: Scaffold(
         body: Center(
           child: Text(
-            "${Feature.unlockProFeaturesText.name}: ${RemoteConfig.isEnabled(context, Feature.unlockProFeaturesText)}",
+            "${Feature.showUnlockProOnMainScreen.name}: ${RemoteConfig.isEnabled(context, Feature.showUnlockProOnMainScreen)}",
           ),
         ),
       ),

@@ -34,6 +34,7 @@
     "calibrationMessageCameraOnly": "此应用程序测量读数的准确s性完全取决于设备的后置摄像头。因此，请考虑测试此应用并手动设置 EV 校准，以获得准确的测量结果。",
     "camera": "摄像头",
     "lightSensor": "光传感器",
+    "showEv100": "显示 EV\u2081\u2080\u2080",
     "meteringScreenLayout": "布局",
     "meteringScreenLayoutHint": "隐藏不需要的元素，以免浪费曝光列表空间",
     "meteringScreenLayoutHintEquipmentProfiles": "设备配置选择",
@@ -96,10 +97,6 @@
             }
         }
     },
-    "buyLightmeterPro": "购买 Lightmeter Pro",
-    "lightmeterPro": "Lightmeter Pro",
-    "lightmeterProDescription": "解锁额外功能:\n \u2022 配置文件，其中包含光圈、快门速度等参数\n \u2022 胶卷列表，对胶片倒易率失效进行曝光补偿\n \u2022 点测光\n \u2022 直方图\n\n您可以在 GitHub 上获取 Lightmeter 的源代码，欢迎自行编译。不过，如果您想支持开发并获得新功能和更新，请考虑购买 Lightmeter Pro。",
-    "buy": "购买",
     "proFeatures": "专业功能",
     "unlockProFeatures": "解锁专业功能",
     "unlockProFeaturesDescription": "\n \u2022 配置文件，其中包含光圈、快门速度等参数\n \u2022 胶卷列表，对胶片倒易率失效进行曝光补偿\n \u2022 点测光\n \u2022 直方图\n\n通过解锁专业版功能，您可以支持开发工作，帮助为应用程序添加新功能。",

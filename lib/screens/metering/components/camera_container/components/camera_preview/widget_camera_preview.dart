@@ -9,7 +9,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/componen
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/components/camera_view_placeholder/widget_placeholder_camera_view.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/components/histogram/widget_histogram.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
+import 'package:lightmeter/utils/context_utils.dart';
 
 class CameraPreview extends StatefulWidget {
   final CameraController? controller;
@@ -102,7 +102,7 @@ class _CameraPreviewBuilderState extends State<_CameraPreviewBuilder> {
               alignment: Alignment.bottomCenter,
               children: [
                 CameraView(controller: widget.controller),
-                if (IAPProducts.isPurchased(context, IAPProductType.paidFeatures)) ...[
+                if (context.isPro) ...[
                   if (UserPreferencesProvider.cameraFeatureOf(
                     context,
                     CameraFeature.histogram,

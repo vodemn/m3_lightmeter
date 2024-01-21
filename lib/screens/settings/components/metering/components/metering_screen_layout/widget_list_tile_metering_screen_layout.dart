@@ -5,6 +5,7 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_switch/widget_dialog_switch.dart';
+import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreenLayoutListTile extends StatelessWidget {
@@ -24,6 +25,15 @@ class MeteringScreenLayoutListTile extends StatelessWidget {
             description: S.of(context).meteringScreenLayoutHint,
             values: UserPreferencesProvider.meteringScreenConfigOf(context),
             titleAdapter: _toStringLocalized,
+            enabledAdapter: (value) {
+              switch (value) {
+                case MeteringScreenLayoutFeature.equipmentProfiles:
+                case MeteringScreenLayoutFeature.filmPicker:
+                  return context.isPro;
+                default:
+                  return true;
+              }
+            },
             onSave: (value) {
               if (!value[MeteringScreenLayoutFeature.equipmentProfiles]!) {
                 EquipmentProfileProvider.of(context).setProfile(EquipmentProfiles.of(context).first);

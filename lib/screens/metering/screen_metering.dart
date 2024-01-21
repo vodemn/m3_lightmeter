@@ -40,6 +40,7 @@ class MeteringScreen extends StatelessWidget {
             BlocBuilder<MeteringBloc, MeteringState>(
               builder: (context, state) => MeteringBottomControlsProvider(
                 ev: state is MeteringDataState ? state.ev : null,
+                ev100: state is MeteringDataState ? state.ev100 : null,
                 isMetering: state.isMetering,
                 onSwitchEvSourceType: ServicesProvider.of(context).environment.hasLightSensor
                     ? UserPreferencesProvider.of(context).toggleEvSourceType
