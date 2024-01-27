@@ -39,4 +39,9 @@ class LightmeterAnalyticsFirebase implements ILightmeterAnalyticsApi {
       fatal: true,
     );
   }
+
+  @override
+  Future<void> setCustomKey(String key, String value) async {
+    await FirebaseCrashlytics.instance.setCustomKey(key, value);
+  }
 }

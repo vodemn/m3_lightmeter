@@ -10,4 +10,6 @@ abstract class ILightmeterAnalyticsApi {
     dynamic reason,
     Iterable<Object> information = const [],
   });
+
+  Future<void> setCustomKey(String key, String value);
 }

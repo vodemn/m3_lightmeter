@@ -49,4 +49,6 @@ class LightmeterAnalytics {
       information: information,
     );
   }
+
+  Future<void> setCustomKey(String key, String value) async => _api.setCustomKey(key, value);
 }
