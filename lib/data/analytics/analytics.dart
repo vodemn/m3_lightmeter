@@ -10,7 +10,10 @@ class LightmeterAnalytics {
   const LightmeterAnalytics({required ILightmeterAnalyticsApi api}) : _api = api;
 
   void init() {
-    FlutterError.onError = (details) => logCrash(details.exception, details.stack);
+    FlutterError.onError = (details) {
+      if (details.silent) return;
+      logCrash(details.exception, details.stack);
+    };
     PlatformDispatcher.instance.onError = (error, stack) {
       logCrash(error, stack);
       return true;
