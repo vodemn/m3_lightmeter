@@ -41,7 +41,7 @@
                 "--dart-define",
                 "cameraPreviewAspectRatio=240/320",
             ],
-            "program": "${workspaceFolder}/lib/main_release.dart",
+            "program": "${workspaceFolder}/lib/main_prod.dart",
         },
         {
             "name": "prod-profile (android)",
@@ -54,7 +54,7 @@
                 "--dart-define",
                 "cameraPreviewAspectRatio=240/320",
             ],
-            "program": "${workspaceFolder}/lib/main_release.dart",
+            "program": "${workspaceFolder}/lib/main_prod.dart",
         },
         {
             "name": "dev-debug (ios)",

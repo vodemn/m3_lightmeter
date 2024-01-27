@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
+import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/data/models/feature.dart';
 
 abstract class IRemoteConfigService {
@@ -24,7 +24,9 @@ abstract class IRemoteConfigService {
 }
 
 class RemoteConfigService implements IRemoteConfigService {
-  const RemoteConfigService();
+  final LightmeterAnalytics analytics;
+
+  const RemoteConfigService(this.analytics);
 
   @override
   Future<void> activeAndFetchFeatures() async {
@@ -73,8 +75,8 @@ class RemoteConfigService implements IRemoteConfigService {
       try {
         final feature = Feature.values.firstWhere((f) => f.name == value.key);
         result[feature] = value.value.toValue(feature);
-      } catch (e) {
-        log(e.toString());
+      } catch (e, stackTrace) {
+        _logError(e, stackTrace: stackTrace);
       }
     }
     return result;
@@ -88,8 +90,8 @@ class RemoteConfigService implements IRemoteConfigService {
           for (final key in event.updatedKeys) {
             try {
               updatedFeatures.add(Feature.values.firstWhere((element) => element.name == key));
-            } catch (e) {
-              log(e.toString());
+            } catch (e, stackTrace) {
+              _logError(e, stackTrace: stackTrace);
             }
           }
           return updatedFeatures;
@@ -99,9 +101,7 @@ class RemoteConfigService implements IRemoteConfigService {
   @override
   bool isEnabled(Feature feature) => FirebaseRemoteConfig.instance.getBool(feature.name);
 
-  void _logError(dynamic throwable, {StackTrace? stackTrace}) {
-    FirebaseCrashlytics.instance.recordError(throwable, stackTrace);
-  }
+  void _logError(dynamic throwable, {StackTrace? stackTrace}) => analytics.logCrash(throwable, stackTrace);
 }
 
 class MockRemoteConfigService implements IRemoteConfigService {

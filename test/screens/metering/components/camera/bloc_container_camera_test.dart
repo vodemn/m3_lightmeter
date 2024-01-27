@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_events;
@@ -18,11 +19,14 @@ class _MockMeteringCommunicationBloc
     extends MockBloc<communication_events.MeteringCommunicationEvent, communication_states.MeteringCommunicationState>
     implements MeteringCommunicationBloc {}
 
+class _MockLightmeterAnalytics extends Mock implements LightmeterAnalytics {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late _MockMeteringInteractor meteringInteractor;
   late _MockMeteringCommunicationBloc communicationBloc;
+  late _MockLightmeterAnalytics analytics;
   late CameraContainerBloc bloc;
 
   const cameraMethodChannel = MethodChannel('plugins.flutter.io/camera');
@@ -110,16 +114,21 @@ void main() {
 
   setUpAll(() {
     meteringInteractor = _MockMeteringInteractor();
-    communicationBloc = _MockMeteringCommunicationBloc();
 
+    communicationBloc = _MockMeteringCommunicationBloc();
     when(() => meteringInteractor.cameraEvCalibration).thenReturn(0.0);
     when(meteringInteractor.quickVibration).thenAnswer((_) async {});
+
+    analytics = _MockLightmeterAnalytics();
+    registerFallbackValue(StackTrace.empty);
+    when(() => analytics.logCrash(any<dynamic>(), any<StackTrace>())).thenAnswer((_) async {});
   });
 
   setUp(() {
     bloc = CameraContainerBloc(
       meteringInteractor,
       communicationBloc,
+      analytics,
     );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(cameraMethodChannel, cameraMethodCallSuccessHandler);

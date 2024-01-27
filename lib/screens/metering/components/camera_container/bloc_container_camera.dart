@@ -7,6 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
@@ -22,6 +23,7 @@ part 'mock_bloc_container_camera.dart';
 
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;
+  final LightmeterAnalytics _analytics;
   late final _WidgetsBindingObserver _observer;
 
   CameraController? _cameraController;
@@ -42,6 +44,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   CameraContainerBloc(
     this._meteringInteractor,
     MeteringCommunicationBloc communicationBloc,
+    this._analytics,
   ) : super(
           communicationBloc,
           const CameraInitState(),
@@ -223,8 +226,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       Directory(file.path).deleteSync(recursive: true);
 
       return await evFromImage(bytes);
-    } catch (e) {
-      log(e.toString());
+    } catch (e, stackTrace) {
+      _analytics.logCrash(e, stackTrace);
       return null;
     }
   }
