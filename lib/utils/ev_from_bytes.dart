@@ -1,7 +1,7 @@
 import 'dart:math' as math;
-import 'dart:typed_data';
 
 import 'package:exif/exif.dart';
+import 'package:flutter/foundation.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 Future<double> evFromImage(Uint8List bytes) async {
@@ -10,7 +10,7 @@ Future<double> evFromImage(Uint8List bytes) async {
   final apertureValueRatio = (tags["EXIF FNumber"]?.values as IfdRatios?)?.ratios.first;
   final speedValueRatio = (tags["EXIF ExposureTime"]?.values as IfdRatios?)?.ratios.first;
   if (iso == null || apertureValueRatio == null || speedValueRatio == null) {
-    throw 'Error parsing EXIF: ${tags.keys}';
+    throw FlutterError('Error parsing EXIF: ${tags.keys}');
   }
 
   final aperture = apertureValueRatio.numerator / apertureValueRatio.denominator;
