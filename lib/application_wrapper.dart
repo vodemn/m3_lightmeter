@@ -26,11 +26,14 @@ class ApplicationWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final remoteConfigService = env.buildType != BuildType.dev
+        ? const RemoteConfigService(LightmeterAnalytics(api: LightmeterAnalyticsFirebase()))
+        : const MockRemoteConfigService();
     return FutureBuilder(
       future: Future.wait<dynamic>([
         SharedPreferences.getInstance(),
         const LightSensorService(LocalPlatform()).hasSensor(),
-        if (env.buildType != BuildType.dev) const RemoteConfigService().activeAndFetchFeatures(),
+        remoteConfigService.activeAndFetchFeatures(),
       ]),
       builder: (_, snapshot) {
         if (snapshot.data != null) {
@@ -47,8 +50,7 @@ class ApplicationWrapper extends StatelessWidget {
             userPreferencesService: userPreferencesService,
             volumeEventsService: const VolumeEventsService(LocalPlatform()),
             child: RemoteConfigProvider(
-              remoteConfigService:
-                  env.buildType != BuildType.dev ? const RemoteConfigService() : const MockRemoteConfigService(),
+              remoteConfigService: remoteConfigService,
               child: EquipmentProfileProvider(
                 storageService: iapService,
                 child: FilmsProvider(
