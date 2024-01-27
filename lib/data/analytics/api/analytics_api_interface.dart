@@ -1,8 +1,13 @@
-import 'package:lightmeter/data/analytics/entity/analytics_event.dart';
-
 abstract class ILightmeterAnalyticsApi {
-  Future<void> logEvent({
-    required LightmeterAnalyticsEvent event,
+  Future<void> logEvent(
+    String eventName, {
     Map<String, dynamic>? parameters,
+  });
+
+  Future<void> logCrash(
+    dynamic exception,
+    StackTrace? stack, {
+    dynamic reason,
+    Iterable<Object> information = const [],
   });
 }

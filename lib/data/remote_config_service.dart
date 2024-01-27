@@ -73,8 +73,8 @@ class RemoteConfigService implements IRemoteConfigService {
       try {
         final feature = Feature.values.firstWhere((f) => f.name == value.key);
         result[feature] = value.value.toValue(feature);
-      } catch (e) {
-        log(e.toString());
+      } catch (e, stackTrace) {
+        log(e.toString(), stackTrace: stackTrace);
       }
     }
     return result;
@@ -88,8 +88,8 @@ class RemoteConfigService implements IRemoteConfigService {
           for (final key in event.updatedKeys) {
             try {
               updatedFeatures.add(Feature.values.firstWhere((element) => element.name == key));
-            } catch (e) {
-              log(e.toString());
+            } catch (e, stackTrace) {
+              log(e.toString(), stackTrace: stackTrace);
             }
           }
           return updatedFeatures;

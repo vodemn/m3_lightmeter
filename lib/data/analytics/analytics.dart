@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:lightmeter/data/analytics/api/analytics_api_interface.dart';
-import 'package:lightmeter/data/analytics/entity/analytics_event.dart';
 
 class LightmeterAnalytics {
   final ILightmeterAnalyticsApi _api;
@@ -11,24 +10,35 @@ class LightmeterAnalytics {
   const LightmeterAnalytics({required ILightmeterAnalyticsApi api}) : _api = api;
 
   Future<void> logEvent(
-    LightmeterAnalyticsEvent event, {
+    String eventName, {
     Map<String, dynamic>? parameters,
   }) async {
     if (kDebugMode) {
-      log('<LightmeterAnalytics> logEvent: ${event.name} / $parameters');
+      log('<LightmeterAnalytics> logEvent: $eventName / $parameters');
       return;
     }
 
     return _api.logEvent(
-      event: event,
+      eventName,
       parameters: parameters,
     );
   }
 
-  Future<void> logUnlockProFeatures(String listTileTitle) async {
-    return logEvent(
-      LightmeterAnalyticsEvent.unlockProFeatures,
-      parameters: {"listTileTitle": listTileTitle},
+  Future<void> logCrash(
+    dynamic exception,
+    StackTrace? stack, {
+    dynamic reason,
+    Iterable<Object> information = const [],
+  }) async {
+    if (kDebugMode) {
+      return;
+    }
+
+    return _api.logCrash(
+      exception,
+      stack,
+      reason: reason,
+      information: information,
     );
   }
 }

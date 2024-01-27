@@ -1,20 +1,20 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:lightmeter/data/analytics/api/analytics_api_interface.dart';
-import 'package:lightmeter/data/analytics/entity/analytics_event.dart';
 
 class LightmeterAnalyticsFirebase implements ILightmeterAnalyticsApi {
   const LightmeterAnalyticsFirebase();
 
   @override
-  Future<void> logEvent({
-    required LightmeterAnalyticsEvent event,
+  Future<void> logEvent(
+    String eventName, {
     Map<String, dynamic>? parameters,
   }) async {
     try {
       await FirebaseAnalytics.instance.logEvent(
-        name: event.name,
+        name: eventName,
         parameters: parameters,
       );
     } on FirebaseException catch (e) {
@@ -22,5 +22,21 @@ class LightmeterAnalyticsFirebase implements ILightmeterAnalyticsApi {
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  @override
+  Future<void> logCrash(
+    dynamic exception,
+    StackTrace? stackTrace, {
+    dynamic reason,
+    Iterable<Object> information = const [],
+  }) async {
+    FirebaseCrashlytics.instance.recordError(
+      exception,
+      stackTrace,
+      reason: reason,
+      information: information,
+      fatal: true,
+    );
   }
 }
