@@ -9,11 +9,19 @@ class LightmeterAnalytics {
 
   const LightmeterAnalytics({required ILightmeterAnalyticsApi api}) : _api = api;
 
+  void init() {
+    FlutterError.onError = (details) => logCrash(details.exception, details.stack);
+    PlatformDispatcher.instance.onError = (error, stack) {
+      logCrash(error, stack);
+      return true;
+    };
+  }
+
   Future<void> logEvent(
     String eventName, {
     Map<String, dynamic>? parameters,
   }) async {
-    if (kDebugMode) {
+    if (!kReleaseMode) {
       log('<LightmeterAnalytics> logEvent: $eventName / $parameters');
       return;
     }
@@ -26,17 +34,17 @@ class LightmeterAnalytics {
 
   Future<void> logCrash(
     dynamic exception,
-    StackTrace? stack, {
+    StackTrace? stackTrace, {
     dynamic reason,
     Iterable<Object> information = const [],
   }) async {
-    if (kDebugMode) {
+    if (!kReleaseMode) {
       return;
     }
 
     return _api.logCrash(
       exception,
-      stack,
+      stackTrace,
       reason: reason,
       information: information,
     );
