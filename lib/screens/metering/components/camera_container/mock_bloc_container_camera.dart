@@ -4,6 +4,7 @@ class MockCameraContainerBloc extends CameraContainerBloc {
   MockCameraContainerBloc(
     super._meteringInteractor,
     super.communicationBloc,
+    super._analytics,
   );
 
   @override
@@ -72,8 +73,8 @@ class MockCameraContainerBloc extends CameraContainerBloc {
     try {
       final bytes = (await rootBundle.load(PlatformConfig.cameraStubImage)).buffer.asUint8List();
       return await evFromImage(bytes);
-    } catch (e) {
-      log(e.toString());
+    } catch (e, stackTrace) {
+      log(e.toString(), stackTrace: stackTrace);
       return null;
     }
   }
