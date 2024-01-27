@@ -41,6 +41,7 @@ class LightmeterAnalytics {
     dynamic reason,
     Iterable<Object> information = const [],
   }) async {
+    log(exception.toString(), stackTrace: stackTrace);
     if (!kReleaseMode) {
       return;
     }
