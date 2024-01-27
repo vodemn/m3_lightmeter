@@ -46,8 +46,8 @@ class ProFeaturesDialog extends StatelessWidget {
         FilledButton(
           onPressed: () {
             _close(context).then((_) {
-              ServicesProvider.of(context)
-                  .analytics
+              ServicesProvider.maybeOf(context)
+                  ?.analytics
                   .setCustomKey('iap_product_type', IAPProductType.paidFeatures.storeId);
               IAPProductsProvider.maybeOf(context)?.buy(IAPProductType.paidFeatures);
             });
