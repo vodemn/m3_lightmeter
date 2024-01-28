@@ -35,7 +35,7 @@
                 "--flavor",
                 "prod",
             ],
-            "program": "${workspaceFolder}/lib/main_release.dart",
+            "program": "${workspaceFolder}/lib/main_prod.dart",
         },
         {
             "name": "prod-profile",
@@ -46,7 +46,7 @@
                 "--flavor",
                 "prod",
             ],
-            "program": "${workspaceFolder}/lib/main_release.dart",
+            "program": "${workspaceFolder}/lib/main_prod.dart",
         },
         {
             "name": "dev-simulator",

@@ -31,8 +31,10 @@ class ServicesProvider extends InheritedWidget {
     required super.child,
   });
 
-  static ServicesProvider of(BuildContext context) {
-    return context.findAncestorWidgetOfExactType<ServicesProvider>()!;
+  static ServicesProvider of(BuildContext context) => ServicesProvider.maybeOf(context)!;
+
+  static ServicesProvider? maybeOf(BuildContext context) {
+    return context.findAncestorWidgetOfExactType<ServicesProvider>();
   }
 
   @override
