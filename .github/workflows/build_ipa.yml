@@ -8,6 +8,9 @@ name: Build Prod .ipa
 on:
   workflow_dispatch:
 
+env:
+  FLAVOR: "prod"
+
 jobs:
   build:
     name: Build .ipa
@@ -31,18 +34,13 @@ jobs:
       - name: Install Apple Certificate
         uses: apple-actions/import-codesign-certs@v1
         with:
-          p12-file-base64: ${{ secrets.CERT_P12 }}
-          p12-password: ${{ secrets.CERT_P12_PASSWORD }}
+          p12-file-base64: ${{ secrets.APP_STORE_P12 }}
+          p12-password: ${{ secrets.APP_STORE_P12_PASSWORD }}
       - name: Install the provisioning profile
         run: |
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.PROVISION_PROD }}" "provision_prod.mobileprovision"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_PROVISION_PROD }}" "provision_prod.mobileprovision"
           mkdir -p ~/Library/MobileDevice/profiles
-          cp app_store_api_key.p8 ~/Library/MobileDevice/profiles
-      - name: Restore AppStore Certificate
-        run: |
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.CERT_P8 }}" "app_store_api_key.p8"
-          mkdir -p ~/Library/MobileDevice/certificates
-          cp app_store_api_key.p8 ~/Library/MobileDevice/certificates
+          cp provision_prod.mobileprovision ~/Library/MobileDevice/profiles
 
       - name: Restore firebase_options.dart
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
@@ -51,21 +49,19 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: '3.10.0'
+          flutter-version: "3.10.0"
 
       - name: Prepare flutter project
-        run: | 
+        run: |
           flutter --version
           flutter pub get
           flutter pub run intl_utils:generate
 
       - name: Build .ipa
-        env:
-          FLAVOR: ${{ github.event.inputs.flavor }}
         run: flutter build ipa --release --flavor $FLAVOR -t lib/main_$FLAVOR.dart
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: m3_lightmeter_${{ github.event.inputs.flavor }}_ipa
+          name: m3_lightmeter_$FLAVOR_ipa
           path: build/ios/ipa/lightmeter.ipa
