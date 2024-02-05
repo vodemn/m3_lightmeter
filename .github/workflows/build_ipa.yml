@@ -38,9 +38,10 @@ jobs:
           p12-password: ${{ secrets.APP_STORE_P12_PASSWORD }}
       - name: Install the provisioning profile
         run: |
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_PROVISION_PROD }}" "provision_prod.mobileprovision"
-          mkdir -p ~/Library/MobileDevice/profiles
-          cp provision_prod.mobileprovision ~/Library/MobileDevice/profiles
+          PROVISION_CERT_PATH=$RUNNER_TEMP/provision_prod.mobileprovision
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_PROVISION_PROD }}" $PROVISION_CERT_PATH
+          mkdir -p ~/Library/MobileDevice\ Profiles
+          cp $PROVISION_CERT_PATH ~/Library/MobileDevice\ Profiles
 
       - name: Restore firebase_options.dart
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
