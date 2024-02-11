@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -253,12 +254,29 @@ class _WidgetsBindingObserver with WidgetsBindingObserver {
 
   _WidgetsBindingObserver(this.onLifecycleStateChanged);
 
+  /// Revoking camera permissions results in app being killed both on Android and iOS
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (_prevState == AppLifecycleState.inactive && state == AppLifecycleState.resumed) {
-      return;
+    switch (defaultTargetPlatform) {
+      /// On Android opening a dialog results in [AppLifecycleState.inactive]
+      case TargetPlatform.android:
+        if (_prevState == AppLifecycleState.inactive && state == AppLifecycleState.resumed) {
+          return;
+        }
+        _prevState = state;
+        onLifecycleStateChanged(state);
+
+      /// When coming from the app's settings iOS fires paused -> inactive -> resumed state which falls into this condition.
+      /// So the inactive state is skipped.
+      case TargetPlatform.iOS:
+        if (state == AppLifecycleState.inactive) {
+          return;
+        }
+        if (_prevState != state) {
+          _prevState = state;
+          onLifecycleStateChanged(state);
+        }
+      default:
     }
-    _prevState = state;
-    onLifecycleStateChanged(state);
   }
 }
