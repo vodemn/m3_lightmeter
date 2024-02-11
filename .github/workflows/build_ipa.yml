@@ -40,8 +40,8 @@ jobs:
         run: |
           PROVISION_CERT_PATH=$RUNNER_TEMP/Lightmeter.mobileprovision
           bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_PROVISION_PROD }}" $PROVISION_CERT_PATH
-          mkdir -p ~/Library/MobileDevice\ Profiles
-          cp $PROVISION_CERT_PATH ~/Library/MobileDevice\ Profiles
+          mkdir -p ~/Library/MobileDevice\Provisioning\ Profiles
+          cp $PROVISION_CERT_PATH ~/Library/MobileDevice\Provisioning\ Profiles
 
       - name: Restore firebase_options.dart
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
