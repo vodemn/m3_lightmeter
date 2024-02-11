@@ -40,12 +40,12 @@ jobs:
         run: |
           # create variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          PROVISION_PATH=$RUNNER_TEMP/build_provision.mobileprovision
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
 
           # import certificate and provisioning profile from secrets
           echo -n "$APP_STORE_P12" | base64 --decode -o $CERTIFICATE_PATH
-          echo -n "$APP_STORE_PROVISION_PROD" | base64 --decode -o $PP_PATH
+          echo -n "$APP_STORE_PROVISION_PROD" | base64 --decode -o $PROVISION_PATH
 
           # create temporary keychain
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
@@ -59,6 +59,9 @@ jobs:
           # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+      - name: Restore ios/Runner/ExportOptions.plist
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_EXPORT_OPTIONS }}" "ios/Runner/ExportOptions.plist"
 
       - name: Restore firebase_options.dart
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
@@ -76,10 +79,21 @@ jobs:
           flutter pub run intl_utils:generate
 
       - name: Build .ipa
-        run: flutter build ipa --release --flavor $FLAVOR -t lib/main_$FLAVOR.dart
+        run: |
+          flutter build ipa \
+            --release \
+            --flavor $FLAVOR \
+            --target lib/main_$FLAVOR.dart \
+            --export-options-plist=ios/Runner/ExportOptions.plist
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: m3_lightmeter_$FLAVOR_ipa
           path: build/ios/ipa/lightmeter.ipa
+      
+      - name: Clean up keychain and provisioning profile
+        if: ${{ always() }}
+        run: |
+          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
+          rm ~/Library/MobileDevice/Provisioning\ Profiles/build_provision.mobileprovision
