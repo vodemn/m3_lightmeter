@@ -75,17 +75,8 @@ Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics t
 
 ### 4. Build
 
-#### Android
-
-You can build an apk by running the following command from the root of the repository:
-
-```console
-flutter build apk --release --flavor dev --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_dev.dart
-```
-
-### iOS
-
-TBD
+- Checkout [Build .apk](.github/workflows/build_apk.yml) workflow for Android
+- Checkout [Build .ipa](.github/workflows/build_ipa.yml) workflow for iOS
 
 # Support
 
