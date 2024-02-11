@@ -38,7 +38,7 @@ jobs:
           p12-password: ${{ secrets.APP_STORE_P12_PASSWORD }}
       - name: Install the provisioning profile
         run: |
-          PROVISION_CERT_PATH=$RUNNER_TEMP/m3_lightmeter_provision.mobileprovision
+          PROVISION_CERT_PATH=$RUNNER_TEMP/Lightmeter.mobileprovision
           bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_PROVISION_PROD }}" $PROVISION_CERT_PATH
           mkdir -p ~/Library/MobileDevice\ Profiles
           cp $PROVISION_CERT_PATH ~/Library/MobileDevice\ Profiles
