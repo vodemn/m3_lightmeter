@@ -7,7 +7,7 @@ for i in "${devices_array[@]}"; do # https://www.baeldung.com/linux/shell-script
     xcrun simctl boot "$i"
     #uid=$(echo "$(fvm flutter devices)" | sed -n -r "s/$i \(mobile\) • (.*) • .* • .*\(simulator\)/\1/p")
     #echo $uid
-    sh screenshots/generate_screenshots.sh "$i"
+    sh screenshots/scripts/generate_screenshots.sh "$i"
 done
 
 killall 'Simulator'
