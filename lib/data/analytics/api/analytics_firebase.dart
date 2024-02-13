@@ -36,7 +36,6 @@ class LightmeterAnalyticsFirebase implements ILightmeterAnalyticsApi {
       stackTrace,
       reason: reason,
       information: information,
-      fatal: true,
     );
   }
 
