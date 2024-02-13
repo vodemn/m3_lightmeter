@@ -17,7 +17,7 @@ void main() {
       'no EXIF',
       () {
         final bytes = File('assets/launcher_icon_dev_512.png').readAsBytesSync();
-        expectLater(evFromImage(bytes), throwsFlutterError);
+        expectLater(evFromImage(bytes), throwsArgumentError);
       },
     );
   });

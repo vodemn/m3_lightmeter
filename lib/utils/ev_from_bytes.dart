@@ -10,7 +10,14 @@ Future<double> evFromImage(Uint8List bytes) async {
   final apertureValueRatio = (tags["EXIF FNumber"]?.values as IfdRatios?)?.ratios.first;
   final speedValueRatio = (tags["EXIF ExposureTime"]?.values as IfdRatios?)?.ratios.first;
   if (iso == null || apertureValueRatio == null || speedValueRatio == null) {
-    throw FlutterError('Error parsing EXIF: ${tags.keys}');
+    throw ArgumentError(
+      'Error parsing EXIF: ${tags.keys.join(', ')}',
+      [
+        if (iso == null) 'EXIF ISOSpeedRatings',
+        if (apertureValueRatio == null) 'EXIF FNumber',
+        if (speedValueRatio == null) 'EXIF ExposureTime',
+      ].join(', '),
+    );
   }
 
   final aperture = apertureValueRatio.numerator / apertureValueRatio.denominator;
