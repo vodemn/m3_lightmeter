@@ -67,12 +67,10 @@ jobs:
           cp $GOOGLE_SERVICES_JSON_ANDROID_PATH ./android/app
 
       - name: Restore firebase_options.dart
-        env:
-          FIREBASE_OPTIONS: ${{ secrets.FIREBASE_OPTIONS }}
-        run: |
-          FIREBASE_OPTIONS_PATH=$RUNNER_TEMP/firebase_options.dart
-          echo -n "$FIREBASE_OPTIONS" | base64 --decode --output $FIREBASE_OPTIONS_PATH
-          cp $FIREBASE_OPTIONS_PATH ./lib
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
+
+      - name: Restore constants.dart
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2

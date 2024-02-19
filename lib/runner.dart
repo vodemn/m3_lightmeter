@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lightmeter/application.dart';
 import 'package:lightmeter/application_wrapper.dart';
+import 'package:lightmeter/constants.dart';
 import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/data/analytics/api/analytics_firebase.dart';
 import 'package:lightmeter/environment.dart';
@@ -27,7 +28,10 @@ Future<void> runLightmeterApp(Environment env) async {
                 products: [IAPProduct(storeId: IAPProductType.paidFeatures.storeId)],
                 child: application,
               )
-            : IAPProductsProvider(child: application),
+            : IAPProductsProvider(
+                apiUrl: iapServerUrl,
+                child: application,
+              ),
       );
     },
     _errorsLogger.logCrash,

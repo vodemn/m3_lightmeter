@@ -1,7 +1,7 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:lightmeter/constants.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/services_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WriteEmailListTile extends StatelessWidget {
@@ -13,8 +13,7 @@ class WriteEmailListTile extends StatelessWidget {
       leading: const Icon(Icons.email),
       title: Text(S.of(context).writeEmail),
       onTap: () {
-        final email = ServicesProvider.of(context).environment.contactEmail;
-        final mailToUrl = Uri.parse('mailto:$email?subject=M3 Lightmeter');
+        final mailToUrl = Uri.parse('mailto:$contactEmail?subject=M3 Lightmeter');
         canLaunchUrl(mailToUrl).then((canLaunch) {
           if (canLaunch) {
             launchUrl(
@@ -29,7 +28,7 @@ class WriteEmailListTile extends StatelessWidget {
                 action: SnackBarAction(
                   label: S.of(context).copyEmail,
                   onPressed: () {
-                    FlutterClipboard.copy(email).then((_) {
+                    FlutterClipboard.copy(contactEmail).then((_) {
                       ScaffoldMessenger.of(context).clearSnackBars();
                     });
                   },

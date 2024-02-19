@@ -38,6 +38,19 @@ To build this app you need to install Flutter 3.10.0 stable. [How to install](ht
 
 ### 2. Project setup
 
+#### Restore _constants.dart_ file
+
+Create a file _lib/constants.dart_ and paste the following content:
+
+```dart
+const String contactEmail = '';
+const String iapServerUrl = '';
+const String issuesReportUrl = '';
+const String sourceCodeUrl = '';
+```
+
+#### Stub IAP package
+
 As part of the app's functionallity is in the private repo, you have to replace these lines in _pubspec.yaml_:
 
 ```yaml
