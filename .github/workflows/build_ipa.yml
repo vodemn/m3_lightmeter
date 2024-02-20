@@ -26,11 +26,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
 
-      - uses: actions/setup-java@v2
-        with:
-          distribution: "zulu"
-          java-version: "11"
-
       - name: Install the Apple certificate and provisioning profile
         env:
           APP_STORE_P12: ${{ secrets.APP_STORE_P12 }}
