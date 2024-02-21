@@ -75,12 +75,13 @@ android {
     flavorDimensions "app"
     productFlavors {
         dev {
-            applicationId "com.vodemn.lightmeter.dev"
+            resValue "string", "app_name", "Lightmeter (DEV)"
             dimension "app"
             signingConfig signingConfigs.release
+            applicationIdSuffix ".dev"
         }
         prod {
-            applicationId "com.vodemn.lightmeter"
+            resValue "string", "app_name", "Lightmeter"
             dimension "app"
             signingConfig signingConfigs.release
         }

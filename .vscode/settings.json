@@ -7,17 +7,16 @@
     "files.watcherExclude": {
         "**/.fvm": true
     },
-    "dart.lineLength": 100,
+    "dart.lineLength": 120,
     "[dart]": {
         "editor.rulers": [
-            100,
             120,
         ],
         "editor.selectionHighlight": true,
         "editor.suggest.snippetsPreventQuickSuggestions": false,
         "editor.suggestSelection": "first",
         "editor.tabCompletion": "onlySnippets",
-        "editor.wordBasedSuggestions": false
+        "editor.wordBasedSuggestions": "off"
     },
     "dart.doNotFormat": [
         "**/generated/**",

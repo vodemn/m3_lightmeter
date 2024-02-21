@@ -2,26 +2,29 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
-import 'package:exif/exif.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
-import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
-    as communication_event;
-import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
-    as communication_states;
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_event;
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
 import 'package:lightmeter/screens/metering/components/camera_container/event_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
-import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+import 'package:lightmeter/utils/ev_from_bytes.dart';
+
+part 'mock_bloc_container_camera.dart';
 
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;
+  final LightmeterAnalytics _analytics;
   late final _WidgetsBindingObserver _observer;
 
   CameraController? _cameraController;
@@ -32,7 +35,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
   static const _exposureMaxRange = RangeValues(-4, 4);
   RangeValues? _exposureOffsetRange;
-  double _exposureStep = 0.0;
+  double _exposureStep = 0.1;
   double _currentExposureOffset = 0.0;
 
   double? _ev100 = 0.0;
@@ -42,6 +45,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   CameraContainerBloc(
     this._meteringInteractor,
     MeteringCommunicationBloc communicationBloc,
+    this._analytics,
   ) : super(
           communicationBloc,
           const CameraInitState(),
@@ -56,6 +60,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     on<ZoomChangedEvent>(_onZoomChanged);
     on<ExposureOffsetChangedEvent>(_onExposureOffsetChanged);
     on<ExposureOffsetResetEvent>(_onExposureOffsetResetEvent);
+    on<ExposureSpotChangedEvent>(_onExposureSpotChangedEvent);
   }
 
   @override
@@ -165,9 +170,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
-    if (_cameraController != null &&
-        event.value >= _zoomRange!.start &&
-        event.value <= _zoomRange!.end) {
+    if (_cameraController != null && event.value >= _zoomRange!.start && event.value <= _zoomRange!.end) {
       _cameraController!.setZoomLevel(event.value);
       _currentZoom = event.value;
       _emitActiveState(emit);
@@ -187,6 +190,13 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     add(const ExposureOffsetChangedEvent(0));
   }
 
+  Future<void> _onExposureSpotChangedEvent(ExposureSpotChangedEvent event, Emitter emit) async {
+    if (_cameraController != null) {
+      _cameraController!.setExposurePoint(event.offset);
+      _cameraController!.setFocusPoint(event.offset);
+    }
+  }
+
   void _emitActiveState(Emitter emit) {
     emit(
       CameraActiveState(
@@ -199,9 +209,11 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     );
   }
 
-  bool get _canTakePhoto => !(_cameraController == null ||
-      !_cameraController!.value.isInitialized ||
-      _cameraController!.value.isTakingPicture);
+  bool get _canTakePhoto =>
+      PlatformConfig.cameraStubImage.isNotEmpty ||
+      !(_cameraController == null ||
+          !_cameraController!.value.isInitialized ||
+          _cameraController!.value.isTakingPicture);
 
   Future<double?> _takePhoto() async {
     try {
@@ -211,25 +223,12 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       final file = await _cameraController!.takePicture();
       await _cameraController!.setFocusMode(FocusMode.auto);
       await _cameraController!.setExposureMode(ExposureMode.auto);
-
-      final Uint8List bytes = await file.readAsBytes();
+      final bytes = await file.readAsBytes();
       Directory(file.path).deleteSync(recursive: true);
 
-      final tags = await readExifFromBytes(bytes);
-      final iso = double.tryParse("${tags["EXIF ISOSpeedRatings"]}");
-      final apertureValueRatio = (tags["EXIF FNumber"]?.values as IfdRatios?)?.ratios.first;
-      final speedValueRatio = (tags["EXIF ExposureTime"]?.values as IfdRatios?)?.ratios.first;
-      if (iso == null || apertureValueRatio == null || speedValueRatio == null) {
-        log('Error parsing EXIF: ${tags.keys}');
-        return null;
-      }
-
-      final aperture = apertureValueRatio.numerator / apertureValueRatio.denominator;
-      final speed = speedValueRatio.numerator / speedValueRatio.denominator;
-
-      return log2(math.pow(aperture, 2)) - log2(speed) - log2(iso / 100);
-    } catch (e) {
-      log(e.toString());
+      return await evFromImage(bytes);
+    } catch (e, stackTrace) {
+      _analytics.logCrash(e, stackTrace);
       return null;
     }
   }
@@ -255,12 +254,29 @@ class _WidgetsBindingObserver with WidgetsBindingObserver {
 
   _WidgetsBindingObserver(this.onLifecycleStateChanged);
 
+  /// Revoking camera permissions results in app being killed both on Android and iOS
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (_prevState == AppLifecycleState.inactive && state == AppLifecycleState.resumed) {
-      return;
+    switch (defaultTargetPlatform) {
+      /// On Android opening a dialog results in [AppLifecycleState.inactive]
+      case TargetPlatform.android:
+        if (_prevState == AppLifecycleState.inactive && state == AppLifecycleState.resumed) {
+          return;
+        }
+        _prevState = state;
+        onLifecycleStateChanged(state);
+
+      /// When coming from the app's settings iOS fires paused -> inactive -> resumed state which falls into this condition.
+      /// So the inactive state is skipped.
+      case TargetPlatform.iOS:
+        if (state == AppLifecycleState.inactive) {
+          return;
+        }
+        if (_prevState != state) {
+          _prevState = state;
+          onLifecycleStateChanged(state);
+        }
+      default:
     }
-    _prevState = state;
-    onLifecycleStateChanged(state);
   }
 }

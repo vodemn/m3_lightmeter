@@ -9,7 +9,7 @@ class LightmeterProSettingsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingsSection(
-      title: S.of(context).lightmeterPro,
+      title: S.of(context).proFeatures,
       children: const [BuyProListTile()],
     );
   }

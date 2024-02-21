@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
 
@@ -64,30 +65,57 @@ class _CameraHistogramState extends State<CameraHistogram> {
       histogramG = List.filled(256, 0);
       histogramB = List.filled(256, 0);
 
-      final int uvRowStride = image.planes[1].bytesPerRow;
-      final int uvPixelStride = image.planes[1].bytesPerPixel!;
-
-      for (int x = 0; x < image.width; x++) {
-        for (int y = 0; y < image.height; y++) {
-          final int uvIndex = uvPixelStride * (x / 2).floor() + uvRowStride * (y / 2).floor();
-          final int index = y * image.width + x;
-
-          final yp = image.planes[0].bytes[index];
-          final up = image.planes[1].bytes[uvIndex];
-          final vp = image.planes[2].bytes[uvIndex];
-
-          final r = yp + vp * 1436 / 1024 - 179;
-          final g = yp - up * 46549 / 131072 + 44 - vp * 93604 / 131072 + 91;
-          final b = yp + up * 1814 / 1024 - 227;
-
-          histogramR[r.round().clamp(0, 255)]++;
-          histogramG[g.round().clamp(0, 255)]++;
-          histogramB[b.round().clamp(0, 255)]++;
-        }
+      switch (defaultTargetPlatform) {
+        case TargetPlatform.android:
+          _yuv420toRgb(image);
+        case TargetPlatform.iOS:
+          _bgra8888toRgb(image);
+        default:
       }
 
       if (mounted) setState(() {});
     });
+  }
+
+  void _yuv420toRgb(CameraImage image) {
+    final int uvRowStride = image.planes[1].bytesPerRow;
+    final int uvPixelStride = image.planes[1].bytesPerPixel!;
+
+    for (int x = 0; x < image.width; x++) {
+      for (int y = 0; y < image.height; y++) {
+        final int uvIndex = uvPixelStride * (x / 2).floor() + uvRowStride * (y / 2).floor();
+        final int index = y * image.width + x;
+
+        final yp = image.planes[0].bytes[index];
+        final up = image.planes[1].bytes[uvIndex];
+        final vp = image.planes[2].bytes[uvIndex];
+
+        final r = yp + vp * 1436 / 1024 - 179;
+        final g = yp - up * 46549 / 131072 + 44 - vp * 93604 / 131072 + 91;
+        final b = yp + up * 1814 / 1024 - 227;
+
+        histogramR[r.round().clamp(0, 255)]++;
+        histogramG[g.round().clamp(0, 255)]++;
+        histogramB[b.round().clamp(0, 255)]++;
+      }
+    }
+  }
+
+  void _bgra8888toRgb(CameraImage image) {
+    for (int i = 0; i < image.planes.first.bytes.length; i++) {
+      final int channel = i % 4;
+      switch (channel) {
+        case 3:
+          break;
+        case 2:
+          histogramR[image.planes.first.bytes[i]]++;
+        case 1:
+          histogramG[image.planes.first.bytes[i]]++;
+        case 0:
+          histogramB[image.planes.first.bytes[i]]++;
+        default:
+      }
+    }
   }
 }
 

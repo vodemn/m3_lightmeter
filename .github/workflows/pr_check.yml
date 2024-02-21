@@ -15,7 +15,7 @@ jobs:
   analyze_and_test:
     name: Analyze & test
     runs-on: macos-11
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR
@@ -35,6 +35,9 @@ jobs:
         id: override-iap
         if: steps.fetch-iap.conclusion != 'success'
         run: bash ./.github/scripts/stub_iap.sh
+
+      - name: Restore constants.dart
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
 
       - uses: subosito/flutter-action@v2
         with:

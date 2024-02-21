@@ -7,7 +7,7 @@ import 'package:lightmeter/screens/settings/components/metering/widget_settings_
 import 'package:lightmeter/screens/settings/components/theme/widget_settings_section_theme.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
+import 'package:lightmeter/utils/context_utils.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -38,8 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SliverList(
             delegate: SliverChildListDelegate(
               <Widget>[
-                if (!IAPProducts.isPurchased(context, IAPProductType.paidFeatures))
-                  const LightmeterProSettingsSection(),
+                if (!context.isPro) const LightmeterProSettingsSection(),
                 const MeteringSettingsSection(),
                 const GeneralSettingsSection(),
                 const ThemeSettingsSection(),

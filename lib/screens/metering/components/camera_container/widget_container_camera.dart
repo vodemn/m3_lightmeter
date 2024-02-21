@@ -3,9 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/data/models/feature.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/platform_config.dart';
-import 'package:lightmeter/providers/user_preferences_provider.dart';
+import 'package:lightmeter/providers/remote_config_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls/widget_camera_controls.dart';
@@ -17,6 +18,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/state_co
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/widget_top_bar_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';
+import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class CameraContainer extends StatelessWidget {
@@ -102,25 +104,23 @@ class CameraContainer extends StatelessWidget {
 
   double _meteringContainerHeight(BuildContext context) {
     double enabledFeaturesHeight = 0;
-    if (UserPreferencesProvider.meteringScreenFeatureOf(
-      context,
-      MeteringScreenLayoutFeature.equipmentProfiles,
-    )) {
-      enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
-      enabledFeaturesHeight += Dimens.paddingS;
+    if (!context.isPro) {
+      if (RemoteConfig.isEnabled(context, Feature.showUnlockProOnMainScreen)) {
+        enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+        enabledFeaturesHeight += Dimens.paddingS;
+      }
+    } else {
+      if (context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) {
+        enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+        enabledFeaturesHeight += Dimens.paddingS;
+      }
+      if (context.meteringFeature(MeteringScreenLayoutFeature.filmPicker)) {
+        enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+        enabledFeaturesHeight += Dimens.paddingS;
+      }
     }
-    if (UserPreferencesProvider.meteringScreenFeatureOf(
-      context,
-      MeteringScreenLayoutFeature.extremeExposurePairs,
-    )) {
+    if (context.meteringFeature(MeteringScreenLayoutFeature.extremeExposurePairs)) {
       enabledFeaturesHeight += Dimens.readingContainerDoubleValueHeight;
-      enabledFeaturesHeight += Dimens.paddingS;
-    }
-    if (UserPreferencesProvider.meteringScreenFeatureOf(
-      context,
-      MeteringScreenLayoutFeature.filmPicker,
-    )) {
-      enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
       enabledFeaturesHeight += Dimens.paddingS;
     }
 
@@ -143,6 +143,9 @@ class _CameraViewBuilder extends StatelessWidget {
       builder: (context, state) => CameraPreview(
         controller: state is CameraInitializedState ? state.controller : null,
         error: state is CameraErrorState ? state.error : null,
+        onSpotTap: (value) {
+          context.read<CameraContainerBloc>().add(ExposureSpotChangedEvent(value));
+        },
       ),
     );
   }

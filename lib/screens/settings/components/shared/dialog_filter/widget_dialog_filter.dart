@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
@@ -34,6 +35,28 @@ class _DialogFilterState<T> extends State<DialogFilter<T>> {
   bool get _hasAnySelected => checkboxValues.contains(true);
   bool get _hasAnyUnselected => checkboxValues.contains(false);
 
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      int i = 0;
+      for (; i < checkboxValues.length; i++) {
+        if (checkboxValues[i]) {
+          break;
+        }
+      }
+      _scrollController.jumpTo((Dimens.grid56 * i).clamp(0, _scrollController.position.maxScrollExtent));
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -41,78 +64,80 @@ class _DialogFilterState<T> extends State<DialogFilter<T>> {
       titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(widget.title),
       contentPadding: EdgeInsets.zero,
-      content: Column(
-        children: [
-          Padding(
-            padding: Dimens.dialogIconTitlePadding,
-            child: Text(widget.description),
-          ),
-          const Divider(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(
-                  widget.values.length,
-                  (index) => CheckboxListTile(
-                    value: checkboxValues[index],
-                    controlAffinity: ListTileControlAffinity.leading,
-                    title: Text(
-                      widget.titleAdapter(context, widget.values[index]),
-                      style: Theme.of(context).textTheme.bodyLarge,
+      content: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          children: [
+            Padding(
+              padding: Dimens.dialogIconTitlePadding,
+              child: Text(widget.description),
+            ),
+            const Divider(),
+            Expanded(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                    widget.values.length,
+                    (index) => CheckboxListTile(
+                      value: checkboxValues[index],
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title: Text(
+                        widget.titleAdapter(context, widget.values[index]),
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            checkboxValues[index] = value;
+                          });
+                        }
+                      },
                     ),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          checkboxValues[index] = value;
-                        });
-                      }
-                    },
                   ),
                 ),
               ),
             ),
-          ),
-          const Divider(),
-          Padding(
-            padding: Dimens.dialogActionsPadding,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 40,
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: Icon(_hasAnyUnselected ? Icons.select_all : Icons.deselect),
-                    onPressed: _toggleAll,
-                    tooltip: _hasAnyUnselected
-                        ? S.of(context).tooltipSelectAll
-                        : S.of(context).tooltipDesecelectAll,
+            const Divider(),
+            Padding(
+              padding: Dimens.dialogActionsPadding,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 40,
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: Icon(_hasAnyUnselected ? Icons.select_all : Icons.deselect),
+                      onPressed: _toggleAll,
+                      tooltip: _hasAnyUnselected ? S.of(context).tooltipSelectAll : S.of(context).tooltipDesecelectAll,
+                    ),
                   ),
-                ),
-                const Spacer(),
-                TextButton(
-                  onPressed: Navigator.of(context).pop,
-                  child: Text(S.of(context).cancel),
-                ),
-                TextButton(
-                  onPressed: _hasAnySelected
-                      ? () {
-                          final List<T> selectedValues = [];
-                          for (int i = 0; i < widget.values.length; i++) {
-                            if (checkboxValues[i]) {
-                              selectedValues.add(widget.values[i]);
+                  const Spacer(),
+                  TextButton(
+                    onPressed: Navigator.of(context).pop,
+                    child: Text(S.of(context).cancel),
+                  ),
+                  TextButton(
+                    onPressed: _hasAnySelected
+                        ? () {
+                            final List<T> selectedValues = [];
+                            for (int i = 0; i < widget.values.length; i++) {
+                              if (checkboxValues[i]) {
+                                selectedValues.add(widget.values[i]);
+                              }
                             }
+                            Navigator.of(context).pop(selectedValues);
                           }
-                          Navigator.of(context).pop(selectedValues);
-                        }
-                      : null,
-                  child: Text(S.of(context).save),
-                ),
-              ],
-            ),
-          )
-        ],
+                        : null,
+                    child: Text(S.of(context).save),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

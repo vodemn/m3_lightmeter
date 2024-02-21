@@ -1,10 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:lightmeter/application.dart';
 import 'package:lightmeter/environment.dart';
-import 'package:lightmeter/firebase.dart';
+import 'package:lightmeter/runner.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initializeFirebase(handleErrors: true);
-  runApp(const Application(Environment.prod()));
-}
+Future<void> main() => runLightmeterApp(const Environment.prod());

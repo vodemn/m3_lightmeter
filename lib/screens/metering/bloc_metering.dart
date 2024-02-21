@@ -10,9 +10,9 @@ import 'package:lightmeter/screens/metering/communication/event_communication_me
     as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
     as communication_states;
-import 'package:lightmeter/screens/metering/components/shared/volume_keys_notifier/notifier_volume_keys.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
+import 'package:lightmeter/screens/metering/utils/notifier_volume_keys.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
