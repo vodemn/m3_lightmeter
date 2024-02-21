@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:m3_lightmeter_iap/src/data/models/iap_product.dart';
 
 class IAPProductsProvider extends StatefulWidget {
+  final String apiUrl;
   final Widget child;
 
-  const IAPProductsProvider({required this.child, super.key});
+  const IAPProductsProvider({required this.apiUrl, required this.child, super.key});
 
   static IAPProductsProviderState of(BuildContext context) => IAPProductsProvider.maybeOf(context)!;
 

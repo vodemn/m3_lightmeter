@@ -7,7 +7,7 @@ Future<void> main() async {
   await grantCameraPermission();
   await integrationDriver(
     onScreenshot: (name, bytes, [args]) async {
-      final File image = await File('screenshots/$name.png').create(recursive: true);
+      final File image = await File('screenshots/generated/$name.png').create(recursive: true);
       image.writeAsBytesSync(bytes);
       return true;
     },

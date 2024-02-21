@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:vibration/vibration.dart';
 
 class HapticsService {
@@ -11,10 +13,17 @@ class HapticsService {
 
   Future<void> _tryVibrate({required int duration, required int amplitude}) async {
     if (await _canVibrate()) {
-      await Vibration.vibrate(
-        duration: duration,
-        amplitude: amplitude,
-      );
+      if (Platform.isAndroid) {
+        await Vibration.vibrate(
+          duration: duration,
+          amplitude: amplitude,
+        );
+      } else {
+        await Vibration.vibrate(
+          pattern: [duration],
+          intensities: [amplitude],
+        );
+      }
     }
   }
 

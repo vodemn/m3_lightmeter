@@ -63,6 +63,7 @@ extension WidgetTesterListTileActions on WidgetTester {
   /// Useful for tapping a specific [ListTile] inside a specific screen or dialog
   Future<void> tapDescendantTextOf<T>(String text) async {
     await tap(find.descendant(of: find.byType(T), matching: find.text(text)));
+    await pumpAndSettle();
   }
 }
 
