@@ -117,9 +117,9 @@ jobs:
 
       - name: Launch iOS simulator
         uses: futureware-tech/simulator-action@v3
-        if: ${{ matrix.os == 'macos-11' }}
+        if: ${{ matrix.os == 'macos-13' }}
         with:
           model: "iPhone 12"
       - name: Run tests
-        if: ${{ matrix.os == 'macos-11' }}
+        if: ${{ matrix.os == 'macos-13' }}
         run: flutter test integration_test --flavor dev --dart-define cameraStubImage=assets/camera_stub_image.jpg
