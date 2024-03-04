@@ -6,6 +6,7 @@
 name: PR check
 
 on:
+  workflow_dispatch:
   push:
     branches: ["main"]
   pull_request:
@@ -62,3 +63,62 @@ jobs:
           bash ./.github/scripts/stub_iap.sh
           flutter pub get
           flutter analyze lib --fatal-infos
+
+  run-integration-tests:
+    name: Run integration tests
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-11]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Override iap package with stub
+        id: override-iap
+        run: bash ./.github/scripts/stub_iap.sh
+
+      - name: Restore constants.dart
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: "3.10.0"
+
+      - name: Prepare flutter project
+        run: |
+          flutter --version
+          flutter pub get
+          flutter pub run intl_utils:generate
+
+      - name: Analyze project source
+        run: flutter analyze lib --fatal-infos
+
+      - name: Enable KVM
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Launch Android simulator & Run tests
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: default
+          arch: x86_64
+          profile: Pixel 6
+          script: flutter test integration_test --flavor dev --dart-define cameraStubImage=assets/camera_stub_image.jpg
+
+      - name: Launch iOS simulator
+        uses: futureware-tech/simulator-action@v3
+        if: ${{ matrix.os == 'macos-11' }}
+        with:
+          model: "iPhone 15"
+      - name: Run tests
+        if: ${{ matrix.os == 'macos-11' }}
+        run: flutter test integration_test --flavor dev --dart-define cameraStubImage=assets/camera_stub_image.jpg
