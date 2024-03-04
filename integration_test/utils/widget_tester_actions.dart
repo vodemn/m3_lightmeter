@@ -53,6 +53,16 @@ extension WidgetTesterCommonActions on WidgetTester {
     await tap(find.byType(T));
     await pumpAndSettle(Dimens.durationL);
   }
+
+  Future<void> openSettings() async {
+    await tap(find.byTooltip(S.current.tooltipOpenSettings));
+    await pumpAndSettle();
+  }
+
+  Future<void> navigatorPop() async {
+    (state(find.byType(Navigator)) as NavigatorState).pop();
+    await pumpAndSettle(Dimens.durationML);
+  }
 }
 
 extension WidgetTesterListTileActions on WidgetTester {

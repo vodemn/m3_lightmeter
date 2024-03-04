@@ -7,7 +7,6 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
@@ -45,7 +44,6 @@ void main() {
     mockSharedPrefs();
   });
 
-  /// Generates several screenshots with the light theme
   testWidgets(
     'Purchase & refund premium features',
     (tester) async {
@@ -56,8 +54,7 @@ void main() {
       _expectProMeteringScreen(enabled: false);
 
       /// Check, that premium settings are disabled
-      await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
-      await tester.pumpAndSettle();
+      await tester.openSettings();
       await _expectProSettingsScreen(tester, enabled: false);
 
       /// Make purchase
@@ -68,8 +65,7 @@ void main() {
       await _expectProSettingsScreen(tester, enabled: true);
 
       /// Expect, that all the premium controls are now available to user
-      (tester.state(find.byType(Navigator)) as NavigatorState).pop();
-      await tester.pumpAndSettle(Dimens.durationML);
+      await tester.navigatorPop();
       _expectProMeteringScreen(enabled: true);
 
       /// Refund
@@ -80,8 +76,7 @@ void main() {
       _expectProMeteringScreen(enabled: false);
 
       /// Check, that premium settings are disabled
-      await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
-      await tester.pumpAndSettle();
+      await tester.openSettings();
       await _expectProSettingsScreen(tester, enabled: false);
     },
   );
