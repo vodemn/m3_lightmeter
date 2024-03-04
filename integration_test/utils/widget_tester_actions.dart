@@ -9,6 +9,7 @@ import 'package:lightmeter/screens/metering/components/bottom_controls/component
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
+import '../mocks/iap_products_mock.dart';
 import '../mocks/paid_features_mock.dart';
 import 'platform_channel_mock.dart';
 
@@ -19,13 +20,8 @@ extension WidgetTesterCommonActions on WidgetTester {
     Film selectedFilm = const Film.other(),
   }) async {
     await pumpWidget(
-      IAPProducts(
-        products: [
-          IAPProduct(
-            storeId: IAPProductType.paidFeatures.storeId,
-            status: productStatus,
-          ),
-        ],
+      MockIAPProductsProvider(
+        initialyPurchased: productStatus == IAPProductStatus.purchased,
         child: ApplicationWrapper(
           const Environment.dev(),
           child: MockIAPProviders(
