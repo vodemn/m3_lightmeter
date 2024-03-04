@@ -81,8 +81,11 @@ jobs:
         id: override-iap
         run: bash ./.github/scripts/stub_iap.sh
 
-      - name: Restore constants.dart
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
+      - name: Restore secrets
+        run: |
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}" "android/app/google-services.json"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_IOS }}" "ios/Runner/GoogleService-Info.plist"
 
       - uses: subosito/flutter-action@v2
         with:
