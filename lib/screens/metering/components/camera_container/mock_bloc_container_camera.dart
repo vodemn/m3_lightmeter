@@ -6,6 +6,7 @@ class MockCameraContainerBloc extends CameraContainerBloc {
     super.communicationBloc,
     super._analytics,
   ) {
+    // ignore: avoid_print
     print('MockCameraContainerBloc');
   }
 
