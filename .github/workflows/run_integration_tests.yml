@@ -48,6 +48,12 @@ jobs:
           flutter pub get
           flutter pub run intl_utils:generate
           flutter analyze lib --fatal-infos
+          if [ "${{ matrix.os }}" == "macos-13" ]
+          then
+            cd ios
+            pod install
+            cd ..
+          fi
           flutter build ${{ matrix.os == 'ubuntu-latest' && 'apk --debug' || 'ios --no-codesign --simulator --debug' }} $BUILD_ARGS -t $TARGET
 
       - name: Enable KVM
@@ -74,8 +80,4 @@ jobs:
           model: "iPhone 15 Pro"
       - name: Run tests
         if: ${{ matrix.os == 'macos-13' }}
-        run: |
-          cd ios
-          pod install
-          cd ..
-          flutter test $TARGET $BUILD_ARGS
+        run: flutter test $TARGET $BUILD_ARGS

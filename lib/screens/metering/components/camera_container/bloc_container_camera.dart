@@ -50,6 +50,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
           communicationBloc,
           const CameraInitState(),
         ) {
+    print('CameraContainerBloc');
     _observer = _WidgetsBindingObserver(_appLifecycleStateObserver);
     WidgetsBinding.instance.addObserver(_observer);
 
