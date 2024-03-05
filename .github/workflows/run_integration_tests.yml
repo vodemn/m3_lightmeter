@@ -48,7 +48,7 @@ jobs:
           flutter pub get
           flutter pub run intl_utils:generate
           flutter analyze lib --fatal-infos
-          flutter build ${{ matrix.os == 'ubuntu-latest' && 'apk' || 'ios' }} $BUILD_ARGS -t $TARGET
+          flutter build ${{ matrix.os == 'ubuntu-latest' && 'apk --debug' || 'ios --no-codesign --simulator --debug' }} $BUILD_ARGS -t $TARGET
 
       - name: Enable KVM
         if: ${{ matrix.os == 'ubuntu-latest' }}
