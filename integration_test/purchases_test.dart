@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
@@ -16,37 +15,30 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/settings/components/shared/disable/widget_disable.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
+import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../integration_test/utils/widget_tester_actions.dart';
 import 'mocks/iap_products_mock.dart';
 
-void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  void mockSharedPrefs() {
-    // ignore: invalid_use_of_visible_for_testing_member
-    SharedPreferences.setMockInitialValues({
-      /// Metering values
-      UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
-      UserPreferencesService.showEv100Key: true,
-      UserPreferencesService.meteringScreenLayoutKey: json.encode(
-        {
-          MeteringScreenLayoutFeature.equipmentProfiles: true,
-          MeteringScreenLayoutFeature.extremeExposurePairs: true,
-          MeteringScreenLayoutFeature.filmPicker: true,
-        }.toJson(),
-      ),
-    });
-  }
-
-  setUpAll(() {
-    mockSharedPrefs();
-  });
-
+@isTest
+void testPurchases(String description) {
   testWidgets(
-    'Purchase & refund premium features',
+    description,
     (tester) async {
+      SharedPreferences.setMockInitialValues({
+        /// Metering values
+        UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
+        UserPreferencesService.showEv100Key: true,
+        UserPreferencesService.meteringScreenLayoutKey: json.encode(
+          {
+            MeteringScreenLayoutFeature.equipmentProfiles: true,
+            MeteringScreenLayoutFeature.extremeExposurePairs: true,
+            MeteringScreenLayoutFeature.filmPicker: true,
+          }.toJson(),
+        ),
+      });
+
       await tester.pumpApplication(productStatus: IAPProductStatus.purchasable);
       await tester.takePhoto();
 
