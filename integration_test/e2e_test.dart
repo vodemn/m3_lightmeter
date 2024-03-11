@@ -53,8 +53,11 @@ void main() {
       await _expectMeteringState(
         tester,
         equipmentProfile: mockEquipmentProfiles[0],
+        film: mockFilms[0],
         fastest: 'f/1.8 - 1/400',
         slowest: 'f/16 - 1/5',
+        iso: '400',
+        nd: 'None',
         ev: mockPhotoEv100 + 2,
       );
 
@@ -62,24 +65,43 @@ void main() {
 
       /// Add ND to shoot another scene
       await tester.openPickerAndSelect<NdValuePicker, NdValue>('2');
-      expectPickerTitle<NdValuePicker>('2');
       await _expectMeteringStateAndMeasure(
         tester,
         equipmentProfile: mockEquipmentProfiles[0],
+        film: mockFilms[0],
         fastest: 'f/1.8 - 1/200',
         slowest: 'f/16 - 1/2.5',
+        iso: '400',
+        nd: '2',
         ev: mockPhotoEv100 + 2 - 1,
       );
 
       /// Select another lens without ND
+      await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[1].name);
       await tester.openPickerAndSelect<NdValuePicker, NdValue>('None');
-      expectPickerTitle<NdValuePicker>('None');
       await _expectMeteringStateAndMeasure(
         tester,
-        equipmentProfile: mockEquipmentProfiles[0],
-        fastest: 'f/1.8 - 1/400',
-        slowest: 'f/16 - 1/5',
+        equipmentProfile: mockEquipmentProfiles[1],
+        film: mockFilms[0],
+        fastest: 'f/3.5 - 1/100',
+        slowest: 'f/22 - 1/2.5',
+        iso: '400',
+        nd: 'None',
         ev: mockPhotoEv100 + 2,
+      );
+
+      /// Set another wilm and set the same ISO
+      await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('200');
+      await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[1].name);
+      await _expectMeteringStateAndMeasure(
+        tester,
+        equipmentProfile: mockEquipmentProfiles[1],
+        film: mockFilms[1],
+        fastest: 'f/3.5 - 1/50',
+        slowest: 'f/22 - 1/1.3',
+        iso: '200',
+        nd: 'None',
+        ev: mockPhotoEv100 + 1,
       );
     },
   );
@@ -96,13 +118,19 @@ extension on WidgetTester {
 Future<void> _expectMeteringState(
   WidgetTester tester, {
   required EquipmentProfile equipmentProfile,
+  required Film film,
   required String fastest,
   required String slowest,
+  required String iso,
+  required String nd,
   required double ev,
   String? reason,
 }) async {
   expectPickerTitle<EquipmentProfilePicker>(equipmentProfile.name);
+  expectPickerTitle<FilmPicker>(film.name);
   expectExtremeExposurePairs(fastest, slowest);
+  expectPickerTitle<IsoValuePicker>(iso);
+  expectPickerTitle<NdValuePicker>(nd);
   expectExposurePairsListItem(tester, fastest.split(' - ')[0], fastest.split(' - ')[1]);
   await tester.scrollToTheLastExposurePair(equipmentProfile: equipmentProfile);
   expectExposurePairsListItem(tester, slowest.split(' - ')[0], slowest.split(' - ')[1]);
@@ -112,23 +140,32 @@ Future<void> _expectMeteringState(
 Future<void> _expectMeteringStateAndMeasure(
   WidgetTester tester, {
   required EquipmentProfile equipmentProfile,
+  required Film film,
   required String fastest,
   required String slowest,
+  required String iso,
+  required String nd,
   required double ev,
 }) async {
   await _expectMeteringState(
     tester,
     equipmentProfile: equipmentProfile,
+    film: film,
     fastest: fastest,
     slowest: slowest,
+    iso: iso,
+    nd: nd,
     ev: ev,
   );
   await tester.takePhoto();
   await _expectMeteringState(
     tester,
     equipmentProfile: equipmentProfile,
+    film: film,
     fastest: fastest,
     slowest: slowest,
+    iso: iso,
+    nd: nd,
     ev: ev,
     reason:
         'Metering screen state must be the same before and after the measurement assuming that the scene is exactly the same.',

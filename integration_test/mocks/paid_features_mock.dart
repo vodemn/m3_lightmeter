@@ -92,13 +92,34 @@ final mockEquipmentProfiles = [
       IsoValue(3200, StopType.full),
     ],
   ),
-  const EquipmentProfile(
+  EquipmentProfile(
     id: '2',
     name: 'Praktica + Jupiter',
-    apertureValues: ApertureValue.values,
-    ndValues: NdValue.values,
-    shutterSpeedValues: ShutterSpeedValue.values,
-    isoValues: IsoValue.values,
+    apertureValues: ApertureValue.values.sublist(
+      ApertureValue.values.indexOf(const ApertureValue(3.5, StopType.third)),
+      ApertureValue.values.indexOf(const ApertureValue(22, StopType.full)) + 1,
+    ),
+    ndValues: const [
+      NdValue(0),
+      NdValue(2),
+      NdValue(4),
+      NdValue(8),
+    ],
+    shutterSpeedValues: ShutterSpeedValue.values.sublist(
+      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1000, true, StopType.full)),
+      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(16, false, StopType.full)) + 1,
+    ),
+    isoValues: const [
+      IsoValue(50, StopType.full),
+      IsoValue(100, StopType.full),
+      IsoValue(200, StopType.full),
+      IsoValue(250, StopType.third),
+      IsoValue(400, StopType.full),
+      IsoValue(500, StopType.third),
+      IsoValue(800, StopType.full),
+      IsoValue(1600, StopType.full),
+      IsoValue(3200, StopType.full),
+    ],
   ),
 ];
 
