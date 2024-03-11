@@ -43,12 +43,12 @@ void main() {
 
       /// Select some initial settings according to the selected gear and film
       /// Then tale a photo and verify, that exposure pairs range and EV matches the selected settings
-      await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('400');
       await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[0].name);
       await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[0].name);
-      expectPickerTitle<IsoValuePicker>('400');
+      await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('400');
       expectPickerTitle<EquipmentProfilePicker>(mockEquipmentProfiles[0].name);
       expectPickerTitle<FilmPicker>(mockFilms[0].name);
+      expectPickerTitle<IsoValuePicker>('400');
       await tester.takePhoto();
       await _expectMeteringState(
         tester,
