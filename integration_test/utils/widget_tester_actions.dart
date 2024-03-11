@@ -6,12 +6,16 @@ import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
+import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
+import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import '../mocks/iap_products_mock.dart';
 import '../mocks/paid_features_mock.dart';
 import 'platform_channel_mock.dart';
+
+const mockPhotoEv100 = 8.3;
 
 extension WidgetTesterCommonActions on WidgetTester {
   Future<void> pumpApplication({
@@ -87,5 +91,24 @@ extension WidgetTesterTextButtonActions on WidgetTester {
     expect(button, findsOneWidget);
     await tap(button);
     await pumpAndSettle();
+  }
+}
+
+extension WidgetTesterExposurePairsListActions on WidgetTester {
+  Future<void> scrollToTheLastExposurePair({
+    double ev = mockPhotoEv100,
+    StopType stopType = StopType.third,
+    EquipmentProfile equipmentProfile = defaultEquipmentProfile,
+  }) async {
+    final exposurePairs = MeteringContainerBuidler.buildExposureValues(
+      ev,
+      StopType.third,
+      equipmentProfile,
+    );
+    await scrollUntilVisible(
+      find.byWidgetPredicate((widget) => widget is Row && widget.key == ValueKey(exposurePairs.length - 1)),
+      56,
+      scrollable: find.descendant(of: find.byType(ExposurePairsList), matching: find.byType(Scrollable)),
+    );
   }
 }
