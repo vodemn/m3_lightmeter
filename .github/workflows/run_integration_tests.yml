@@ -9,10 +9,6 @@ on:
   workflow_dispatch:
   workflow_call:
 
-env:
-  BUILD_ARGS: --flavor dev --dart-define cameraStubImage=assets/camera_stub_image.jpg
-  TARGET: integration_test/run_all_tests.dart
-
 jobs:
   run-integration-tests:
     name: Run integration tests
@@ -71,7 +67,7 @@ jobs:
           target: default
           arch: x86_64
           profile: pixel_6
-          script: flutter test $TARGET $BUILD_ARGS
+          script: bash .github/scripts/run_integration_tests.sh
 
       - name: Launch iOS simulator
         uses: futureware-tech/simulator-action@v3
@@ -80,4 +76,4 @@ jobs:
           model: "iPhone 15 Pro"
       - name: Run tests
         if: ${{ matrix.os == 'macos-13' }}
-        run: flutter test $TARGET $BUILD_ARGS
+        run: bash .github/scripts/run_integration_tests.sh
