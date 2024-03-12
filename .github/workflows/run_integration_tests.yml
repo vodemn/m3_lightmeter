@@ -13,11 +13,7 @@ jobs:
   run-integration-tests:
     name: Run integration tests
     timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v3
         with:
@@ -44,35 +40,17 @@ jobs:
           flutter pub get
           flutter pub run intl_utils:generate
           flutter analyze lib --fatal-infos
-          if [ "${{ matrix.os }}" == "macos-13" ]
-          then
-            cd ios
-            pod install
-            cd ..
-          fi
-
-      - name: Enable KVM
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-
-      - name: Launch Android simulator & Run tests
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 32
-          target: default
-          arch: x86_64
-          profile: pixel_6
-          script: bash .github/scripts/run_integration_tests.sh
 
       - name: Launch iOS simulator
         uses: futureware-tech/simulator-action@v3
-        if: ${{ matrix.os == 'macos-13' }}
         with:
           model: "iPhone 15 Pro"
+
       - name: Run tests
-        if: ${{ matrix.os == 'macos-13' }}
-        run: bash .github/scripts/run_integration_tests.sh
+        run: |
+          flutter drive \
+            --target=integration_test/e2e_test.dart \
+            --driver=test_driver/integration_driver.dart \
+            --flavor=dev \
+            --no-dds \
+            --dart-define cameraStubImage=assets/camera_stub_image.jpg
