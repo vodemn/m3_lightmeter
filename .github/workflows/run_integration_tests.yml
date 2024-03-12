@@ -38,7 +38,7 @@ jobs:
           channel: "stable"
           flutter-version: "3.10.0"
 
-      - name: Build app
+      - name: Prepare app
         run: |
           flutter --version
           flutter pub get
@@ -50,7 +50,6 @@ jobs:
             pod install
             cd ..
           fi
-          flutter build ${{ matrix.os == 'ubuntu-latest' && 'apk --debug' || 'ios --no-codesign --simulator --debug' }} $BUILD_ARGS -t $TARGET
 
       - name: Enable KVM
         if: ${{ matrix.os == 'ubuntu-latest' }}
