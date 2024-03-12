@@ -6,12 +6,16 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/nd_picker/widget_picker_nd.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widget_dialog_filter.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_range_picker/widget_dialog_picker_range.dart';
+import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,9 +41,36 @@ void main() {
   testWidgets(
     'e2e',
     (tester) async {
-      await tester.pumpApplication();
+      await tester.pumpApplication(equipmentProfiles: [] /**, films: [] */);
 
-      /** First launch */
+      /** Create some equipment profiles */
+
+      await tester.openSettings();
+      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
+
+      /// Create Praktica + Zenitar profile from scratch
+      await tester.tap(find.byIcon(Icons.add).first);
+      await tester.pumpAndSettle();
+      await tester.setProfileName(mockEquipmentProfiles[0].name);
+      await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[0].name);
+      await tester.setIsoValues(0, mockEquipmentProfiles[0].isoValues);
+      await tester.setNdValues(0, mockEquipmentProfiles[0].ndValues);
+      await tester.setApertureValues(0, mockEquipmentProfiles[0].apertureValues);
+      await tester.setShutterSpeedValues(0, mockEquipmentProfiles[0].shutterSpeedValues);
+      expect(find.text('f/1.7 - f/16'), findsOneWidget);
+      expect(find.text('1/1000 - 16"'), findsOneWidget);
+
+      /// Create Praktica + Jupiter profile from Zenitar profile
+      await tester.tap(find.byIcon(Icons.copy).first);
+      await tester.pumpAndSettle();
+      await tester.setProfileName(mockEquipmentProfiles[1].name);
+      await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[1].name);
+      await tester.setApertureValues(1, mockEquipmentProfiles[1].apertureValues);
+      expect(find.text('f/3.5 - f/22'), findsOneWidget);
+      expect(find.text('1/1000 - 16"'), findsNWidgets(2));
+
+      await tester.navigatorPop();
+      await tester.navigatorPop();
 
       /// Select some initial settings according to the selected gear and film
       /// Then tale a photo and verify, that exposure pairs range and EV matches the selected settings
@@ -105,6 +136,87 @@ void main() {
       );
     },
   );
+}
+
+extension EquipmentProfileActions on WidgetTester {
+  Future<void> expandEquipmentProfileContainer(String name) async {
+    await tap(find.text(name));
+    await pump(Dimens.durationM);
+  }
+
+  Future<void> setProfileName(String name) async {
+    await enterText(find.byType(TextField), name);
+    await pump();
+    await tapSaveButton();
+  }
+
+  Future<void> setIsoValues(int profileIndex, List<IsoValue> values) =>
+      _setDialogFilterValues<IsoValue>(profileIndex, S.current.isoValues, values);
+  Future<void> setNdValues(int profileIndex, List<NdValue> values) =>
+      _setDialogFilterValues<NdValue>(profileIndex, S.current.ndFilters, values);
+  Future<void> _setDialogFilterValues<T extends PhotographyValue>(
+    int profileIndex,
+    String listTileTitle,
+    List<T> valuesToSelect, {
+    bool deselectAll = true,
+  }) async {
+    await tap(find.text(listTileTitle).at(profileIndex));
+    await pumpAndSettle();
+    if (deselectAll) {
+      await tap(find.byIcon(Icons.deselect));
+      await pump();
+    }
+    for (final value in valuesToSelect) {
+      final listTile = find.descendant(of: find.byType(CheckboxListTile), matching: find.text(value.toString()));
+      await scrollUntilVisible(
+        listTile,
+        56,
+        scrollable: find.descendant(of: find.byType(DialogFilter<T>), matching: find.byType(Scrollable)),
+      );
+      await tap(listTile);
+      await pump();
+    }
+    await tapSaveButton();
+  }
+
+  Future<void> setApertureValues(int profileIndex, List<ApertureValue> values) =>
+      _setDialogRangePickerValues<ApertureValue>(profileIndex, S.current.apertureValues, values);
+  Future<void> setShutterSpeedValues(int profileIndex, List<ShutterSpeedValue> values) =>
+      _setDialogRangePickerValues<ShutterSpeedValue>(profileIndex, S.current.shutterSpeedValues, values);
+  Future<void> _setDialogRangePickerValues<T extends PhotographyValue>(
+    int profileIndex,
+    String listTileTitle,
+    List<T> valuesToSelect,
+  ) async {
+    await tap(find.text(listTileTitle).at(profileIndex));
+    await pumpAndSettle();
+
+    final dialog = widget<DialogRangePicker<T>>(find.byType(DialogRangePicker<T>));
+    final sliderFinder = find.byType(RangeSlider);
+    final divisions = widget<RangeSlider>(sliderFinder).divisions!;
+    final trackWidth = getSize(sliderFinder).width - (2 * Dimens.paddingL);
+    final trackStep = trackWidth / divisions;
+
+    final start = valuesToSelect.first;
+    final oldStart = dialog.values.indexWhere((e) => e.value == dialog.selectedValues.first.value) * trackStep;
+    final newStart = dialog.values.indexWhere((e) => e.value == start.value) * trackStep;
+    await dragFrom(
+      getTopLeft(sliderFinder) + Offset(Dimens.paddingL + oldStart, getSize(sliderFinder).height / 2),
+      Offset(newStart - oldStart, 0),
+    );
+    await pump();
+
+    final end = valuesToSelect.last;
+    final oldEnd = dialog.values.indexWhere((e) => e.value == dialog.selectedValues.last.value) * trackStep;
+    final newEnd = dialog.values.indexWhere((e) => e.value == end.value) * trackStep;
+    await dragFrom(
+      getTopLeft(sliderFinder) + Offset(Dimens.paddingL + oldEnd, getSize(sliderFinder).height / 2),
+      Offset(newEnd - oldEnd, 0),
+    );
+    await pump();
+
+    await tapSaveButton();
+  }
 }
 
 extension on WidgetTester {

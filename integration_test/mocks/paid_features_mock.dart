@@ -8,9 +8,9 @@ import 'package:mocktail/mocktail.dart';
 class _MockIAPStorageService extends Mock implements IAPStorageService {}
 
 class MockIAPProviders extends StatefulWidget {
-  final List<EquipmentProfile> equipmentProfiles;
+  final List<EquipmentProfile>? equipmentProfiles;
   final String selectedEquipmentProfileId;
-  final List<Film> films;
+  final List<Film>? films;
   final Film selectedFilm;
   final Widget child;
 
@@ -34,9 +34,9 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
   void initState() {
     super.initState();
     mockIAPStorageService = _MockIAPStorageService();
-    when(() => mockIAPStorageService.equipmentProfiles).thenReturn(mockEquipmentProfiles);
+    when(() => mockIAPStorageService.equipmentProfiles).thenReturn(widget.equipmentProfiles ?? mockEquipmentProfiles);
     when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
-    when(() => mockIAPStorageService.filmsInUse).thenReturn(mockFilms);
+    when(() => mockIAPStorageService.filmsInUse).thenReturn(widget.films ?? mockFilms);
     when(() => mockIAPStorageService.selectedFilm).thenReturn(widget.selectedFilm);
   }
 
