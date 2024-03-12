@@ -67,7 +67,7 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 33
+          api-level: 32
           target: default
           arch: x86_64
           profile: pixel_6
