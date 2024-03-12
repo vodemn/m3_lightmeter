@@ -41,14 +41,11 @@ void main() {
   testWidgets(
     'e2e',
     (tester) async {
-      await tester.pumpApplication(equipmentProfiles: [] /**, films: [] */);
-
-      /** Create some equipment profiles */
-
-      await tester.openSettings();
-      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
+      await tester.pumpApplication(equipmentProfiles: [], films: []);
 
       /// Create Praktica + Zenitar profile from scratch
+      await tester.openSettings();
+      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
       await tester.tap(find.byIcon(Icons.add).first);
       await tester.pumpAndSettle();
       await tester.setProfileName(mockEquipmentProfiles[0].name);
@@ -68,12 +65,16 @@ void main() {
       await tester.setApertureValues(1, mockEquipmentProfiles[1].apertureValues);
       expect(find.text('f/3.5 - f/22'), findsOneWidget);
       expect(find.text('1/1000 - 16"'), findsNWidgets(2));
-
       await tester.navigatorPop();
+
+      /// Select some films
+      await tester.tap(find.text(S.current.filmsInUse));
+      await tester.pumpAndSettle();
+      await tester.setDialogFilterValues<Film>([mockFilms[0], mockFilms[1]], deselectAll: false);
       await tester.navigatorPop();
 
       /// Select some initial settings according to the selected gear and film
-      /// Then tale a photo and verify, that exposure pairs range and EV matches the selected settings
+      /// Then take a photo and verify, that exposure pairs range and EV matches the selected settings
       await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[0].name);
       await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[0].name);
       await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('400');
@@ -91,8 +92,6 @@ void main() {
         nd: 'None',
         ev: mockPhotoEv100 + 2,
       );
-
-      /** Changing some settings in the field */
 
       /// Add ND to shoot another scene
       await tester.openPickerAndSelect<NdValuePicker, NdValue>('2');
@@ -121,7 +120,7 @@ void main() {
         ev: mockPhotoEv100 + 2,
       );
 
-      /// Set another wilm and set the same ISO
+      /// Set another film and another ISO
       await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('200');
       await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[1].name);
       await _expectMeteringStateAndMeasure(
@@ -151,10 +150,10 @@ extension EquipmentProfileActions on WidgetTester {
   }
 
   Future<void> setIsoValues(int profileIndex, List<IsoValue> values) =>
-      _setDialogFilterValues<IsoValue>(profileIndex, S.current.isoValues, values);
+      _openAndSetDialogFilterValues<IsoValue>(profileIndex, S.current.isoValues, values);
   Future<void> setNdValues(int profileIndex, List<NdValue> values) =>
-      _setDialogFilterValues<NdValue>(profileIndex, S.current.ndFilters, values);
-  Future<void> _setDialogFilterValues<T extends PhotographyValue>(
+      _openAndSetDialogFilterValues<NdValue>(profileIndex, S.current.ndFilters, values);
+  Future<void> _openAndSetDialogFilterValues<T extends PhotographyValue>(
     int profileIndex,
     String listTileTitle,
     List<T> valuesToSelect, {
@@ -162,6 +161,27 @@ extension EquipmentProfileActions on WidgetTester {
   }) async {
     await tap(find.text(listTileTitle).at(profileIndex));
     await pumpAndSettle();
+    await setDialogFilterValues(valuesToSelect, deselectAll: deselectAll);
+  }
+
+  Future<void> setApertureValues(int profileIndex, List<ApertureValue> values) =>
+      _setDialogRangePickerValues<ApertureValue>(profileIndex, S.current.apertureValues, values);
+
+  Future<void> setShutterSpeedValues(int profileIndex, List<ShutterSpeedValue> values) =>
+      _setDialogRangePickerValues<ShutterSpeedValue>(profileIndex, S.current.shutterSpeedValues, values);
+}
+
+extension on WidgetTester {
+  Future<void> openPickerAndSelect<P extends Widget, V>(String valueToSelect) async {
+    await openAnimatedPicker<P>();
+    await tapDescendantTextOf<DialogPicker<V>>(valueToSelect);
+    await tapSelectButton();
+  }
+
+  Future<void> setDialogFilterValues<T>(
+    List<T> valuesToSelect, {
+    bool deselectAll = true,
+  }) async {
     if (deselectAll) {
       await tap(find.byIcon(Icons.deselect));
       await pump();
@@ -179,10 +199,6 @@ extension EquipmentProfileActions on WidgetTester {
     await tapSaveButton();
   }
 
-  Future<void> setApertureValues(int profileIndex, List<ApertureValue> values) =>
-      _setDialogRangePickerValues<ApertureValue>(profileIndex, S.current.apertureValues, values);
-  Future<void> setShutterSpeedValues(int profileIndex, List<ShutterSpeedValue> values) =>
-      _setDialogRangePickerValues<ShutterSpeedValue>(profileIndex, S.current.shutterSpeedValues, values);
   Future<void> _setDialogRangePickerValues<T extends PhotographyValue>(
     int profileIndex,
     String listTileTitle,
@@ -216,14 +232,6 @@ extension EquipmentProfileActions on WidgetTester {
     await pump();
 
     await tapSaveButton();
-  }
-}
-
-extension on WidgetTester {
-  Future<void> openPickerAndSelect<P extends Widget, V>(String valueToSelect) async {
-    await openAnimatedPicker<P>();
-    await tapDescendantTextOf<DialogPicker<V>>(valueToSelect);
-    await tapSelectButton();
   }
 }
 
