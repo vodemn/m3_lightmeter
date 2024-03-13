@@ -49,7 +49,7 @@ jobs:
       - name: Run tests
         run: |
           flutter drive \
-            --target=integration_test/e2e_test.dart \
+            --target=integration_test/run_all_tests.dart \
             --driver=test_driver/integration_driver.dart \
             --flavor=dev \
             --no-dds \

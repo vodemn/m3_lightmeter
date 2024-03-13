@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
@@ -18,15 +17,15 @@ import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widg
 import 'package:lightmeter/screens/settings/components/shared/dialog_range_picker/widget_dialog_picker_range.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../integration_test/utils/widget_tester_actions.dart';
 import 'mocks/paid_features_mock.dart';
 import 'utils/expectations.dart';
 
-void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  
+@isTest
+void testE2E(String description) {
   setUp(() {
     SharedPreferences.setMockInitialValues({
       /// Metering values
@@ -42,7 +41,7 @@ void main() {
   });
 
   testWidgets(
-    'e2e',
+    description,
     (tester) async {
       await tester.pumpApplication(equipmentProfiles: [], films: []);
 
