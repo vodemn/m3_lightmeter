@@ -11,4 +11,4 @@ if [[ ! -n "$filename" ]]; then
     exit 1
 fi
 
-echo -n "$content" | base64 --decode --output "$filename"
+base64 -d <<< "$content" > "$filename"

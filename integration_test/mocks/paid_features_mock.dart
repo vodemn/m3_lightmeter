@@ -8,9 +8,9 @@ import 'package:mocktail/mocktail.dart';
 class _MockIAPStorageService extends Mock implements IAPStorageService {}
 
 class MockIAPProviders extends StatefulWidget {
-  final List<EquipmentProfile> equipmentProfiles;
+  final List<EquipmentProfile>? equipmentProfiles;
   final String selectedEquipmentProfileId;
-  final List<Film> films;
+  final List<Film>? films;
   final Film selectedFilm;
   final Widget child;
 
@@ -34,9 +34,9 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
   void initState() {
     super.initState();
     mockIAPStorageService = _MockIAPStorageService();
-    when(() => mockIAPStorageService.equipmentProfiles).thenReturn(mockEquipmentProfiles);
+    when(() => mockIAPStorageService.equipmentProfiles).thenReturn(widget.equipmentProfiles ?? mockEquipmentProfiles);
     when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
-    when(() => mockIAPStorageService.filmsInUse).thenReturn(mockFilms);
+    when(() => mockIAPStorageService.filmsInUse).thenReturn(widget.films ?? mockFilms);
     when(() => mockIAPStorageService.selectedFilm).thenReturn(widget.selectedFilm);
   }
 
@@ -92,13 +92,34 @@ final mockEquipmentProfiles = [
       IsoValue(3200, StopType.full),
     ],
   ),
-  const EquipmentProfile(
+  EquipmentProfile(
     id: '2',
     name: 'Praktica + Jupiter',
-    apertureValues: ApertureValue.values,
-    ndValues: NdValue.values,
-    shutterSpeedValues: ShutterSpeedValue.values,
-    isoValues: IsoValue.values,
+    apertureValues: ApertureValue.values.sublist(
+      ApertureValue.values.indexOf(const ApertureValue(3.5, StopType.third)),
+      ApertureValue.values.indexOf(const ApertureValue(22, StopType.full)) + 1,
+    ),
+    ndValues: const [
+      NdValue(0),
+      NdValue(2),
+      NdValue(4),
+      NdValue(8),
+    ],
+    shutterSpeedValues: ShutterSpeedValue.values.sublist(
+      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1000, true, StopType.full)),
+      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(16, false, StopType.full)) + 1,
+    ),
+    isoValues: const [
+      IsoValue(50, StopType.full),
+      IsoValue(100, StopType.full),
+      IsoValue(200, StopType.full),
+      IsoValue(250, StopType.third),
+      IsoValue(400, StopType.full),
+      IsoValue(500, StopType.third),
+      IsoValue(800, StopType.full),
+      IsoValue(1600, StopType.full),
+      IsoValue(3200, StopType.full),
+    ],
   ),
 ];
 
