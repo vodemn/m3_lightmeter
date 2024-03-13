@@ -5,10 +5,7 @@ class MockCameraContainerBloc extends CameraContainerBloc {
     super._meteringInteractor,
     super.communicationBloc,
     super._analytics,
-  ) {
-    // ignore: avoid_print
-    print('MockCameraContainerBloc');
-  }
+  );
 
   @override
   Future<void> _onRequestPermission(_, Emitter emit) async {
