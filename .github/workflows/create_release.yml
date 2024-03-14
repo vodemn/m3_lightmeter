@@ -29,7 +29,7 @@ jobs:
     uses: ./.github/workflows/run_integration_tests.yml
     secrets: inherit
 
-  build-android:
+  build:
     name: Build ${{ matrix.binary-type != 'ipa' && 'Android' || 'iOS' }} (.${{ matrix.binary-type }})
     needs: [run-integration-tests]
     runs-on: macos-11
@@ -53,8 +53,9 @@ jobs:
 
   generate-release-notes:
     name: Generate release notes
-    needs: [build-android]
+    needs: [build]
     runs-on: ubuntu-latest
+    if: false
     steps:
       - name: Generate release notes
         run: |
@@ -69,8 +70,9 @@ jobs:
 
   update-version-in-repo:
     name: Update repo version
-    needs: [build-android]
+    needs: [build]
     runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: actions/checkout@v3
         with:
@@ -95,8 +97,9 @@ jobs:
 
   create-github-release:
     name: Create Github release
-    needs: [build-android, generate-release-notes, update-version-in-repo]
+    needs: [build, generate-release-notes, update-version-in-repo]
     runs-on: ubuntu-latest
+    if: false
     permissions:
       contents: write
     steps:
@@ -127,8 +130,9 @@ jobs:
 
   create-google-play-release:
     name: Create Google Play release
-    needs: [build-android, generate-release-notes]
+    needs: [build, generate-release-notes]
     runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: actions/checkout@v3
         with:
