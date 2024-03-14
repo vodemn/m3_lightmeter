@@ -1,0 +1,56 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Run integration tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  run-integration-tests:
+    name: Run integration tests
+    timeout-minutes: 60
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Override iap package with stub
+        id: override-iap
+        run: bash ./.github/scripts/stub_iap.sh
+
+      - name: Restore secrets
+        run: |
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_IOS }}" "ios/Runner/GoogleService-Info.plist"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_APP_ID_FILE }}" "ios/firebase_app_id_file.json"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: "3.10.0"
+
+      - name: Prepare app
+        run: |
+          flutter --version
+          flutter pub get
+          flutter pub run intl_utils:generate
+          flutter analyze lib --fatal-infos
+
+      - name: Launch iOS simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: "iPhone 15 Pro"
+
+      - name: Run tests
+        run: |
+          flutter drive \
+            --target=integration_test/run_all_tests.dart \
+            --driver=test_driver/integration_driver.dart \
+            --flavor=dev \
+            --no-dds \
+            --dart-define cameraStubImage=assets/camera_stub_image.jpg
