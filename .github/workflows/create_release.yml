@@ -30,20 +30,31 @@ jobs:
     uses: ./.github/workflows/run_integration_tests.yml
     secrets: inherit
 
-  build:
-    name: Build ${{ matrix.binary-type != 'ipa' && 'Android' || 'iOS' }} (.${{ matrix.binary-type }})
+  build-android:
+    name: Build Android (.${{ matrix.binary-type }})
     #needs: [run-integration-tests]
     strategy:
       matrix:
-        binary-type: [apk, appbundle, ipa]
-    uses: ./.github/workflows/build.yml
+        binary-type: [apk, appbundle]
+    uses: ./.github/workflows/build_apk.yml
+    secrets: inherit
     with:
       binary-type: ${{ matrix.binary-type }}
+      flavor: prod
+      stage-backend: false
+      version: ${{ inputs.version }}
+
+  build-ios:
+    name: Build iOS (.ipa)
+    #needs: [run-integration-tests]
+    uses: ./.github/workflows/build_ipa.yml
+    secrets: inherit
+    with:
+      stage-backend: false
       version: ${{ inputs.version }}
 
   generate-release-notes:
     name: Generate release notes
-    needs: [build]
     runs-on: ubuntu-latest
     if: false
     steps:
@@ -58,16 +69,14 @@ jobs:
           name: whatsnew-en-US
           path: whatsnew-en-US.md
 
-  update-version-in-repo:
-    name: Update repo version
-    needs: [build]
+  create-github-release:
+    name: Create Github release
+    needs: [build-android, build-ios, generate-release-notes]
     runs-on: ubuntu-latest
     if: false
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-
       - name: Increment build number & replace version number
         run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
 
@@ -85,14 +94,6 @@ jobs:
           branch: ${{ github.ref_name }}
           unprotect_reviews: true
 
-  create-github-release:
-    name: Create Github release
-    needs: [build, generate-release-notes, update-version-in-repo]
-    runs-on: ubuntu-latest
-    if: false
-    permissions:
-      contents: write
-    steps:
       - name: Download apk
         uses: actions/download-artifact@v3
         with:
@@ -120,7 +121,7 @@ jobs:
 
   create-google-play-release:
     name: Create Google Play release
-    needs: [build, generate-release-notes]
+    needs: [build-android, generate-release-notes]
     runs-on: ubuntu-latest
     if: false
     steps:
@@ -187,6 +188,12 @@ jobs:
         uses: geekyeggo/delete-artifact@v2
         with:
           name: m3_lightmeter_appbundle
+
+  create-app-store-release:
+    name: Create App Store release
+    needs: [build-ios, generate-release-notes]
+    runs-on: macos-13
+    if: false
 
   cleanup:
     name: Cleanup
