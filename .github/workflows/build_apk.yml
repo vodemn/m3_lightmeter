@@ -98,8 +98,8 @@ jobs:
 
       - name: Restore Android keystore .jsk and .properties files
         run: |
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.KEYSTORE_PROPERTIES }}" "$RUNNER_TEMP/android/app/key.properties"
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.KEYSTORE }}" "$RUNNER_TEMP/android/keystore.jks"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.KEYSTORE_PROPERTIES }}" "android/app/key.properties"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.KEYSTORE }}" "android/keystore.jks"
 
       - name: Restore google-services.json
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}" "android/app/google-services.json"
