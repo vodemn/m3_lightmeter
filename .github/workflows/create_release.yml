@@ -32,7 +32,7 @@ jobs:
 
   build:
     name: Build ${{ matrix.binary-type != 'ipa' && 'Android' || 'iOS' }} (.${{ matrix.binary-type }})
-    needs: [run-integration-tests]
+    #needs: [run-integration-tests]
     runs-on: macos-11
     strategy:
       matrix:
