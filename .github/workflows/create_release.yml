@@ -38,6 +38,10 @@ jobs:
       matrix:
         binary-type: [apk, appbundle, ipa]
     steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - uses: ./.github/workflows/build_apk.yml
         if: ${{ matrix.binary-type != 'ipa' }}
         with:
