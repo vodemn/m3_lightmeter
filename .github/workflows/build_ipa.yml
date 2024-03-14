@@ -84,6 +84,9 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PROVISION_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
+      - name: Restore GoogleService-Info.plist
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_IOS }}" "ios/Runner/GoogleService-Info.plist"
+
       - name: Restore ios/Runner/ExportOptions.plist
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_EXPORT_OPTIONS }}" "ios/Runner/ExportOptions.plist"
 
