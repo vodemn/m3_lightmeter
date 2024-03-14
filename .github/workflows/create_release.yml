@@ -26,13 +26,12 @@ on:
 jobs:
   run-integration-tests:
     name: Run integration tests
-    if: false
     uses: ./.github/workflows/run_integration_tests.yml
     secrets: inherit
 
   build-android:
     name: Build Android (.${{ matrix.binary-type }})
-    #needs: [run-integration-tests]
+    needs: [run-integration-tests]
     strategy:
       matrix:
         binary-type: [apk, appbundle]
@@ -46,7 +45,7 @@ jobs:
 
   build-ios:
     name: Build iOS (.ipa)
-    #needs: [run-integration-tests]
+    needs: [run-integration-tests]
     uses: ./.github/workflows/build_ipa.yml
     secrets: inherit
     with:
@@ -56,7 +55,6 @@ jobs:
   generate-release-notes:
     name: Generate release notes
     runs-on: ubuntu-latest
-    if: false
     steps:
       - name: Generate release notes
         run: |
