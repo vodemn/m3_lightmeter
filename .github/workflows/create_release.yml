@@ -33,28 +33,13 @@ jobs:
   build:
     name: Build ${{ matrix.binary-type != 'ipa' && 'Android' || 'iOS' }} (.${{ matrix.binary-type }})
     #needs: [run-integration-tests]
-    runs-on: macos-11
     strategy:
       matrix:
         binary-type: [apk, appbundle, ipa]
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-
-      - uses: ./.github/workflows/build_apk.yml
-        if: ${{ matrix.binary-type != 'ipa' }}
-        with:
-          binary-type: ${{ matrix.binary-type }}
-          flavor: prod
-          stage-backend: false
-          version: ${{ inputs.version }}
-
-      - uses: ./.github/workflows/build_ipa.yml
-        if: false
-        with:
-          stage-backend: false
-          version: ${{ inputs.version }}
+    uses: ./.github/workflows/build.yml
+    with:
+      binary-type: ${{ matrix.binary-type }}
+      version: ${{ inputs.version }}
 
   generate-release-notes:
     name: Generate release notes

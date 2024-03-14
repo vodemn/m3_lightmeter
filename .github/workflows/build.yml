@@ -1,0 +1,37 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Build release
+
+run-name: Build v${{ inputs.version }}
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: "Version"
+        required: true
+        type: string
+      binary-type:
+        description: "Binary type"
+        type: string
+        required: true
+
+jobs:
+  build-android:
+    uses: ./.github/workflows/build_apk.yml
+    if: ${{ inputs.binary-type != 'ipa' }}
+    with:
+      binary-type: ${{ inputs.binary-type }}
+      flavor: prod
+      stage-backend: false
+      version: ${{ inputs.version }}
+
+  build-ios:
+    uses: ./.github/workflows/build_ipa.yml
+    if: ${{ inputs.binary-type == 'ipa' }}
+    with:
+      stage-backend: false
+      version: ${{ inputs.version }}

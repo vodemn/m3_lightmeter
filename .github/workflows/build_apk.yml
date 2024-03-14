@@ -5,7 +5,7 @@
 
 name: Build Android
 
-run-name: Build ${{ inputs.binary-type == 'apk' && '.apk' || '.aab' }} v${{ inputs.version }}
+run-name: Build Android (${{ inputs.binary-type == 'apk' && '.apk' || '.aab' }}) v${{ inputs.version }}
 
 on:
   workflow_call:
