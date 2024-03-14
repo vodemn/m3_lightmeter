@@ -3,7 +3,6 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-
 # This workflow uses perl regex. For better syntaxis understading see these docs:
 # https://perldoc.perl.org/perlrequick#Search-and-replace
 # https://perldoc.perl.org/perlre#Other-Modifiers
@@ -40,8 +39,13 @@ env:
   BUILD_ARGS: --release --flavor prod -t lib/main_prod.dart
 
 jobs:
+  run-integration-tests:
+    name: Run integration tests
+    uses: ./.github/workflows/run_integration_tests.yml
+
   build:
     name: Build .apk & .aab
+    needs: [run-integration-tests]
     if: ${{ inputs.github-release || inputs.google-play-release }}
     runs-on: macos-11
     timeout-minutes: 30
@@ -101,7 +105,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: '3.10.0'
+          flutter-version: "3.10.0"
 
       - name: Prepare flutter project
         run: |
@@ -269,7 +273,7 @@ jobs:
         with:
           name: m3_lightmeter_release
           path: m3_lightmeter_release.zip
-          
+
       - name: Delete app bundle & merged native libs artifacts
         if: ${{ always() }}
         uses: geekyeggo/delete-artifact@v2
