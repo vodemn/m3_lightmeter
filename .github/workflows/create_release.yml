@@ -30,17 +30,24 @@ jobs:
     secrets: inherit
 
   build-android:
-    name: Build Android (${{ matrix.binary-type }})
+    name: Build ${{ matrix.binary-type != 'ipa' && 'Android' || 'iOS' }} (.${{ matrix.binary-type }})
     needs: [run-integration-tests]
     runs-on: macos-11
     strategy:
       matrix:
-        binary-type: [apk, appbundle]
+        binary-type: [apk, appbundle, ipa]
     steps:
-      - uses: ./.github/workflows/build_android.yml
+      - uses: ./.github/workflows/build_apk.yml
+        if: ${{ matrix.binary-type != 'ipa' }}
         with:
           binary-type: ${{ matrix.binary-type }}
           flavor: prod
+          stage-backend: false
+          version: ${{ inputs.version }}
+
+      - uses: ./.github/workflows/build_ipa.yml
+        if: false
+        with:
           stage-backend: false
           version: ${{ inputs.version }}
 
