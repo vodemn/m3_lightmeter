@@ -121,7 +121,7 @@ jobs:
 
   create-google-play-release:
     name: Create Google Play release
-    needs: [build-android, generate-release-notes]
+    needs: [create-github-release]
     runs-on: ubuntu-latest
     if: false
     steps:
@@ -191,7 +191,7 @@ jobs:
 
   create-app-store-release:
     name: Create App Store release
-    needs: [build-ios, generate-release-notes]
+    needs: [create-github-release]
     runs-on: macos-13
     if: false
     steps:
@@ -200,7 +200,12 @@ jobs:
   cleanup:
     name: Cleanup
     if: ${{ always() }}
-    needs: [create-github-release, create-google-play-release]
+    needs:
+      [
+        create-github-release,
+        create-google-play-release,
+        create-app-store-release,
+      ]
     runs-on: ubuntu-latest
     steps:
       - name: Delete release notes artifact
