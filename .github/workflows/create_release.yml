@@ -22,10 +22,6 @@ on:
         description: "Release notes"
         required: true
         type: string
-      include-iap:
-        type: boolean
-        description: Include IAP package
-        default: true
 
 jobs:
   run-integration-tests:
@@ -45,7 +41,7 @@ jobs:
         with:
           binary-type: ${{ matrix.binary-type }}
           flavor: prod
-          include-iap: ${{ inputs.include-iap }}
+          stage-backend: false
           version: ${{ inputs.version }}
 
   generate-release-notes:

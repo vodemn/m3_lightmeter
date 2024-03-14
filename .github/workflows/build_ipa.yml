@@ -7,6 +7,11 @@ name: Build Prod .ipa
 
 on:
   workflow_dispatch:
+    inputs:
+      stage-backend:
+        type: boolean
+        description: Use stage backend
+        default: true
 
 env:
   FLAVOR: "prod"
@@ -62,7 +67,9 @@ jobs:
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
 
       - name: Restore constants.dart
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
+        env:
+          CONSTANTS: ${{inputs.stage-backend && secrets.CONSTANTS_STAGE || secrets.CONSTANTS }}
+        run: bash .github/scripts/restore_from_base64.sh "${{ env.CONSTANTS }}" "lib/constants.dart"
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
@@ -89,7 +96,7 @@ jobs:
         with:
           name: m3_lightmeter_$FLAVOR_ipa
           path: build/ios/ipa/lightmeter.ipa
-      
+
       - name: Clean up keychain and provisioning profile
         if: ${{ always() }}
         run: |

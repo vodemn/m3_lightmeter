@@ -26,6 +26,10 @@ on:
         type: boolean
         description: Include IAP package
         default: true
+      stage-backend:
+        type: boolean
+        description: Use stage backend
+        default: true
   workflow_dispatch:
     inputs:
       version:
@@ -50,6 +54,10 @@ on:
       include-iap:
         type: boolean
         description: Include IAP package
+        default: true
+      stage-backend:
+        type: boolean
+        description: Use stage backend
         default: true
 
 env:
@@ -93,11 +101,16 @@ jobs:
           bash .github/scripts/restore_from_base64.sh "${{ secrets.KEYSTORE_PROPERTIES }}" "$RUNNER_TEMP/android/app/key.properties"
           bash .github/scripts/restore_from_base64.sh "${{ secrets.KEYSTORE }}" "$RUNNER_TEMP/android/keystore.jks"
 
-      - name: Restore secrets
-        run: |
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}" "android/app/google-services.json"
+      - name: Restore google-services.json
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}" "android/app/google-services.json"
+
+      - name: Restore firebase_options.dart
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
+
+      - name: Restore constants.dart
+        env:
+          CONSTANTS: ${{inputs.stage-backend && secrets.CONSTANTS_STAGE || secrets.CONSTANTS }}
+        run: bash .github/scripts/restore_from_base64.sh "${{ env.CONSTANTS }}" "lib/constants.dart"
 
       - name: Increment build number & replace version number
         run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
