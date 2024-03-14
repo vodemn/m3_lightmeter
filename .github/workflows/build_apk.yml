@@ -3,29 +3,65 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build .apk
+name: Build Android
+
+run-name: Build ${{ inputs.binary-type == 'apk' && '.apk' || '.aab' }} v${{ inputs.version }}
 
 on:
+  workflow_call:
+    inputs:
+      version:
+        description: "Version"
+        required: true
+        type: string
+      binary-type:
+        description: "Binary type"
+        type: string
+        required: true
+      flavor:
+        description: "Flavor"
+        type: string
+        required: true
+      include-iap:
+        type: boolean
+        description: Include IAP package
+        default: true
   workflow_dispatch:
     inputs:
+      version:
+        description: "Version"
+        required: true
+        type: string
+      binary-type:
+        description: "Binary type"
+        type: choice
+        required: true
+        options:
+          - apk
+          - appbundle
       flavor:
-        description: 'Flavor'   
-        type: choice  
+        description: "Flavor"
+        type: choice
         required: true
         options:
           - dev
           - prod
-        default: 'dev'
+        default: dev
       include-iap:
         type: boolean
         description: Include IAP package
         default: true
 
+env:
+  BUILD_ARGS: --release --flavor ${{ inputs.flavor }} -t lib/main_${{ inputs.flavor }}.dart
+  BUILD_APK_PATH: build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-release.apk
+  BUILD_AAB_PATH: build/app/outputs/bundle/${{ inputs.flavor }}Release/app-${{ inputs.flavor }}-release.aab
+
 jobs:
-  build:
-    name: Build .apk
+  build-android:
+    name: Build ${{ inputs.binary-type == 'apk' && '.apk' || '.aab' }}
     runs-on: macos-11
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v3
         with:
@@ -40,57 +76,43 @@ jobs:
       - name: Override iap package with stub
         if: ${{ !inputs.include-iap }}
         run: bash ./.github/scripts/stub_iap.sh
-        
-      - uses: actions/setup-java@v2
-        with:
-          distribution: "zulu"
-          java-version: "11"
-
-      - name: Restore Android keystore .jsk and .properties files
-        env:
-          KEYSTORE: ${{ secrets.KEYSTORE }}
-          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
-        run: |
-          KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
-          echo -n "$KEYSTORE" | base64 --decode --output $KEYSTORE_PATH
-          cp $KEYSTORE_PATH ./android/app
-          KEYSTORE_PROPERTIES_PATH=$RUNNER_TEMP/key.properties
-          echo -n "$KEYSTORE_PROPERTIES" | base64 --decode --output $KEYSTORE_PROPERTIES_PATH
-          cp $KEYSTORE_PROPERTIES_PATH ./android
-
-      - name: Restore android/app/google-services.json
-        env:
-          GOOGLE_SERVICES_JSON_ANDROID: ${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}
-        run: |
-          GOOGLE_SERVICES_JSON_ANDROID_PATH=$RUNNER_TEMP/google-services.json
-          echo -n "$GOOGLE_SERVICES_JSON_ANDROID" | base64 --decode --output $GOOGLE_SERVICES_JSON_ANDROID_PATH
-          cp $GOOGLE_SERVICES_JSON_ANDROID_PATH ./android/app
-
-      - name: Restore firebase_options.dart
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
-
-      - name: Restore constants.dart
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: '3.10.0'
+          flutter-version: "3.10.0"
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "zulu"
+          java-version: "11"
+
+      - name: Restore Android keystore .jsk and .properties files
+        run: |
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.KEYSTORE_PROPERTIES }}" "$RUNNER_TEMP/android/app/key.properties"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.KEYSTORE }}" "$RUNNER_TEMP/android/keystore.jks"
+
+      - name: Restore secrets
+        run: |
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}" "android/app/google-services.json"
+
+      - name: Increment build number & replace version number
+        run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
 
       - name: Prepare flutter project
-        run: | 
+        run: |
           flutter --version
           flutter pub get
           flutter pub run intl_utils:generate
 
-      - name: Build .apk
-        env:
-          FLAVOR: ${{ github.event.inputs.flavor }}
-        run: flutter build apk --release --flavor $FLAVOR -t lib/main_$FLAVOR.dart
+      - name: Build ${{ inputs.binary-type }}
+        run: flutter build ${{ inputs.binary-type }} $BUILD_ARGS
 
-      - name: Upload artifact
+      - name: Upload ${{ inputs.binary-type }} to artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: m3_lightmeter_${{ github.event.inputs.flavor }}_apk
-          path: build/app/outputs/flutter-apk/app-${{ github.event.inputs.flavor }}-release.apk
+          name: m3_lightmeter_${{ inputs.binary-type }}
+          path: ${{ inputs.binary-type == 'apk' && env.BUILD_APK_PATH || env.BUILD_AAB_PATH  }}

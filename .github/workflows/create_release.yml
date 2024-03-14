@@ -22,121 +22,35 @@ on:
         description: "Release notes"
         required: true
         type: string
-      github-release:
-        type: boolean
-        description: Create Github release
-        default: true
-      google-play-release:
-        type: boolean
-        description: Create Google Play release
-        default: true
       include-iap:
         type: boolean
         description: Include IAP package
         default: true
 
-env:
-  BUILD_ARGS: --release --flavor prod -t lib/main_prod.dart
-
 jobs:
   run-integration-tests:
     name: Run integration tests
     uses: ./.github/workflows/run_integration_tests.yml
+    secrets: inherit
 
-  build:
-    name: Build .apk & .aab
+  build-android:
+    name: Build Android (${{ matrix.binary-type }})
     needs: [run-integration-tests]
-    if: ${{ inputs.github-release || inputs.google-play-release }}
     runs-on: macos-11
-    timeout-minutes: 30
+    strategy:
+      matrix:
+        binary-type: [apk, appbundle]
     steps:
-      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/build_android.yml
         with:
-          submodules: recursive
-
-      - name: Connect private iap package
-        uses: webfactory/ssh-agent@v0.8.0
-        if: ${{ inputs.include-iap }}
-        with:
-          ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
-
-      - name: Override iap package with stub
-        if: ${{ !inputs.include-iap }}
-        run: bash ./.github/scripts/stub_iap.sh
-
-      - uses: actions/setup-java@v3
-        with:
-          distribution: "zulu"
-          java-version: "11"
-
-      - name: Restore Android keystore .jsk and .properties files
-        env:
-          KEYSTORE: ${{ secrets.KEYSTORE }}
-          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
-        run: |
-          KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
-          echo -n "$KEYSTORE" | base64 --decode --output $KEYSTORE_PATH
-          cp $KEYSTORE_PATH ./android/app
-          KEYSTORE_PROPERTIES_PATH=$RUNNER_TEMP/key.properties
-          echo -n "$KEYSTORE_PROPERTIES" | base64 --decode --output $KEYSTORE_PROPERTIES_PATH
-          cp $KEYSTORE_PROPERTIES_PATH ./android
-
-      - name: Restore android/app/google-services.json
-        env:
-          GOOGLE_SERVICES_JSON_ANDROID: ${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}
-        run: |
-          GOOGLE_SERVICES_JSON_ANDROID_PATH=$RUNNER_TEMP/google-services.json
-          echo -n "$GOOGLE_SERVICES_JSON_ANDROID" | base64 --decode --output $GOOGLE_SERVICES_JSON_ANDROID_PATH
-          cp $GOOGLE_SERVICES_JSON_ANDROID_PATH ./android/app
-
-      - name: Restore firebase_options.dart
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
-
-      - name: Restore constants.dart
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
-
-      # This step makes sense when Github release is enabled because this release increments the build number.
-      # Therefore here we have to increment it as well to build an apk with the same build number.
-      - name: Increment build number & replace version number
-        if: ${{ inputs.github-release }}
-        run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
-
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-          flutter-version: "3.10.0"
-
-      - name: Prepare flutter project
-        run: |
-          flutter --version
-          flutter pub get
-          flutter pub run intl_utils:generate
-
-      - name: Build apk
-        if: ${{ inputs.github-release }}
-        run: flutter build apk $BUILD_ARGS
-
-      - name: Upload apk to artifacts
-        if: ${{ inputs.github-release }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: m3_lightmeter_apk
-          path: build/app/outputs/flutter-apk/app-prod-release.apk
-
-      - name: Build appbundle
-        if: ${{ inputs.google-play-release }}
-        run: flutter build appbundle $BUILD_ARGS
-
-      - name: Upload app bundle to artifacts
-        if: ${{ inputs.google-play-release }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: m3_lightmeter_bundle
-          path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
+          binary-type: ${{ matrix.binary-type }}
+          flavor: prod
+          include-iap: ${{ inputs.include-iap }}
+          version: ${{ inputs.version }}
 
   generate-release-notes:
     name: Generate release notes
+    needs: [build-android]
     runs-on: ubuntu-latest
     steps:
       - name: Generate release notes
@@ -152,8 +66,7 @@ jobs:
 
   update-version-in-repo:
     name: Update repo version
-    if: ${{ inputs.github-release }}
-    needs: [build]
+    needs: [build-android]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -179,8 +92,7 @@ jobs:
 
   create-github-release:
     name: Create Github release
-    if: ${{ inputs.github-release }}
-    needs: [build, generate-release-notes, update-version-in-repo]
+    needs: [build-android, generate-release-notes, update-version-in-repo]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -212,8 +124,7 @@ jobs:
 
   create-google-play-release:
     name: Create Google Play release
-    if: ${{ inputs.google-play-release }}
-    needs: [build, generate-release-notes]
+    needs: [build-android, generate-release-notes]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -223,7 +134,7 @@ jobs:
       - name: Download app bundle
         uses: actions/download-artifact@v3
         with:
-          name: m3_lightmeter_bundle
+          name: m3_lightmeter_appbundle
 
       - name: Extract & zip merged_native_libs
         run: |
@@ -278,7 +189,7 @@ jobs:
         if: ${{ always() }}
         uses: geekyeggo/delete-artifact@v2
         with:
-          name: m3_lightmeter_bundle
+          name: m3_lightmeter_appbundle
 
   cleanup:
     name: Cleanup
