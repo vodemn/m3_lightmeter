@@ -38,7 +38,7 @@ jobs:
   build-android:
     name: Build Android (.${{ matrix.binary-type }})
     needs: [run-integration-tests]
-    if: always() && (needs.run-integration-tests.result == 'success' || needs.run-integration-tests.result == 'skipped')
+    if: ${{ always() && !failure() && !cancelled() }}
     strategy:
       matrix:
         binary-type: [apk, appbundle]
@@ -53,7 +53,7 @@ jobs:
   build-ios:
     name: Build iOS (.ipa)
     needs: [run-integration-tests]
-    if: always() && (needs.run-integration-tests.result == 'success' || needs.run-integration-tests.result == 'skipped')
+    if: false # TODO(@vodemn) implement ipa uploading to App Store
     uses: ./.github/workflows/build_ipa.yml
     secrets: inherit
     with:
@@ -63,6 +63,7 @@ jobs:
   generate-release-notes:
     name: Generate release notes
     needs: [build-android, build-ios]
+    if: ${{ always() && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: Generate release notes
@@ -80,7 +81,6 @@ jobs:
     name: Create Github release
     needs: [generate-release-notes]
     runs-on: ubuntu-latest
-    if: false
     permissions:
       contents: write
     steps:
@@ -130,7 +130,6 @@ jobs:
     name: Create Google Play release
     needs: [generate-release-notes]
     runs-on: ubuntu-latest
-    if: false
     steps:
       - uses: actions/checkout@v3
         with:
@@ -199,8 +198,8 @@ jobs:
   create-app-store-release:
     name: Create App Store release
     needs: [generate-release-notes]
-    runs-on: macos-13
     if: false
+    runs-on: macos-13
     steps:
       - run: echo "TODO"
 
