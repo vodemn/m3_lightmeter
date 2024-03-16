@@ -80,6 +80,7 @@ jobs:
   create-github-release:
     name: Create Github release
     needs: [generate-release-notes]
+    if: false
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -129,6 +130,7 @@ jobs:
   create-google-play-release:
     name: Create Google Play release
     needs: [generate-release-notes]
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
