@@ -211,11 +211,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: m3_lightmeter_ipa
-      
+
       - name: Upload app to TestFlight
+        env:
+          API_KEY: AuthKey_${{ secrets.APP_STORE_API_KEY_ID }}.p8
         run: |
           mkdir -p ~/private_keys
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_API_KEY }}" "~/private_keys/AuthKey_${{ secrets.APP_STORE_API_KEY_ID }}.p8"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_API_KEY }}" "${{ env.API_KEY }}"
+          cp "${{ env.API_KEY }}" ~/private_keys
           xcrun altool --output-format xml --upload-app -f lightmeter.ipa -t ios --apiKey ${{ secrets.APP_STORE_API_KEY_ID }} --apiIssuer ${{ secrets.APP_STORE_ISSUER_ID }}
 
   cleanup:
