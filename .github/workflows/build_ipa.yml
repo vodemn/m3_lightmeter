@@ -127,7 +127,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: m3_lightmeter_$FLAVOR_ipa
+          name: m3_lightmeter_ipa
           path: build/ios/ipa/lightmeter.ipa
 
       - name: Clean up keychain and provisioning profile

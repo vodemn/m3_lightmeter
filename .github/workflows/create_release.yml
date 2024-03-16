@@ -36,7 +36,7 @@ jobs:
     secrets: inherit
 
   build-android:
-    name: Build Android (.${{ matrix.binary-type }})
+    name: Build Android
     needs: [run-integration-tests]
     if: ${{ always() && !failure() && !cancelled() }}
     strategy:
@@ -51,7 +51,7 @@ jobs:
       version: ${{ inputs.version }}
 
   build-ios:
-    name: Build iOS (.ipa)
+    name: Build iOS
     needs: [run-integration-tests]
     if: ${{ always() && !failure() && !cancelled() }}
     uses: ./.github/workflows/build_ipa.yml
