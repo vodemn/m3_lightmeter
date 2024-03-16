@@ -85,12 +85,6 @@ jobs:
         if: ${{ !inputs.include-iap }}
         run: bash ./.github/scripts/stub_iap.sh
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-          flutter-version: "3.10.0"
-
       - uses: actions/setup-java@v3
         with:
           distribution: "zulu"
@@ -114,6 +108,12 @@ jobs:
 
       - name: Increment build number & replace version number
         run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: "3.10.0"
 
       - name: Prepare flutter project
         run: |
