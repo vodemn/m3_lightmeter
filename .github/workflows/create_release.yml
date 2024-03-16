@@ -195,23 +195,33 @@ jobs:
         with:
           name: m3_lightmeter_appbundle
 
-  create-app-store-release:
-    name: Create App Store release
+  upload-to-app-store:
+    name: Upload to App Store
     needs: [generate-release-notes]
-    if: false
     runs-on: macos-13
     steps:
-      - run: echo "TODO"
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Download ipa
+        uses: actions/download-artifact@v3
+        with:
+          name: m3_lightmeter_ipa
+
+      - name: Upload app to TestFlight
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: "lightmeter.ipa"
+          issuer-id: ${{ secrets.APP_STORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APP_STORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APP_STORE_API_KEY }}
 
   cleanup:
     name: Cleanup
     if: ${{ always() }}
     needs:
-      [
-        create-github-release,
-        create-google-play-release,
-        create-app-store-release,
-      ]
+      [create-github-release, create-google-play-release, upload-to-app-store]
     runs-on: ubuntu-latest
     steps:
       - name: Delete release notes artifact
