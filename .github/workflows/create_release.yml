@@ -200,6 +200,7 @@ jobs:
   upload-to-app-store:
     name: Upload to App Store
     needs: [generate-release-notes]
+    if: ${{ always() }}
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
