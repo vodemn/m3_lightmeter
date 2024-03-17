@@ -19,9 +19,10 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Override iap package with stub
-        id: override-iap
-        run: bash ./.github/scripts/stub_iap.sh
+      - name: Connect private iap package
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
 
       - name: Restore secrets
         run: |
