@@ -26,7 +26,7 @@ on:
         description: "Run integration tests"
         required: true
         type: boolean
-        default: true
+        default: false
 
 jobs:
   run-integration-tests:
