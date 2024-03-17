@@ -213,13 +213,7 @@ jobs:
           name: m3_lightmeter_ipa
 
       - name: Upload app to TestFlight
-        env:
-          API_KEY: AuthKey_${{ secrets.APP_STORE_API_KEY_ID }}.p8
-        run: |
-          mkdir -p ~/private_keys
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_API_KEY }}" "${{ env.API_KEY }}"
-          cp "${{ env.API_KEY }}" ~/private_keys
-          xcrun altool --output-format xml --upload-app -f lightmeter.ipa -t ios --apiKey ${{ secrets.APP_STORE_API_KEY_ID }} --apiIssuer ${{ secrets.APP_STORE_ISSUER_ID }}
+        run: xcrun altool --upload-app -f lightmeter.ipa -t ios -u ${{ secrets.APP_STORE_USERNAME }} -p ${{ secrets.APP_STORE_PASSWORD }}
 
   cleanup:
     name: Cleanup
