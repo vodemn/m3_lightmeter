@@ -181,19 +181,7 @@ jobs:
           debugSymbols: merged_native_libs.zip
           whatsNewDirectory: whatsnew
 
-      # https://docs.github.com/en/actions/learn-github-actions/expressions#failure-with-conditions
-      - name: Zip app bundle and merged_native_libs
-        if: ${{ failure() && steps.create-google-play-release-step.conclusion == 'failure' }}
-        run: zip m3_lightmeter_release.zip app-prod-release.aab merged_native_libs.zip
-
-      - name: Upload release zip to artifacts
-        if: ${{ failure() && steps.create-google-play-release-step.conclusion == 'failure' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: m3_lightmeter_release
-          path: m3_lightmeter_release.zip
-
-      - name: Delete app bundle & merged native libs artifacts
+      - name: Delete appbundle artifact
         if: ${{ always() }}
         uses: geekyeggo/delete-artifact@v2
         with:
@@ -215,6 +203,12 @@ jobs:
 
       - name: Upload app to TestFlight
         run: xcrun altool --upload-app -f lightmeter.ipa -t ios -u ${{ secrets.APP_STORE_USERNAME }} -p ${{ secrets.APP_STORE_PASSWORD }}
+
+      - name: Delete ipa artifact
+        if: ${{ always() }}
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: m3_lightmeter_ipa
 
   cleanup:
     name: Cleanup
