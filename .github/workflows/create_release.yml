@@ -63,7 +63,6 @@ jobs:
   generate-release-notes:
     name: Generate release notes
     needs: [build-android, build-ios]
-    if: ${{ always() && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: Generate release notes
@@ -88,6 +87,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Download apk
+        uses: actions/download-artifact@v3
+        with:
+          name: m3_lightmeter_apk
+
       - name: Increment build number & replace version number
         run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
 
@@ -105,11 +109,6 @@ jobs:
           branch: ${{ github.ref_name }}
           unprotect_reviews: true
 
-      - name: Download apk
-        uses: actions/download-artifact@v3
-        with:
-          name: m3_lightmeter_apk
-
       - name: Rename apk
         run: mv app-prod-release.apk m3_lightmeter.apk
 
@@ -124,11 +123,6 @@ jobs:
           skipIfReleaseExists: true
           tag: "v${{ github.event.inputs.version }}"
           bodyFile: "whatsnew-en-US.md"
-
-      - name: Delete apk artifact
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: m3_lightmeter_apk
 
   create-google-play-release:
     name: Create Google Play release
@@ -181,12 +175,6 @@ jobs:
           debugSymbols: merged_native_libs.zip
           whatsNewDirectory: whatsnew
 
-      - name: Delete appbundle artifact
-        if: ${{ always() }}
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: m3_lightmeter_appbundle
-
   upload-to-app-store:
     name: Upload to App Store
     needs: [generate-release-notes]
@@ -204,12 +192,6 @@ jobs:
       - name: Upload app to TestFlight
         run: xcrun altool --upload-app -f lightmeter.ipa -t ios -u ${{ secrets.APP_STORE_USERNAME }} -p ${{ secrets.APP_STORE_PASSWORD }}
 
-      - name: Delete ipa artifact
-        if: ${{ always() }}
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: m3_lightmeter_ipa
-
   cleanup:
     name: Cleanup
     if: ${{ always() }}
@@ -217,7 +199,12 @@ jobs:
       [create-github-release, create-google-play-release, upload-to-app-store]
     runs-on: ubuntu-latest
     steps:
-      - name: Delete release notes artifact
+      - name: Delete release artifacts
         uses: geekyeggo/delete-artifact@v2
         with:
-          name: whatsnew-en-US
+          failOnError: false
+          name: |
+            m3_lightmeter_apk
+            m3_lightmeter_appbundle
+            m3_lightmeter_ipa
+            whatsnew-en-US
