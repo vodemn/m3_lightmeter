@@ -20,7 +20,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/state_co
 import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
 import 'package:lightmeter/utils/ev_from_bytes.dart';
 
-part 'mock_bloc_container_camera.dart';
+part 'mock_bloc_container_camera.part.dart';
 
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;
