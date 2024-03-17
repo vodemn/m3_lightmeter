@@ -20,7 +20,6 @@ jobs:
           submodules: recursive
 
       - name: Override iap package with stub
-        id: override-iap
         run: bash ./.github/scripts/stub_iap.sh
 
       - name: Restore secrets

@@ -3,10 +3,39 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build Prod .ipa
+name: Build iOS
+
+run-name: Build iOS v${{ inputs.version }}
 
 on:
+  workflow_call:
+    inputs:
+      version:
+        description: "Version"
+        required: true
+        type: string
+      include-iap:
+        type: boolean
+        description: Include IAP package
+        default: true
+      stage-backend:
+        type: boolean
+        description: Use stage backend
+        default: true
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version"
+        required: true
+        type: string
+      include-iap:
+        type: boolean
+        description: Include IAP package
+        default: true
+      stage-backend:
+        type: boolean
+        description: Use stage backend
+        default: true
 
 env:
   FLAVOR: "prod"
@@ -14,7 +43,7 @@ env:
 jobs:
   build:
     name: Build .ipa
-    runs-on: macos-11
+    runs-on: macos-13
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v3
@@ -55,14 +84,25 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PROVISION_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-      - name: Restore ios/Runner/ExportOptions.plist
+      - name: Restore GoogleService-Info.plist
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_IOS }}" "ios/Runner/GoogleService-Info.plist"
+
+      - name: Restore ExportOptions.plist
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_EXPORT_OPTIONS }}" "ios/Runner/ExportOptions.plist"
+
+      - name: Restore firebase_app_id_file.json
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_APP_ID_FILE }}" "ios/firebase_app_id_file.json"
 
       - name: Restore firebase_options.dart
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
 
       - name: Restore constants.dart
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
+        env:
+          CONSTANTS: ${{inputs.stage-backend && secrets.CONSTANTS_STAGE || secrets.CONSTANTS }}
+        run: bash .github/scripts/restore_from_base64.sh "${{ env.CONSTANTS }}" "lib/constants.dart"
+
+      - name: Increment build number & replace version number
+        run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
@@ -87,9 +127,9 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: m3_lightmeter_$FLAVOR_ipa
+          name: m3_lightmeter_ipa
           path: build/ios/ipa/lightmeter.ipa
-      
+
       - name: Clean up keychain and provisioning profile
         if: ${{ always() }}
         run: |
