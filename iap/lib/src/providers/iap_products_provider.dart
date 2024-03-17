@@ -54,10 +54,10 @@ class IAPProducts extends InheritedModel<IAPProductType> {
   }
 
   @override
-  bool updateShouldNotify(IAPProducts oldWidget) => false;
+  bool updateShouldNotify(IAPProducts oldWidget) => true;
 
   @override
-  bool updateShouldNotifyDependent(IAPProducts oldWidget, Set<IAPProductType> dependencies) => false;
+  bool updateShouldNotifyDependent(IAPProducts oldWidget, Set<IAPProductType> dependencies) => true;
 
   IAPProduct? _findProduct(IAPProductType type) {
     try {
