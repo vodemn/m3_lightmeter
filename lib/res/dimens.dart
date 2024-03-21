@@ -38,7 +38,7 @@ class Dimens {
   // `CenteredSlider`
   static const double cameraSliderTrackHeight = grid4;
   static const double cameraSliderTrackRadius = cameraSliderTrackHeight / 2;
-  static const double cameraSliderHandleSize = 32;
+  static const double cameraSliderHandleSize = 24;
   static const double cameraSliderHandleIconSize = cameraSliderHandleSize * 2 / 3;
 
   // Dialog
