@@ -31,7 +31,7 @@ class RulerSlider extends StatelessWidget {
           valueAdapter(value),
           style: Theme.of(context).textTheme.labelLarge,
         ),
-        const SizedBox(height: Dimens.grid8),
+        const SizedBox(height: Dimens.grid4),
         Expanded(
           child: Row(
             children: [
@@ -51,7 +51,6 @@ class RulerSlider extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: Dimens.grid4),
         IconButton(
           icon: const Icon(Icons.sync),
           onPressed: value != defaultValue ? () => onChanged(defaultValue) : null,
@@ -79,7 +78,7 @@ class _Ruler extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final bool showAllMainTicks = Dimens.cameraSliderHandleSize * mainTicksCount <= constraints.maxHeight;
+        final bool showAllMainTicks = Dimens.cameraSliderHandleArea * mainTicksCount <= constraints.maxHeight;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,7 +91,7 @@ class _Ruler extends StatelessWidget {
               }
               final bool showValue = (index % (showAllMainTicks ? 2 : 4) == 0.0);
               return SizedBox(
-                height: index == itemsCount - 1 || showValue ? Dimens.cameraSliderHandleSize : 1,
+                height: index == itemsCount - 1 || showValue ? Dimens.cameraSliderHandleArea : 1,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -109,7 +108,6 @@ class _Ruler extends StatelessWidget {
                         width: isMainTick ? Dimens.grid8 : Dimens.grid4,
                       ),
                     ),
-                    const SizedBox(width: Dimens.grid4),
                   ],
                 ),
               );
