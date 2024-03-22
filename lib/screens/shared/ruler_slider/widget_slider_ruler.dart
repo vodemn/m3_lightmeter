@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/centered_slider/widget_slider_centered.dart';
 
@@ -6,34 +7,55 @@ class RulerSlider extends StatelessWidget {
   final IconData icon;
   final RangeValues range;
   final double value;
+  final double defaultValue;
   final ValueChanged<double> onChanged;
   final String Function(double value) rulerValueAdapter;
+  final String Function(double value) valueAdapter;
 
   const RulerSlider({
     required this.icon,
     required this.range,
     required this.value,
+    required this.defaultValue,
     required this.onChanged,
     required this.rulerValueAdapter,
+    required this.valueAdapter,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        _Ruler(
-          range.start,
-          range.end,
-          rulerValueAdapter,
+        Text(
+          valueAdapter(value),
+          style: Theme.of(context).textTheme.labelLarge,
         ),
-        CenteredSlider(
-          isVertical: true,
-          icon: Icon(icon),
-          value: value,
-          min: range.start,
-          max: range.end,
-          onChanged: onChanged,
+        const SizedBox(height: Dimens.grid8),
+        Expanded(
+          child: Row(
+            children: [
+              _Ruler(
+                range.start,
+                range.end,
+                rulerValueAdapter,
+              ),
+              CenteredSlider(
+                isVertical: true,
+                icon: Icon(icon),
+                value: value,
+                min: range.start,
+                max: range.end,
+                onChanged: onChanged,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: Dimens.grid4),
+        IconButton(
+          icon: const Icon(Icons.sync),
+          onPressed: value != defaultValue ? () => onChanged(defaultValue) : null,
+          tooltip: S.of(context).tooltipResetToZero,
         ),
       ],
     );

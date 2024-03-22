@@ -159,9 +159,9 @@ class _CameraControlsBuilder extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         Dimens.paddingL,
-        Dimens.paddingM,
-        0,
         Dimens.paddingL,
+        0,
+        Dimens.paddingM,
       ),
       child: BlocBuilder<CameraContainerBloc, CameraContainerState>(
         builder: (context, state) {
