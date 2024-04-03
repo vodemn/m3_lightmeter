@@ -51,7 +51,7 @@ class _DialogSwitchState<T> extends State<DialogSwitch<T>> {
                 padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
                 child: Text(widget.description!),
               ),
-              const SizedBox(height: Dimens.grid16)
+              const SizedBox(height: Dimens.grid16),
             ],
             ListView(
               shrinkWrap: true,

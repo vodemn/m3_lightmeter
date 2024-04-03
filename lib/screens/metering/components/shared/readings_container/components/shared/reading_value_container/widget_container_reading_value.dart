@@ -92,7 +92,7 @@ class _ReadingValueBuilder extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             softWrap: false,
           ),
-        )
+        ),
       ],
     );
   }

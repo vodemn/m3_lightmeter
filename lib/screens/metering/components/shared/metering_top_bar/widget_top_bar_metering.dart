@@ -42,7 +42,7 @@ class MeteringTopBar extends StatelessWidget {
                       child: preview,
                     ),
                   ),
-                ]
+                ],
               ],
             ),
           ),
