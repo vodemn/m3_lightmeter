@@ -26,7 +26,7 @@ class SliderPickerListTile extends StatelessWidget {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      trailing: Text(value.toString()),
+      trailing: Text(valueAdapter(context, value)),
       onTap: () {
         showDialog<double>(
           context: context,

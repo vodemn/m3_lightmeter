@@ -8,6 +8,7 @@ import 'package:lightmeter/screens/settings/components/metering/components/equip
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/range_picker_list_tile/widget_list_tile_range_picker.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/slider_picker_list_tile/widget_list_tile_slider_picker.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
+import 'package:lightmeter/utils/double_to_zoom.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfileContainer extends StatefulWidget {
@@ -276,7 +277,7 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
               value: equipmentData.lensZoom,
               range: const RangeValues(1, 7),
               onChanged: onLensZoomChanged,
-              valueAdapter: (context, value) => 'x${value.toStringAsFixed(2)}',
+              valueAdapter: (_, value) => value.toZoom(),
             ),
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
