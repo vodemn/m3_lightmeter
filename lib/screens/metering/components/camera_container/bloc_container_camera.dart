@@ -251,26 +251,12 @@ class _WidgetsBindingObserver with WidgetsBindingObserver {
   /// Revoking camera permissions results in app being killed both on Android and iOS
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (defaultTargetPlatform) {
-      /// On Android opening a dialog results in [AppLifecycleState.inactive]
-      case TargetPlatform.android:
-        if (_prevState == AppLifecycleState.inactive && state == AppLifecycleState.resumed) {
-          return;
-        }
-        _prevState = state;
-        onLifecycleStateChanged(state);
-
-      /// When coming from the app's settings iOS fires paused -> inactive -> resumed state which falls into this condition.
-      /// So the inactive state is skipped.
-      case TargetPlatform.iOS:
-        if (state == AppLifecycleState.inactive) {
-          return;
-        }
-        if (_prevState != state) {
-          _prevState = state;
-          onLifecycleStateChanged(state);
-        }
-      default:
+    if (state == AppLifecycleState.inactive) {
+      return;
+    }
+    if (_prevState != state) {
+      _prevState = state;
+      onLifecycleStateChanged(state);
     }
   }
 }
