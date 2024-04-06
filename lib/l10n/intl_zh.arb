@@ -60,6 +60,8 @@
     "shutterSpeedValuesFilterDescription": "选择要显示的快门速度范围。这通常由您使用的相机机身决定。",
     "isoValues": "ISO",
     "isoValuesFilterDescription": "选择要显示的 ISO 。这些可能是您常用的ISO值，也可以是相机支持的ISO范围。",
+    "lensZoom": "镜头变焦",
+    "lensZoomDescription": "设置相对于手机摄像头的变焦级别，使其与相机取景器相匹配。",
     "equipmentProfile": "设备配置",
     "equipmentProfiles": "设备配置",
     "tapToAdd": "点击添加",
