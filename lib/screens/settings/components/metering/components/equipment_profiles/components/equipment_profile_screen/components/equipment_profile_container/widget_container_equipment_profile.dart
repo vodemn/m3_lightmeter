@@ -222,7 +222,7 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
       alignment: Alignment.topCenter,
       size: Size(
         double.maxFinite,
-        _progress.value * Dimens.grid56 * 5,
+        _progress.value * Dimens.grid56 * 6,
       ),
       // https://github.com/gskinnerTeam/flutter-folio/pull/62
       child: Opacity(

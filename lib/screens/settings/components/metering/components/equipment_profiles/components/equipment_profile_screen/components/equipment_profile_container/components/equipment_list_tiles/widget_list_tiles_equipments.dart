@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/slider_picker_list_tile/widget_list_tile_slider_picker.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widget_dialog_filter.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_range_picker/widget_dialog_picker_range.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_slider_picker/widget_dialog_slider_picker.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentListTiles extends StatelessWidget {
@@ -66,6 +68,15 @@ class EquipmentListTiles extends StatelessWidget {
           selectedValues: selectedShutterSpeedValues,
           rangeSelect: true,
           onChanged: onShutterSpeedValuesSelected,
+        ),
+        SliderPickerListTile(
+          icon: Icons.zoom_in,
+          title: S.of(context).lensZoom,
+          description: S.of(context).lensZoomDescription,
+          value: 1.0,
+          range: const RangeValues(1, 7),
+          onChanged: (value) {},
+          valueAdapter: (context, value) => 'x${value.toStringAsFixed(2)}',
         ),
       ],
     );
