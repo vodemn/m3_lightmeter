@@ -135,7 +135,7 @@ class _DialogFilterState<T> extends State<DialogFilter<T>> {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

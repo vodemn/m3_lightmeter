@@ -26,7 +26,7 @@ Future<void> grantCameraPermission() async {
       'pm',
       'grant',
       'com.vodemn.lightmeter.dev',
-      'android.permission.CAMERA'
+      'android.permission.CAMERA',
     ]);
   } catch (e) {
     log('Error occured: $e');

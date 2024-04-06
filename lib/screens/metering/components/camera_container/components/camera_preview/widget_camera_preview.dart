@@ -117,7 +117,7 @@ class _CameraPreviewBuilderState extends State<_CameraPreviewBuilder> {
                     context,
                     CameraFeature.spotMetering,
                   ))
-                    CameraSpotDetector(onSpotTap: widget.onSpotTap)
+                    CameraSpotDetector(onSpotTap: widget.onSpotTap),
                 ],
               ],
             )

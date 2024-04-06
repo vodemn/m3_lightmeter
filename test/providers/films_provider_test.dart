@@ -26,7 +26,7 @@ void main() {
           IAPProduct(
             storeId: IAPProductType.paidFeatures.storeId,
             status: productStatus,
-          )
+          ),
         ],
         child: FilmsProvider(
           storageService: mockIAPStorageService,

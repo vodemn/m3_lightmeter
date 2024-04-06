@@ -120,7 +120,7 @@ class _CalibrationUnit extends StatelessWidget {
               tooltip: S.of(context).tooltipResetToZero,
             ),
           ],
-        )
+        ),
       ],
     );
   }

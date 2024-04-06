@@ -27,7 +27,7 @@ class MockIAPProductsProviderState extends State<MockIAPProductsProvider> {
         IAPProduct(
           storeId: IAPProductType.paidFeatures.storeId,
           status: _purchased ? IAPProductStatus.purchased : IAPProductStatus.purchasable,
-        )
+        ),
       ]),
       child: widget.child,
     );

@@ -41,7 +41,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: _EquipmentProfilesListPlaceholder(onTap: _addProfile),
-              )
+              ),
             ]
           : [
               SliverList(

@@ -97,7 +97,7 @@ class CameraContainer extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
