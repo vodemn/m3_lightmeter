@@ -61,5 +61,18 @@
             ],
             "program": "${workspaceFolder}/lib/main_dev.dart",
         },
+        {
+            "name": "integration-test",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "--flavor",
+                "dev",
+                "--dart-define",
+                "cameraStubImage=assets/camera_stub_image.jpg"
+            ],
+            "program": "${workspaceFolder}/integration_test/run_all_tests.dart",
+        },
     ],
 }
