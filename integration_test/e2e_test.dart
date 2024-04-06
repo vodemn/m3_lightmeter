@@ -15,7 +15,6 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widget_dialog_filter.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_range_picker/widget_dialog_picker_range.dart';
-import 'package:lightmeter/screens/settings/components/shared/dialog_slider_picker/widget_dialog_slider_picker.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:lightmeter/utils/double_to_zoom.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
