@@ -169,9 +169,10 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
-    if (_cameraController != null && event.value >= _zoomRange!.start && event.value <= _zoomRange!.end) {
-      _cameraController!.setZoomLevel(event.value);
-      _currentZoom = event.value;
+    if (_cameraController != null) {
+      final double zoom = event.value.clamp(_zoomRange!.start, _zoomRange!.end);
+      _cameraController!.setZoomLevel(zoom);
+      _currentZoom = zoom;
       _emitActiveState(emit);
     }
   }
