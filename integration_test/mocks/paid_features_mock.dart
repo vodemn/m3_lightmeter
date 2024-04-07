@@ -91,6 +91,7 @@ final mockEquipmentProfiles = [
       IsoValue(1600, StopType.full),
       IsoValue(3200, StopType.full),
     ],
+    lensZoom: 1.91,
   ),
   EquipmentProfile(
     id: '2',
@@ -120,6 +121,7 @@ final mockEquipmentProfiles = [
       IsoValue(1600, StopType.full),
       IsoValue(3200, StopType.full),
     ],
+    lensZoom: 5.02,
   ),
 ];
 

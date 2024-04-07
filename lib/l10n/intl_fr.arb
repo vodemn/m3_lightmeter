@@ -60,6 +60,8 @@
     "shutterSpeedValuesFilterDescription": "Sélectionnez la plage de valeurs de vitesse d'obturation à afficher. Cela est généralement déterminé par le corps de l'appareil que vous utilisez.",
     "isoValues": "Valeurs ISO",
     "isoValuesFilterDescription": "Sélectionnez les valeurs ISO à afficher. Ce sont peut-être vos valeurs les plus couramment utilisées ou celles prises en charge par votre caméra.",
+    "lensZoom": "Zoom sur l'objectif",
+    "lensZoomDescription": "Réglez le niveau de zoom par rapport à l'appareil photo du téléphone pour qu'il corresponde au viseur de votre appareil photo.",
     "equipmentProfile": "Profil de l'équipement",
     "equipmentProfiles": "Profils de l'équipement",
     "tapToAdd": "Appuie pour ajouter",

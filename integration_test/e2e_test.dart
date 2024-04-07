@@ -16,6 +16,7 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widget_dialog_filter.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_range_picker/widget_dialog_picker_range.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
+import 'package:lightmeter/utils/double_to_zoom.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,6 +57,8 @@ void testE2E(String description) {
       await tester.setNdValues(0, mockEquipmentProfiles[0].ndValues);
       await tester.setApertureValues(0, mockEquipmentProfiles[0].apertureValues);
       await tester.setShutterSpeedValues(0, mockEquipmentProfiles[0].shutterSpeedValues);
+      await tester.setZoomValue(0, mockEquipmentProfiles[0].lensZoom);
+      expect(find.text('x1.91'), findsOneWidget);
       expect(find.text('f/1.7 - f/16'), findsOneWidget);
       expect(find.text('1/1000 - 16"'), findsOneWidget);
 
@@ -65,6 +68,8 @@ void testE2E(String description) {
       await tester.setProfileName(mockEquipmentProfiles[1].name);
       await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[1].name);
       await tester.setApertureValues(1, mockEquipmentProfiles[1].apertureValues);
+      await tester.setZoomValue(1, mockEquipmentProfiles[1].lensZoom);
+      expect(find.text('x5.02'), findsOneWidget);
       expect(find.text('f/3.5 - f/22'), findsOneWidget);
       expect(find.text('1/1000 - 16"'), findsNWidgets(2));
       await tester.navigatorPop();
@@ -171,6 +176,9 @@ extension EquipmentProfileActions on WidgetTester {
 
   Future<void> setShutterSpeedValues(int profileIndex, List<ShutterSpeedValue> values) =>
       _setDialogRangePickerValues<ShutterSpeedValue>(profileIndex, S.current.shutterSpeedValues, values);
+
+  Future<void> setZoomValue(int profileIndex, double value) =>
+      _setDialogSliderPickerValue(profileIndex, S.current.lensZoom, value);
 }
 
 extension on WidgetTester {
@@ -235,6 +243,30 @@ extension on WidgetTester {
 
     await tapSaveButton();
   }
+
+  Future<void> _setDialogSliderPickerValue(
+    int profileIndex,
+    String listTileTitle,
+    double value,
+  ) async {
+    await tap(find.text(listTileTitle).at(profileIndex));
+    await pumpAndSettle();
+
+    final sliderFinder = find.byType(Slider);
+    final trackWidth = getSize(sliderFinder).width - (2 * Dimens.paddingL);
+    final trackStep = trackWidth / (widget<Slider>(sliderFinder).max - widget<Slider>(sliderFinder).min);
+
+    final oldValue = widget<Slider>(sliderFinder).value;
+    final oldStart = (oldValue - 1) * trackStep;
+    final newStart = (value - 1) * trackStep;
+    await dragFrom(
+      getTopLeft(sliderFinder) + Offset(Dimens.paddingL + oldStart, getSize(sliderFinder).height / 2),
+      Offset(newStart - oldStart, 0),
+    );
+    await pump();
+
+    await tapSaveButton();
+  }
 }
 
 Future<void> _expectMeteringState(
@@ -257,6 +289,7 @@ Future<void> _expectMeteringState(
   await tester.scrollToTheLastExposurePair(equipmentProfile: equipmentProfile);
   expectExposurePairsListItem(tester, slowest.split(' - ')[0], slowest.split(' - ')[1]);
   expectMeasureButton(ev);
+  expect(find.text(equipmentProfile.lensZoom.toZoom()), findsOneWidget);
 }
 
 Future<void> _expectMeteringStateAndMeasure(
