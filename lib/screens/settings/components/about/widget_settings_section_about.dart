@@ -15,8 +15,8 @@ class AboutSettingsSection extends StatelessWidget {
     return SettingsSection(
       title: S.of(context).about,
       children: const [
-        RestorePurchasesListTile(),
         SourceCodeListTile(),
+        RestorePurchasesListTile(),
         ReportIssueListTile(),
         WriteEmailListTile(),
         VersionListTile(),
