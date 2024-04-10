@@ -49,6 +49,7 @@ dev_dependencies:
   flutter_native_splash: 2.3.5
   flutter_test:
     sdk: flutter
+  golden_toolkit: 0.15.0
   google_fonts: 3.0.1
   integration_test:
     sdk: flutter
