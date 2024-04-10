@@ -32,6 +32,8 @@ class IAPProductsProviderState extends State<IAPProductsProvider> {
   }
 
   Future<void> buy(IAPProductType type) async {}
+
+  Future<void> restorePurchases() async {}
 }
 
 class IAPProducts extends InheritedModel<IAPProductType> {
