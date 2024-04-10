@@ -6,6 +6,7 @@ import 'package:lightmeter/screens/settings/components/about/components/source_c
 import 'package:lightmeter/screens/settings/components/about/components/version/widget_list_tile_version.dart';
 import 'package:lightmeter/screens/settings/components/about/components/write_email/widget_list_tile_write_email.dart';
 import 'package:lightmeter/screens/settings/components/shared/settings_section/widget_settings_section.dart';
+import 'package:lightmeter/utils/context_utils.dart';
 
 class AboutSettingsSection extends StatelessWidget {
   const AboutSettingsSection({super.key});
@@ -14,12 +15,12 @@ class AboutSettingsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingsSection(
       title: S.of(context).about,
-      children: const [
-        SourceCodeListTile(),
-        RestorePurchasesListTile(),
-        ReportIssueListTile(),
-        WriteEmailListTile(),
-        VersionListTile(),
+      children: [
+        const SourceCodeListTile(),
+        if (!context.isPro) const RestorePurchasesListTile(),
+        const ReportIssueListTile(),
+        const WriteEmailListTile(),
+        const VersionListTile(),
       ],
     );
   }
