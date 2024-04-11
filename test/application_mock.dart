@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:light_sensor/light_sensor.dart';
 import 'package:lightmeter/application_wrapper.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/environment.dart';
@@ -9,6 +11,7 @@ import 'package:lightmeter/res/theme.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 import '../integration_test/mocks/paid_features_mock.dart';
+import '../integration_test/utils/platform_channel_mock.dart';
 
 /// Provides [MaterialApp] with default theme and "en" localization
 class WidgetTestApplicationMock extends StatelessWidget {
@@ -40,7 +43,7 @@ class WidgetTestApplicationMock extends StatelessWidget {
   }
 }
 
-class GoldenTestApplicationMock extends StatelessWidget {
+class GoldenTestApplicationMock extends StatefulWidget {
   final IAPProductStatus productStatus;
   final Widget child;
 
@@ -51,12 +54,43 @@ class GoldenTestApplicationMock extends StatelessWidget {
   });
 
   @override
+  State<GoldenTestApplicationMock> createState() => _GoldenTestApplicationMockState();
+}
+
+class _GoldenTestApplicationMockState extends State<GoldenTestApplicationMock> {
+  @override
+  void initState() {
+    super.initState();
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      LightSensor.methodChannel,
+      (methodCall) async {
+        switch (methodCall.method) {
+          case "sensor":
+            return true;
+          default:
+            return null;
+        }
+      },
+    );
+    setupLightSensorStreamHandler();
+  }
+
+  @override
+  void dispose() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      LightSensor.methodChannel,
+      null,
+    );
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return IAPProducts(
       products: [
         IAPProduct(
           storeId: IAPProductType.paidFeatures.storeId,
-          status: productStatus,
+          status: widget.productStatus,
         ),
       ],
       child: ApplicationWrapper(
@@ -82,7 +116,7 @@ class GoldenTestApplicationMock extends StatelessWidget {
                   data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
                   child: child!,
                 ),
-                home: child,
+                home: widget.child,
               );
             },
           ),
