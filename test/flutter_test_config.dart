@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 
@@ -8,7 +9,20 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
       await loadAppFonts();
       await testMain();
     },
-    config: GoldenToolkitConfiguration(defaultDevices: _defaultDevices),
+    config: GoldenToolkitConfiguration(
+      defaultDevices: _defaultDevices +
+          _defaultDevices
+              .map(
+                (d) => Device(
+                  name: '${d.name} (Dark)',
+                  size: d.size,
+                  devicePixelRatio: d.devicePixelRatio,
+                  safeArea: d.safeArea,
+                  brightness: Brightness.dark,
+                ),
+              )
+              .toList(),
+    ),
   );
 }
 
