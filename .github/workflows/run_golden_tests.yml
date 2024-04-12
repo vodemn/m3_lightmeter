@@ -43,11 +43,11 @@ jobs:
 
       - name: Run tests
         env:
-          UPDATE_GOLDENS: ${{inputs.update-goldens && '--update-goldens' || '' }}ƒ
+          UPDATE_GOLDENS: ${{inputs.update-goldens && '--update-goldens' || '' }}
         run: |
           goldens=$(find ./test -name "*_golden_test.dart" -print)
           for f in $goldens; do
-            flutter test "$f" --dart-define cameraStubImage=assets/camera_stub_image.jpg $UPDATE_GOLDENS
+            flutter test "$f" --dart-define cameraStubImage=assets/camera_stub_image.jpg "$UPDATE_GOLDENS"
           done
 
       - name: Commit changes
