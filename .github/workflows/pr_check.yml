@@ -14,7 +14,7 @@ on:
 jobs:
   analyze-and-test:
     name: Analyze & test
-    runs-on: macos-latest
+    runs-on: macos-14
     timeout-minutes: 10
     steps:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
@@ -54,7 +54,9 @@ jobs:
         run: flutter analyze lib --fatal-infos
 
       - name: Run tests
-        run: flutter test --dart-define cameraStubImage=assets/camera_stub_image.jpg
+        run: |
+          defaults -currentHost write -g AppleFontSmoothing -int 0
+          flutter test --dart-define cameraStubImage=assets/camera_stub_image.jpg
 
       - name: Analyze project source with stub
         if: steps.override-iap.conclusion != 'success'
