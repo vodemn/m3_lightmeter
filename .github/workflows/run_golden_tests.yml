@@ -55,7 +55,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add -A
+          git add **/goldens/*.png
           git commit -m "Updated goldens"
 
       - name: Push to main
