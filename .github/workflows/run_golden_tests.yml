@@ -23,6 +23,13 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Override iap package with stub
+        id: override-iap
+        run: bash ./.github/scripts/stub_iap.sh
+
+      - name: Restore constants.dart
+        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
+
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
@@ -40,9 +47,7 @@ jobs:
         run: |
           goldens=$(find ./test -name "*_golden_test.dart" -print)
           for f in $goldens; do
-            flutter test "$f"\
-                --dart-define cameraStubImage=assets/camera_stub_image.jpg \
-                $UPDATE_GOLDENS
+            flutter test "$f" --dart-define cameraStubImage=assets/camera_stub_image.jpg $UPDATE_GOLDENS
           done
 
       - name: Commit changes
