@@ -62,13 +62,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/camera_stub_image.jpg
-  # fonts:
-  #   - family: Roboto
-  #     fonts:
-  #       - asset: assets/fonts/Roboto-Regular.ttf
-  #         weight: 400
-  #       - asset: assets/fonts/Roboto-Medium.ttf
-  #         weight: 500
 
 flutter_intl:
   enabled: true
