@@ -57,7 +57,6 @@ jobs:
         run: |
           defaults -currentHost write -g AppleFontSmoothing -int 0
           flutter test --dart-define cameraStubImage=assets/camera_stub_image.jpg
-          defaults -currentHost write -g AppleFontSmoothing
 
       - name: Analyze project source with stub
         if: steps.override-iap.conclusion != 'success'
