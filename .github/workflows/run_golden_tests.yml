@@ -50,7 +50,6 @@ jobs:
           for f in $goldens; do
             flutter test "$f" --dart-define cameraStubImage=assets/camera_stub_image.jpg $UPDATE_GOLDENS
           done
-          defaults -currentHost write -g AppleFontSmoothing
 
       - name: Commit changes
         if: ${{ inputs.update-goldens }}
