@@ -12,12 +12,6 @@ on:
         type: boolean
         description: Update goldens
         default: false
-  workflow_call:
-    inputs:
-      update-goldens:
-        type: boolean
-        description: Update goldens
-        default: false
 
 jobs:
   run-golden-tests:

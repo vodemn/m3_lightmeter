@@ -54,7 +54,7 @@ jobs:
         run: flutter analyze lib --fatal-infos
 
       - name: Run tests
-        run: flutter test
+        run: flutter test --dart-define cameraStubImage=assets/camera_stub_image.jpg
 
       - name: Analyze project source with stub
         if: steps.override-iap.conclusion != 'success'
@@ -62,9 +62,3 @@ jobs:
           bash ./.github/scripts/stub_iap.sh
           flutter pub get
           flutter analyze lib --fatal-infos
-
-  run-golden-tests:
-    name: Run golden tests
-    needs: [analyze-and-test]
-    uses: ./.github/workflows/run_golden_tests.yml
-    secrets: inherit
