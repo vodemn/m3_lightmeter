@@ -77,43 +77,48 @@ class _Ruler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mainTicksFontSize = Theme.of(context).textTheme.bodySmall!.fontSize!;
     return LayoutBuilder(
       builder: (context, constraints) {
-        final bool showAllMainTicks = Dimens.cameraSliderHandleArea * mainTicksCount <= constraints.maxHeight;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(
-            itemsCount,
-            (index) {
-              final bool isMainTick = index % 2 == 0.0;
-              if (!showAllMainTicks && !isMainTick) {
-                return const SizedBox();
-              }
-              final bool showValue = (index % (showAllMainTicks ? 2 : 4) == 0.0);
-              return SizedBox(
-                height: index == itemsCount - 1 || showValue ? Dimens.cameraSliderHandleArea : 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (showValue)
-                      Text(
-                        rulerValueAdapter(index / 2 + min),
-                        style: Theme.of(context).textTheme.bodySmall,
+        final bool showAllMainTicks =
+            mainTicksFontSize * mainTicksCount + (1 * mainTicksCount - 1) <= constraints.maxHeight;
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: (Dimens.cameraSliderHandleArea - mainTicksFontSize) / 2),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(
+              itemsCount,
+              (index) {
+                final bool isMainTick = index % 2 == 0.0;
+                if (!showAllMainTicks && !isMainTick) {
+                  return const SizedBox();
+                }
+                final bool showValue = (index % (showAllMainTicks ? 2 : 4) == 0.0);
+                return SizedBox(
+                  height: index == itemsCount - 1 || showValue ? mainTicksFontSize : 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (showValue)
+                        Text(
+                          rulerValueAdapter(index / 2 + min),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      const SizedBox(width: Dimens.grid4),
+                      ColoredBox(
+                        color: Theme.of(context).colorScheme.onBackground,
+                        child: SizedBox(
+                          height: 1,
+                          width: isMainTick ? Dimens.grid8 : Dimens.grid4,
+                        ),
                       ),
-                    const SizedBox(width: Dimens.grid4),
-                    ColoredBox(
-                      color: Theme.of(context).colorScheme.onBackground,
-                      child: SizedBox(
-                        height: 1,
-                        width: isMainTick ? Dimens.grid8 : Dimens.grid4,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ).reversed.toList(),
+                    ],
+                  ),
+                );
+              },
+            ).reversed.toList(),
+          ),
         );
       },
     );

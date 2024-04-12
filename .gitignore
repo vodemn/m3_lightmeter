@@ -62,4 +62,5 @@ ios/Runner/GoogleService-Info.plist
 
 coverage/
 test/coverage_helper_test.dart
+**/failures/*.png
 screenshots/generated/

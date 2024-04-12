@@ -7,7 +7,7 @@ class LightSensorService {
   const LightSensorService(this.localPlatform);
 
   Future<bool> hasSensor() async {
-    if (!localPlatform.isAndroid) {
+    if (localPlatform.isIOS) {
       return false;
     }
     try {
@@ -18,7 +18,7 @@ class LightSensorService {
   }
 
   Stream<int> luxStream() {
-    if (!localPlatform.isAndroid) {
+    if (localPlatform.isIOS) {
       return const Stream<int>.empty();
     }
     return LightSensor.luxStream();
