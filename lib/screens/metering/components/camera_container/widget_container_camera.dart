@@ -97,7 +97,7 @@ class CameraContainer extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -157,7 +157,12 @@ class _CameraControlsBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
+      padding: const EdgeInsets.fromLTRB(
+        Dimens.paddingL,
+        Dimens.paddingL,
+        0,
+        Dimens.paddingM,
+      ),
       child: BlocBuilder<CameraContainerBloc, CameraContainerState>(
         builder: (context, state) {
           late final Widget child;

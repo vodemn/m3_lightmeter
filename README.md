@@ -34,9 +34,22 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 
 ### 1. Install Flutter
 
-To build this app you need to install Flutter 3.10.0 stable. [How to install](https://docs.flutter.dev/get-started/install).
+To build this app you need to install Flutter 3.13.9 stable. [How to install](https://docs.flutter.dev/get-started/install).
 
 ### 2. Project setup
+
+#### Restore _constants.dart_ file
+
+Create a file _lib/constants.dart_ and paste the following content:
+
+```dart
+const String contactEmail = '';
+const String iapServerUrl = '';
+const String issuesReportUrl = '';
+const String sourceCodeUrl = '';
+```
+
+#### Stub IAP package
 
 As part of the app's functionallity is in the private repo, you have to replace these lines in _pubspec.yaml_:
 
@@ -75,17 +88,8 @@ Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics t
 
 ### 4. Build
 
-#### Android
-
-You can build an apk by running the following command from the root of the repository:
-
-```console
-flutter build apk --release --flavor dev --dart-define cameraPreviewAspectRatio=240/320 -t lib/main_dev.dart
-```
-
-### iOS
-
-TBD
+- Checkout [Build .apk](.github/workflows/build_apk.yml) workflow for Android
+- Checkout [Build .ipa](.github/workflows/build_ipa.yml) workflow for iOS
 
 # Support
 

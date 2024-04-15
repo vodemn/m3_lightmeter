@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/res/dimens.dart';
 
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls/components/exposure_offset_slider/widget_slider_exposure_offset.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_controls/components/zoom_slider/widget_slider_zoom.dart';
@@ -25,16 +24,14 @@ class CameraControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Expanded(
-          child: ExposureOffsetSlider(
-            range: exposureOffsetRange,
-            value: exposureOffsetValue,
-            onChanged: onExposureOffsetChanged,
-          ),
+        ExposureOffsetSlider(
+          range: exposureOffsetRange,
+          value: exposureOffsetValue,
+          onChanged: onExposureOffsetChanged,
         ),
-        const SizedBox(height: Dimens.grid24),
         ZoomSlider(
           range: zoomRange,
           value: zoomValue,

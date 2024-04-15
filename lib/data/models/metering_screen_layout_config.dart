@@ -23,7 +23,7 @@ extension MeteringScreenLayoutConfigJson on MeteringScreenLayoutConfig {
 
     return <MeteringScreenLayoutFeature, bool>{
       for (final f in MeteringScreenLayoutFeature.values)
-        f: (data[migratedIndex(f).toString()] ?? data[f.name]) as bool? ?? true
+        f: (data[migratedIndex(f).toString()] ?? data[f.name]) as bool? ?? true,
     };
   }
 

@@ -44,19 +44,19 @@ void main() {
       });
 
       test('true - Android', () async {
-        when(() => localPlatform.isAndroid).thenReturn(true);
+        when(() => localPlatform.isIOS).thenReturn(false);
         setMockSensorAvailability(hasSensor: true);
         expectLater(service.hasSensor(), completion(true));
       });
 
       test('false - Android', () async {
-        when(() => localPlatform.isAndroid).thenReturn(true);
+        when(() => localPlatform.isIOS).thenReturn(false);
         setMockSensorAvailability(hasSensor: false);
         expectLater(service.hasSensor(), completion(false));
       });
 
       test('false - iOS', () async {
-        when(() => localPlatform.isAndroid).thenReturn(false);
+        when(() => localPlatform.isIOS).thenReturn(true);
         expectLater(service.hasSensor(), completion(false));
       });
     },
@@ -64,7 +64,7 @@ void main() {
 
   group('luxStream', () {
     test('Android', () async {
-      when(() => localPlatform.isAndroid).thenReturn(true);
+      when(() => localPlatform.isIOS).thenReturn(false);
       final stream = service.luxStream();
       final List<int> result = [];
       final subscription = stream.listen(result.add);
@@ -77,7 +77,7 @@ void main() {
     });
 
     test('iOS', () async {
-      when(() => localPlatform.isAndroid).thenReturn(false);
+      when(() => localPlatform.isIOS).thenReturn(true);
       expect(service.luxStream(), const Stream<int>.empty());
     });
   });

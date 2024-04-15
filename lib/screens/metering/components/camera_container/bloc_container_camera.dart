@@ -7,6 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
@@ -18,10 +19,11 @@ import 'package:lightmeter/screens/metering/components/camera_container/state_co
 import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
 import 'package:lightmeter/utils/ev_from_bytes.dart';
 
-part 'mock_bloc_container_camera.dart';
+part 'mock_bloc_container_camera.part.dart';
 
 class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraContainerState> {
   final MeteringInteractor _meteringInteractor;
+  final LightmeterAnalytics _analytics;
   late final _WidgetsBindingObserver _observer;
 
   CameraController? _cameraController;
@@ -42,6 +44,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   CameraContainerBloc(
     this._meteringInteractor,
     MeteringCommunicationBloc communicationBloc,
+    this._analytics,
   ) : super(
           communicationBloc,
           const CameraInitState(),
@@ -166,9 +169,10 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
-    if (_cameraController != null && event.value >= _zoomRange!.start && event.value <= _zoomRange!.end) {
-      _cameraController!.setZoomLevel(event.value);
-      _currentZoom = event.value;
+    if (_cameraController != null) {
+      final double zoom = event.value.clamp(_zoomRange!.start, _zoomRange!.end);
+      _cameraController!.setZoomLevel(zoom);
+      _currentZoom = zoom;
       _emitActiveState(emit);
     }
   }
@@ -213,18 +217,12 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
   Future<double?> _takePhoto() async {
     try {
-      // https://github.com/flutter/flutter/issues/84957#issuecomment-1661155095
-      await _cameraController!.setFocusMode(FocusMode.locked);
-      await _cameraController!.setExposureMode(ExposureMode.locked);
       final file = await _cameraController!.takePicture();
-      await _cameraController!.setFocusMode(FocusMode.auto);
-      await _cameraController!.setExposureMode(ExposureMode.auto);
       final bytes = await file.readAsBytes();
       Directory(file.path).deleteSync(recursive: true);
-
       return await evFromImage(bytes);
-    } catch (e) {
-      log(e.toString());
+    } catch (e, stackTrace) {
+      _analytics.logCrash(e, stackTrace);
       return null;
     }
   }
@@ -250,12 +248,15 @@ class _WidgetsBindingObserver with WidgetsBindingObserver {
 
   _WidgetsBindingObserver(this.onLifecycleStateChanged);
 
+  /// Revoking camera permissions results in app being killed both on Android and iOS
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (_prevState == AppLifecycleState.inactive && state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.inactive) {
       return;
     }
-    _prevState = state;
-    onLifecycleStateChanged(state);
+    if (_prevState != state) {
+      _prevState = state;
+      onLifecycleStateChanged(state);
+    }
   }
 }
