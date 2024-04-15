@@ -11,6 +11,7 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/lightmeter_pro/widget_lightmeter_pro.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/nd_picker/widget_picker_nd.dart';
 import 'package:lightmeter/screens/settings/components/shared/disable/widget_disable.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
@@ -75,6 +76,7 @@ void testPurchases(String description) {
 }
 
 void _expectProMeteringScreen({required bool enabled}) {
+  expect(find.byType(LightmeterProAnimatedDialog), !enabled ? findsOneWidget : findsNothing);
   expect(find.byType(EquipmentProfilePicker), enabled ? findsOneWidget : findsNothing);
   expect(find.byType(ExtremeExposurePairsContainer), findsOneWidget);
   expect(find.byType(FilmPicker), enabled ? findsOneWidget : findsNothing);
