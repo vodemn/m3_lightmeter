@@ -22,6 +22,8 @@ import '../integration_test/utils/widget_tester_actions.dart';
 
 //https://stackoverflow.com/a/67186625/13167574
 
+const _mockFilm = Film('Ilford HP5+', 400);
+
 /// Just a screenshot generator. No expectations here.
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding();
@@ -62,53 +64,60 @@ void main() {
     });
   }
 
+  setUpAll(() async {
+    if (Platform.isAndroid) await binding.convertFlutterSurfaceToImage();
+  });
+
   /// Generates several screenshots with the light theme
-  testWidgets(
-    'Generate light theme screenshots',
-    (tester) async {
-      mockSharedPrefs(ThemeType.light, lightThemeColor);
-      await tester.pumpApplication();
+  testWidgets('Generate light theme screenshots', (tester) async {
+    mockSharedPrefs(ThemeType.light, lightThemeColor);
+    await tester.pumpApplication(
+      films: [_mockFilm],
+      selectedFilm: _mockFilm,
+    );
 
-      await tester.takePhoto();
-      await tester.takeScreenshot(binding, 'light-metering_reflected');
+    await tester.takePhoto();
+    await tester.takeScreenshot(binding, 'light-metering_reflected');
 
-      if (Platform.isAndroid) {
-        await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
-        await tester.pumpAndSettle();
-        await tester.toggleIncidentMetering(7.3);
-        await tester.takeScreenshot(binding, 'light-metering_incident');
-      }
-
-      await tester.openAnimatedPicker<IsoValuePicker>();
-      await tester.takeScreenshot(binding, 'light-metering_iso_picker');
-
-      await tester.tapCancelButton();
-      await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
+    if (Platform.isAndroid) {
+      await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
       await tester.pumpAndSettle();
-      await tester.takeScreenshot(binding, 'light-settings');
-
-      await tester.tapDescendantTextOf<SettingsScreen>(S.current.meteringScreenLayout);
-      await tester.takeScreenshot(binding, 'light-settings_metering_screen_layout');
-
-      await tester.tapCancelButton();
-      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.pumpAndSettle();
-      await tester.tapDescendantTextOf<EquipmentProfilesScreen>(mockEquipmentProfiles.first.name);
-      await tester.pumpAndSettle();
-      await tester.takeScreenshot(binding, 'light-equipment_profiles');
-
-      await tester.tap(find.byIcon(Icons.iso).first);
-      await tester.pumpAndSettle();
-      await tester.takeScreenshot(binding, 'light-equipment_profiles_iso_picker');
+      await tester.toggleIncidentMetering(7.3);
+      await tester.takeScreenshot(binding, 'light-metering_incident');
     }
-  );
+
+    await tester.openAnimatedPicker<IsoValuePicker>();
+    await tester.takeScreenshot(binding, 'light-metering_iso_picker');
+
+    await tester.tapCancelButton();
+    await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
+    await tester.pumpAndSettle();
+    await tester.takeScreenshot(binding, 'light-settings');
+
+    await tester.tapDescendantTextOf<SettingsScreen>(S.current.meteringScreenLayout);
+    await tester.takeScreenshot(binding, 'light-settings_metering_screen_layout');
+
+    await tester.tapCancelButton();
+    await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
+    await tester.pumpAndSettle();
+    await tester.tapDescendantTextOf<EquipmentProfilesScreen>(mockEquipmentProfiles.first.name);
+    await tester.pumpAndSettle();
+    await tester.takeScreenshot(binding, 'light-equipment_profiles');
+
+    await tester.tap(find.byIcon(Icons.iso).first);
+    await tester.pumpAndSettle();
+    await tester.takeScreenshot(binding, 'light-equipment_profiles_iso_picker');
+  });
 
   /// and the additionally the first one with the dark theme
   testWidgets(
     'Generate dark theme screenshots',
     (tester) async {
       mockSharedPrefs(ThemeType.dark, darkThemeColor);
-      await tester.pumpApplication();
+      await tester.pumpApplication(
+        films: [_mockFilm],
+        selectedFilm: _mockFilm,
+      );
 
       await tester.takePhoto();
       await tester.takeScreenshot(binding, 'dark-metering_reflected');
@@ -127,10 +136,6 @@ final String _platformFolder = Platform.isAndroid ? 'android' : 'ios';
 
 extension on WidgetTester {
   Future<void> takeScreenshot(IntegrationTestWidgetsFlutterBinding binding, String name) async {
-    if (Platform.isAndroid) {
-      await binding.convertFlutterSurfaceToImage();
-      await pumpAndSettle();
-    }
     await binding.takeScreenshot("$_platformFolder/${const String.fromEnvironment('deviceName')}/$name");
     await pumpAndSettle();
   }

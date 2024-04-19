@@ -46,7 +46,7 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
       storageService: mockIAPStorageService,
       child: FilmsProvider(
         storageService: mockIAPStorageService,
-        availableFilms: mockFilms,
+        availableFilms: widget.films ?? mockFilms,
         child: widget.child,
       ),
     );
