@@ -269,6 +269,10 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
               values: ShutterSpeedValue.values,
               selectedValues: equipmentData.shutterSpeedValues,
               onChanged: onShutterSpeedValuesSelected,
+              trailingAdapter: (context, value) =>
+                  value.value == 1 ? S.of(context).shutterSpeedManualShort : value.toString(),
+              dialogValueAdapter: (context, value) =>
+                  value.value == 1 ? S.of(context).shutterSpeedManual : value.toString(),
             ),
             SliderPickerListTile(
               icon: Icons.zoom_in,

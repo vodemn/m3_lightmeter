@@ -58,6 +58,8 @@
     "ndFiltersFilterDescription": "Select the ND filters to display. These may be your most commonly used ND filters or the ones that fit your lens.",
     "shutterSpeedValues": "Shutter speed values",
     "shutterSpeedValuesFilterDescription": "Select the range of shutter speed values to display. This is usually determined by the camera body you are using.",
+    "shutterSpeedManualShort": "B",
+    "shutterSpeedManual": "Manual",
     "isoValues": "ISO values",
     "isoValuesFilterDescription": "Select the ISO values to display. These may be your most commonly used values or those supported by your camera.",
     "lensZoom": "Lens zoom",

@@ -58,6 +58,8 @@
     "ndFiltersFilterDescription": "选择要显示的 ND 滤镜系数。可能是您最常用的 ND 滤镜，也可能是适合您镜头的减光镜。",
     "shutterSpeedValues": "快门速度",
     "shutterSpeedValuesFilterDescription": "选择要显示的快门速度范围。这通常由您使用的相机机身决定。",
+    "shutterSpeedManualShort": "B",
+    "shutterSpeedManual": "手册",
     "isoValues": "ISO",
     "isoValuesFilterDescription": "选择要显示的 ISO 。这些可能是您常用的ISO值，也可以是相机支持的ISO范围。",
     "lensZoom": "镜头变焦",
