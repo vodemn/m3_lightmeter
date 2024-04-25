@@ -22,7 +22,8 @@ extension WidgetTesterCommonActions on WidgetTester {
     IAPProductStatus productStatus = IAPProductStatus.purchased,
     List<EquipmentProfile>? equipmentProfiles,
     String selectedEquipmentProfileId = '',
-    List<Film>? films,
+    List<Film>? availableFilms,
+    List<Film>? filmsInUse,
     Film selectedFilm = const Film.other(),
   }) async {
     await pumpWidget(
@@ -33,7 +34,8 @@ extension WidgetTesterCommonActions on WidgetTester {
           child: MockIAPProviders(
             equipmentProfiles: equipmentProfiles,
             selectedEquipmentProfileId: selectedEquipmentProfileId,
-            films: films,
+            availableFilms: availableFilms,
+            filmsInUse: filmsInUse,
             selectedFilm: selectedFilm,
             child: const Application(),
           ),

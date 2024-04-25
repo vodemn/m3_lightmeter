@@ -98,7 +98,7 @@ class _GoldenTestApplicationMockState extends State<GoldenTestApplicationMock> {
         child: MockIAPProviders(
           equipmentProfiles: mockEquipmentProfiles,
           selectedEquipmentProfileId: mockEquipmentProfiles.first.id,
-          films: films,
+          selectedFilm: mockFilms.first,
           child: Builder(
             builder: (context) {
               return MaterialApp(
