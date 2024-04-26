@@ -29,11 +29,11 @@ dependencies:
   m3_lightmeter_iap:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_iap"
-      ref: v0.9.2
+      ref: v0.10.0
   m3_lightmeter_resources:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_resources"
-      ref: main
+      ref: v1.2.0
   material_color_utilities: 0.5.0
   package_info_plus: 4.2.0
   permission_handler: 10.4.3
