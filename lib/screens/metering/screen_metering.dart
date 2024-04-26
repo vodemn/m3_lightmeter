@@ -174,9 +174,7 @@ class MeteringContainerBuidler extends StatelessWidget {
     if (itemsCount <= 0) {
       itemsCount = apertureValues.length;
     } else {
-      while (apertureValues[itemsCount - 1 + apertureOffset] != apertureValues.last) {
-        itemsCount += 1;
-      }
+      itemsCount += (apertureValues.length - 1) - (itemsCount - 1 + apertureOffset);
     }
 
     final exposurePairs = List.generate(
