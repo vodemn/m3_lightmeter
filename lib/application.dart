@@ -7,6 +7,7 @@ import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
+import 'package:lightmeter/screens/timer/flow_timer.dart';
 
 class Application extends StatelessWidget {
   const Application({super.key});
@@ -38,10 +39,11 @@ class Application extends StatelessWidget {
           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           child: child!,
         ),
-        initialRoute: "metering",
+        initialRoute: "timer",
         routes: {
           "metering": (context) => const MeteringFlow(),
           "settings": (context) => const SettingsFlow(),
+          "timer": (context) => const TimerFlow(),
         },
       ),
     );
