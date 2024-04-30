@@ -10,18 +10,21 @@ class _MockIAPStorageService extends Mock implements IAPStorageService {}
 class MockIAPProviders extends StatefulWidget {
   final List<EquipmentProfile>? equipmentProfiles;
   final String selectedEquipmentProfileId;
-  final List<Film>? films;
+  final List<Film> availableFilms;
+  final List<Film> filmsInUse;
   final Film selectedFilm;
   final Widget child;
 
   const MockIAPProviders({
     this.equipmentProfiles = const [],
     this.selectedEquipmentProfileId = '',
-    this.films = mockFilms,
+    List<Film>? availableFilms,
+    List<Film>? filmsInUse,
     this.selectedFilm = const Film.other(),
     required this.child,
     super.key,
-  });
+  })  : availableFilms = availableFilms ?? mockFilms,
+        filmsInUse = filmsInUse ?? mockFilms;
 
   @override
   State<MockIAPProviders> createState() => _MockIAPProvidersState();
@@ -36,7 +39,7 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
     mockIAPStorageService = _MockIAPStorageService();
     when(() => mockIAPStorageService.equipmentProfiles).thenReturn(widget.equipmentProfiles ?? mockEquipmentProfiles);
     when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
-    when(() => mockIAPStorageService.filmsInUse).thenReturn(widget.films ?? mockFilms);
+    when(() => mockIAPStorageService.filmsInUse).thenReturn(widget.filmsInUse);
     when(() => mockIAPStorageService.selectedFilm).thenReturn(widget.selectedFilm);
   }
 
@@ -46,7 +49,7 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
       storageService: mockIAPStorageService,
       child: FilmsProvider(
         storageService: mockIAPStorageService,
-        availableFilms: widget.films ?? mockFilms,
+        availableFilms: widget.availableFilms,
         child: widget.child,
       ),
     );
@@ -78,7 +81,7 @@ final mockEquipmentProfiles = [
     ],
     shutterSpeedValues: ShutterSpeedValue.values.sublist(
       ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1000, true, StopType.full)),
-      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(16, false, StopType.full)) + 1,
+      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1, false, StopType.full)) + 1,
     ),
     isoValues: const [
       IsoValue(50, StopType.full),
@@ -108,7 +111,7 @@ final mockEquipmentProfiles = [
     ],
     shutterSpeedValues: ShutterSpeedValue.values.sublist(
       ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1000, true, StopType.full)),
-      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(16, false, StopType.full)) + 1,
+      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1, false, StopType.full)) + 1,
     ),
     isoValues: const [
       IsoValue(50, StopType.full),

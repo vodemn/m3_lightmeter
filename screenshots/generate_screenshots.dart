@@ -72,7 +72,8 @@ void main() {
   testWidgets('Generate light theme screenshots', (tester) async {
     mockSharedPrefs(ThemeType.light, lightThemeColor);
     await tester.pumpApplication(
-      films: [_mockFilm],
+      availableFilms: [_mockFilm],
+      filmsInUse: [_mockFilm],
       selectedFilm: _mockFilm,
     );
 
@@ -115,7 +116,8 @@ void main() {
     (tester) async {
       mockSharedPrefs(ThemeType.dark, darkThemeColor);
       await tester.pumpApplication(
-        films: [_mockFilm],
+        availableFilms: [_mockFilm],
+        filmsInUse: [_mockFilm],
         selectedFilm: _mockFilm,
       );
 

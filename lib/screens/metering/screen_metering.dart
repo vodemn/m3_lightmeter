@@ -158,22 +158,40 @@ class MeteringContainerBuidler extends StatelessWidget {
       shutterSpeedOffset = 0;
     }
 
-    final int itemsCount = min(
+    int itemsCount = min(
           apertureValues.length + shutterSpeedOffset,
           shutterSpeedValues.length + apertureOffset,
         ) -
         max(apertureOffset, shutterSpeedOffset);
 
-    if (itemsCount <= 0) {
+    if (apertureOffset == apertureValues.length) {
       return List.empty();
+    }
+
+    final lastPreCalcShutterSpeed =
+        shutterSpeedValues.elementAtOrNull(itemsCount - 1 + shutterSpeedOffset) ?? shutterSpeedValues.last;
+    final preCalculatedItemsCount = itemsCount;
+    if (itemsCount <= 0) {
+      itemsCount = apertureValues.length;
+    } else {
+      itemsCount += (apertureValues.length - 1) - (itemsCount - 1 + apertureOffset);
     }
 
     final exposurePairs = List.generate(
       itemsCount,
-      (index) => ExposurePair(
-        apertureValues[index + apertureOffset],
-        shutterSpeedValues[index + shutterSpeedOffset],
-      ),
+      (index) {
+        final stopDifference = (index - (preCalculatedItemsCount - 1)) / (stopType.index + 1);
+        final newShutterSpeed = log2(lastPreCalcShutterSpeed.rawValue) + stopDifference;
+        return ExposurePair(
+          apertureValues[index + apertureOffset],
+          shutterSpeedValues.elementAtOrNull(index + shutterSpeedOffset) ??
+              ShutterSpeedValue(
+                calcShutterSpeed(newShutterSpeed),
+                false,
+                stopDifference == stopDifference.roundToDouble() ? StopType.full : stopType,
+              ),
+        );
+      },
       growable: false,
     );
 
@@ -191,7 +209,9 @@ class MeteringContainerBuidler extends StatelessWidget {
     );
     final endCutEV = max(
       equipmentApertureValues.last.difference(exposurePairs.last.aperture),
-      equipmentShutterSpeedValues.last.difference(exposurePairs.last.shutterSpeed),
+      equipmentShutterSpeedValues.last != ShutterSpeedValue.values.last
+          ? equipmentShutterSpeedValues.last.difference(exposurePairs.last.shutterSpeed)
+          : double.negativeInfinity,
     );
 
     final startCut = (startCutEV * (stopType.index + 1)).round().clamp(0, itemsCount);
@@ -201,5 +221,14 @@ class MeteringContainerBuidler extends StatelessWidget {
       return const [];
     }
     return exposurePairs.sublist(startCut, itemsCount - endCut);
+  }
+}
+
+double calcShutterSpeed(double stopValue) {
+  final shutterSpeed = pow(2, stopValue);
+  if (stopValue < 1.5) {
+    return (shutterSpeed * 10).round() / 10;
+  } else {
+    return shutterSpeed.roundToDouble();
   }
 }

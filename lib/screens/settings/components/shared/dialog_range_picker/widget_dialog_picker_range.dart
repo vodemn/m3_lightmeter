@@ -9,7 +9,7 @@ class DialogRangePicker<T extends PhotographyValue> extends StatefulWidget {
   final String description;
   final List<T> values;
   final List<T> selectedValues;
-  final String Function(BuildContext context, T value) titleAdapter;
+  final String Function(BuildContext context, T value) valueAdapter;
 
   const DialogRangePicker({
     required this.icon,
@@ -17,7 +17,7 @@ class DialogRangePicker<T extends PhotographyValue> extends StatefulWidget {
     required this.description,
     required this.values,
     required this.selectedValues,
-    required this.titleAdapter,
+    required this.valueAdapter,
     super.key,
   });
 
@@ -52,8 +52,8 @@ class _DialogRangePickerState<T extends PhotographyValue> extends State<DialogRa
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(widget.values[_start].toString()),
-                    Text(widget.values[_end].toString()),
+                    Text(widget.valueAdapter(context, widget.values[_start])),
+                    Text(widget.valueAdapter(context, widget.values[_end])),
                   ],
                 ),
               ),

@@ -15,9 +15,13 @@ class ExposurePairsListItem<T extends PhotographyStopValue> extends StatelessWid
   @override
   Widget build(BuildContext context) {
     final List<Widget> rowChildren = [
-      Text(
-        value.toString(),
-        style: labelTextStyle(context).copyWith(color: Theme.of(context).colorScheme.onBackground),
+      Flexible(
+        child: Text(
+          value.toString(),
+          style: labelTextStyle(context).copyWith(color: Theme.of(context).colorScheme.onBackground),
+          softWrap: false,
+          overflow: TextOverflow.fade,
+        ),
       ),
       const SizedBox(width: Dimens.grid8),
       ColoredBox(

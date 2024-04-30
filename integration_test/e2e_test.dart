@@ -44,7 +44,7 @@ void testE2E(String description) {
   testWidgets(
     description,
     (tester) async {
-      await tester.pumpApplication(equipmentProfiles: [], films: []);
+      await tester.pumpApplication(equipmentProfiles: [], filmsInUse: []);
 
       /// Create Praktica + Zenitar profile from scratch
       await tester.openSettings();
@@ -60,7 +60,7 @@ void testE2E(String description) {
       await tester.setZoomValue(0, mockEquipmentProfiles[0].lensZoom);
       expect(find.text('x1.91'), findsOneWidget);
       expect(find.text('f/1.7 - f/16'), findsOneWidget);
-      expect(find.text('1/1000 - 16"'), findsOneWidget);
+      expect(find.text('1/1000 - B'), findsOneWidget);
 
       /// Create Praktica + Jupiter profile from Zenitar profile
       await tester.tap(find.byIcon(Icons.copy).first);
@@ -71,7 +71,7 @@ void testE2E(String description) {
       await tester.setZoomValue(1, mockEquipmentProfiles[1].lensZoom);
       expect(find.text('x5.02'), findsOneWidget);
       expect(find.text('f/3.5 - f/22'), findsOneWidget);
-      expect(find.text('1/1000 - 16"'), findsNWidgets(2));
+      expect(find.text('1/1000 - B'), findsNWidgets(2));
       await tester.navigatorPop();
 
       /// Select some films

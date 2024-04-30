@@ -8,6 +8,8 @@ class RangePickerListTile<T extends PhotographyValue> extends StatelessWidget {
   final String description;
   final List<T> selectedValues;
   final List<T> values;
+  final String Function(BuildContext context, T value)? trailingAdapter;
+  final String Function(BuildContext context, T value)? dialogValueAdapter;
   final ValueChanged<List<T>> onChanged;
 
   const RangePickerListTile({
@@ -16,6 +18,8 @@ class RangePickerListTile<T extends PhotographyValue> extends StatelessWidget {
     required this.description,
     required this.selectedValues,
     required this.values,
+    this.trailingAdapter,
+    this.dialogValueAdapter,
     required this.onChanged,
     super.key,
   });
@@ -25,7 +29,7 @@ class RangePickerListTile<T extends PhotographyValue> extends StatelessWidget {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      trailing: Text("${selectedValues.first} - ${selectedValues.last}"),
+      trailing: Text(_trailing(context)),
       onTap: () {
         showDialog<List<T>>(
           context: context,
@@ -35,7 +39,7 @@ class RangePickerListTile<T extends PhotographyValue> extends StatelessWidget {
             description: description,
             values: values,
             selectedValues: selectedValues,
-            titleAdapter: (_, value) => value.toString(),
+            valueAdapter: (context, value) => dialogValueAdapter?.call(context, value) ?? value.toString(),
           ),
         ).then((values) {
           if (values != null) {
@@ -44,5 +48,17 @@ class RangePickerListTile<T extends PhotographyValue> extends StatelessWidget {
         });
       },
     );
+  }
+
+  String _trailing(BuildContext context) {
+    final buffer = StringBuffer();
+    buffer.write(trailingAdapter?.call(context, selectedValues.first) ?? selectedValues.first);
+    if (selectedValues.first != selectedValues.last) {
+      buffer.writeAll([
+        ' - ',
+        trailingAdapter?.call(context, selectedValues.last) ?? selectedValues.last,
+      ]);
+    }
+    return buffer.toString();
   }
 }
