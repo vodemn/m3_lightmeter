@@ -68,7 +68,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   Future<void> _onResetTimer(ResetTimerEvent _, Emitter emit) async {
     _timer?.cancel();
     emit(
-      TimerStoppedState(
+      TimerResetState(
         duration: state.duration,
         timeLeft: state.duration,
       ),

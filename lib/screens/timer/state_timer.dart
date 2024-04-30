@@ -24,3 +24,10 @@ class TimerResumedState extends TimerState {
     required super.timeLeft,
   });
 }
+
+class TimerResetState extends TimerStoppedState {
+  const TimerResetState({
+    required super.duration,
+    required super.timeLeft,
+  });
+}

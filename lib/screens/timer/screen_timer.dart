@@ -50,10 +50,9 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    // TODO (@vodemn): split build in timer/components folder
     return BlocListener<TimerBloc, TimerState>(
-      listenWhen: (previous, current) =>
-          previous is TimerStoppedState && current is TimerResumedState ||
-          previous is TimerResumedState && current is TimerStoppedState,
+      listenWhen: (previous, current) => previous.runtimeType != current.runtimeType,
       listener: (context, state) => _updateAnimations(state),
       child: Scaffold(
         appBar: AppBar(
@@ -95,18 +94,39 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                     ),
                   ),
                   const Spacer(),
-                  BlocBuilder<TimerBloc, TimerState>(
-                    builder: (_, state) => FloatingActionButton(
-                      onPressed: () {
-                        context.read<TimerBloc>().add(
-                              state is TimerStoppedState ? const StartTimerEvent() : const StopTimerEvent(),
-                            );
-                      },
-                      child: AnimatedIcon(
-                        icon: AnimatedIcons.play_pause,
-                        progress: startStopIconAnimation,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: IconButton(
+                            onPressed: () {
+                              context.read<TimerBloc>().add(const ResetTimerEvent());
+                            },
+                            icon: const Icon(Icons.restore),
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox.fromSize(
+                        size: const Size.square(Dimens.grid72),
+                        child: BlocBuilder<TimerBloc, TimerState>(
+                          builder: (_, state) => FloatingActionButton(
+                            shape: state is TimerResumedState ? null : const CircleBorder(),
+                            onPressed: state.timeLeft.inSeconds == 0
+                                ? null
+                                : () {
+                                    final event =
+                                        state is TimerStoppedState ? const StartTimerEvent() : const StopTimerEvent();
+                                    context.read<TimerBloc>().add(event);
+                                  },
+                            child: AnimatedIcon(
+                              icon: AnimatedIcons.play_pause,
+                              progress: startStopIconAnimation,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                    ],
                   ),
                 ],
               ),
@@ -119,6 +139,10 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
 
   void _updateAnimations(TimerState state) {
     switch (state) {
+      case TimerResetState():
+        startStopIconController.reverse();
+        timelineController.stop();
+        timelineController.animateTo(0, duration: Dimens.durationS);
       case TimerResumedState():
         startStopIconController.forward();
         timelineController.forward();
@@ -210,7 +234,6 @@ class _TimelinePainter extends CustomPainter {
   final double progress;
 
   late final double timelineEdgeRadius = strokeWidth / 2;
-  late final double radiansProgress = 2 * pi * progress;
   static const double radiansQuarterTurn = -pi / 2;
   static const double strokeWidth = Dimens.grid8;
 
@@ -222,11 +245,22 @@ class _TimelinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    print('PROGRESS: $progress');
+    late final double radiansProgress = 2 * pi * progress;
     final radius = size.height / 2;
     final timerCenter = Offset(radius, radius);
-    final timelineSegmentPath = Path.combine(
-      PathOperation.difference,
-      Path()
+
+    final timelineSegmentPath = Path();
+    if (progress == 1) {
+      timelineSegmentPath.addOval(
+        Rect.fromCenter(
+          center: timerCenter,
+          height: size.height,
+          width: size.width,
+        ),
+      );
+    } else {
+      timelineSegmentPath
         ..arcTo(
           Rect.fromCenter(
             center: timerCenter,
@@ -238,7 +272,12 @@ class _TimelinePainter extends CustomPainter {
           false,
         )
         ..lineTo(radius, radius)
-        ..lineTo(radius, 0),
+        ..lineTo(radius, 0);
+    }
+
+    final timelinePath = Path.combine(
+      PathOperation.difference,
+      timelineSegmentPath,
       Path()
         ..addOval(
           Rect.fromCircle(
@@ -293,7 +332,7 @@ class _TimelinePainter extends CustomPainter {
     canvas.drawPath(
       Path.combine(
         PathOperation.union,
-        timelineSegmentPath,
+        timelinePath,
         smoothEdgesPath,
       ),
       Paint()..color = progressColor,
@@ -301,5 +340,5 @@ class _TimelinePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_TimelinePainter oldDelegate) => oldDelegate.progress != progress;
+  bool shouldRepaint(_TimelinePainter oldDelegate) => true;
 }
