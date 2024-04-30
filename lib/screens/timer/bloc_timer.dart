@@ -38,9 +38,10 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     );
 
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      add(SetTimeLeftEvent(state.timeLeft - const Duration(seconds: 1)));
       if (state.timeLeft.inMilliseconds == 0) {
         add(const StopTimerEvent());
+      } else {
+        add(SetTimeLeftEvent(state.timeLeft - const Duration(seconds: 1)));
       }
     });
   }
