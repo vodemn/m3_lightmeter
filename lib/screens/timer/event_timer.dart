@@ -1,48 +1,21 @@
-import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-
-sealed class MeteringEvent {
-  const MeteringEvent();
+sealed class TimerEvent {
+  const TimerEvent();
 }
 
-class EquipmentProfileChangedEvent extends MeteringEvent {
-  final EquipmentProfile equipmentProfileData;
-
-  const EquipmentProfileChangedEvent(this.equipmentProfileData);
+class StartTimerEvent extends TimerEvent {
+  const StartTimerEvent();
 }
 
-class IsoChangedEvent extends MeteringEvent {
-  final IsoValue isoValue;
-
-  const IsoChangedEvent(this.isoValue);
+class StopTimerEvent extends TimerEvent {
+  const StopTimerEvent();
 }
 
-class NdChangedEvent extends MeteringEvent {
-  final NdValue ndValue;
+class SetTimeLeftEvent extends TimerEvent {
+  final Duration timeLeft;
 
-  const NdChangedEvent(this.ndValue);
+  const SetTimeLeftEvent(this.timeLeft);
 }
 
-class MeasureEvent extends MeteringEvent {
-  const MeasureEvent();
-}
-
-class MeasuredEvent extends MeteringEvent {
-  final double ev100;
-  final bool isMetering;
-
-  const MeasuredEvent(this.ev100, {required this.isMetering});
-}
-
-class MeasureErrorEvent extends MeteringEvent {
-  final bool isMetering;
-
-  const MeasureErrorEvent({required this.isMetering});
-}
-
-class SettingsOpenedEvent extends MeteringEvent {
-  const SettingsOpenedEvent();
-}
-
-class SettingsClosedEvent extends MeteringEvent {
-  const SettingsClosedEvent();
+class ResetTimerEvent extends TimerEvent {
+  const ResetTimerEvent();
 }
