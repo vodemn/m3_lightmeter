@@ -10,7 +10,9 @@ import 'package:lightmeter/screens/timer/state_timer.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
 class TimerScreen extends StatefulWidget {
-  const TimerScreen({super.key});
+  final Duration duration;
+
+  const TimerScreen({required this.duration, super.key});
 
   @override
   State<TimerScreen> createState() => _TimerScreenState();
@@ -26,11 +28,11 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
   void initState() {
     super.initState();
 
-    timelineController = AnimationController(vsync: this, duration: Dimens.durationS);
-    timelineAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(timelineController);
+    timelineController = AnimationController(vsync: this, duration: widget.duration);
+    timelineAnimation = Tween<double>(begin: 1, end: 0).animate(timelineController);
 
     startStopIconController = AnimationController(vsync: this, duration: Dimens.durationS);
-    startStopIconAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(startStopIconController);
+    startStopIconAnimation = Tween<double>(begin: 0, end: 1).animate(startStopIconController);
   }
 
   @override
@@ -75,22 +77,21 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Spacer(),
-                  // SizedBox.fromSize(
-                  //   size: Size.square(MediaQuery.sizeOf(context).width - Dimens.paddingL * 4),
-                  //   child: BlocBuilder<TimerBloc, TimerState>(
-                  //     builder: (context, state) {
-                  //       return _Timer(
-                  //         timeLeft: state.timeLeft,
-                  //         duration: state.duration,
-                  //       );
-                  //     },
-                  //   ),
-                  // ),
-                  BlocBuilder<TimerBloc, TimerState>(
-                    buildWhen: (previous, current) => previous.timeLeft != current.timeLeft,
-                    builder: (_, state) => _Timer(
-                      timeLeft: state.timeLeft,
-                      duration: state.duration,
+                  SizedBox.fromSize(
+                    size: Size.square(MediaQuery.sizeOf(context).width - Dimens.paddingL * 4),
+                    child: ValueListenableBuilder(
+                      valueListenable: timelineAnimation,
+                      builder: (_, value, child) => _TimerTimeline(
+                        progress: value,
+                        child: child!,
+                      ),
+                      child: BlocBuilder<TimerBloc, TimerState>(
+                        buildWhen: (previous, current) => previous.timeLeft != current.timeLeft,
+                        builder: (_, state) => _Timer(
+                          timeLeft: state.timeLeft,
+                          duration: state.duration,
+                        ),
+                      ),
                     ),
                   ),
                   const Spacer(),
@@ -120,8 +121,10 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
     switch (state) {
       case TimerResumedState():
         startStopIconController.forward();
+        timelineController.forward();
       case TimerStoppedState():
         startStopIconController.reverse();
+        timelineController.stop();
     }
   }
 }
