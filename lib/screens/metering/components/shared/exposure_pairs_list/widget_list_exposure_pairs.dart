@@ -5,11 +5,13 @@ import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/components/exposure_pairs_list_item/widget_item_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class ExposurePairsList extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
+  final ValueChanged<ShutterSpeedValue> onExposurePairTap;
 
-  const ExposurePairsList(this.exposurePairs, {super.key});
+  const ExposurePairsList(this.exposurePairs, {required this.onExposurePairTap, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,30 +33,34 @@ class ExposurePairsList extends StatelessWidget {
                     itemBuilder: (_, index) => Stack(
                       alignment: Alignment.center,
                       children: [
-                        Row(
-                          key: ValueKey(index),
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: ExposurePairsListItem(
-                                  exposurePairs[index].aperture,
-                                  tickOnTheLeft: false,
+                        GestureDetector(
+                          onTap: () {
+                            onExposurePairTap(Films.selectedOf(context).reciprocityFailure(exposurePairs[index].shutterSpeed));
+                          },
+                          child: Row(
+                            key: ValueKey(index),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: ExposurePairsListItem(
+                                    exposurePairs[index].aperture,
+                                    tickOnTheLeft: false,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: ExposurePairsListItem(
-                                  Films.selectedOf(context)
-                                      .reciprocityFailure(exposurePairs[index].shutterSpeed),
-                                  tickOnTheLeft: true,
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: ExposurePairsListItem(
+                                    Films.selectedOf(context).reciprocityFailure(exposurePairs[index].shutterSpeed),
+                                    tickOnTheLeft: true,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Positioned(
                           top: 0,
@@ -63,9 +69,7 @@ class ExposurePairsList extends StatelessWidget {
                             builder: (context, constraints) => Align(
                               alignment: index == 0
                                   ? Alignment.bottomCenter
-                                  : (index == exposurePairs.length - 1
-                                      ? Alignment.topCenter
-                                      : Alignment.center),
+                                  : (index == exposurePairs.length - 1 ? Alignment.topCenter : Alignment.center),
                               child: SizedBox(
                                 height: index == 0 || index == exposurePairs.length - 1
                                     ? constraints.maxHeight / 2

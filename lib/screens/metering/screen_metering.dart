@@ -34,6 +34,7 @@ class MeteringScreen extends StatelessWidget {
                   nd: state.nd,
                   onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
                   onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
+                  onExposurePairTap: (value) => context.read<MeteringBloc>().add(SetTimerEvent(value)),
                 ),
               ),
             ),
@@ -83,6 +84,7 @@ class MeteringContainerBuidler extends StatelessWidget {
   final NdValue nd;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
+  final ValueChanged<ShutterSpeedValue> onExposurePairTap;
 
   const MeteringContainerBuidler({
     required this.ev,
@@ -90,6 +92,7 @@ class MeteringContainerBuidler extends StatelessWidget {
     required this.nd,
     required this.onIsoChanged,
     required this.onNdChanged,
+    required this.onExposurePairTap,
   });
 
   @override
@@ -113,6 +116,7 @@ class MeteringContainerBuidler extends StatelessWidget {
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,
+            onExposurePairTap: onExposurePairTap,
           )
         : LightSensorContainerProvider(
             fastest: fastest,
@@ -122,6 +126,7 @@ class MeteringContainerBuidler extends StatelessWidget {
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,
+            onExposurePairTap: onExposurePairTap,
           );
   }
 
