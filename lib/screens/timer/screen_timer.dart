@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/timer/bloc_timer.dart';
@@ -10,9 +11,9 @@ import 'package:lightmeter/screens/timer/state_timer.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
 class TimerScreen extends StatefulWidget {
-  final Duration duration;
+  final ExposurePair exposurePair;
 
-  const TimerScreen({required this.duration, super.key});
+  const TimerScreen({required this.exposurePair, super.key});
 
   @override
   State<TimerScreen> createState() => _TimerScreenState();
@@ -28,7 +29,10 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
   void initState() {
     super.initState();
 
-    timelineController = AnimationController(vsync: this, duration: widget.duration);
+    timelineController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: widget.exposurePair.shutterSpeed.value.toInt()),
+    );
     timelineAnimation = Tween<double>(begin: 1, end: 0).animate(timelineController);
 
     startStopIconController = AnimationController(vsync: this, duration: Dimens.durationS);
@@ -60,7 +64,7 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
           centerTitle: true,
           elevation: 0,
           title: Text(
-            'Test',
+            widget.exposurePair.toString(),
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurface,
               fontSize: Dimens.grid24,
@@ -245,7 +249,6 @@ class _TimelinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    print('PROGRESS: $progress');
     late final double radiansProgress = 2 * pi * progress;
     final radius = size.height / 2;
     final timerCenter = Offset(radius, radius);

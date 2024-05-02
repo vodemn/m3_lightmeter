@@ -29,7 +29,7 @@ class CameraContainer extends StatelessWidget {
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
   final List<ExposurePair> exposurePairs;
-  final ValueChanged<ShutterSpeedValue> onExposurePairTap;
+  final ValueChanged<ExposurePair> onExposurePairTap;
 
   const CameraContainer({
     required this.fastest,

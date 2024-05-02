@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
@@ -7,7 +8,9 @@ import 'package:lightmeter/screens/timer/bloc_timer.dart';
 import 'package:lightmeter/screens/timer/screen_timer.dart';
 
 class TimerFlow extends StatelessWidget {
-  const TimerFlow({super.key});
+  final ExposurePair exposurePair;
+
+  const TimerFlow({required this.exposurePair, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +38,9 @@ class TimerFlow extends StatelessWidget {
         child: BlocProvider(
           create: (context) => TimerBloc(
             MeteringInteractorProvider.of(context),
-            60,
+            exposurePair.shutterSpeed.value.toInt(),
           ),
-          child: const TimerScreen(
-            duration: const Duration(seconds: 60),
-          ),
+          child: TimerScreen(exposurePair: exposurePair),
         ),
       ),
     );

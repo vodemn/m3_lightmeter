@@ -34,7 +34,7 @@ class MeteringScreen extends StatelessWidget {
                   nd: state.nd,
                   onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
                   onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
-                  onExposurePairTap: (value) => context.read<MeteringBloc>().add(SetTimerEvent(value)),
+                  onExposurePairTap: (value) => Navigator.pushNamed(context, 'timer', arguments: value),
                 ),
               ),
             ),
@@ -49,7 +49,7 @@ class MeteringScreen extends StatelessWidget {
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
                 onSettings: () {
                   context.read<MeteringBloc>().add(const SettingsOpenedEvent());
-                  Navigator.pushNamed(context, 'settings').then((value) {
+                  Navigator.pushNamed(context, 'settings').then((_) {
                     context.read<MeteringBloc>().add(const SettingsClosedEvent());
                   });
                 },
@@ -84,7 +84,7 @@ class MeteringContainerBuidler extends StatelessWidget {
   final NdValue nd;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
-  final ValueChanged<ShutterSpeedValue> onExposurePairTap;
+  final ValueChanged<ExposurePair> onExposurePairTap;
 
   const MeteringContainerBuidler({
     required this.ev,
