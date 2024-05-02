@@ -131,15 +131,16 @@ class _TimelinePainter extends CustomPainter {
     );
 
     canvas.drawPath(
-      Path.combine(
-        PathOperation.union,
-        timelinePath,
-        smoothEdgesPath,
-      ),
+      timelinePath,
+      Paint()..color = progressColor,
+    );
+
+    canvas.drawPath(
+      smoothEdgesPath,
       Paint()..color = progressColor,
     );
   }
 
   @override
-  bool shouldRepaint(_TimelinePainter oldDelegate) => true;
+  bool shouldRepaint(_TimelinePainter oldDelegate) => oldDelegate.progress != progress;
 }
