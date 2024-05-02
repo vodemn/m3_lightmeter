@@ -6,6 +6,7 @@ import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/timer/bloc_timer.dart';
+import 'package:lightmeter/screens/timer/components/timeline/widget_timeline_timer.dart';
 import 'package:lightmeter/screens/timer/event_timer.dart';
 import 'package:lightmeter/screens/timer/state_timer.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
@@ -84,7 +85,7 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                     size: Size.square(MediaQuery.sizeOf(context).width - Dimens.paddingL * 4),
                     child: ValueListenableBuilder(
                       valueListenable: timelineAnimation,
-                      builder: (_, value, child) => _TimerTimeline(
+                      builder: (_, value, child) => TimerTimeline(
                         progress: value,
                         child: child!,
                       ),
@@ -168,9 +169,18 @@ class _Timer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      parseSeconds(),
-      style: Theme.of(context).textTheme.headlineLarge,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          parseSeconds(),
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
+        // Text(
+        //   '${timeLeft.inMilliseconds % 1000}'.substring(0,2),
+        //   style: Theme.of(context).textTheme.headlineSmall,
+        // ),
+      ],
     );
   }
 
@@ -203,145 +213,4 @@ class _Timer extends StatelessWidget {
     buffer.write(addZeroIfNeeded(remainingSeconds));
     return buffer.toString();
   }
-}
-
-class _TimerTimeline extends StatelessWidget {
-  final double progress;
-  final Widget child;
-
-  const _TimerTimeline({
-    required this.progress,
-    required this.child,
-  }) : assert(progress >= 0 && progress <= 1);
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _TimelinePainter(
-        backgroundColor: ElevationOverlay.applySurfaceTint(
-          Theme.of(context).cardTheme.color!,
-          Theme.of(context).cardTheme.surfaceTintColor,
-          Theme.of(context).cardTheme.elevation!,
-        ),
-        progressColor: Theme.of(context).colorScheme.primary,
-        progress: progress,
-      ),
-      willChange: true,
-      child: Center(child: child),
-    );
-  }
-}
-
-class _TimelinePainter extends CustomPainter {
-  final Color progressColor;
-  final Color backgroundColor;
-  final double progress;
-
-  late final double timelineEdgeRadius = strokeWidth / 2;
-  static const double radiansQuarterTurn = -pi / 2;
-  static const double strokeWidth = Dimens.grid8;
-
-  _TimelinePainter({
-    required this.progressColor,
-    required this.backgroundColor,
-    required this.progress,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    late final double radiansProgress = 2 * pi * progress;
-    final radius = size.height / 2;
-    final timerCenter = Offset(radius, radius);
-
-    final timelineSegmentPath = Path();
-    if (progress == 1) {
-      timelineSegmentPath.addOval(
-        Rect.fromCenter(
-          center: timerCenter,
-          height: size.height,
-          width: size.width,
-        ),
-      );
-    } else {
-      timelineSegmentPath
-        ..arcTo(
-          Rect.fromCenter(
-            center: timerCenter,
-            height: size.height,
-            width: size.width,
-          ),
-          radiansQuarterTurn,
-          radiansProgress,
-          false,
-        )
-        ..lineTo(radius, radius)
-        ..lineTo(radius, 0);
-    }
-
-    final timelinePath = Path.combine(
-      PathOperation.difference,
-      timelineSegmentPath,
-      Path()
-        ..addOval(
-          Rect.fromCircle(
-            center: timerCenter,
-            radius: radius - strokeWidth,
-          ),
-        ),
-    );
-
-    final smoothEdgesPath = Path.combine(
-      PathOperation.union,
-      Path()
-        ..addOval(
-          Rect.fromCircle(
-            center: Offset(radius, timelineEdgeRadius),
-            radius: timelineEdgeRadius,
-          ),
-        ),
-      Path()
-        ..addOval(
-          Rect.fromCircle(
-            center: Offset(
-              (radius - timelineEdgeRadius) * cos(radiansProgress + radiansQuarterTurn) + radius,
-              (radius - timelineEdgeRadius) * sin(radiansProgress + radiansQuarterTurn) + radius,
-            ),
-            radius: timelineEdgeRadius,
-          ),
-        ),
-    );
-
-    canvas.drawPath(
-      Path.combine(
-        PathOperation.difference,
-        Path()
-          ..addOval(
-            Rect.fromCircle(
-              center: timerCenter,
-              radius: radius,
-            ),
-          ),
-        Path()
-          ..addOval(
-            Rect.fromCircle(
-              center: timerCenter,
-              radius: radius - strokeWidth,
-            ),
-          ),
-      ),
-      Paint()..color = backgroundColor,
-    );
-
-    canvas.drawPath(
-      Path.combine(
-        PathOperation.union,
-        timelinePath,
-        smoothEdgesPath,
-      ),
-      Paint()..color = progressColor,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_TimelinePainter oldDelegate) => true;
 }
