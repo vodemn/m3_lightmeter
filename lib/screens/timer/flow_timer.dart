@@ -42,7 +42,10 @@ class TimerFlow extends StatelessWidget {
             MeteringInteractorProvider.of(context),
             _duration,
           ),
-          child: TimerScreen(exposurePair: exposurePair),
+          child: TimerScreen(
+            exposurePair: exposurePair,
+            duration: _duration,
+          ),
         ),
       ),
     );

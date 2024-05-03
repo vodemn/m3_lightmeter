@@ -1,21 +1,22 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/timer/bloc_timer.dart';
 import 'package:lightmeter/screens/timer/components/text/widget_text_timer.dart';
 import 'package:lightmeter/screens/timer/components/timeline/widget_timeline_timer.dart';
 import 'package:lightmeter/screens/timer/event_timer.dart';
 import 'package:lightmeter/screens/timer/state_timer.dart';
-import 'package:material_color_utilities/material_color_utilities.dart';
 
 class TimerScreen extends StatefulWidget {
   final ExposurePair exposurePair;
+  final Duration duration;
 
-  const TimerScreen({required this.exposurePair, super.key});
+  const TimerScreen({
+    required this.exposurePair,
+    required this.duration,
+    super.key,
+  });
 
   @override
   State<TimerScreen> createState() => _TimerScreenState();
@@ -31,11 +32,13 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
   void initState() {
     super.initState();
 
-    timelineController = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: widget.exposurePair.shutterSpeed.value.toInt()),
-    );
+    timelineController = AnimationController(vsync: this, duration: widget.duration);
     timelineAnimation = Tween<double>(begin: 1, end: 0).animate(timelineController);
+    timelineController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        context.read<TimerBloc>().add(const StopTimerEvent());
+      }
+    });
 
     startStopIconController = AnimationController(vsync: this, duration: Dimens.durationS);
     startStopIconAnimation = Tween<double>(begin: 0, end: 1).animate(startStopIconController);
@@ -56,7 +59,6 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    // TODO (@vodemn): split build in timer/components folder
     return BlocListener<TimerBloc, TimerState>(
       listenWhen: (previous, current) => previous.runtimeType != current.runtimeType,
       listener: (context, state) => _updateAnimations(state),
@@ -88,13 +90,9 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                       valueListenable: timelineAnimation,
                       builder: (_, value, child) => TimerTimeline(
                         progress: value,
-                        child: child!,
-                      ),
-                      child: BlocBuilder<TimerBloc, TimerState>(
-                        buildWhen: (previous, current) => previous.timeLeft != current.timeLeft,
-                        builder: (_, state) => TimerText(
-                          timeLeft: state.timeLeft,
-                          duration: state.duration,
+                        child: TimerText(
+                          timeLeft: Duration(milliseconds: (widget.duration.inMilliseconds * value).toInt()),
+                          duration: widget.duration,
                         ),
                       ),
                     ),
@@ -117,13 +115,14 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                         child: BlocBuilder<TimerBloc, TimerState>(
                           builder: (_, state) => FloatingActionButton(
                             shape: state is TimerResumedState ? null : const CircleBorder(),
-                            onPressed: state.timeLeft.inSeconds == 0
-                                ? null
-                                : () {
-                                    final event =
-                                        state is TimerStoppedState ? const StartTimerEvent() : const StopTimerEvent();
-                                    context.read<TimerBloc>().add(event);
-                                  },
+                            onPressed: () {
+                              if (timelineAnimation.value == 0) {
+                                return;
+                              }
+                              final event =
+                                  state is TimerStoppedState ? const StartTimerEvent() : const StopTimerEvent();
+                              context.read<TimerBloc>().add(event);
+                            },
                             child: AnimatedIcon(
                               icon: AnimatedIcons.play_pause,
                               progress: startStopIconAnimation,
