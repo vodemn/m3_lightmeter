@@ -19,7 +19,6 @@ class TimerText extends StatelessWidget {
           parseSeconds(),
           style: Theme.of(context).textTheme.displayMedium,
         ),
-        if (duration.inMinutes < 1)
           Text(
             addZeroIfNeeded(timeLeft.inMilliseconds % 1000, 3),
             style: Theme.of(context).textTheme.displaySmall,
@@ -32,7 +31,7 @@ class TimerText extends StatelessWidget {
     final buffer = StringBuffer();
     int remainingMs = timeLeft.inMilliseconds;
     // longer than 1 hours
-    if (duration.inSeconds >= Duration.millisecondsPerHour) {
+    if (duration.inMilliseconds >= Duration.millisecondsPerHour) {
       final hours = remainingMs ~/ Duration.millisecondsPerHour;
       buffer.writeAll([addZeroIfNeeded(hours), ':']);
       remainingMs -= hours * Duration.millisecondsPerHour;
