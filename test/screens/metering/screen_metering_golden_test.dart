@@ -8,11 +8,11 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../integration_test/utils/finder_actions.dart';
 import '../../../integration_test/utils/platform_channel_mock.dart';
 import '../../application_mock.dart';
 
@@ -67,7 +67,7 @@ void main() {
   Future<void> takePhoto(WidgetTester tester, Key scenarioWidgetKey) async {
     final button = find.descendant(
       of: find.byKey(scenarioWidgetKey),
-      matching: find.byType(MeteringMeasureButton),
+      matching: find.measureButton(),
     );
     await tester.tap(button);
     await tester.pump(const Duration(seconds: 2)); // wait for circular progress indicator
@@ -78,7 +78,7 @@ void main() {
   Future<void> toggleIncidentMetering(WidgetTester tester, Key scenarioWidgetKey, double ev) async {
     final button = find.descendant(
       of: find.byKey(scenarioWidgetKey),
-      matching: find.byType(MeteringMeasureButton),
+      matching: find.measureButton(),
     );
     await tester.tap(button);
     await sendMockIncidentEv(ev);

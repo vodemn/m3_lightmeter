@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
 import 'package:lightmeter/screens/shared/bottom_controls_bar/widget_bottom_controls_bar.dart';
 import 'package:lightmeter/screens/timer/bloc_timer.dart';
 import 'package:lightmeter/screens/timer/components/metering_config/widget_metering_config_timer.dart';
@@ -96,8 +97,8 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                   icon: const Icon(Icons.restore),
                 ),
                 center: BlocBuilder<TimerBloc, TimerState>(
-                  builder: (_, state) => FloatingActionButton(
-                    shape: state is TimerResumedState ? null : const CircleBorder(),
+                  builder: (_, state) => AnimatedCircluarButton(
+                    isPressed: state is TimerResumedState,
                     onPressed: () {
                       if (timelineAnimation.value == 0) {
                         return;
@@ -108,6 +109,7 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                     child: AnimatedIcon(
                       icon: AnimatedIcons.play_pause,
                       progress: startStopIconAnimation,
+                      color: Theme.of(context).colorScheme.surface,
                     ),
                   ),
                 ),

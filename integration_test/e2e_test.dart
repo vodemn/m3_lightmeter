@@ -7,7 +7,7 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/widget_bottom_controls.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
@@ -329,7 +329,7 @@ Future<void> _expectMeteringStateAndMeasure(
 
 void expectMeasureButton(double ev) {
   find.descendant(
-    of: find.byType(MeteringMeasureButton),
+    of: find.byType(MeteringBottomControls),
     matching: find.text('${ev.toStringAsFixed(1)}\n${S.current.ev}'),
   );
 }
