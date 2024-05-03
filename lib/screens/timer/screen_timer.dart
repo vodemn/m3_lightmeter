@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/shared/bottom_controls_bar/widget_bottom_controls_bar.dart';
 import 'package:lightmeter/screens/timer/bloc_timer.dart';
 import 'package:lightmeter/screens/timer/components/text/widget_text_timer.dart';
 import 'package:lightmeter/screens/timer/components/timeline/widget_timeline_timer.dart';
@@ -77,14 +78,15 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
           actions: [if (Navigator.of(context).canPop()) const CloseButton()],
         ),
         body: SafeArea(
+          bottom: false,
           child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(Dimens.paddingL),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Spacer(),
-                  SizedBox.fromSize(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(Dimens.paddingL),
+                  child: SizedBox.fromSize(
                     size: Size.square(MediaQuery.sizeOf(context).width - Dimens.paddingL * 4),
                     child: ValueListenableBuilder(
                       valueListenable: timelineAnimation,
@@ -97,44 +99,36 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                       ),
                     ),
                   ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Center(
-                          child: IconButton(
-                            onPressed: () {
-                              context.read<TimerBloc>().add(const ResetTimerEvent());
-                            },
-                            icon: const Icon(Icons.restore),
-                          ),
-                        ),
-                      ),
-                      SizedBox.fromSize(
-                        size: const Size.square(Dimens.grid72),
-                        child: BlocBuilder<TimerBloc, TimerState>(
-                          builder: (_, state) => FloatingActionButton(
-                            shape: state is TimerResumedState ? null : const CircleBorder(),
-                            onPressed: () {
-                              if (timelineAnimation.value == 0) {
-                                return;
-                              }
-                              final event =
-                                  state is TimerStoppedState ? const StartTimerEvent() : const StopTimerEvent();
-                              context.read<TimerBloc>().add(event);
-                            },
-                            child: AnimatedIcon(
-                              icon: AnimatedIcons.play_pause,
-                              progress: startStopIconAnimation,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                    ],
+                ),
+                const Spacer(),
+                BottomControlsBar(
+                  left: IconButton(
+                    onPressed: () {
+                      context.read<TimerBloc>().add(const ResetTimerEvent());
+                    },
+                    icon: const Icon(Icons.restore),
                   ),
-                ],
-              ),
+                  center: SizedBox.fromSize(
+                    size: const Size.square(Dimens.grid72),
+                    child: BlocBuilder<TimerBloc, TimerState>(
+                      builder: (_, state) => FloatingActionButton(
+                        shape: state is TimerResumedState ? null : const CircleBorder(),
+                        onPressed: () {
+                          if (timelineAnimation.value == 0) {
+                            return;
+                          }
+                          final event = state is TimerStoppedState ? const StartTimerEvent() : const StopTimerEvent();
+                          context.read<TimerBloc>().add(event);
+                        },
+                        child: AnimatedIcon(
+                          icon: AnimatedIcons.play_pause,
+                          progress: startStopIconAnimation,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

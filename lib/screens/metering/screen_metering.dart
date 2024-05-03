@@ -8,7 +8,7 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/provider_bottom_controls.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/widget_bottom_controls.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/provider_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/light_sensor_container/provider_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
@@ -39,7 +39,7 @@ class MeteringScreen extends StatelessWidget {
               ),
             ),
             BlocBuilder<MeteringBloc, MeteringState>(
-              builder: (context, state) => MeteringBottomControlsProvider(
+              builder: (context, state) => MeteringBottomControls(
                 ev: state is MeteringDataState ? state.ev : null,
                 ev100: state is MeteringDataState ? state.ev100 : null,
                 isMetering: state.isMetering,
