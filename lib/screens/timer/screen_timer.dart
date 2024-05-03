@@ -39,7 +39,7 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
     timelineAnimation = Tween<double>(begin: 1, end: 0).animate(timelineController);
     timelineController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        context.read<TimerBloc>().add(const StopTimerEvent());
+        context.read<TimerBloc>().add(const TimerEndedEvent());
       }
     });
 

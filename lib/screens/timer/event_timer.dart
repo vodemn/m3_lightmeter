@@ -10,10 +10,8 @@ class StopTimerEvent extends TimerEvent {
   const StopTimerEvent();
 }
 
-class SetTimeLeftEvent extends TimerEvent {
-  final Duration timeLeft;
-
-  const SetTimeLeftEvent(this.timeLeft);
+class TimerEndedEvent extends TimerEvent {
+  const TimerEndedEvent();
 }
 
 class ResetTimerEvent extends TimerEvent {

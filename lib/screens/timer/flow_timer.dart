@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/interactors/timer_interactor.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/screens/timer/bloc_timer.dart';
 import 'package:lightmeter/screens/timer/screen_timer.dart';
@@ -15,18 +16,14 @@ class TimerFlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MeteringInteractorProvider(
-      data: MeteringInteractor(
+    return TimerInteractorProvider(
+      data: TimerInteractor(
         ServicesProvider.of(context).userPreferencesService,
-        ServicesProvider.of(context).caffeineService,
         ServicesProvider.of(context).hapticsService,
-        ServicesProvider.of(context).permissionsService,
-        ServicesProvider.of(context).lightSensorService,
-        ServicesProvider.of(context).volumeEventsService,
-      )..initialize(),
+      ),
       child: BlocProvider(
         create: (context) => TimerBloc(
-          MeteringInteractorProvider.of(context),
+          TimerInteractorProvider.of(context),
           _duration,
         ),
         child: TimerScreen(
@@ -38,19 +35,19 @@ class TimerFlow extends StatelessWidget {
   }
 }
 
-class MeteringInteractorProvider extends InheritedWidget {
-  final MeteringInteractor data;
+class TimerInteractorProvider extends InheritedWidget {
+  final TimerInteractor data;
 
-  const MeteringInteractorProvider({
+  const TimerInteractorProvider({
     required this.data,
     required super.child,
     super.key,
   });
 
-  static MeteringInteractor of(BuildContext context) {
-    return context.findAncestorWidgetOfExactType<MeteringInteractorProvider>()!.data;
+  static TimerInteractor of(BuildContext context) {
+    return context.findAncestorWidgetOfExactType<TimerInteractorProvider>()!.data;
   }
 
   @override
-  bool updateShouldNotify(MeteringInteractorProvider oldWidget) => false;
+  bool updateShouldNotify(TimerInteractorProvider oldWidget) => false;
 }
