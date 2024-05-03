@@ -117,5 +117,6 @@
     "tooltipResetToZero": "Remise à zéro",
     "tooltipUseLightSensor": "Utiliser un capteur de lumière",
     "tooltipUseCamera": "Utiliser la caméra",
-    "tooltipOpenSettings": "Ouvrir les paramètres"
+    "tooltipOpenSettings": "Ouvrir les paramètres",
+    "exposurePair": "Paire d'exposition"
 }

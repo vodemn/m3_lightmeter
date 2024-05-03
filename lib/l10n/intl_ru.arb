@@ -117,5 +117,6 @@
     "tooltipResetToZero": "Сбросить до 0",
     "tooltipUseLightSensor": "Использовать датчик освещенности",
     "tooltipUseCamera": "Использовать камеру",
-    "tooltipOpenSettings": "Открыть настройки"
+    "tooltipOpenSettings": "Открыть настройки",
+    "exposurePair": "Пара экспозиции"
 }

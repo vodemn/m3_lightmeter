@@ -4,6 +4,7 @@ import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/bottom_controls_bar/widget_bottom_controls_bar.dart';
 import 'package:lightmeter/screens/timer/bloc_timer.dart';
+import 'package:lightmeter/screens/timer/components/metering_config/widget_metering_config_timer.dart';
 import 'package:lightmeter/screens/timer/components/text/widget_text_timer.dart';
 import 'package:lightmeter/screens/timer/components/timeline/widget_timeline_timer.dart';
 import 'package:lightmeter/screens/timer/event_timer.dart';
@@ -64,69 +65,55 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
       listenWhen: (previous, current) => previous.runtimeType != current.runtimeType,
       listener: (context, state) => _updateAnimations(state),
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          elevation: 0,
-          title: Text(
-            widget.exposurePair.toString(),
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontSize: Dimens.grid24,
-            ),
-          ),
-        ),
-        body: SafeArea(
-          bottom: false,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.all(Dimens.paddingL),
-                  child: SizedBox.fromSize(
-                    size: Size.square(MediaQuery.sizeOf(context).width - Dimens.paddingL * 4),
-                    child: ValueListenableBuilder(
-                      valueListenable: timelineAnimation,
-                      builder: (_, value, child) => TimerTimeline(
-                        progress: value,
-                        child: TimerText(
-                          timeLeft: Duration(milliseconds: (widget.duration.inMilliseconds * value).toInt()),
-                          duration: widget.duration,
-                        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TimerMeteringConfig(exposurePair: widget.exposurePair),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(Dimens.paddingL),
+                child: SizedBox.fromSize(
+                  size: Size.square(MediaQuery.sizeOf(context).width - Dimens.paddingL * 4),
+                  child: ValueListenableBuilder(
+                    valueListenable: timelineAnimation,
+                    builder: (_, value, child) => TimerTimeline(
+                      progress: value,
+                      child: TimerText(
+                        timeLeft: Duration(milliseconds: (widget.duration.inMilliseconds * value).toInt()),
+                        duration: widget.duration,
                       ),
                     ),
                   ),
                 ),
-                const Spacer(),
-                BottomControlsBar(
-                  left: IconButton(
+              ),
+              const Spacer(),
+              BottomControlsBar(
+                left: IconButton(
+                  onPressed: () {
+                    context.read<TimerBloc>().add(const ResetTimerEvent());
+                  },
+                  icon: const Icon(Icons.restore),
+                ),
+                center: BlocBuilder<TimerBloc, TimerState>(
+                  builder: (_, state) => FloatingActionButton(
+                    shape: state is TimerResumedState ? null : const CircleBorder(),
                     onPressed: () {
-                      context.read<TimerBloc>().add(const ResetTimerEvent());
+                      if (timelineAnimation.value == 0) {
+                        return;
+                      }
+                      final event = state is TimerStoppedState ? const StartTimerEvent() : const StopTimerEvent();
+                      context.read<TimerBloc>().add(event);
                     },
-                    icon: const Icon(Icons.restore),
-                  ),
-                  center: BlocBuilder<TimerBloc, TimerState>(
-                    builder: (_, state) => FloatingActionButton(
-                      shape: state is TimerResumedState ? null : const CircleBorder(),
-                      onPressed: () {
-                        if (timelineAnimation.value == 0) {
-                          return;
-                        }
-                        final event = state is TimerStoppedState ? const StartTimerEvent() : const StopTimerEvent();
-                        context.read<TimerBloc>().add(event);
-                      },
-                      child: AnimatedIcon(
-                        icon: AnimatedIcons.play_pause,
-                        progress: startStopIconAnimation,
-                      ),
+                    child: AnimatedIcon(
+                      icon: AnimatedIcons.play_pause,
+                      progress: startStopIconAnimation,
                     ),
                   ),
-                  right: Navigator.of(context).canPop() ? const CloseButton() : null,
                 ),
-              ],
-            ),
+                right: Navigator.of(context).canPop() ? const CloseButton() : null,
+              ),
+            ],
           ),
         ),
       ),

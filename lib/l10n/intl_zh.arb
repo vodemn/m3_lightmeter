@@ -117,5 +117,6 @@
     "resetToZero": "重置为零",
     "tooltipUseLightSensor": "使用光线传感器",
     "tooltipUseCamera": "使用摄像头",
-    "tooltipOpenSettings": "打开设置"
+    "tooltipOpenSettings": "打开设置",
+    "exposurePair": "曝光对"
 }

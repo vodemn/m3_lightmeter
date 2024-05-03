@@ -117,5 +117,6 @@
     "tooltipResetToZero": "Reset to zero",
     "tooltipUseLightSensor": "Use lightsensor",
     "tooltipUseCamera": "Use camera",
-    "tooltipOpenSettings": "Open settings"
+    "tooltipOpenSettings": "Open settings",
+    "exposurePair": "Exposure pair"
 }
