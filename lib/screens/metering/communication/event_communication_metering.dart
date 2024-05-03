@@ -48,10 +48,10 @@ class MeteringEndedEvent extends MeasuredEvent {
   int get hashCode => Object.hash(ev100, runtimeType);
 }
 
-class SettingsOpenedEvent extends ScreenEvent {
-  const SettingsOpenedEvent();
+class ScreenOnTopOpenedEvent extends ScreenEvent {
+  const ScreenOnTopOpenedEvent();
 }
 
-class SettingsClosedEvent extends ScreenEvent {
-  const SettingsClosedEvent();
+class ScreenOnTopClosedEvent extends ScreenEvent {
+  const ScreenOnTopClosedEvent();
 }

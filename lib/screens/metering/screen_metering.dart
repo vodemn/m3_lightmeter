@@ -34,7 +34,7 @@ class MeteringScreen extends StatelessWidget {
                   nd: state.nd,
                   onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
                   onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
-                  onExposurePairTap: (value) => Navigator.pushNamed(context, 'timer', arguments: value),
+                  onExposurePairTap: (value) => pushNamed(context, 'timer', arguments: value),
                 ),
               ),
             ),
@@ -47,18 +47,20 @@ class MeteringScreen extends StatelessWidget {
                     ? UserPreferencesProvider.of(context).toggleEvSourceType
                     : null,
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
-                onSettings: () {
-                  context.read<MeteringBloc>().add(const SettingsOpenedEvent());
-                  Navigator.pushNamed(context, 'settings').then((_) {
-                    context.read<MeteringBloc>().add(const SettingsClosedEvent());
-                  });
-                },
+                onSettings: () => pushNamed(context, 'settings'),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void pushNamed(BuildContext context, String routeName, {Object? arguments}) {
+    context.read<MeteringBloc>().add(const ScreenOnTopOpenedEvent());
+    Navigator.pushNamed(context, routeName, arguments: arguments).then((_) {
+      context.read<MeteringBloc>().add(const ScreenOnTopClosedEvent());
+    });
   }
 }
 

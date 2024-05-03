@@ -3,10 +3,8 @@ import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
-import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
-    as communication_events;
-import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
-    as communication_states;
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_events;
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:lightmeter/screens/metering/utils/notifier_volume_keys.dart';
@@ -18,9 +16,9 @@ class _MockMeteringInteractor extends Mock implements MeteringInteractor {}
 
 class _MockVolumeKeysNotifier extends Mock implements VolumeKeysNotifier {}
 
-class _MockMeteringCommunicationBloc extends MockBloc<
-    communication_events.MeteringCommunicationEvent,
-    communication_states.MeteringCommunicationState> implements MeteringCommunicationBloc {}
+class _MockMeteringCommunicationBloc
+    extends MockBloc<communication_events.MeteringCommunicationEvent, communication_states.MeteringCommunicationState>
+    implements MeteringCommunicationBloc {}
 
 void main() {
   late _MockMeteringInteractor meteringInteractor;
@@ -515,20 +513,18 @@ void main() {
   );
 
   group(
-    '`SettingOpenedEvent`/`SettingsClosedEvent`',
+    '`ScreenOnTopOpenedEvent`/`ScreenOnTopClosedEvent`',
     () {
       blocTest<MeteringBloc, MeteringState>(
         'Settings opened & closed',
         build: () => bloc,
         act: (bloc) async {
-          bloc.add(const SettingsOpenedEvent());
-          bloc.add(const SettingsClosedEvent());
+          bloc.add(const ScreenOnTopOpenedEvent());
+          bloc.add(const ScreenOnTopClosedEvent());
         },
         verify: (_) {
-          verify(() => communicationBloc.add(const communication_events.SettingsOpenedEvent()))
-              .called(1);
-          verify(() => communicationBloc.add(const communication_events.SettingsClosedEvent()))
-              .called(1);
+          verify(() => communicationBloc.add(const communication_events.ScreenOnTopOpenedEvent())).called(1);
+          verify(() => communicationBloc.add(const communication_events.ScreenOnTopClosedEvent())).called(1);
         },
         expect: () => [],
       );
