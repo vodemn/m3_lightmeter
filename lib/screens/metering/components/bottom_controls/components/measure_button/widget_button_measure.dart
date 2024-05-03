@@ -55,33 +55,30 @@ class _MeteringMeasureButtonState extends State<MeteringMeasureButton> {
           _isPressed = false;
         });
       },
-      child: SizedBox.fromSize(
-        size: const Size.square(Dimens.grid72),
-        child: Stack(
-          children: [
-            Center(
-              child: AnimatedScale(
-                duration: Dimens.durationS,
-                scale: _isPressed ? 0.9 : 1.0,
-                child: FilledCircle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  size: Dimens.grid72 - Dimens.grid8,
-                  child: Center(
-                    child: widget.ev != null ? _EvValueText(ev: widget.ev!, ev100: widget.ev100!) : null,
-                  ),
+      child: Stack(
+        children: [
+          Center(
+            child: AnimatedScale(
+              duration: Dimens.durationS,
+              scale: _isPressed ? 0.9 : 1.0,
+              child: FilledCircle(
+                color: Theme.of(context).colorScheme.onSurface,
+                size: Dimens.grid72 - Dimens.grid8,
+                child: Center(
+                  child: widget.ev != null ? _EvValueText(ev: widget.ev!, ev100: widget.ev100!) : null,
                 ),
               ),
             ),
-            Positioned.fill(
-              child: CircularProgressIndicator(
-                /// This key is needed to make indicator start from the same point every time
-                key: ValueKey(widget.isMetering),
-                color: Theme.of(context).colorScheme.onSurface,
-                value: widget.isMetering ? null : 1,
-              ),
+          ),
+          Positioned.fill(
+            child: CircularProgressIndicator(
+              /// This key is needed to make indicator start from the same point every time
+              key: ValueKey(widget.isMetering),
+              color: Theme.of(context).colorScheme.onSurface,
+              value: widget.isMetering ? null : 1,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

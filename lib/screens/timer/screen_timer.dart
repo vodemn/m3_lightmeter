@@ -75,7 +75,6 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
               fontSize: Dimens.grid24,
             ),
           ),
-          actions: [if (Navigator.of(context).canPop()) const CloseButton()],
         ),
         body: SafeArea(
           bottom: false,
@@ -108,25 +107,23 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                     },
                     icon: const Icon(Icons.restore),
                   ),
-                  center: SizedBox.fromSize(
-                    size: const Size.square(Dimens.grid72),
-                    child: BlocBuilder<TimerBloc, TimerState>(
-                      builder: (_, state) => FloatingActionButton(
-                        shape: state is TimerResumedState ? null : const CircleBorder(),
-                        onPressed: () {
-                          if (timelineAnimation.value == 0) {
-                            return;
-                          }
-                          final event = state is TimerStoppedState ? const StartTimerEvent() : const StopTimerEvent();
-                          context.read<TimerBloc>().add(event);
-                        },
-                        child: AnimatedIcon(
-                          icon: AnimatedIcons.play_pause,
-                          progress: startStopIconAnimation,
-                        ),
+                  center: BlocBuilder<TimerBloc, TimerState>(
+                    builder: (_, state) => FloatingActionButton(
+                      shape: state is TimerResumedState ? null : const CircleBorder(),
+                      onPressed: () {
+                        if (timelineAnimation.value == 0) {
+                          return;
+                        }
+                        final event = state is TimerStoppedState ? const StartTimerEvent() : const StopTimerEvent();
+                        context.read<TimerBloc>().add(event);
+                      },
+                      child: AnimatedIcon(
+                        icon: AnimatedIcons.play_pause,
+                        progress: startStopIconAnimation,
                       ),
                     ),
                   ),
+                  right: Navigator.of(context).canPop() ? const CloseButton() : null,
                 ),
               ],
             ),

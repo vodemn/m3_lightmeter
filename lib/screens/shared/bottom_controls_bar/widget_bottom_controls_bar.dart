@@ -3,8 +3,8 @@ import 'package:lightmeter/res/dimens.dart';
 
 class BottomControlsBar extends StatelessWidget {
   final Widget center;
-  final IconButton? left;
-  final IconButton? right;
+  final Widget? left;
+  final Widget? right;
 
   const BottomControlsBar({
     required this.center,
@@ -42,7 +42,10 @@ class BottomControlsBar extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   if (left != null) Expanded(child: Center(child: left)) else const Spacer(),
-                  center,
+                  SizedBox.fromSize(
+                    size: const Size.square(Dimens.grid72),
+                    child: center,
+                  ),
                   if (right != null) Expanded(child: Center(child: right)) else const Spacer(),
                 ],
               ),
