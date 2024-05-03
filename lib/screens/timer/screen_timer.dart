@@ -6,6 +6,7 @@ import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/timer/bloc_timer.dart';
+import 'package:lightmeter/screens/timer/components/text/widget_text_timer.dart';
 import 'package:lightmeter/screens/timer/components/timeline/widget_timeline_timer.dart';
 import 'package:lightmeter/screens/timer/event_timer.dart';
 import 'package:lightmeter/screens/timer/state_timer.dart';
@@ -91,7 +92,7 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                       ),
                       child: BlocBuilder<TimerBloc, TimerState>(
                         buildWhen: (previous, current) => previous.timeLeft != current.timeLeft,
-                        builder: (_, state) => _Timer(
+                        builder: (_, state) => TimerText(
                           timeLeft: state.timeLeft,
                           duration: state.duration,
                         ),
@@ -155,62 +156,5 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
         startStopIconController.reverse();
         timelineController.stop();
     }
-  }
-}
-
-class _Timer extends StatelessWidget {
-  final Duration timeLeft;
-  final Duration duration;
-
-  const _Timer({
-    required this.timeLeft,
-    required this.duration,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          parseSeconds(),
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
-        // Text(
-        //   '${timeLeft.inMilliseconds % 1000}'.substring(0,2),
-        //   style: Theme.of(context).textTheme.headlineSmall,
-        // ),
-      ],
-    );
-  }
-
-  String parseSeconds() {
-    String addZeroIfNeeded(int value) {
-      if (value == 0) {
-        return '00';
-      } else if (value < 10) {
-        return '0$value';
-      } else {
-        return '$value';
-      }
-    }
-
-    final buffer = StringBuffer();
-    int remainingSeconds = timeLeft.inSeconds;
-    // longer than 1 hours
-    if (duration.inSeconds >= 3600) {
-      final hours = remainingSeconds ~/ 3600;
-      buffer.writeAll([addZeroIfNeeded(hours), ':']);
-      remainingSeconds -= hours * 3600;
-    }
-    // longer than 1 minute
-    if (duration.inSeconds >= 60 || duration.inSeconds == 0) {
-      final minutes = remainingSeconds ~/ 60;
-      buffer.writeAll([addZeroIfNeeded(minutes), ':']);
-      remainingSeconds -= minutes * 60;
-    }
-    // longer than 1 second
-    buffer.write(addZeroIfNeeded(remainingSeconds));
-    return buffer.toString();
   }
 }

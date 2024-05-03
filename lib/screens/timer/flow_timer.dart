@@ -9,8 +9,10 @@ import 'package:lightmeter/screens/timer/screen_timer.dart';
 
 class TimerFlow extends StatelessWidget {
   final ExposurePair exposurePair;
+  late final _duration =
+      Duration(milliseconds: (exposurePair.shutterSpeed.value * Duration.millisecondsPerSecond).toInt());
 
-  const TimerFlow({required this.exposurePair, super.key});
+  TimerFlow({required this.exposurePair, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class TimerFlow extends StatelessWidget {
         child: BlocProvider(
           create: (context) => TimerBloc(
             MeteringInteractorProvider.of(context),
-            exposurePair.shutterSpeed.value.toInt(),
+            _duration,
           ),
           child: TimerScreen(exposurePair: exposurePair),
         ),
