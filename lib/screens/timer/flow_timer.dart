@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
-import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/interactors/timer_interactor.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/screens/timer/bloc_timer.dart';

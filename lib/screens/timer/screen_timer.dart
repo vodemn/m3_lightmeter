@@ -22,10 +22,11 @@ class TimerScreen extends StatefulWidget {
   });
 
   @override
-  State<TimerScreen> createState() => _TimerScreenState();
+  State<TimerScreen> createState() => TimerScreenState();
 }
 
-class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin {
+@visibleForTesting
+class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin {
   late AnimationController timelineController;
   late Animation<double> timelineAnimation;
   late AnimationController startStopIconController;
@@ -45,12 +46,6 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
 
     startStopIconController = AnimationController(vsync: this, duration: Dimens.durationS);
     startStopIconAnimation = Tween<double>(begin: 0, end: 1).animate(startStopIconController);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    context.read<TimerBloc>().add(const StartTimerEvent());
   }
 
   @override
@@ -113,7 +108,7 @@ class _TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin
                     ),
                   ),
                 ),
-                right: Navigator.of(context).canPop() ? const CloseButton() : null,
+                right: const CloseButton(),
               ),
             ],
           ),
