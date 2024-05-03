@@ -16,11 +16,7 @@ class TimerTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _TimelinePainter(
-        backgroundColor: ElevationOverlay.applySurfaceTint(
-          Theme.of(context).cardTheme.color!,
-          Theme.of(context).cardTheme.surfaceTintColor,
-          Theme.of(context).cardTheme.elevation!,
-        ),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         progressColor: Theme.of(context).colorScheme.primary,
         progress: progress,
       ),

@@ -97,14 +97,12 @@ void main() {
             if (scenarioWidgetKey.toString().contains('Dark')) {
               await setTheme(tester, scenarioWidgetKey, ThemeType.dark);
             }
-            await toggleTimer(tester, scenarioWidgetKey);
-            late final skipTimerDuration = Duration(
-              milliseconds: (scenario.shutterSpeedValue.value * 0.35 * Duration.millisecondsPerSecond).toInt(),
-            );
-            await tester.pump(skipTimerDuration);
-            if (scenario.isStopped) {
+            if (!scenario.isStopped) {
               await toggleTimer(tester, scenarioWidgetKey);
-            } else {
+              late final skipTimerDuration = Duration(
+                milliseconds: (scenario.shutterSpeedValue.value * 0.35 * Duration.millisecondsPerSecond).toInt(),
+              );
+              await tester.pump(skipTimerDuration);
               await mockResumedState(tester, scenarioWidgetKey);
             }
           },
