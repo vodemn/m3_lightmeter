@@ -5,6 +5,7 @@ import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/components/exposure_pairs_list_item/widget_item_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
+import 'package:lightmeter/utils/context_utils.dart';
 
 class ExposurePairsList extends StatelessWidget {
   final List<ExposurePair> exposurePairs;
@@ -38,9 +39,7 @@ class ExposurePairsList extends StatelessWidget {
                         alignment: Alignment.center,
                         children: [
                           GestureDetector(
-                            onTap: () {
-                              onExposurePairTap(exposurePair);
-                            },
+                            onTap: context.isPro ? () => onExposurePairTap(exposurePair) : null,
                             child: Row(
                               key: ValueKey(index),
                               mainAxisAlignment: MainAxisAlignment.center,
