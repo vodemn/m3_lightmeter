@@ -72,6 +72,7 @@
     "general": "General",
     "keepScreenOn": "Keep screen on",
     "haptics": "Haptics",
+    "autostartTimer": "Autostart timer",
     "volumeKeysAction": "Shutter by volume keys",
     "language": "Language",
     "chooseLanguage": "Choose language",

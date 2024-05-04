@@ -9,32 +9,40 @@ import 'package:test/test.dart';
 class _MockTimerInteractor extends Mock implements TimerInteractor {}
 
 void main() {
-  late _MockTimerInteractor meteringInteractor;
-  late TimerBloc bloc;
+  late _MockTimerInteractor timerInteractor;
 
-  setUp(() {
-    meteringInteractor = _MockTimerInteractor();
-    when(meteringInteractor.quickVibration).thenAnswer((_) async {});
-    when(meteringInteractor.responseVibration).thenAnswer((_) async {});
-
-    bloc = TimerBloc(meteringInteractor, const Duration(seconds: 1));
-  });
-
-  tearDown(() {
-    bloc.close();
+  setUpAll(() {
+    timerInteractor = _MockTimerInteractor();
+    when(() => timerInteractor.isAutostartTimerEnabled).thenReturn(true);
+    when(timerInteractor.quickVibration).thenAnswer((_) async {});
+    when(timerInteractor.responseVibration).thenAnswer((_) async {});
   });
 
   blocTest<TimerBloc, TimerState>(
+    'Autostart',
+    build: () => TimerBloc(timerInteractor, const Duration(seconds: 1)),
+    verify: (_) {
+      verify(() => timerInteractor.quickVibration()).called(1);
+    },
+    expect: () => [
+      isA<TimerResumedState>(),
+    ],
+  );
+
+  blocTest<TimerBloc, TimerState>(
     'Start -> wait till the end -> reset',
-    build: () => bloc,
-    act: (bloc) async {
+    build: () => TimerBloc(timerInteractor, const Duration(seconds: 1)),
+    setUp: () {
+      when(() => timerInteractor.isAutostartTimerEnabled).thenReturn(false);
+    },
+    act: (bloc) {
       bloc.add(const StartTimerEvent());
       bloc.add(const TimerEndedEvent());
       bloc.add(const ResetTimerEvent());
     },
     verify: (_) {
-      verify(() => meteringInteractor.quickVibration()).called(1);
-      verify(() => meteringInteractor.responseVibration()).called(1);
+      verify(() => timerInteractor.quickVibration()).called(1);
+      verify(() => timerInteractor.responseVibration()).called(1);
     },
     expect: () => [
       isA<TimerResumedState>(),
@@ -45,7 +53,10 @@ void main() {
 
   blocTest<TimerBloc, TimerState>(
     'Start -> stop -> start -> wait till the end',
-    build: () => bloc,
+    build: () => TimerBloc(timerInteractor, const Duration(seconds: 1)),
+    setUp: () {
+      when(() => timerInteractor.isAutostartTimerEnabled).thenReturn(false);
+    },
     act: (bloc) async {
       bloc.add(const StartTimerEvent());
       bloc.add(const StopTimerEvent());
@@ -53,8 +64,8 @@ void main() {
       bloc.add(const TimerEndedEvent());
     },
     verify: (_) {
-      verify(() => meteringInteractor.quickVibration()).called(3);
-      verify(() => meteringInteractor.responseVibration()).called(1);
+      verify(() => timerInteractor.quickVibration()).called(3);
+      verify(() => timerInteractor.responseVibration()).called(1);
     },
     expect: () => [
       isA<TimerResumedState>(),

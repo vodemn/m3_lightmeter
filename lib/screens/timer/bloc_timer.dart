@@ -14,6 +14,8 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     on<TimerEndedEvent>(_onTimerEnded);
     on<StopTimerEvent>(_onStopTimer);
     on<ResetTimerEvent>(_onResetTimer);
+
+    if (_timerInteractor.isAutostartTimerEnabled) add(const StartTimerEvent());
   }
 
   Future<void> _onStartTimer(StartTimerEvent _, Emitter emit) async {

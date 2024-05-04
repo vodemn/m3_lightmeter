@@ -72,6 +72,7 @@
     "general": "通用",
     "keepScreenOn": "保持屏幕常亮",
     "haptics": "震动",
+    "autostartTimer": "自动启动定时器",
     "volumeKeysAction": "音量键快门",
     "language": "语言",
     "chooseLanguage": "选择语言",

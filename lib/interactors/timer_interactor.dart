@@ -19,4 +19,6 @@ class TimerInteractor {
   Future<void> responseVibration() async {
     if (_userPreferencesService.haptics) await _hapticsService.responseVibration();
   }
+
+  bool get isAutostartTimerEnabled => _userPreferencesService.autostartTimer;
 }

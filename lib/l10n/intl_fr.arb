@@ -72,6 +72,7 @@
     "general": "Général",
     "keepScreenOn": "Garder l'écran allumé",
     "haptics": "Haptiques",
+    "autostartTimer": "Minuterie de démarrage automatique",
     "volumeKeysAction": "Obturateur par boutons de volume",
     "language": "Langue",
     "chooseLanguage": "Choisissez la langue",

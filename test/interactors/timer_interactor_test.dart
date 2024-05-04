@@ -60,4 +60,15 @@ void main() {
       });
     },
   );
+
+  group(
+    'AutostartTimer',
+    () {
+      test('isAutostartTimerEnabled', () {
+        when(() => mockUserPreferencesService.autostartTimer).thenReturn(true);
+        expect(interactor.isAutostartTimerEnabled, true);
+        verify(() => mockUserPreferencesService.autostartTimer).called(1);
+      });
+    },
+  );
 }

@@ -72,6 +72,7 @@
     "general": "Общие",
     "keepScreenOn": "Запрет блокировки",
     "haptics": "Вибрация",
+    "autostartTimer": "Автозапуск таймера",
     "volumeKeysAction": "Затвор по кнопкам громкости",
     "language": "Язык",
     "chooseLanguage": "Выберите язык",

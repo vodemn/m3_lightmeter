@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
+import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
@@ -82,7 +83,9 @@ void main() {
   }
 
   setUpAll(() {
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({
+      UserPreferencesService.autostartTimerKey: false,
+    });
   });
 
   testGoldens(
