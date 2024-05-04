@@ -30,7 +30,7 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
     colorScheme: scheme,
     appBarTheme: AppBarTheme(
       elevation: 4,
-      color: scheme.background,
+      color: scheme.surface,
       surfaceTintColor: scheme.surfaceTint,
     ),
     cardTheme: CardTheme(
@@ -58,7 +58,7 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
       iconColor: scheme.onSurface,
       textColor: scheme.onSurface,
     ),
-    scaffoldBackgroundColor: scheme.background,
+    scaffoldBackgroundColor: scheme.surface,
   );
   return theme.copyWith(
     listTileTheme: ListTileThemeData(
