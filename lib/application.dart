@@ -39,11 +39,11 @@ class Application extends StatelessWidget {
           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           child: child!,
         ),
-        initialRoute: "timer",
+        initialRoute: "metering",
         routes: {
-          "metering": (context) => const MeteringFlow(),
-          "settings": (context) => const SettingsFlow(),
-          "timer": (context) => const TimerFlow(),
+          "metering": (_) => const MeteringFlow(),
+          "settings": (_) => const SettingsFlow(),
+          "timer": (context) => TimerFlow(args: ModalRoute.of(context)!.settings.arguments! as TimerFlowArgs),
         },
       ),
     );

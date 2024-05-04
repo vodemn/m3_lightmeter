@@ -5,13 +5,26 @@ import 'package:lightmeter/interactors/timer_interactor.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/screens/timer/bloc_timer.dart';
 import 'package:lightmeter/screens/timer/screen_timer.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+
+class TimerFlowArgs {
+  final ExposurePair exposurePair;
+  final IsoValue isoValue;
+  final NdValue ndValue;
+
+  const TimerFlowArgs({
+    required this.exposurePair,
+    required this.isoValue,
+    required this.ndValue,
+  });
+}
 
 class TimerFlow extends StatelessWidget {
-  final ExposurePair exposurePair;
+  final TimerFlowArgs args;
   late final _duration =
-      Duration(milliseconds: (exposurePair.shutterSpeed.value * Duration.millisecondsPerSecond).toInt());
+      Duration(milliseconds: (args.exposurePair.shutterSpeed.value * Duration.millisecondsPerSecond).toInt());
 
-  TimerFlow({required this.exposurePair, super.key});
+  TimerFlow({required this.args, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +39,9 @@ class TimerFlow extends StatelessWidget {
           _duration,
         ),
         child: TimerScreen(
-          exposurePair: exposurePair,
+          exposurePair: args.exposurePair,
+          isoValue: args.isoValue,
+          ndValue: args.ndValue,
           duration: _duration,
         ),
       ),

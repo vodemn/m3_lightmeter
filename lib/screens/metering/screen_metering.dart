@@ -14,6 +14,7 @@ import 'package:lightmeter/screens/metering/components/light_sensor_container/pr
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:lightmeter/screens/metering/utils/listener_equipment_profiles.dart';
+import 'package:lightmeter/screens/timer/flow_timer.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreen extends StatelessWidget {
@@ -34,7 +35,15 @@ class MeteringScreen extends StatelessWidget {
                   nd: state.nd,
                   onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
                   onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
-                  onExposurePairTap: (value) => pushNamed(context, 'timer', arguments: value),
+                  onExposurePairTap: (value) => pushNamed(
+                    context,
+                    'timer',
+                    arguments: TimerFlowArgs(
+                      exposurePair: value,
+                      isoValue: state.iso,
+                      ndValue: state.nd,
+                    ),
+                  ),
                 ),
               ),
             ),

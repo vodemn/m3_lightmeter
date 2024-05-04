@@ -126,9 +126,13 @@ class _MockTimerFlow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GoldenTestApplicationMock(
       child: TimerFlow(
-        exposurePair: ExposurePair(
-          ApertureValue.values.first,
-          shutterSpeedValue,
+        args: TimerFlowArgs(
+          exposurePair: ExposurePair(
+            ApertureValue.values.first,
+            shutterSpeedValue,
+          ),
+          isoValue: const IsoValue(100, StopType.full),
+          ndValue: const NdValue(0),
         ),
       ),
     );

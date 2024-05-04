@@ -10,13 +10,18 @@ import 'package:lightmeter/screens/timer/components/text/widget_text_timer.dart'
 import 'package:lightmeter/screens/timer/components/timeline/widget_timeline_timer.dart';
 import 'package:lightmeter/screens/timer/event_timer.dart';
 import 'package:lightmeter/screens/timer/state_timer.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class TimerScreen extends StatefulWidget {
   final ExposurePair exposurePair;
+  final IsoValue isoValue;
+  final NdValue ndValue;
   final Duration duration;
 
   const TimerScreen({
     required this.exposurePair,
+    required this.isoValue,
+    required this.ndValue,
     required this.duration,
     super.key,
   });
@@ -65,7 +70,11 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TimerMeteringConfig(exposurePair: widget.exposurePair),
+              TimerMeteringConfig(
+                exposurePair: widget.exposurePair,
+                isoValue: widget.isoValue,
+                ndValue: widget.ndValue,
+              ),
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.all(Dimens.paddingL),
