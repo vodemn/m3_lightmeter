@@ -14,15 +14,15 @@ void main() {
   setUpAll(() {
     timerInteractor = _MockTimerInteractor();
     when(() => timerInteractor.isAutostartTimerEnabled).thenReturn(true);
-    when(timerInteractor.quickVibration).thenAnswer((_) async {});
-    when(timerInteractor.responseVibration).thenAnswer((_) async {});
+    when(timerInteractor.startVibration).thenAnswer((_) async {});
+    when(timerInteractor.endVibration).thenAnswer((_) async {});
   });
 
   blocTest<TimerBloc, TimerState>(
     'Autostart',
     build: () => TimerBloc(timerInteractor, const Duration(seconds: 1)),
     verify: (_) {
-      verify(() => timerInteractor.quickVibration()).called(1);
+      verify(() => timerInteractor.startVibration()).called(1);
     },
     expect: () => [
       isA<TimerResumedState>(),
@@ -41,8 +41,8 @@ void main() {
       bloc.add(const ResetTimerEvent());
     },
     verify: (_) {
-      verify(() => timerInteractor.quickVibration()).called(1);
-      verify(() => timerInteractor.responseVibration()).called(1);
+      verify(() => timerInteractor.startVibration()).called(1);
+      verify(() => timerInteractor.endVibration()).called(1);
     },
     expect: () => [
       isA<TimerResumedState>(),
@@ -64,8 +64,8 @@ void main() {
       bloc.add(const TimerEndedEvent());
     },
     verify: (_) {
-      verify(() => timerInteractor.quickVibration()).called(3);
-      verify(() => timerInteractor.responseVibration()).called(1);
+      verify(() => timerInteractor.startVibration()).called(3);
+      verify(() => timerInteractor.endVibration()).called(1);
     },
     expect: () => [
       isA<TimerResumedState>(),

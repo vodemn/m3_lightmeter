@@ -19,19 +19,19 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   Future<void> _onStartTimer(StartTimerEvent _, Emitter emit) async {
-    _timerInteractor.quickVibration();
+    _timerInteractor.startVibration();
     emit(const TimerResumedState());
   }
 
   Future<void> _onTimerEnded(TimerEndedEvent event, Emitter emit) async {
     if (state is! TimerResetState) {
-      _timerInteractor.responseVibration();
+      _timerInteractor.endVibration();
       emit(const TimerStoppedState());
     }
   }
 
   Future<void> _onStopTimer(StopTimerEvent _, Emitter emit) async {
-    _timerInteractor.quickVibration();
+    _timerInteractor.startVibration();
     emit(const TimerStoppedState());
   }
 

@@ -11,13 +11,13 @@ class TimerInteractor {
   );
 
   /// Executes vibration if haptics are enabled in settings
-  Future<void> quickVibration() async {
+  Future<void> startVibration() async {
     if (_userPreferencesService.haptics) await _hapticsService.quickVibration();
   }
 
   /// Executes vibration if haptics are enabled in settings
-  Future<void> responseVibration() async {
-    if (_userPreferencesService.haptics) await _hapticsService.responseVibration();
+  Future<void> endVibration() async {
+    if (_userPreferencesService.haptics) await _hapticsService.errorVibration();
   }
 
   bool get isAutostartTimerEnabled => _userPreferencesService.autostartTimer;

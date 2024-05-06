@@ -27,36 +27,36 @@ void main() {
   group(
     'Haptics',
     () {
-      test('quickVibration() - true', () async {
+      test('startVibration() - true', () async {
         when(() => mockUserPreferencesService.haptics).thenReturn(true);
         when(() => mockHapticsService.quickVibration()).thenAnswer((_) async {});
-        interactor.quickVibration();
+        interactor.startVibration();
         verify(() => mockUserPreferencesService.haptics).called(1);
         verify(() => mockHapticsService.quickVibration()).called(1);
       });
 
-      test('quickVibration() - false', () async {
+      test('startVibration() - false', () async {
         when(() => mockUserPreferencesService.haptics).thenReturn(false);
         when(() => mockHapticsService.quickVibration()).thenAnswer((_) async {});
-        interactor.quickVibration();
+        interactor.startVibration();
         verify(() => mockUserPreferencesService.haptics).called(1);
         verifyNever(() => mockHapticsService.quickVibration());
       });
 
-      test('responseVibration() - true', () async {
+      test('endVibration() - true', () async {
         when(() => mockUserPreferencesService.haptics).thenReturn(true);
-        when(() => mockHapticsService.responseVibration()).thenAnswer((_) async {});
-        interactor.responseVibration();
+        when(() => mockHapticsService.errorVibration()).thenAnswer((_) async {});
+        interactor.endVibration();
         verify(() => mockUserPreferencesService.haptics).called(1);
-        verify(() => mockHapticsService.responseVibration()).called(1);
+        verify(() => mockHapticsService.errorVibration()).called(1);
       });
 
-      test('responseVibration() - false', () async {
+      test('endVibration() - false', () async {
         when(() => mockUserPreferencesService.haptics).thenReturn(false);
-        when(() => mockHapticsService.responseVibration()).thenAnswer((_) async {});
-        interactor.responseVibration();
+        when(() => mockHapticsService.errorVibration()).thenAnswer((_) async {});
+        interactor.endVibration();
         verify(() => mockUserPreferencesService.haptics).called(1);
-        verifyNever(() => mockHapticsService.responseVibration());
+        verifyNever(() => mockHapticsService.errorVibration());
       });
     },
   );
