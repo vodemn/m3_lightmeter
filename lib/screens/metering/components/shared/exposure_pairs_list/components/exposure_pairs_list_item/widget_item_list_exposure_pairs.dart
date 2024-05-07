@@ -44,9 +44,8 @@ class ExposurePairsListItem<T extends PhotographyStopValue> extends StatelessWid
       case StopType.full:
         return Theme.of(context).textTheme.bodyLarge!;
       case StopType.half:
-        return Theme.of(context).textTheme.bodyMedium!;
       case StopType.third:
-        return Theme.of(context).textTheme.bodySmall!;
+        return Theme.of(context).textTheme.bodyMedium!;
     }
   }
 
@@ -55,7 +54,6 @@ class ExposurePairsListItem<T extends PhotographyStopValue> extends StatelessWid
       case StopType.full:
         return Dimens.grid16;
       case StopType.half:
-        return Dimens.grid8;
       case StopType.third:
         return Dimens.grid8;
     }
