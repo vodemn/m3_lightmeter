@@ -66,7 +66,6 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
       listenWhen: (previous, current) => previous.runtimeType != current.runtimeType,
       listener: (context, state) => _updateAnimations(state),
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
