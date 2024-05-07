@@ -107,7 +107,7 @@ class _Ruler extends StatelessWidget {
                         ),
                       const SizedBox(width: Dimens.grid4),
                       ColoredBox(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.primaryContainer,
                         child: SizedBox(
                           height: 1,
                           width: isMainTick ? Dimens.grid8 : Dimens.grid4,
