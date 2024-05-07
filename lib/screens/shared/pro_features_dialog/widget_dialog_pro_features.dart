@@ -24,7 +24,7 @@ class ProFeaturesDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TransparentDialog(
-      icon: Icons.star,
+      icon: Icons.star_outlined,
       title: S.of(context).proFeatures,
       scrollableContent: false,
       content: Flexible(

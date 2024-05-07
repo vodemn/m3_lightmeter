@@ -11,7 +11,7 @@ class VolumeActionsListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<VolumeActionsListTileBloc, bool>(
       builder: (context, state) => SwitchListTile(
-        secondary: const Icon(Icons.volume_up),
+        secondary: const Icon(Icons.volume_up_outlined),
         title: Text(S.of(context).volumeKeysAction),
         value: state,
         onChanged: context.read<VolumeActionsListTileBloc>().onVolumeActionChanged,

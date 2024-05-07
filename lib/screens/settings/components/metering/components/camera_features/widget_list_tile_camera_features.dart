@@ -11,13 +11,13 @@ class CameraFeaturesListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IAPListTile(
-      leading: const Icon(Icons.camera_alt),
+      leading: const Icon(Icons.camera_alt_outlined),
       title: Text(S.of(context).cameraFeatures),
       onTap: () {
         showDialog(
           context: context,
           builder: (_) => DialogSwitch<CameraFeature>(
-            icon: Icons.layers_outlined,
+            icon: Icons.camera_alt_outlined,
             title: S.of(context).cameraFeatures,
             values: UserPreferencesProvider.cameraConfigOf(context),
             titleAdapter: (context, feature) {

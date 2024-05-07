@@ -9,7 +9,7 @@ class ReportIssueListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.bug_report),
+      leading: const Icon(Icons.bug_report_outlined),
       title: Text(S.of(context).reportIssue),
       onTap: () {
         launchUrl(

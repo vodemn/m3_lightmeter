@@ -32,8 +32,8 @@ class MeteringBottomControls extends StatelessWidget {
               onPressed: onSwitchEvSourceType,
               icon: Icon(
                 UserPreferencesProvider.evSourceTypeOf(context) != EvSourceType.camera
-                    ? Icons.camera_rear
-                    : Icons.wb_incandescent,
+                    ? Icons.camera_rear_outlined
+                    : Icons.wb_incandescent_outlined,
               ),
               tooltip: UserPreferencesProvider.evSourceTypeOf(context) != EvSourceType.camera
                   ? S.of(context).tooltipUseCamera
@@ -48,7 +48,7 @@ class MeteringBottomControls extends StatelessWidget {
       ),
       right: IconButton.filledTonal(
         onPressed: onSettings,
-        icon: const Icon(Icons.settings),
+        icon: const Icon(Icons.settings_outlined),
         tooltip: S.of(context).tooltipOpenSettings,
       ),
     );

@@ -53,7 +53,7 @@ class RulerSlider extends StatelessWidget {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.sync),
+          icon: const Icon(Icons.sync_outlined),
           onPressed: value != defaultValue ? () => onChanged(defaultValue) : null,
           tooltip: S.of(context).tooltipResetToZero,
         ),
