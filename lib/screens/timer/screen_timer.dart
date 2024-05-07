@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
 import 'package:lightmeter/screens/shared/bottom_controls_bar/widget_bottom_controls_bar.dart';
@@ -94,7 +95,7 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
               ),
               const Spacer(),
               BottomControlsBar(
-                left: IconButton(
+                left: IconButton.filledTonal(
                   onPressed: () {
                     context.read<TimerBloc>().add(const ResetTimerEvent());
                   },
@@ -117,7 +118,11 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
                     ),
                   ),
                 ),
-                right: const CloseButton(),
+                right: IconButton.filledTonal(
+                  onPressed: Navigator.of(context).pop,
+                  icon: const Icon(Icons.close),
+                  tooltip: S.of(context).tooltipClose,
+                ),
               ),
             ],
           ),

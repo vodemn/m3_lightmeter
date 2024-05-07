@@ -28,7 +28,7 @@ class MeteringBottomControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomControlsBar(
       left: onSwitchEvSourceType != null
-          ? IconButton(
+          ? IconButton.filledTonal(
               onPressed: onSwitchEvSourceType,
               icon: Icon(
                 UserPreferencesProvider.evSourceTypeOf(context) != EvSourceType.camera
@@ -46,7 +46,7 @@ class MeteringBottomControls extends StatelessWidget {
         onPressed: onMeasure,
         child: ev != null ? _EvValueText(ev: ev!, ev100: ev100!) : null,
       ),
-      right: IconButton(
+      right: IconButton.filledTonal(
         onPressed: onSettings,
         icon: const Icon(Icons.settings),
         tooltip: S.of(context).tooltipOpenSettings,
