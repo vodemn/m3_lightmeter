@@ -29,6 +29,7 @@ class CameraContainer extends StatelessWidget {
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
   final List<ExposurePair> exposurePairs;
+  final ValueChanged<ExposurePair> onExposurePairTap;
 
   const CameraContainer({
     required this.fastest,
@@ -38,6 +39,7 @@ class CameraContainer extends StatelessWidget {
     required this.onIsoChanged,
     required this.onNdChanged,
     required this.exposurePairs,
+    required this.onExposurePairTap,
     super.key,
   });
 
@@ -81,7 +83,10 @@ class CameraContainer extends StatelessWidget {
                       Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(top: topBarOverflow >= 0 ? topBarOverflow : 0),
-                          child: ExposurePairsList(exposurePairs),
+                          child: ExposurePairsList(
+                            exposurePairs,
+                            onExposurePairTap: onExposurePairTap,
+                          ),
                         ),
                       ),
                       const SizedBox(width: Dimens.grid8),

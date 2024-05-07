@@ -5,7 +5,6 @@ import 'package:lightmeter/application_wrapper.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
@@ -13,6 +12,7 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import '../mocks/iap_products_mock.dart';
 import '../mocks/paid_features_mock.dart';
+import 'finder_actions.dart';
 import 'platform_channel_mock.dart';
 
 const mockPhotoEv100 = 8.3;
@@ -46,16 +46,16 @@ extension WidgetTesterCommonActions on WidgetTester {
   }
 
   Future<void> takePhoto() async {
-    await tap(find.byType(MeteringMeasureButton));
+    await tap(find.measureButton());
     await pump(const Duration(seconds: 2)); // wait for circular progress indicator
     await pump(const Duration(seconds: 1)); // wait for circular progress indicator
     await pumpAndSettle();
   }
 
   Future<void> toggleIncidentMetering(double ev) async {
-    await tap(find.byType(MeteringMeasureButton));
+    await tap(find.measureButton());
     await sendMockIncidentEv(ev);
-    await tap(find.byType(MeteringMeasureButton));
+    await tap(find.measureButton());
     await pumpAndSettle();
   }
 

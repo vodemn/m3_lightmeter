@@ -72,6 +72,7 @@
     "general": "Général",
     "keepScreenOn": "Garder l'écran allumé",
     "haptics": "Haptiques",
+    "autostartTimer": "Minuterie de démarrage automatique",
     "volumeKeysAction": "Obturateur par boutons de volume",
     "language": "Langue",
     "chooseLanguage": "Choisissez la langue",
@@ -117,5 +118,6 @@
     "tooltipResetToZero": "Remise à zéro",
     "tooltipUseLightSensor": "Utiliser un capteur de lumière",
     "tooltipUseCamera": "Utiliser la caméra",
-    "tooltipOpenSettings": "Ouvrir les paramètres"
+    "tooltipOpenSettings": "Ouvrir les paramètres",
+    "exposurePair": "Paire d'exposition"
 }

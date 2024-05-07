@@ -15,6 +15,7 @@ class LightSensorContainerProvider extends StatelessWidget {
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
   final List<ExposurePair> exposurePairs;
+  final ValueChanged<ExposurePair> onExposurePairTap;
 
   const LightSensorContainerProvider({
     required this.fastest,
@@ -24,6 +25,7 @@ class LightSensorContainerProvider extends StatelessWidget {
     required this.onIsoChanged,
     required this.onNdChanged,
     required this.exposurePairs,
+    required this.onExposurePairTap,
     super.key,
   });
 
@@ -43,6 +45,7 @@ class LightSensorContainerProvider extends StatelessWidget {
         onIsoChanged: onIsoChanged,
         onNdChanged: onNdChanged,
         exposurePairs: exposurePairs,
+        onExposurePairTap: onExposurePairTap,
       ),
     );
   }

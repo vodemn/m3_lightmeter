@@ -8,12 +8,13 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/provider_bottom_controls.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/widget_bottom_controls.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/provider_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/light_sensor_container/provider_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:lightmeter/screens/metering/utils/listener_equipment_profiles.dart';
+import 'package:lightmeter/screens/timer/flow_timer.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreen extends StatelessWidget {
@@ -34,11 +35,20 @@ class MeteringScreen extends StatelessWidget {
                   nd: state.nd,
                   onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
                   onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
+                  onExposurePairTap: (value) => pushNamed(
+                    context,
+                    'timer',
+                    arguments: TimerFlowArgs(
+                      exposurePair: value,
+                      isoValue: state.iso,
+                      ndValue: state.nd,
+                    ),
+                  ),
                 ),
               ),
             ),
             BlocBuilder<MeteringBloc, MeteringState>(
-              builder: (context, state) => MeteringBottomControlsProvider(
+              builder: (context, state) => MeteringBottomControls(
                 ev: state is MeteringDataState ? state.ev : null,
                 ev100: state is MeteringDataState ? state.ev100 : null,
                 isMetering: state.isMetering,
@@ -46,18 +56,20 @@ class MeteringScreen extends StatelessWidget {
                     ? UserPreferencesProvider.of(context).toggleEvSourceType
                     : null,
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
-                onSettings: () {
-                  context.read<MeteringBloc>().add(const SettingsOpenedEvent());
-                  Navigator.pushNamed(context, 'settings').then((value) {
-                    context.read<MeteringBloc>().add(const SettingsClosedEvent());
-                  });
-                },
+                onSettings: () => pushNamed(context, 'settings'),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void pushNamed(BuildContext context, String routeName, {Object? arguments}) {
+    context.read<MeteringBloc>().add(const ScreenOnTopOpenedEvent());
+    Navigator.pushNamed(context, routeName, arguments: arguments).then((_) {
+      context.read<MeteringBloc>().add(const ScreenOnTopClosedEvent());
+    });
   }
 }
 
@@ -83,6 +95,7 @@ class MeteringContainerBuidler extends StatelessWidget {
   final NdValue nd;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
+  final ValueChanged<ExposurePair> onExposurePairTap;
 
   const MeteringContainerBuidler({
     required this.ev,
@@ -90,6 +103,7 @@ class MeteringContainerBuidler extends StatelessWidget {
     required this.nd,
     required this.onIsoChanged,
     required this.onNdChanged,
+    required this.onExposurePairTap,
   });
 
   @override
@@ -113,6 +127,7 @@ class MeteringContainerBuidler extends StatelessWidget {
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,
+            onExposurePairTap: onExposurePairTap,
           )
         : LightSensorContainerProvider(
             fastest: fastest,
@@ -122,6 +137,7 @@ class MeteringContainerBuidler extends StatelessWidget {
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,
+            onExposurePairTap: onExposurePairTap,
           );
   }
 

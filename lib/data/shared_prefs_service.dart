@@ -24,6 +24,7 @@ class UserPreferencesService {
 
   static const caffeineKey = "caffeine";
   static const hapticsKey = "haptics";
+  static const autostartTimerKey = "autostartTimer";
   static const volumeActionKey = "volumeAction";
   static const localeKey = "locale";
 
@@ -126,6 +127,9 @@ class UserPreferencesService {
 
   bool get haptics => _sharedPreferences.getBool(hapticsKey) ?? true;
   set haptics(bool value) => _sharedPreferences.setBool(hapticsKey, value);
+
+  bool get autostartTimer => _sharedPreferences.getBool(autostartTimerKey) ?? true;
+  set autostartTimer(bool value) => _sharedPreferences.setBool(autostartTimerKey, value);
 
   VolumeAction get volumeAction => VolumeAction.values.firstWhere(
         (e) => e.toString() == _sharedPreferences.getString(volumeActionKey),

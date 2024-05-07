@@ -21,8 +21,7 @@ class SettingsInteractor {
   void setCameraEvCalibration(double value) => _userPreferencesService.cameraEvCalibration = value;
 
   double get lightSensorEvCalibration => _userPreferencesService.lightSensorEvCalibration;
-  void setLightSensorEvCalibration(double value) =>
-      _userPreferencesService.lightSensorEvCalibration = value;
+  void setLightSensorEvCalibration(double value) => _userPreferencesService.lightSensorEvCalibration = value;
 
   bool get isCaffeineEnabled => _userPreferencesService.caffeine;
   Future<void> enableCaffeine(bool enable) async {
@@ -31,12 +30,15 @@ class SettingsInteractor {
     });
   }
 
+  bool get isAutostartTimerEnabled => _userPreferencesService.autostartTimer;
+  void enableAutostartTimer(bool enable) => _userPreferencesService.autostartTimer = enable;
+
   Future<void> disableVolumeHandling() async {
     await _volumeEventsService.setVolumeHandling(false);
   }
+
   Future<void> restoreVolumeHandling() async {
-    await _volumeEventsService
-        .setVolumeHandling(_userPreferencesService.volumeAction != VolumeAction.none);
+    await _volumeEventsService.setVolumeHandling(_userPreferencesService.volumeAction != VolumeAction.none);
   }
 
   VolumeAction get volumeAction => _userPreferencesService.volumeAction;

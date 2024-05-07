@@ -6,10 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
-import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart'
-    as communication_events;
-import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart'
-    as communication_states;
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_events;
+import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:lightmeter/screens/metering/utils/notifier_volume_keys.dart';
@@ -45,8 +43,8 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     on<MeasureEvent>(_onMeasure, transformer: droppable());
     on<MeasuredEvent>(_onMeasured);
     on<MeasureErrorEvent>(_onMeasureError);
-    on<SettingsOpenedEvent>(_onSettingsOpened);
-    on<SettingsClosedEvent>(_onSettingsClosed);
+    on<ScreenOnTopOpenedEvent>(_onSettingsOpened);
+    on<ScreenOnTopClosedEvent>(_onSettingsClosed);
   }
 
   @override
@@ -191,11 +189,11 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     }
   }
 
-  void _onSettingsOpened(SettingsOpenedEvent _, Emitter __) {
-    _communicationBloc.add(const communication_events.SettingsOpenedEvent());
+  void _onSettingsOpened(ScreenOnTopOpenedEvent _, Emitter __) {
+    _communicationBloc.add(const communication_events.ScreenOnTopOpenedEvent());
   }
 
-  void _onSettingsClosed(SettingsClosedEvent _, Emitter __) {
-    _communicationBloc.add(const communication_events.SettingsClosedEvent());
+  void _onSettingsClosed(ScreenOnTopClosedEvent _, Emitter __) {
+    _communicationBloc.add(const communication_events.ScreenOnTopClosedEvent());
   }
 }

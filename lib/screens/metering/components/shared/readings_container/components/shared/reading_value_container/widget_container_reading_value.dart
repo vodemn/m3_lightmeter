@@ -14,11 +14,13 @@ class ReadingValue {
 
 class ReadingValueContainer extends StatelessWidget implements AnimatedDialogClosedChild {
   late final List<Widget> _items;
+  final bool locked;
   final Color? color;
   final Color? textColor;
 
   ReadingValueContainer({
     required List<ReadingValue> values,
+    this.locked = false,
     this.color,
     this.textColor,
     super.key,
@@ -34,6 +36,7 @@ class ReadingValueContainer extends StatelessWidget implements AnimatedDialogClo
 
   ReadingValueContainer.singleValue({
     required ReadingValue value,
+    this.locked = false,
     this.color,
     this.textColor,
     super.key,
@@ -50,10 +53,24 @@ class ReadingValueContainer extends StatelessWidget implements AnimatedDialogClo
         color: backgroundColor(context),
         child: Padding(
           padding: const EdgeInsets.all(Dimens.paddingM),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: _items,
+          child: Stack(
+            children: [
+              if (locked)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Icon(
+                    Icons.lock,
+                    size: Theme.of(context).textTheme.labelMedium!.fontSize,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: _items,
+              ),
+            ],
           ),
         ),
       ),
