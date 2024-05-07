@@ -60,7 +60,7 @@ class ReadingValueContainer extends StatelessWidget implements AnimatedDialogClo
                   top: 0,
                   right: 0,
                   child: Icon(
-                    Icons.lock_outline,
+                    Icons.lock,
                     size: Theme.of(context).textTheme.labelMedium!.fontSize,
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
