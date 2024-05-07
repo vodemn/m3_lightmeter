@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/res/theme.dart';
 
 class BottomControlsBar extends StatelessWidget {
   final Widget center;
@@ -33,7 +34,7 @@ class BottomControlsBar extends StatelessWidget {
           topRight: Radius.circular(Dimens.borderRadiusL),
         ),
         child: ColoredBox(
-          color: Theme.of(context).colorScheme.surface,
+          color: Theme.of(context).colorScheme.surfaceElevated1,
           child: SafeArea(
             top: false,
             child: Padding(

@@ -29,15 +29,16 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
     primaryColor: primaryColor,
     colorScheme: scheme,
     appBarTheme: AppBarTheme(
-      elevation: 4,
-      color: scheme.background,
+      elevation: Dimens.elevationLevel0,
+      scrolledUnderElevation: Dimens.elevationLevel2,
+      color: scheme.surface,
       foregroundColor: scheme.onBackground,
       surfaceTintColor: scheme.surfaceTint,
     ),
     cardTheme: CardTheme(
       clipBehavior: Clip.antiAlias,
       color: scheme.surface,
-      elevation: 4,
+      elevation: Dimens.elevationLevel1,
       margin: EdgeInsets.zero,
       shadowColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimens.borderRadiusL)),
@@ -47,7 +48,7 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
     dialogTheme: DialogTheme(
       backgroundColor: scheme.surface,
       surfaceTintColor: scheme.surfaceTint,
-      elevation: 6,
+      elevation: Dimens.elevationLevel3,
     ),
     dividerColor: scheme.outlineVariant,
     dividerTheme: DividerThemeData(
@@ -59,7 +60,7 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
       iconColor: scheme.onSurface,
       textColor: scheme.onSurface,
     ),
-    scaffoldBackgroundColor: scheme.background,
+    scaffoldBackgroundColor: scheme.surface,
   );
   return theme.copyWith(
     listTileTheme: ListTileThemeData(
@@ -101,4 +102,14 @@ ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
     outline: Color(scheme.outline),
     outlineVariant: Color(scheme.outlineVariant),
   );
+}
+
+extension ElevatedSurfaceTheme on ColorScheme {
+  Color _surfaceWithElevation(double elevation) {
+    return ElevationOverlay.applySurfaceTint(surface, surfaceTint, elevation);
+  }
+
+  Color get surfaceElevated1 => _surfaceWithElevation(Dimens.elevationLevel1);
+  Color get surfaceElevated2 => _surfaceWithElevation(Dimens.elevationLevel2);
+  Color get surfaceElevated3 => _surfaceWithElevation(Dimens.elevationLevel3);
 }
