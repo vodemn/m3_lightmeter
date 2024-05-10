@@ -51,6 +51,7 @@ dev_dependencies:
     sdk: flutter
   golden_toolkit: 0.15.0
   google_fonts: 3.0.1
+  image: 4.1.7
   integration_test:
     sdk: flutter
   lint: 2.1.2

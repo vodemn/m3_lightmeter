@@ -138,7 +138,9 @@ final String _platformFolder = Platform.isAndroid ? 'android' : 'ios';
 
 extension on WidgetTester {
   Future<void> takeScreenshot(IntegrationTestWidgetsFlutterBinding binding, String name) async {
-    await binding.takeScreenshot("$_platformFolder/${const String.fromEnvironment('deviceName')}/$name");
+    await binding.takeScreenshot(
+      "$_platformFolder/${const String.fromEnvironment('deviceName').replaceAll(' ', '_').toLowerCase()}/$name",
+    );
     await pumpAndSettle();
   }
 }
