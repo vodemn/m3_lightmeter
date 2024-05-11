@@ -19,17 +19,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../integration_test/mocks/paid_features_mock.dart';
 import '../integration_test/utils/widget_tester_actions.dart';
+import 'screenshot_args.dart';
 
 //https://stackoverflow.com/a/67186625/13167574
 
 const _mockFilm = Film('Ilford HP5+', 400);
+final Color _lightThemeColor = primaryColorsList[5];
+final Color _darkThemeColor = primaryColorsList[3];
+final ThemeData _themeLight = themeFrom(_lightThemeColor, Brightness.light);
+final ThemeData _themeDark = themeFrom(_darkThemeColor, Brightness.dark);
 
 /// Just a screenshot generator. No expectations here.
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding();
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  final Color lightThemeColor = primaryColorsList[5];
-  final Color darkThemeColor = primaryColorsList[3];
 
   void mockSharedPrefs(ThemeType theme, Color color) {
     // ignore: invalid_use_of_visible_for_testing_member
@@ -70,7 +73,7 @@ void main() {
 
   /// Generates several screenshots with the light theme
   testWidgets('Generate light theme screenshots', (tester) async {
-    mockSharedPrefs(ThemeType.light, lightThemeColor);
+    mockSharedPrefs(ThemeType.light, _lightThemeColor);
     await tester.pumpApplication(
       availableFilms: [_mockFilm],
       filmsInUse: [_mockFilm],
@@ -114,7 +117,7 @@ void main() {
   testWidgets(
     'Generate dark theme screenshots',
     (tester) async {
-      mockSharedPrefs(ThemeType.dark, darkThemeColor);
+      mockSharedPrefs(ThemeType.dark, _darkThemeColor);
       await tester.pumpApplication(
         availableFilms: [_mockFilm],
         filmsInUse: [_mockFilm],
@@ -138,8 +141,21 @@ final String _platformFolder = Platform.isAndroid ? 'android' : 'ios';
 
 extension on WidgetTester {
   Future<void> takeScreenshot(IntegrationTestWidgetsFlutterBinding binding, String name) async {
+    final bool isDark = name.contains('dark-');
+    final Color backgroundColor = (isDark ? _themeDark : _themeLight).colorScheme.surface;
     await binding.takeScreenshot(
-      "$_platformFolder/${const String.fromEnvironment('deviceName').replaceAll(' ', '_').toLowerCase()}/$name",
+      ScreenshotArgs(
+        name: name,
+        deviceName: const String.fromEnvironment('deviceName').replaceAll(' ', '_').toLowerCase(),
+        platformFolder: _platformFolder,
+        backgroundColor: (
+          r: backgroundColor.red,
+          g: backgroundColor.green,
+          b: backgroundColor.blue,
+          a: backgroundColor.alpha,
+        ),
+        isDark: isDark,
+      ).toString(),
     );
     await pumpAndSettle();
   }
