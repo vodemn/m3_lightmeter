@@ -102,4 +102,41 @@ extension ScreenshotImage on Image {
       backgroundColor: getPixel(0, 0),
     );
   }
+
+  Image addText(ScreenshotLayout layout, String title, String subtitle) {
+    final titleFont = BitmapFont.fromZip(File(layout.titleFontPath).readAsBytesSync());
+    final subtitleFont = BitmapFont.fromZip(File(layout.subtitleFontPath).readAsBytesSync());
+    final textImage = fill(
+      Image(
+        height: titleFont.lineHeight + 36 + subtitleFont.lineHeight * 2,
+        width: layout.size.width - (layout.contentPadding.left + layout.contentPadding.right),
+      ),
+      color: getPixel(0, 0),
+    );
+
+    drawString(
+      textImage,
+      title,
+      font: titleFont,
+      y: 0,
+    );
+
+    int subtitleDy = titleFont.lineHeight + 36;
+    subtitle.split('\n').forEach((line) {
+      drawString(
+        textImage,
+        line,
+        font: subtitleFont,
+        y: subtitleDy,
+      );
+      subtitleDy += subtitleFont.lineHeight;
+    });
+
+    return compositeImage(
+      this,
+      textImage,
+      dstX: layout.contentPadding.left,
+      dstY: layout.contentPadding.top,
+    );
+  }
 }
