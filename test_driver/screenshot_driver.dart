@@ -6,6 +6,7 @@ import 'package:integration_test/integration_test_driver_extended.dart';
 
 import '../screenshots/devices_config.dart';
 import '../screenshots/screenshot_args.dart';
+import '../screenshots/screenshot_config.dart';
 import 'utils/grant_camera_permission.dart';
 
 Future<void> main() async {
@@ -79,5 +80,26 @@ extension ScreenshotImage on Image {
     );
 
     return compositeImage(expandedScreenshot, frame);
+  }
+
+  Image applyLayout(ScreenshotLayout layout) {
+    final scaledScreenshot = copyResize(
+      this,
+      width: layout.size.width - (layout.contentPadding.left + layout.contentPadding.right),
+    );
+
+    return copyExpandCanvas(
+      copyExpandCanvas(
+        scaledScreenshot,
+        newWidth: scaledScreenshot.width + layout.contentPadding.right,
+        newHeight: scaledScreenshot.height + layout.contentPadding.bottom,
+        position: ExpandCanvasPosition.topLeft,
+        backgroundColor: getPixel(0, 0),
+      ),
+      newWidth: layout.size.width,
+      newHeight: layout.size.height,
+      position: ExpandCanvasPosition.bottomRight,
+      backgroundColor: getPixel(0, 0),
+    );
   }
 }
