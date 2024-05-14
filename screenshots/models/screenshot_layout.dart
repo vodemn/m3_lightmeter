@@ -1,13 +1,13 @@
 enum ScreenshotLayout {
   iphone65inch(
     size: (width: 1242, height: 2688),
-    contentPadding: (left: 150, top: 192, right: 150, bottom: 192),
+    contentPadding: (left: 144, top: 184, right: 144, bottom: 184),
     titleFontPath: 'screenshots/assets/fonts/SF-Pro-Display-Bold.zip',
     subtitleFontPath: 'screenshots/assets/fonts/SF-Pro-Display-Regular.zip',
   ),
   iphone55inch(
     size: (width: 1242, height: 2208),
-    contentPadding: (left: 150, top: 192, right: 150, bottom: 192),
+    contentPadding: (left: 144, top: 144, right: 144, bottom: 144),
     titleFontPath: 'screenshots/assets/fonts/SF-Pro-Display-Bold.zip',
     subtitleFontPath: 'screenshots/assets/fonts/SF-Pro-Display-Regular.zip',
   );

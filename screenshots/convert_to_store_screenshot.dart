@@ -30,8 +30,7 @@ extension ScreenshotImage on Image {
             args.backgroundColor.a,
           ),
         )
-        ._applyLayout(layout)
-        ._addText(
+        ._applyLayout(
           layout,
           _configs[args.name]!.title,
           _configs[args.name]!.subtitle,
@@ -75,16 +74,20 @@ extension ScreenshotImage on Image {
     return compositeImage(expandedScreenshot, frame);
   }
 
-  Image _applyLayout(ScreenshotLayout layout) {
-    final scaledScreenshot = copyResize(
-      this,
-      width: layout.size.width - (layout.contentPadding.left + layout.contentPadding.right),
-    );
+  Image _applyLayout(ScreenshotLayout layout, String title, String subtitle, {required bool isDark}) {
+    final textImage = _drawTitles(layout, title, subtitle, isDark: isDark);
+    final maxFrameHeight =
+        layout.size.height - (layout.contentPadding.top + textImage.height + 84 + layout.contentPadding.bottom);
+    int maxFrameWidth = layout.size.width - (layout.contentPadding.left + layout.contentPadding.right);
+    if (maxFrameWidth * height / width > maxFrameHeight) {
+      maxFrameWidth = maxFrameHeight * width ~/ height;
+    }
+    final scaledScreenshot = copyResize(this, width: maxFrameWidth);
 
-    return copyExpandCanvas(
+    final draft = copyExpandCanvas(
       copyExpandCanvas(
         scaledScreenshot,
-        newWidth: scaledScreenshot.width + layout.contentPadding.right,
+        newWidth: scaledScreenshot.width + (layout.size.width - scaledScreenshot.width) ~/ 2,
         newHeight: scaledScreenshot.height + layout.contentPadding.bottom,
         position: ExpandCanvasPosition.topLeft,
         backgroundColor: getPixel(0, 0),
@@ -94,9 +97,16 @@ extension ScreenshotImage on Image {
       position: ExpandCanvasPosition.bottomRight,
       backgroundColor: getPixel(0, 0),
     );
+
+    return compositeImage(
+      draft,
+      textImage,
+      dstX: layout.contentPadding.left,
+      dstY: layout.contentPadding.top,
+    );
   }
 
-  Image _addText(ScreenshotLayout layout, String title, String subtitle, {required bool isDark}) {
+  Image _drawTitles(ScreenshotLayout layout, String title, String subtitle, {required bool isDark}) {
     final titleFont =
         BitmapFont.fromZip(File(isDark ? layout.titleFontDarkPath : layout.titleFontPath).readAsBytesSync());
     final subtitleFont =
@@ -127,11 +137,6 @@ extension ScreenshotImage on Image {
       subtitleDy += subtitleFont.lineHeight;
     });
 
-    return compositeImage(
-      this,
-      textImage,
-      dstX: layout.contentPadding.left,
-      dstY: layout.contentPadding.top,
-    );
+    return textImage;
   }
 }

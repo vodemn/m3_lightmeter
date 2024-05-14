@@ -13,7 +13,8 @@ Future<int> main(List<String> args) async {
   final parser = ArgParser()
     ..addFlag('verbose', abbr: 'v', help: 'Verbose output.')
     ..addOption('platform', abbr: 'p', help: 'Device platform.', mandatory: true)
-    ..addOption('device', abbr: 'd', help: 'device_snake_name', mandatory: true);
+    ..addOption('device', abbr: 'd', help: 'device_snake_name', mandatory: true)
+    ..addOption('layout', abbr: 'l', help: 'Device platform.', mandatory: true);
   final ArgResults argResults = parser.parse(args);
 
   if (argResults['verbose'] as bool) {
@@ -22,8 +23,10 @@ Future<int> main(List<String> args) async {
     Logger.root.level = Level.INFO;
   }
 
-  final device = argResults["device"] as String;
   final platform = argResults["platform"] as String;
+  final device = argResults["device"] as String;
+  final layout = ScreenshotLayout.values.firstWhere((e) => e.name == argResults["layout"] as String);
+
   Directory('screenshots/generated/raw/$platform/$device').listSync().forEach((filePath) async {
     final screenshotName = filePath.path.split('/').last.replaceAll('.png', '');
     final screenshotBytes = File(filePath.path).readAsBytesSync();
@@ -43,12 +46,13 @@ Future<int> main(List<String> args) async {
       isDark: filePath.path.contains('dark-'),
     );
 
-    final file = await File(filePath.path.replaceAll('/raw', '')).create(recursive: true);
+    final file =
+        await File('screenshots/generated/$platform/${layout.name}/$screenshotName.png').create(recursive: true);
     file.writeAsBytesSync(
       encodePng(
         screenshot.convertToStoreScreenshot(
           args: screenshotArgs,
-          layout: ScreenshotLayout.iphone65inch,
+          layout: layout,
         ),
       ),
     );
