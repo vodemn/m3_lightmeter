@@ -15,6 +15,7 @@ class ScreenshotArgs {
     required this.isDark,
   });
 
+  String toPathRaw() => 'screenshots/generated/raw/$platformFolder/$deviceName/$name.png';
   String toPath() => 'screenshots/generated/$platformFolder/$deviceName/$name.png';
 
   @override
