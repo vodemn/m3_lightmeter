@@ -19,7 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../integration_test/mocks/paid_features_mock.dart';
 import '../integration_test/utils/widget_tester_actions.dart';
-import 'screenshot_args.dart';
+import 'models/screenshot_args.dart';
 
 //https://stackoverflow.com/a/67186625/13167574
 
