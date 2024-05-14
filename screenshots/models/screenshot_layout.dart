@@ -17,6 +17,9 @@ enum ScreenshotLayout {
   final String titleFontPath;
   final String subtitleFontPath;
 
+  String get titleFontDarkPath => '${titleFontPath.split('.').first}-dark.zip';
+  String get subtitleFontDarkPath => '${subtitleFontPath.split('.').first}-dark.zip';
+
   const ScreenshotLayout({
     required this.size,
     required this.contentPadding,

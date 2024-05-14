@@ -17,7 +17,6 @@ extension ScreenshotImage on Image {
     if (_configs[args.name] == null) {
       return this;
     }
-    print(args.deviceName);
     return _addSystemOverlay(
       screenshotDevices[args.deviceName]!,
       isDark: args.isDark,
@@ -36,6 +35,7 @@ extension ScreenshotImage on Image {
           layout,
           _configs[args.name]!.title,
           _configs[args.name]!.subtitle,
+          isDark: args.isDark,
         );
   }
 
@@ -96,9 +96,11 @@ extension ScreenshotImage on Image {
     );
   }
 
-  Image _addText(ScreenshotLayout layout, String title, String subtitle) {
-    final titleFont = BitmapFont.fromZip(File(layout.titleFontPath).readAsBytesSync());
-    final subtitleFont = BitmapFont.fromZip(File(layout.subtitleFontPath).readAsBytesSync());
+  Image _addText(ScreenshotLayout layout, String title, String subtitle, {required bool isDark}) {
+    final titleFont =
+        BitmapFont.fromZip(File(isDark ? layout.titleFontDarkPath : layout.titleFontPath).readAsBytesSync());
+    final subtitleFont =
+        BitmapFont.fromZip(File(isDark ? layout.subtitleFontDarkPath : layout.subtitleFontPath).readAsBytesSync());
     final textImage = fill(
       Image(
         height: titleFont.lineHeight + 36 + subtitleFont.lineHeight * 2,
