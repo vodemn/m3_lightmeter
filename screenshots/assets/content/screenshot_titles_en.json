@@ -8,7 +8,7 @@
         {
             "screenshotName": "light_metering-iso-picker",
             "title": "Lots of ISO values",
-            "subtitle": "From 3 and up to 6400"
+            "subtitle": "from 3 and up to 6400"
         },
         {
             "screenshotName": "light_settings",
@@ -21,8 +21,13 @@
             "subtitle": "to match your\ncamera & lens setups"
         },
         {
+            "screenshotName": "light_equipment-profiles-iso-picker",
+            "title": "Fine-tune results",
+            "subtitle": "by selecting the values\nthat you use the most"
+        },
+        {
             "screenshotName": "dark_metering-reflected",
-            "title": "Matches your style",
+            "title": "Match your style",
             "subtitle": "with various theme types and colors"
         }
     ]

@@ -98,10 +98,6 @@ void main() {
     await tester.pumpAndSettle();
     await tester.takeScreenshotLight(binding, 'settings');
 
-    await tester.tapDescendantTextOf<SettingsScreen>(S.current.meteringScreenLayout);
-    await tester.takeScreenshotLight(binding, 'settings-metering-screen-layout');
-
-    await tester.tapCancelButton();
     await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
     await tester.pumpAndSettle();
     await tester.tapDescendantTextOf<EquipmentProfilesScreen>(mockEquipmentProfiles.first.name);
