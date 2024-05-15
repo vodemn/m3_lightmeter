@@ -15,14 +15,14 @@ class ScreenshotArgs {
     required this.platformFolder,
     required this.backgroundColor,
     required this.isDark,
-  }) : deviceName = deviceName.replaceAll(' ', _pathArgsDelimited).toLowerCase();
+  }) : deviceName = deviceName.replaceAll(' ', _pathArgsDelimited).replaceAll(RegExp('[(|)]'), '').toLowerCase();
 
   ScreenshotArgs.fromRawName({
     required String name,
     required String deviceName,
     required this.platformFolder,
   })  : name = name.split(_pathArgsDelimited)[1],
-        deviceName = deviceName.replaceAll(' ', _pathArgsDelimited).toLowerCase(),
+        deviceName = deviceName.replaceAll(' ', _pathArgsDelimited).replaceAll(RegExp('[(|)]'), '').toLowerCase(),
         backgroundColor = name.split(_pathArgsDelimited)[2],
         isDark = name.contains('dark');
 
