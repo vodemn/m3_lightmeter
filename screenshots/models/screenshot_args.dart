@@ -4,19 +4,34 @@ class ScreenshotArgs {
   final String name;
   final String deviceName;
   final String platformFolder;
-  final ({int r, int g, int b, int a}) backgroundColor;
+  final String backgroundColor;
   final bool isDark;
 
-  const ScreenshotArgs({
+  static const _pathArgsDelimited = '_';
+
+  ScreenshotArgs({
     required this.name,
-    required this.deviceName,
+    required String deviceName,
     required this.platformFolder,
     required this.backgroundColor,
     required this.isDark,
-  });
+  }) : deviceName = deviceName.replaceAll(' ', _pathArgsDelimited).toLowerCase();
 
-  String toPathRaw() => 'screenshots/generated/raw/$platformFolder/$deviceName/$name.png';
-  String toPath() => 'screenshots/generated/$platformFolder/$deviceName/$name.png';
+  ScreenshotArgs.fromRawName({
+    required String name,
+    required String deviceName,
+    required this.platformFolder,
+  })  : name = name.split(_pathArgsDelimited)[1],
+        deviceName = deviceName.replaceAll(' ', _pathArgsDelimited).toLowerCase(),
+        backgroundColor = name.split(_pathArgsDelimited)[2],
+        isDark = name.contains('dark');
+
+  static const _folderPrefix = 'screenshots/generated';
+  String get nameWithTheme => '${isDark ? 'dark' : 'light'}$_pathArgsDelimited$name';
+
+  String toPathRaw() =>
+      '$_folderPrefix/raw/$platformFolder/$deviceName/$nameWithTheme$_pathArgsDelimited$backgroundColor.png';
+  String toPath() => '$_folderPrefix/$platformFolder/$deviceName/$name.png';
 
   @override
   String toString() => jsonEncode(_toJson());
@@ -24,17 +39,11 @@ class ScreenshotArgs {
   factory ScreenshotArgs.fromString(String data) => ScreenshotArgs._fromJson(jsonDecode(data) as Map<String, dynamic>);
 
   factory ScreenshotArgs._fromJson(Map<String, dynamic> data) {
-    final colorChannels = data['backgroundColor'] as List;
     return ScreenshotArgs(
       name: data['name'] as String,
       deviceName: data['deviceName'] as String,
       platformFolder: data['platformFolder'] as String,
-      backgroundColor: (
-        r: colorChannels[0] as int,
-        g: colorChannels[1] as int,
-        b: colorChannels[2] as int,
-        a: colorChannels[3] as int,
-      ),
+      backgroundColor: data['backgroundColor'] as String,
       isDark: data['isDark'] as bool,
     );
   }
@@ -44,12 +53,7 @@ class ScreenshotArgs {
       "name": name,
       "deviceName": deviceName,
       "platformFolder": platformFolder,
-      "backgroundColor": [
-        backgroundColor.r,
-        backgroundColor.g,
-        backgroundColor.b,
-        backgroundColor.a,
-      ],
+      "backgroundColor": backgroundColor,
       "isDark": isDark,
     };
   }

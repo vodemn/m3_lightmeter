@@ -31,23 +31,15 @@ Future<int> main(List<String> args) async {
     final screenshotName = filePath.path.split('/').last.replaceAll('.png', '');
     final screenshotBytes = File(filePath.path).readAsBytesSync();
     final screenshot = decodePng(Uint8List.fromList(screenshotBytes))!;
-    final topLeftPixel = screenshot.getPixel(0, 0);
 
-    final screenshotArgs = ScreenshotArgs(
+    final screenshotArgs = ScreenshotArgs.fromRawName(
       name: screenshotName,
       deviceName: device,
       platformFolder: platform,
-      backgroundColor: (
-        r: topLeftPixel.r.toInt(),
-        g: topLeftPixel.g.toInt(),
-        b: topLeftPixel.b.toInt(),
-        a: topLeftPixel.a.toInt(),
-      ),
-      isDark: filePath.path.contains('dark-'),
     );
 
     final file =
-        await File('screenshots/generated/$platform/${layout.name}/$screenshotName.png').create(recursive: true);
+        await File('screenshots/generated/$platform/${layout.name}/${screenshotArgs.name}.png').create(recursive: true);
     file.writeAsBytesSync(
       encodePng(
         screenshot.convertToStoreScreenshot(

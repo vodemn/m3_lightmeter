@@ -1,27 +1,27 @@
 {
     "screenshots": [
         {
-            "screenshotName": "light-metering_reflected",
+            "screenshotName": "light_metering-reflected",
             "title": "Quick & easy to use",
             "subtitle": "with all the necessary controls\nunder your thumb"
         },
         {
-            "screenshotName": "light-metering_iso_picker",
+            "screenshotName": "light_metering-iso-picker",
             "title": "Lots of ISO values",
             "subtitle": "From 3 and up to 6400"
         },
         {
-            "screenshotName": "light-settings",
+            "screenshotName": "light_settings",
             "title": "Useful settings",
             "subtitle": "to get the most accurate\nmetering results"
         },
         {
-            "screenshotName": "light-equipment_profiles",
+            "screenshotName": "light_equipment-profiles",
             "title": "Create multiple profiles",
             "subtitle": "to match your\ncamera & lens setups"
         },
         {
-            "screenshotName": "dark-metering_reflected",
+            "screenshotName": "dark_metering-reflected",
             "title": "Matches your style",
             "subtitle": "with various theme types and colors"
         }

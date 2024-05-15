@@ -81,36 +81,36 @@ void main() {
     );
 
     await tester.takePhoto();
-    await tester.takeScreenshot(binding, 'light-metering_reflected');
+    await tester.takeScreenshotLight(binding, 'metering-reflected');
 
     if (Platform.isAndroid) {
       await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
       await tester.pumpAndSettle();
       await tester.toggleIncidentMetering(7.3);
-      await tester.takeScreenshot(binding, 'light-metering_incident');
+      await tester.takeScreenshotLight(binding, 'metering-incident');
     }
 
     await tester.openAnimatedPicker<IsoValuePicker>();
-    await tester.takeScreenshot(binding, 'light-metering_iso_picker');
+    await tester.takeScreenshotLight(binding, 'metering-iso-picker');
 
     await tester.tapCancelButton();
     await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
     await tester.pumpAndSettle();
-    await tester.takeScreenshot(binding, 'light-settings');
+    await tester.takeScreenshotLight(binding, 'settings');
 
     await tester.tapDescendantTextOf<SettingsScreen>(S.current.meteringScreenLayout);
-    await tester.takeScreenshot(binding, 'light-settings_metering_screen_layout');
+    await tester.takeScreenshotLight(binding, 'settings-metering-screen-layout');
 
     await tester.tapCancelButton();
     await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
     await tester.pumpAndSettle();
     await tester.tapDescendantTextOf<EquipmentProfilesScreen>(mockEquipmentProfiles.first.name);
     await tester.pumpAndSettle();
-    await tester.takeScreenshot(binding, 'light-equipment_profiles');
+    await tester.takeScreenshotLight(binding, 'equipment-profiles');
 
     await tester.tap(find.byIcon(Icons.iso).first);
     await tester.pumpAndSettle();
-    await tester.takeScreenshot(binding, 'light-equipment_profiles_iso_picker');
+    await tester.takeScreenshotLight(binding, 'equipment-profiles-iso-picker');
   });
 
   /// and the additionally the first one with the dark theme
@@ -125,13 +125,13 @@ void main() {
       );
 
       await tester.takePhoto();
-      await tester.takeScreenshot(binding, 'dark-metering_reflected');
+      await tester.takeScreenshotDark(binding, 'metering-reflected');
 
       if (Platform.isAndroid) {
         await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
         await tester.pumpAndSettle();
         await tester.toggleIncidentMetering(7.3);
-        await tester.takeScreenshot(binding, 'dark-metering_incident');
+        await tester.takeScreenshotDark(binding, 'metering-incident');
       }
     },
   );
@@ -140,21 +140,20 @@ void main() {
 final String _platformFolder = Platform.isAndroid ? 'android' : 'ios';
 
 extension on WidgetTester {
-  Future<void> takeScreenshot(IntegrationTestWidgetsFlutterBinding binding, String name) async {
-    final bool isDark = name.contains('dark-');
-    final Color backgroundColor = (isDark ? _themeDark : _themeLight).colorScheme.surface;
+  Future<void> takeScreenshotLight(IntegrationTestWidgetsFlutterBinding binding, String name) =>
+      _takeScreenshot(binding, name, _themeLight);
+  Future<void> takeScreenshotDark(IntegrationTestWidgetsFlutterBinding binding, String name) =>
+      _takeScreenshot(binding, name, _themeDark);
+
+  Future<void> _takeScreenshot(IntegrationTestWidgetsFlutterBinding binding, String name, ThemeData theme) async {
+    final Color backgroundColor = theme.colorScheme.surface;
     await binding.takeScreenshot(
       ScreenshotArgs(
         name: name,
-        deviceName: const String.fromEnvironment('deviceName').replaceAll(' ', '_').toLowerCase(),
+        deviceName: const String.fromEnvironment('deviceName'),
         platformFolder: _platformFolder,
-        backgroundColor: (
-          r: backgroundColor.red,
-          g: backgroundColor.green,
-          b: backgroundColor.blue,
-          a: backgroundColor.alpha,
-        ),
-        isDark: isDark,
+        backgroundColor: backgroundColor.value.toRadixString(16),
+        isDark: theme.brightness == Brightness.dark,
       ).toString(),
     );
     await pumpAndSettle();

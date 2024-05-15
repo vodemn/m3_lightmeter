@@ -14,7 +14,7 @@ extension ScreenshotImage on Image {
     required ScreenshotArgs args,
     required ScreenshotLayout layout,
   }) {
-    if (_configs[args.name] == null) {
+    if (_configs[args.nameWithTheme] == null) {
       return this;
     }
     return _addSystemOverlay(
@@ -23,17 +23,12 @@ extension ScreenshotImage on Image {
     )
         ._addDeviceFrame(
           screenshotDevices[args.deviceName]!,
-          ColorRgba8(
-            args.backgroundColor.r,
-            args.backgroundColor.g,
-            args.backgroundColor.b,
-            args.backgroundColor.a,
-          ),
+          args.backgroundColor,
         )
         ._applyLayout(
           layout,
-          _configs[args.name]!.title,
-          _configs[args.name]!.subtitle,
+          _configs[args.nameWithTheme]!.title,
+          _configs[args.nameWithTheme]!.subtitle,
           isDark: args.isDark,
         );
   }
@@ -47,7 +42,13 @@ extension ScreenshotImage on Image {
     return compositeImage(this, statusBar);
   }
 
-  Image _addDeviceFrame(ScreenshotDevice device, Color backgroundColor) {
+  Image _addDeviceFrame(ScreenshotDevice device, String color) {
+    final backgroundColor = ColorRgba8(
+      int.parse(color.substring(2, 4), radix: 16),
+      int.parse(color.substring(4, 6), radix: 16),
+      int.parse(color.substring(6, 8), radix: 16),
+      int.parse(color.substring(0, 2), radix: 16),
+    );
     final screenshotRounded = copyCrop(
       this,
       x: 0,
