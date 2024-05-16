@@ -24,7 +24,18 @@ class ScreenshotDevice {
   String get deviceFramePath => 'screenshots/assets/frames/${platform.name}/${name}_frame.png';
 }
 
-final screenshotDevices = <String, ScreenshotDevice>{for (final d in _screenshotDevicesIos) d.name: d};
+final screenshotDevices = <String, ScreenshotDevice>{
+  for (final d in _screenshotDevicesAndroid + _screenshotDevicesIos) d.name: d,
+};
+
+final List<ScreenshotDevice> _screenshotDevicesAndroid = [
+  ScreenshotDevice.fromDisplayName(
+    displayName: 'Pixel 6',
+    platform: ScreenshotDevicePlatform.android,
+    screenshotFrameOffset: (dx: 67, dy: 66),
+  ),
+];
+
 final List<ScreenshotDevice> _screenshotDevicesIos = [
   ScreenshotDevice.fromDisplayName(
     displayName: 'iPhone 8 Plus',

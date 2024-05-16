@@ -1,4 +1,10 @@
 enum ScreenshotLayout {
+  android(
+    size: (width: 1440, height: 2560),
+    contentPadding: (left: 144, top: 144, right: 144, bottom: 144),
+    titleFontPath: 'screenshots/assets/fonts/SF-Pro-Display-Bold.zip',
+    subtitleFontPath: 'screenshots/assets/fonts/SF-Pro-Display-Regular.zip',
+  ),
   iphone65inch(
     size: (width: 1242, height: 2688),
     contentPadding: (left: 144, top: 184, right: 144, bottom: 184),
