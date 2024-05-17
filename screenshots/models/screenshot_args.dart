@@ -31,7 +31,7 @@ class ScreenshotArgs {
 
   String toPathRaw() =>
       '$_folderPrefix/raw/$platformFolder/$deviceName/$nameWithTheme$_pathArgsDelimited$backgroundColor.png';
-  String toPath() => '$_folderPrefix/$platformFolder/$deviceName/$name.png';
+  String toPath(String layoutName) => '$_folderPrefix/$platformFolder/$layoutName/$nameWithTheme.png';
 
   @override
   String toString() => jsonEncode(_toJson());

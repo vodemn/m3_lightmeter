@@ -38,8 +38,7 @@ Future<int> main(List<String> args) async {
       platformFolder: platform,
     );
 
-    final file =
-        await File('screenshots/generated/$platform/${layout.name}/${screenshotArgs.name}.png').create(recursive: true);
+    final file = await File(screenshotArgs.toPath(layout.name)).create(recursive: true);
     file.writeAsBytesSync(
       encodePng(
         screenshot.convertToStoreScreenshot(
