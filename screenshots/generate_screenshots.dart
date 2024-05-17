@@ -122,13 +122,6 @@ void main() {
 
       await tester.takePhoto();
       await tester.takeScreenshotDark(binding, 'metering-reflected');
-
-      if (Platform.isAndroid) {
-        await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
-        await tester.pumpAndSettle();
-        await tester.toggleIncidentMetering(7.3);
-        await tester.takeScreenshotDark(binding, 'metering-incident');
-      }
     },
   );
 }

@@ -6,6 +6,11 @@
             "subtitle": "with all the necessary controls\nunder your thumb"
         },
         {
+            "screenshotName": "light_metering-incident",
+            "title": "Incident light metering",
+            "subtitle": "using the light sensor\nof your device"
+        },
+        {
             "screenshotName": "light_metering-iso-picker",
             "title": "Lots of ISO values",
             "subtitle": "from 3 and up to 6400"
