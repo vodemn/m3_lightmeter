@@ -1,7 +1,7 @@
 enum ScreenshotLayout {
   android(
     size: (width: 1440, height: 2560),
-    contentPadding: (left: 144, top: 144, right: 144, bottom: 144),
+    contentPadding: (left: 144, top: 132, right: 144, bottom: 132),
     titleFontPath: 'screenshots/assets/fonts/SF-Pro-Display-Bold.zip',
     subtitleFontPath: 'screenshots/assets/fonts/SF-Pro-Display-Regular.zip',
   ),
