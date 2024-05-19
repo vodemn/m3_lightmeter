@@ -23,11 +23,11 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 # Screenshots
 
 <p float="center">
-  <img src="https://lh3.googleusercontent.com/8Sd-pmNcQ0xAr5opuTeJKWr2OXeQvCoFSdVDSoKQSHHKeNmqF71hqeAdm3yjunY12zY" width="18.8%" />
-  <img src="https://lh3.googleusercontent.com/rqBv8pT0AdcBy0xEgQY2unV-YEQ5KfUkandAxJ62yYCiSF72HClA_tkb4JT_3UPaIfFP" width="18.8%" />
-  <img src="https://lh3.googleusercontent.com/-SnYbYSugVfdwYi6m_rd9CzpCZMCIfudhnq0zRIlzEtLSXhrwziWVd2hotygfqiSofI" width="18.8%" />
-  <img src="https://lh3.googleusercontent.com/UXxptL_dAIJDtrmpEZuSz39Iq4HuPb3ZPeuANfE9XH0De0uZQT83LNdu1AObBPobpg" width="18.8%" />
-  <img src="https://lh3.googleusercontent.com/15g_SPV8knDLFbz1_-wGNJFsJeyVWZ_y--TGHpk75MaaIdMDyTXY2_TL-Aw8bpOhpw" width="18.8%" />
+  <img src="screenshots/generated/android/android/light_metering-reflected.png" width="18.8%" />
+  <img src="screenshots/generated/android/android/light_metering-incident.png" width="18.8%" />
+  <img src="screenshots/generated/android/android/light_settings.png" width="18.8%" />
+  <img src="screenshots/generated/android/android/light_equipment-profiles.png" width="18.8%" />
+  <img src="screenshots/generated/android/android/dark_metering-reflected.png" width="18.8%" />
 </p>
 
 # Development
