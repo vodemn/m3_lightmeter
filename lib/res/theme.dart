@@ -73,7 +73,11 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
 }
 
 ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
-  final scheme = brightness == Brightness.light ? Scheme.light(primaryColor.value) : Scheme.dark(primaryColor.value);
+  final scheme = SchemeTonalSpot(
+    sourceColorHct: Hct.fromInt(primaryColor.value),
+    isDark: brightness == Brightness.dark,
+    contrastLevel: 0.0,
+  );
 
   return ColorScheme(
     brightness: brightness,
