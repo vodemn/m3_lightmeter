@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/res/theme.dart';
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/shape_top_bar_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';
 
@@ -19,7 +20,7 @@ class MeteringTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: MeteringTopBarShape(
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.surfaceElevated1,
         appendixWidth: MediaQuery.of(context).size.width / 2 - Dimens.grid8 / 2 + Dimens.paddingM,
         appendixHeight: appendixHeight,
       ),

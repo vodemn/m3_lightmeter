@@ -109,7 +109,7 @@ class _DialogFilterState<T> extends State<DialogFilter<T>> {
                     width: 40,
                     child: IconButton(
                       padding: EdgeInsets.zero,
-                      icon: Icon(_hasAnyUnselected ? Icons.select_all : Icons.deselect),
+                      icon: Icon(_hasAnyUnselected ? Icons.select_all_outlined : Icons.deselect_outlined),
                       onPressed: _toggleAll,
                       tooltip: _hasAnyUnselected ? S.of(context).tooltipSelectAll : S.of(context).tooltipDesecelectAll,
                     ),

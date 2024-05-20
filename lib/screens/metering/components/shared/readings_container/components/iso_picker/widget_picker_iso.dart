@@ -18,16 +18,15 @@ class IsoValuePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<IsoValue>(
-      icon: Icons.iso,
+      icon: Icons.iso_outlined,
       title: S.of(context).iso,
       subtitle: S.of(context).filmSpeed,
       selectedValue: selectedValue,
       values: values,
       itemTitleBuilder: (_, value) => Text(value.value.toString()),
       // using ascending order, because increase in film speed rises EV
-      itemTrailingBuilder: (selected, value) => value.value != selected.value
-          ? Text(S.of(context).evValue(selected.toStringDifference(value)))
-          : null,
+      itemTrailingBuilder: (selected, value) =>
+          value.value != selected.value ? Text(S.of(context).evValue(selected.toStringDifference(value))) : null,
       onChanged: onChanged,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(

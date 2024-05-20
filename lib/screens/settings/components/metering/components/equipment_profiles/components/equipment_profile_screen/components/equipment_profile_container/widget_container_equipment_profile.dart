@@ -171,7 +171,7 @@ class _AnimatedNameLeading extends AnimatedWidget {
     return Padding(
       padding: EdgeInsets.only(right: _progress.value * Dimens.grid8),
       child: Icon(
-        Icons.edit,
+        Icons.edit_outlined,
         size: _progress.value * Dimens.grid24,
       ),
     );
@@ -194,7 +194,7 @@ class _AnimatedArrowButton extends AnimatedWidget {
       onPressed: onPressed,
       icon: Transform.rotate(
         angle: _progress.value * pi,
-        child: const Icon(Icons.keyboard_arrow_down),
+        child: const Icon(Icons.keyboard_arrow_down_outlined),
       ),
       tooltip: _progress.value == 0 ? S.of(context).tooltipExpand : S.of(context).tooltipCollapse,
     );
@@ -239,7 +239,7 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
         child: Column(
           children: [
             FilterListTile<IsoValue>(
-              icon: Icons.iso,
+              icon: Icons.iso_outlined,
               title: S.of(context).isoValues,
               description: S.of(context).isoValuesFilterDescription,
               values: IsoValue.values,
@@ -247,7 +247,7 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
               onChanged: onIsoValuesSelecred,
             ),
             FilterListTile<NdValue>(
-              icon: Icons.filter_b_and_w,
+              icon: Icons.filter_b_and_w_outlined,
               title: S.of(context).ndFilters,
               description: S.of(context).ndFiltersFilterDescription,
               values: NdValue.values,
@@ -255,7 +255,7 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
               onChanged: onNdValuesSelected,
             ),
             RangePickerListTile<ApertureValue>(
-              icon: Icons.camera,
+              icon: Icons.camera_outlined,
               title: S.of(context).apertureValues,
               description: S.of(context).apertureValuesFilterDescription,
               values: ApertureValue.values,
@@ -263,7 +263,7 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
               onChanged: onApertureValuesSelected,
             ),
             RangePickerListTile<ShutterSpeedValue>(
-              icon: Icons.shutter_speed,
+              icon: Icons.shutter_speed_outlined,
               title: S.of(context).shutterSpeedValues,
               description: S.of(context).shutterSpeedValuesFilterDescription,
               values: ShutterSpeedValue.values,
@@ -275,7 +275,7 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
                   value.value == 1 ? S.of(context).shutterSpeedManual : value.toString(),
             ),
             SliderPickerListTile(
-              icon: Icons.zoom_in,
+              icon: Icons.zoom_in_outlined,
               title: S.of(context).lensZoom,
               description: S.of(context).lensZoomDescription,
               value: equipmentData.lensZoom,
@@ -291,12 +291,12 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
                 children: [
                   IconButton(
                     onPressed: onCopy,
-                    icon: const Icon(Icons.copy),
+                    icon: const Icon(Icons.copy_outlined),
                     tooltip: S.of(context).tooltipCopy,
                   ),
                   IconButton(
                     onPressed: onDelete,
-                    icon: const Icon(Icons.delete),
+                    icon: const Icon(Icons.delete_outlined),
                     tooltip: S.of(context).tooltipDelete,
                   ),
                 ],

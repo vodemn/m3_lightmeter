@@ -13,13 +13,13 @@ class PrimaryColorListTile extends StatelessWidget {
     if (UserPreferencesProvider.dynamicColorStateOf(context) == DynamicColorState.enabled) {
       return Disable(
         child: ListTile(
-          leading: const Icon(Icons.palette),
+          leading: const Icon(Icons.palette_outlined),
           title: Text(S.of(context).primaryColor),
         ),
       );
     }
     return ListTile(
-      leading: const Icon(Icons.palette),
+      leading: const Icon(Icons.palette_outlined),
       title: Text(S.of(context).primaryColor),
       onTap: () {
         showDialog<Color>(

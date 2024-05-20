@@ -19,7 +19,7 @@ class ExposurePairsList extends StatelessWidget {
       duration: Dimens.switchDuration,
       child: exposurePairs.isEmpty
           ? IconPlaceholder(
-              icon: Icons.not_interested,
+              icon: Icons.not_interested_outlined,
               text: S.of(context).noExposurePairs,
             )
           : Stack(

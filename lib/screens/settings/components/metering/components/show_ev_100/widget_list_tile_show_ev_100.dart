@@ -13,7 +13,7 @@ class ShowEv100ListTile extends StatelessWidget {
     return Disable(
       disable: !context.isPro,
       child: SwitchListTile(
-        secondary: const Icon(Icons.adjust),
+        secondary: const Icon(Icons.adjust_outlined),
         title: Text(S.of(context).showEv100),
         value: context.isPro && UserPreferencesProvider.showEv100Of(context),
         onChanged: (_) => UserPreferencesProvider.of(context).toggleShowEv100(),

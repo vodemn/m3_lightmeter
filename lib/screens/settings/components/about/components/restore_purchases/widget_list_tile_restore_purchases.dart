@@ -8,7 +8,7 @@ class RestorePurchasesListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.restore),
+      leading: const Icon(Icons.restore_outlined),
       title: Text(S.of(context).restorePurchases),
       onTap: IAPProductsProvider.of(context).restorePurchases,
     );

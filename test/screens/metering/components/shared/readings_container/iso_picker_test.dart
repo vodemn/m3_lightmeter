@@ -38,7 +38,7 @@ void main() {
       await pumpApplication(tester);
       expectReadingValueContainerText(S.current.iso);
       await tester.openAnimatedPicker<IsoValuePicker>();
-      expect(find.byIcon(Icons.iso), findsOneWidget);
+      expect(find.byIcon(Icons.iso_outlined), findsOneWidget);
       expectDialogPickerText<IsoValue>(S.current.iso);
       expectDialogPickerText<IsoValue>(S.current.filmSpeed);
     },

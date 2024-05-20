@@ -42,7 +42,7 @@ class SliverScreen extends StatelessWidget {
                 if (Navigator.of(context).canPop())
                   IconButton(
                     onPressed: Navigator.of(context).pop,
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(Icons.close_outlined),
                     tooltip: S.of(context).tooltipClose,
                   ),
               ],

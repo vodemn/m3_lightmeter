@@ -30,7 +30,7 @@ class RulerSlider extends StatelessWidget {
       children: [
         Text(
           valueAdapter(value),
-          style: Theme.of(context).textTheme.labelLarge,
+          style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onBackground),
         ),
         const SizedBox(height: Dimens.grid4),
         Expanded(
@@ -53,7 +53,7 @@ class RulerSlider extends StatelessWidget {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.sync),
+          icon: const Icon(Icons.sync_outlined),
           onPressed: value != defaultValue ? () => onChanged(defaultValue) : null,
           tooltip: S.of(context).tooltipResetToZero,
         ),
@@ -78,6 +78,7 @@ class _Ruler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mainTicksFontSize = Theme.of(context).textTheme.bodySmall!.fontSize!;
+    final itemsColor = Theme.of(context).colorScheme.onBackground;
     return LayoutBuilder(
       builder: (context, constraints) {
         final bool showAllMainTicks =
@@ -103,11 +104,11 @@ class _Ruler extends StatelessWidget {
                       if (showValue)
                         Text(
                           rulerValueAdapter(index / 2 + min),
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: itemsColor),
                         ),
                       const SizedBox(width: Dimens.grid4),
                       ColoredBox(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: itemsColor,
                         child: SizedBox(
                           height: 1,
                           width: isMainTick ? Dimens.grid8 : Dimens.grid4,

@@ -18,7 +18,7 @@ class NdValuePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<NdValue>(
-      icon: Icons.filter_b_and_w,
+      icon: Icons.filter_b_and_w_outlined,
       title: S.of(context).nd,
       subtitle: S.of(context).ndFilterFactor,
       selectedValue: selectedValue,

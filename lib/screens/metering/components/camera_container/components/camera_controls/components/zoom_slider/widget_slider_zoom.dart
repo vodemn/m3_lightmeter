@@ -32,7 +32,7 @@ class _ZoomSliderState extends State<ZoomSlider> {
       range: widget.range,
       value: widget.value,
       onChanged: widget.onChanged,
-      icon: Icons.search,
+      icon: Icons.search_outlined,
       defaultValue: EquipmentProfiles.selectedOf(context).lensZoom,
       rulerValueAdapter: (value) => value.toStringAsFixed(0),
       valueAdapter: (value) => value.toZoom(),

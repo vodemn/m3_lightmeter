@@ -7,6 +7,11 @@ class Dimens {
   static const double borderRadiusL = 24;
   static const double borderRadiusXL = 32;
 
+  static const double elevationLevel0 = 0;
+  static const double elevationLevel1 = 1;
+  static const double elevationLevel2 = 3;
+  static const double elevationLevel3 = 6;
+
   static const double grid4 = 4;
   static const double grid8 = 8;
   static const double grid16 = 16;

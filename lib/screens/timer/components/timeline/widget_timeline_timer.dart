@@ -16,7 +16,7 @@ class TimerTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _TimelinePainter(
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         progressColor: Theme.of(context).colorScheme.primary,
         progress: progress,
       ),

@@ -21,7 +21,7 @@ class ExposureOffsetSlider extends StatelessWidget {
       range: range,
       value: value,
       onChanged: onChanged,
-      icon: Icons.light_mode,
+      icon: Icons.light_mode_outlined,
       defaultValue: 0,
       rulerValueAdapter: (value) => value.toStringSignedAsFixed(0),
       valueAdapter: (value) => S.of(context).evValue(value.toStringSignedAsFixed(1)),

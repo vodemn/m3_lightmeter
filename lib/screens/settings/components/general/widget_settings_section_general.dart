@@ -17,9 +17,9 @@ class GeneralSettingsSection extends StatelessWidget {
     return SettingsSection(
       title: S.of(context).general,
       children: [
+        const TimerListTileProvider(),
         const CaffeineListTileProvider(),
         const HapticsListTileProvider(),
-        const TimerListTileProvider(),
         if (Platform.isAndroid) const VolumeActionsListTileProvider(),
         const LanguageListTile(),
       ],
