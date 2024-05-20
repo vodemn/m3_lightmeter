@@ -73,7 +73,7 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
 }
 
 ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
-  final scheme = SchemeRainbow(
+  final scheme = SchemeTonalSpot(
     sourceColorHct: Hct.fromInt(primaryColor.value),
     isDark: brightness == Brightness.dark,
     contrastLevel: 0.0,
@@ -82,10 +82,10 @@ ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
   return ColorScheme(
     brightness: brightness,
     background: Color(scheme.background),
-    error: Color(scheme.error),
-    errorContainer: Color(scheme.errorContainer),
     onBackground: Color(scheme.onBackground),
+    error: Color(scheme.error),
     onError: Color(scheme.onError),
+    errorContainer: Color(scheme.errorContainer),
     onErrorContainer: Color(scheme.onErrorContainer),
     primary: Color(scheme.primary),
     onPrimary: Color(scheme.onPrimary),
@@ -93,18 +93,21 @@ ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
     onPrimaryContainer: Color(scheme.onPrimaryContainer),
     secondary: Color(scheme.secondary),
     onSecondary: Color(scheme.onSecondary),
-    surface: Color.alphaBlend(
-      Color(scheme.primary).withOpacity(0.05),
-      Color(scheme.background),
-    ),
+    secondaryContainer: Color(scheme.secondaryContainer),
+    onSecondaryContainer: Color(scheme.onSecondaryContainer),
+    tertiary: Color(scheme.tertiary),
+    onTertiary: Color(scheme.onTertiary),
+    tertiaryContainer: Color(scheme.tertiaryContainer),
+    onTertiaryContainer: Color(scheme.onTertiaryContainer),
+    surface: Color(scheme.surface),
     onSurface: Color(scheme.onSurface),
-    surfaceVariant: Color.alphaBlend(
-      Color(scheme.primary).withOpacity(0.5),
-      Color(scheme.background),
-    ),
+    surfaceVariant: Color(scheme.surfaceVariant),
     onSurfaceVariant: Color(scheme.onSurfaceVariant),
     outline: Color(scheme.outline),
     outlineVariant: Color(scheme.outlineVariant),
+    surfaceTint: Color(scheme.surfaceTint),
+    shadow: Color(scheme.shadow),
+    scrim: Color(scheme.scrim),
   );
 }
 
