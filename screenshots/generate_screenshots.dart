@@ -104,7 +104,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.takeScreenshotLight(binding, 'equipment-profiles');
 
-    await tester.tap(find.byIcon(Icons.iso).first);
+    await tester.tap(find.byIcon(Icons.iso_outlined).first);
     await tester.pumpAndSettle();
     await tester.takeScreenshotLight(binding, 'equipment-profiles-iso-picker');
   });
