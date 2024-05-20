@@ -47,31 +47,31 @@ class ReadingValueContainer extends StatelessWidget implements AnimatedDialogClo
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
-      child: ColoredBox(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
         color: backgroundColor(context),
-        child: Padding(
-          padding: const EdgeInsets.all(Dimens.paddingM),
-          child: Stack(
-            children: [
-              if (locked)
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Icon(
-                    Icons.lock,
-                    size: Theme.of(context).textTheme.labelMedium!.fontSize,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(Dimens.paddingM),
+        child: Stack(
+          children: [
+            if (locked)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Icon(
+                  Icons.lock_outlined,
+                  size: Theme.of(context).textTheme.labelMedium!.fontSize,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: _items,
               ),
-            ],
-          ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: _items,
+            ),
+          ],
         ),
       ),
     );

@@ -24,7 +24,6 @@ class MeteringScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return _InheritedListeners(
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
         body: Column(
           children: [
             Expanded(

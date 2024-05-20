@@ -13,7 +13,7 @@ class FilmPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<Film>(
-      icon: Icons.camera_roll,
+      icon: Icons.camera_roll_outlined,
       title: S.of(context).film,
       subtitle: S.of(context).filmReciprocityHint,
       selectedValue: Films.selectedOf(context),
@@ -23,17 +23,14 @@ class FilmPicker extends StatelessWidget {
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: _label(context),
-          value: Films.selectedOf(context).name.isEmpty
-              ? S.of(context).none
-              : Films.selectedOf(context).name,
+          value: Films.selectedOf(context).name.isEmpty ? S.of(context).none : Films.selectedOf(context).name,
         ),
       ),
     );
   }
 
   String _label(BuildContext context) {
-    if (Films.selectedOf(context) == const Film.other() ||
-        Films.selectedOf(context).iso == selectedIso.value) {
+    if (Films.selectedOf(context) == const Film.other() || Films.selectedOf(context).iso == selectedIso.value) {
       return S.of(context).film;
     }
 

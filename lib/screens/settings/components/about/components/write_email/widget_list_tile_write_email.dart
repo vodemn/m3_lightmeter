@@ -10,7 +10,7 @@ class WriteEmailListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.email),
+      leading: const Icon(Icons.email_outlined),
       title: Text(S.of(context).writeEmail),
       onTap: () {
         final mailToUrl = Uri.parse('mailto:$contactEmail?subject=M3 Lightmeter');

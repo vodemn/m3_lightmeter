@@ -38,7 +38,7 @@ void main() {
       await pumpApplication(tester);
       expectReadingValueContainerText(S.current.nd);
       await tester.openAnimatedPicker<NdValuePicker>();
-      expect(find.byIcon(Icons.filter_b_and_w), findsOneWidget);
+      expect(find.byIcon(Icons.filter_b_and_w_outlined), findsOneWidget);
       expectDialogPickerText<NdValue>(S.current.nd);
       expectDialogPickerText<NdValue>(S.current.ndFilterFactor);
     },

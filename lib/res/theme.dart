@@ -29,14 +29,16 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
     primaryColor: primaryColor,
     colorScheme: scheme,
     appBarTheme: AppBarTheme(
-      elevation: 4,
+      elevation: Dimens.elevationLevel0,
+      scrolledUnderElevation: Dimens.elevationLevel2,
       color: scheme.surface,
+      foregroundColor: scheme.onBackground,
       surfaceTintColor: scheme.surfaceTint,
     ),
     cardTheme: CardTheme(
       clipBehavior: Clip.antiAlias,
       color: scheme.surface,
-      elevation: 4,
+      elevation: Dimens.elevationLevel1,
       margin: EdgeInsets.zero,
       shadowColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimens.borderRadiusL)),
@@ -46,7 +48,7 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
     dialogTheme: DialogTheme(
       backgroundColor: scheme.surface,
       surfaceTintColor: scheme.surfaceTint,
-      elevation: 6,
+      elevation: Dimens.elevationLevel3,
     ),
     dividerColor: scheme.outlineVariant,
     dividerTheme: DividerThemeData(
@@ -71,15 +73,19 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
 }
 
 ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
-  final scheme = brightness == Brightness.light ? Scheme.light(primaryColor.value) : Scheme.dark(primaryColor.value);
+  final scheme = SchemeTonalSpot(
+    sourceColorHct: Hct.fromInt(primaryColor.value),
+    isDark: brightness == Brightness.dark,
+    contrastLevel: 0.0,
+  );
 
   return ColorScheme(
     brightness: brightness,
     background: Color(scheme.background),
-    error: Color(scheme.error),
-    errorContainer: Color(scheme.errorContainer),
     onBackground: Color(scheme.onBackground),
+    error: Color(scheme.error),
     onError: Color(scheme.onError),
+    errorContainer: Color(scheme.errorContainer),
     onErrorContainer: Color(scheme.onErrorContainer),
     primary: Color(scheme.primary),
     onPrimary: Color(scheme.onPrimary),
@@ -87,17 +93,30 @@ ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
     onPrimaryContainer: Color(scheme.onPrimaryContainer),
     secondary: Color(scheme.secondary),
     onSecondary: Color(scheme.onSecondary),
-    surface: Color.alphaBlend(
-      Color(scheme.primary).withOpacity(0.05),
-      Color(scheme.background),
-    ),
+    secondaryContainer: Color(scheme.secondaryContainer),
+    onSecondaryContainer: Color(scheme.onSecondaryContainer),
+    tertiary: Color(scheme.tertiary),
+    onTertiary: Color(scheme.onTertiary),
+    tertiaryContainer: Color(scheme.tertiaryContainer),
+    onTertiaryContainer: Color(scheme.onTertiaryContainer),
+    surface: Color(scheme.surface),
     onSurface: Color(scheme.onSurface),
-    surfaceVariant: Color.alphaBlend(
-      Color(scheme.primary).withOpacity(0.5),
-      Color(scheme.background),
-    ),
+    surfaceVariant: Color(scheme.surfaceVariant),
     onSurfaceVariant: Color(scheme.onSurfaceVariant),
     outline: Color(scheme.outline),
     outlineVariant: Color(scheme.outlineVariant),
+    surfaceTint: Color(scheme.surfaceTint),
+    shadow: Color(scheme.shadow),
+    scrim: Color(scheme.scrim),
   );
+}
+
+extension ElevatedSurfaceTheme on ColorScheme {
+  Color _surfaceWithElevation(double elevation) {
+    return ElevationOverlay.applySurfaceTint(surface, surfaceTint, elevation);
+  }
+
+  Color get surfaceElevated1 => _surfaceWithElevation(Dimens.elevationLevel1);
+  Color get surfaceElevated2 => _surfaceWithElevation(Dimens.elevationLevel2);
+  Color get surfaceElevated3 => _surfaceWithElevation(Dimens.elevationLevel3);
 }

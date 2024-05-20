@@ -12,7 +12,7 @@ class CaffeineListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CaffeineListTileBloc, bool>(
       builder: (context, state) => SwitchListTile(
-        secondary: const Icon(Icons.screen_lock_portrait),
+        secondary: const Icon(Icons.screen_lock_portrait_outlined),
         title: Text(S.of(context).keepScreenOn),
         value: state,
         onChanged: context.read<CaffeineListTileBloc>().onCaffeineChanged,

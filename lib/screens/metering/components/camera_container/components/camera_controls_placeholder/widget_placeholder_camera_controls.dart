@@ -20,15 +20,12 @@ class CameraControlsPlaceholder extends StatelessWidget {
       children: [
         IconButton(
           onPressed: onReset,
-          icon: Icon(error == CameraErrorType.permissionNotGranted ? Icons.settings : Icons.sync),
+          icon: Icon(error == CameraErrorType.permissionNotGranted ? Icons.settings_outlined : Icons.sync_outlined),
         ),
         const SizedBox(height: Dimens.grid8),
         Text(
           error.toStringLocalized(context),
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: Theme.of(context).colorScheme.onBackground),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onBackground),
           textAlign: TextAlign.center,
         ),
       ],

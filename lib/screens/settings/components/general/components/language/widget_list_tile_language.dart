@@ -10,14 +10,14 @@ class LanguageListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.language),
+      leading: const Icon(Icons.language_outlined),
       title: Text(S.of(context).language),
       trailing: Text(UserPreferencesProvider.localeOf(context).localizedName),
       onTap: () {
         showDialog<SupportedLocale>(
           context: context,
           builder: (_) => DialogPicker<SupportedLocale>(
-            icon: Icons.language,
+            icon: Icons.language_outlined,
             title: S.of(context).chooseLanguage,
             selectedValue: UserPreferencesProvider.localeOf(context),
             values: SupportedLocale.values,

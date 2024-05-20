@@ -10,7 +10,7 @@ class DynamicColorListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SwitchListTile(
-      secondary: const Icon(Icons.colorize),
+      secondary: const Icon(Icons.colorize_outlined),
       title: Text(S.of(context).dynamicColor),
       value: UserPreferencesProvider.dynamicColorStateOf(context) == DynamicColorState.enabled,
       onChanged: UserPreferencesProvider.of(context).enableDynamicColor,

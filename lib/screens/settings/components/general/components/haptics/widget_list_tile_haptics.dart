@@ -12,7 +12,7 @@ class HapticsListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HapticsListTileBloc, bool>(
       builder: (context, state) => SwitchListTile(
-        secondary: const Icon(Icons.vibration),
+        secondary: const Icon(Icons.vibration_outlined),
         title: Text(S.of(context).haptics),
         value: state,
         onChanged: context.read<HapticsListTileBloc>().onHapticsChanged,

@@ -10,14 +10,14 @@ class ThemeTypeListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.brightness_6),
+      leading: const Icon(Icons.brightness_6_outlined),
       title: Text(S.of(context).theme),
       trailing: Text(_typeToString(context, UserPreferencesProvider.themeTypeOf(context))),
       onTap: () {
         showDialog<ThemeType>(
           context: context,
           builder: (_) => DialogPicker<ThemeType>(
-            icon: Icons.brightness_6,
+            icon: Icons.brightness_6_outlined,
             title: S.of(context).chooseTheme,
             selectedValue: UserPreferencesProvider.themeTypeOf(context),
             values: ThemeType.values,
