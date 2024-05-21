@@ -14,10 +14,10 @@ final _configs = parseScreenshotConfigs();
 
 Future<int> main(List<String> args) async {
   final parser = ArgParser()
-    ..addFlag('verbose', abbr: 'v', help: 'Verbose output.')
-    ..addOption('platform', abbr: 'p', help: 'Device platform.', mandatory: true)
+    ..addFlag('verbose', abbr: 'v', help: 'Verbose output')
+    ..addOption('platform', abbr: 'p', help: 'Device platform', mandatory: true)
     ..addOption('device', abbr: 'd', help: 'device_snake_name', mandatory: true)
-    ..addOption('layout', abbr: 'l', help: 'Device platform.', mandatory: true);
+    ..addOption('layout', abbr: 'l', help: 'Device layout', mandatory: true);
   final ArgResults argResults = parser.parse(args);
 
   if (argResults['verbose'] as bool) {
