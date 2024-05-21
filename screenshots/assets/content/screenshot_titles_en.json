@@ -1,0 +1,44 @@
+{
+    "screenshots": [
+        {
+            "screenshotName": "light_metering-reflected",
+            "title": "Quick & easy to use",
+            "subtitle": "with all the necessary controls\nunder your thumb"
+        },
+        {
+            "screenshotName": "light_metering-incident",
+            "title": "Incident light metering",
+            "subtitle": "using the light sensor\nof your device"
+        },
+        {
+            "screenshotName": "light_metering-iso-picker",
+            "title": "Lots of ISO values",
+            "subtitle": "from 3 and up to 6400"
+        },
+        {
+            "screenshotName": "light_timer",
+            "title": "In-built timer",
+            "subtitle": "for the ease of shooting\nlong exposures"
+        },
+        {
+            "screenshotName": "light_settings",
+            "title": "Useful settings",
+            "subtitle": "to get the most accurate\nmetering results"
+        },
+        {
+            "screenshotName": "light_equipment-profiles",
+            "title": "Create multiple profiles",
+            "subtitle": "to match your\ncamera & lens setups"
+        },
+        {
+            "screenshotName": "light_equipment-profiles-iso-picker",
+            "title": "Fine-tune results",
+            "subtitle": "by selecting the values\nthat you use the most"
+        },
+        {
+            "screenshotName": "dark_metering-reflected",
+            "title": "Match your style",
+            "subtitle": "with various theme types and colors"
+        }
+    ]
+}

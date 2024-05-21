@@ -68,4 +68,7 @@ class Dimens {
     paddingL,
   );
   static const EdgeInsets dialogMargin = EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0);
+
+  // TODO(@vodemn) constrain dialogs with this value
+  static const double tabletMaxWidth = 600;
 }

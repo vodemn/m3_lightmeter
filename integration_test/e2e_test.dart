@@ -49,7 +49,7 @@ void testE2E(String description) {
       /// Create Praktica + Zenitar profile from scratch
       await tester.openSettings();
       await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.tap(find.byIcon(Icons.add).first);
+      await tester.tap(find.byIcon(Icons.add_outlined).first);
       await tester.pumpAndSettle();
       await tester.setProfileName(mockEquipmentProfiles[0].name);
       await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[0].name);
@@ -63,7 +63,7 @@ void testE2E(String description) {
       expect(find.text('1/1000 - B'), findsOneWidget);
 
       /// Create Praktica + Jupiter profile from Zenitar profile
-      await tester.tap(find.byIcon(Icons.copy).first);
+      await tester.tap(find.byIcon(Icons.copy_outlined).first);
       await tester.pumpAndSettle();
       await tester.setProfileName(mockEquipmentProfiles[1].name);
       await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[1].name);
@@ -193,7 +193,7 @@ extension on WidgetTester {
     bool deselectAll = true,
   }) async {
     if (deselectAll) {
-      await tap(find.byIcon(Icons.deselect));
+      await tap(find.byIcon(Icons.deselect_outlined));
       await pump();
     }
     for (final value in valuesToSelect) {

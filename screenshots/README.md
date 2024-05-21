@@ -17,12 +17,15 @@ As a user I want to see the most relevant screenshots in the store, so that I ca
 - Settings screen
 
   1. Just the screen
-  2. Opened metering screen layout features dialog
 
 - Equipment profiles screen
 
   1. Just the screen
   2. Opened equipment profile ISO picker
+
+- Timer screen
+
+  1. Just the screen
 
 > \*also in dark mode
 
@@ -30,15 +33,19 @@ As a user I want to see the most relevant screenshots in the store, so that I ca
 
 ## Run the generator
 
-Screenshots will be stored in the _screenshots/generated/\<platform\>/_ folder.
+Release screenshots will be stored in the _screenshots/generated/\<platform\>/_ folder.
 
-### Android
+Raw screenshots will be stored in the _screenshots/generated/raw/\<platform\>/_ folder.
+
+### Generate raw screenshots
+
+#### Android
 
 ```console
-sh screenshots/generate_screenshots.sh <deviceName>
+sh screenshots/generate_android_screenshots.sh
 ```
 
-### iOS
+#### iOS
 
 Apple requires screenshots a specific list of devices, so we can implement a custom generator to cover all those devices.
 
@@ -46,6 +53,12 @@ Can be run on Simulator.
 
 ```console
 sh screenshots/generate_ios_screenshots.sh
+```
+
+### Apply store constraints and text data
+
+```console
+sh screenshots/scripts/convert_to_store_screenshots.sh
 ```
 
 ## List of devices
@@ -56,9 +69,5 @@ sh screenshots/generate_ios_screenshots.sh
 
 ### iOS
 
-- iPhone 8 Plus
 - iPhone 13 Pro
-- iPhone 13 Pro Max
-- iPhone 15 Pro
-- iPhone 15 Pro Max
 - iPad Pro (12.9-inch) (6th generation)

@@ -79,15 +79,18 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.all(Dimens.paddingL),
-                child: SizedBox.fromSize(
-                  size: Size.square(MediaQuery.sizeOf(context).width - Dimens.paddingL * 4),
-                  child: ValueListenableBuilder(
-                    valueListenable: timelineAnimation,
-                    builder: (_, value, child) => TimerTimeline(
-                      progress: value,
-                      child: TimerText(
-                        timeLeft: Duration(milliseconds: (widget.duration.inMilliseconds * value).toInt()),
-                        duration: widget.duration,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: Dimens.tabletMaxWidth, maxWidth: Dimens.tabletMaxWidth),
+                  child: SizedBox.fromSize(
+                    size: Size.square(MediaQuery.sizeOf(context).width - Dimens.paddingL * 4),
+                    child: ValueListenableBuilder(
+                      valueListenable: timelineAnimation,
+                      builder: (_, value, child) => TimerTimeline(
+                        progress: value,
+                        child: TimerText(
+                          timeLeft: Duration(milliseconds: (widget.duration.inMilliseconds * value).toInt()),
+                          duration: widget.duration,
+                        ),
                       ),
                     ),
                   ),
