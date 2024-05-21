@@ -22,7 +22,8 @@ const primaryColorsList = [
 ];
 
 ThemeData themeFrom(Color primaryColor, Brightness brightness) {
-  final scheme = _colorSchemeFromColor(primaryColor, brightness);
+  final scheme = _colorSchemeFromColor(primaryColorsList[3], brightness);
+  print(scheme.surface.value.toRadixString(16));
   final theme = ThemeData(
     useMaterial3: true,
     brightness: scheme.brightness,
