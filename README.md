@@ -24,8 +24,8 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 
 <p float="center">
   <img src="screenshots/generated/android/android/light_metering-reflected.png" width="18.8%" />
-  <img src="screenshots/generated/android/android/light_metering-incident.png" width="18.8%" />
   <img src="screenshots/generated/android/android/light_settings.png" width="18.8%" />
+  <img src="screenshots/generated/android/android/light_timer.png" width="18.8%" />
   <img src="screenshots/generated/android/android/light_equipment-profiles.png" width="18.8%" />
   <img src="screenshots/generated/android/android/dark_metering-reflected.png" width="18.8%" />
 </p>
