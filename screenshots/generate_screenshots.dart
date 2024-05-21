@@ -195,10 +195,9 @@ extension on WidgetTester {
   }
 }
 
-extension WidgetTesterExposurePairsListActions on WidgetTester {
+extension on WidgetTester {
   Future<void> scrollToExposurePair({
     double ev = mockPhotoEv100,
-    StopType stopType = StopType.third,
     EquipmentProfile equipmentProfile = defaultEquipmentProfile,
     required ExposurePair exposurePair,
   }) async {
