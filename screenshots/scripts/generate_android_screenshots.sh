@@ -1,0 +1,1 @@
+sh screenshots/scripts/generate_screenshots.sh "Pixel 6"
