@@ -119,5 +119,15 @@
     "tooltipUseLightSensor": "Use lightsensor",
     "tooltipUseCamera": "Use camera",
     "tooltipOpenSettings": "Open settings",
-    "exposurePair": "Exposure pair"
+    "exposurePair": "Exposure pair",
+    "whatsnew": "What's new?",
+    "changesInVersion": "Changes in version {version}:",
+    "@changesInVersion": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
+    "close": "Close"
 }
