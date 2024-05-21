@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -5,15 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
+import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
+import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/screen_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
+import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
+import 'package:lightmeter/screens/timer/screen_timer.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,18 +42,23 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding();
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  void mockSharedPrefs(ThemeType theme, Color color) {
-    // ignore: invalid_use_of_visible_for_testing_member
+  void mockSharedPrefs({
+    int iso = 400,
+    int nd = 0,
+    double calibration = 0.0,
+    required ThemeType theme,
+    required Color color,
+  }) {
     SharedPreferences.setMockInitialValues({
       /// Metering values
       UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
-      UserPreferencesService.isoKey: 400,
-      UserPreferencesService.ndFilterKey: 0,
+      UserPreferencesService.isoKey: iso,
+      UserPreferencesService.ndFilterKey: nd,
 
       /// Metering settings
       UserPreferencesService.stopTypeKey: StopType.third.index,
-      UserPreferencesService.cameraEvCalibrationKey: 0.0,
-      UserPreferencesService.lightSensorEvCalibrationKey: 0.0,
+      UserPreferencesService.cameraEvCalibrationKey: calibration,
+      UserPreferencesService.lightSensorEvCalibrationKey: calibration,
       UserPreferencesService.meteringScreenLayoutKey: json.encode(
         {
           MeteringScreenLayoutFeature.equipmentProfiles: true,
@@ -55,6 +68,7 @@ void main() {
       ),
 
       /// General settings
+      UserPreferencesService.autostartTimerKey: false,
       UserPreferencesService.caffeineKey: true,
       UserPreferencesService.hapticsKey: true,
       UserPreferencesService.volumeActionKey: VolumeAction.shutter.toString(),
@@ -73,7 +87,7 @@ void main() {
 
   /// Generates several screenshots with the light theme
   testWidgets('Generate light theme screenshots', (tester) async {
-    mockSharedPrefs(ThemeType.light, _lightThemeColor);
+    mockSharedPrefs(theme: ThemeType.light, color: _lightThemeColor);
     await tester.pumpApplication(
       availableFilms: [_mockFilm],
       filmsInUse: [_mockFilm],
@@ -113,7 +127,7 @@ void main() {
   testWidgets(
     'Generate dark theme screenshots',
     (tester) async {
-      mockSharedPrefs(ThemeType.dark, _darkThemeColor);
+      mockSharedPrefs(theme: ThemeType.dark, color: _darkThemeColor);
       await tester.pumpApplication(
         availableFilms: [_mockFilm],
         filmsInUse: [_mockFilm],
@@ -122,6 +136,38 @@ void main() {
 
       await tester.takePhoto();
       await tester.takeScreenshotDark(binding, 'metering-reflected');
+    },
+  );
+
+  testWidgets(
+    'Generate timer screenshot',
+    (tester) async {
+      const timerExposurePair = ExposurePair(
+        ApertureValue(16, StopType.full),
+        ShutterSpeedValue(8, false, StopType.full),
+      );
+      mockSharedPrefs(
+        iso: 100,
+        nd: 8,
+        calibration: -0.3,
+        theme: ThemeType.light,
+        color: _lightThemeColor,
+      );
+      await tester.pumpApplication(
+        availableFilms: [_mockFilm],
+        filmsInUse: [_mockFilm],
+        selectedFilm: _mockFilm,
+      );
+
+      await tester.takePhoto();
+      await tester.scrollToExposurePair(
+        ev: 5,
+        exposurePair: timerExposurePair,
+      );
+      await tester.tap(find.text(timerExposurePair.shutterSpeed.toString()));
+      await tester.pumpAndSettle();
+      await tester.mockTimerResumedState(timerExposurePair.shutterSpeed);
+      await tester.takeScreenshotLight(binding, 'timer');
     },
   );
 }
@@ -146,5 +192,40 @@ extension on WidgetTester {
       ).toString(),
     );
     await pumpAndSettle();
+  }
+}
+
+extension WidgetTesterExposurePairsListActions on WidgetTester {
+  Future<void> scrollToExposurePair({
+    double ev = mockPhotoEv100,
+    StopType stopType = StopType.third,
+    EquipmentProfile equipmentProfile = defaultEquipmentProfile,
+    required ExposurePair exposurePair,
+  }) async {
+    final exposurePairs = MeteringContainerBuidler.buildExposureValues(
+      ev,
+      StopType.third,
+      equipmentProfile,
+    );
+
+    await scrollUntilVisible(
+      find.byWidgetPredicate((widget) => widget is Row && widget.key == ValueKey(exposurePairs.indexOf(exposurePair))),
+      56,
+      scrollable: find.descendant(of: find.byType(ExposurePairsList), matching: find.byType(Scrollable)),
+    );
+  }
+
+  Future<void> mockTimerResumedState(ShutterSpeedValue shutterSpeedValue) async {
+    await tap(find.byType(AnimatedCircluarButton));
+    await pump(Dimens.durationS);
+
+    late final skipTimerDuration =
+        Duration(milliseconds: (shutterSpeedValue.value * 0.35 * Duration.millisecondsPerSecond).toInt());
+    await pump(skipTimerDuration);
+
+    final TimerScreenState state = this.state(find.byType(TimerScreen));
+    state.startStopIconController.stop();
+    state.timelineController.stop();
+    await pump();
   }
 }
