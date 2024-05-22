@@ -65,8 +65,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/camera_stub_image.jpg
-    - assets/release_notes/release_notes_en.md
-    - assets/release_notes/release_notes_ru.md
+    - assets/release_notes/
 
 flutter_intl:
   enabled: true

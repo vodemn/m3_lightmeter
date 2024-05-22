@@ -97,7 +97,7 @@ jobs:
           artifacts: "m3_lightmeter.apk"
           skipIfReleaseExists: true
           tag: "v${{ github.event.inputs.version }}"
-          bodyFile: "assets/release_notes/release_notes_en.md"
+          bodyFile: "assets/release_notes/release_notes_en_${{ inputs.version }}.md"
 
   create-google-play-release:
     name: Create Google Play release
@@ -120,7 +120,7 @@ jobs:
 
       - name: Move release notes to a folder
         run: |
-          mv assets/release_notes/release_notes_en.md whatsnew-en-US
+          mv assets/release_notes/release_notes_en_${{ inputs.version }}.md whatsnew-en-US
           mkdir whatsnew
           mv whatsnew-en-US whatsnew
 
