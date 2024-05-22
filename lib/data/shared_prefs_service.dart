@@ -32,6 +32,8 @@ class UserPreferencesService {
   static const primaryColorKey = "primaryColor";
   static const dynamicColorKey = "dynamicColor";
 
+  static const seenChangelogVersionKey = "seenChangelogVersion";
+
   final SharedPreferences _sharedPreferences;
 
   UserPreferencesService(this._sharedPreferences) {
@@ -157,4 +159,7 @@ class UserPreferencesService {
 
   bool get dynamicColor => _sharedPreferences.getBool(dynamicColorKey) ?? false;
   set dynamicColor(bool value) => _sharedPreferences.setBool(dynamicColorKey, value);
+
+  String get seenChangelogVersion => _sharedPreferences.getString(seenChangelogVersionKey) ?? '';
+  set seenChangelogVersion(String value) => _sharedPreferences.setString(seenChangelogVersionKey, value);
 }
