@@ -19,9 +19,7 @@ class VersionListTile extends StatelessWidget {
                   builder: (_) => ReleaseNotesDialog(version: snapshot.data!.version),
                 )
             : null,
-        trailing: snapshot.data != null
-            ? Text(S.of(context).versionNumber(snapshot.data!.version, snapshot.data!.buildNumber))
-            : const SizedBox.shrink(),
+        trailing: Text(S.of(context).versionNumber(snapshot.data?.version ?? '', snapshot.data?.buildNumber ?? '')),
       ),
     );
   }
