@@ -10,6 +10,7 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
+import 'package:lightmeter/utils/platform_utils.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,7 +23,7 @@ void testToggleLayoutFeatures(String description) {
   group(
     description,
     () {
-      setUp(() {
+      setUp(() async {
         SharedPreferences.setMockInitialValues({
           /// Metering values
           UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
@@ -33,6 +34,7 @@ void testToggleLayoutFeatures(String description) {
               MeteringScreenLayoutFeature.filmPicker: true,
             }.toJson(),
           ),
+          UserPreferencesService.seenChangelogVersionKey: await const PlatformUtils().version,
         });
       });
 

@@ -17,6 +17,7 @@ import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widg
 import 'package:lightmeter/screens/settings/components/shared/dialog_range_picker/widget_dialog_picker_range.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:lightmeter/utils/double_to_zoom.dart';
+import 'package:lightmeter/utils/platform_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,7 +28,7 @@ import 'utils/expectations.dart';
 
 @isTest
 void testE2E(String description) {
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({
       /// Metering values
       UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
@@ -38,6 +39,8 @@ void testE2E(String description) {
           MeteringScreenLayoutFeature.filmPicker: true,
         }.toJson(),
       ),
+
+      UserPreferencesService.seenChangelogVersionKey: await const PlatformUtils().version,
     });
   });
 

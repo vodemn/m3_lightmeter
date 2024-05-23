@@ -22,6 +22,7 @@ import 'package:lightmeter/screens/settings/components/metering/components/equip
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
 import 'package:lightmeter/screens/timer/screen_timer.dart';
+import 'package:lightmeter/utils/platform_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,13 +43,13 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding();
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  void mockSharedPrefs({
+  Future<void> mockSharedPrefs({
     int iso = 400,
     int nd = 0,
     double calibration = 0.0,
     required ThemeType theme,
     required Color color,
-  }) {
+  }) async {
     SharedPreferences.setMockInitialValues({
       /// Metering values
       UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
@@ -78,6 +79,8 @@ void main() {
       UserPreferencesService.themeTypeKey: theme.index,
       UserPreferencesService.primaryColorKey: color.value,
       UserPreferencesService.dynamicColorKey: false,
+
+      UserPreferencesService.seenChangelogVersionKey: await const PlatformUtils().version,
     });
   }
 
@@ -87,7 +90,7 @@ void main() {
 
   /// Generates several screenshots with the light theme
   testWidgets('Generate light theme screenshots', (tester) async {
-    mockSharedPrefs(theme: ThemeType.light, color: _lightThemeColor);
+    await mockSharedPrefs(theme: ThemeType.light, color: _lightThemeColor);
     await tester.pumpApplication(
       availableFilms: [_mockFilm],
       filmsInUse: [_mockFilm],
@@ -127,7 +130,7 @@ void main() {
   testWidgets(
     'Generate dark theme screenshots',
     (tester) async {
-      mockSharedPrefs(theme: ThemeType.dark, color: _darkThemeColor);
+      await mockSharedPrefs(theme: ThemeType.dark, color: _darkThemeColor);
       await tester.pumpApplication(
         availableFilms: [_mockFilm],
         filmsInUse: [_mockFilm],
@@ -146,7 +149,7 @@ void main() {
         ApertureValue(16, StopType.full),
         ShutterSpeedValue(8, false, StopType.full),
       );
-      mockSharedPrefs(
+      await mockSharedPrefs(
         iso: 100,
         nd: 8,
         calibration: -0.3,

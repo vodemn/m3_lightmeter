@@ -4,6 +4,7 @@ import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/screens/shared/release_notes_dialog/bloc_release_notes.dart';
 import 'package:lightmeter/screens/shared/release_notes_dialog/state_release_notes.dart';
 import 'package:lightmeter/screens/shared/release_notes_dialog/widget_dialog_release_notes.dart';
+import 'package:lightmeter/utils/platform_utils.dart';
 
 class ReleaseNotesFlow extends StatelessWidget {
   final Widget child;
@@ -13,7 +14,10 @@ class ReleaseNotesFlow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ReleaseNotesBloc(ServicesProvider.of(context).userPreferencesService),
+      create: (context) => ReleaseNotesBloc(
+        ServicesProvider.of(context).userPreferencesService,
+        const PlatformUtils(),
+      ),
       child: BlocListener<ReleaseNotesBloc, ReleaseNotesState>(
         listener: (context, state) {
           if (state is ShowReleaseNotesDialogState) {
