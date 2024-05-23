@@ -14,7 +14,6 @@ class ReleaseNotesBloc extends Cubit<ReleaseNotesState> {
 
   Future<void> _showDialogIfNeeded() async {
     PackageInfo.fromPlatform().then((value) {
-      emit(ShowReleaseNotesDialogState(value.version));
       if (value.version != _userPreferencesService.seenChangelogVersion) {
         emit(ShowReleaseNotesDialogState(value.version));
       }
