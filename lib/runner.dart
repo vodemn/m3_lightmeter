@@ -25,7 +25,13 @@ Future<void> runLightmeterApp(Environment env) async {
       runApp(
         env.buildType == BuildType.dev
             ? IAPProducts(
-                products: [IAPProduct(storeId: IAPProductType.paidFeatures.storeId)],
+                products: [
+                  IAPProduct(
+                    storeId: IAPProductType.paidFeatures.storeId,
+                    status: IAPProductStatus.purchasable,
+                    price: '0.0\$',
+                  ),
+                ],
                 child: application,
               )
             : IAPProductsProvider(

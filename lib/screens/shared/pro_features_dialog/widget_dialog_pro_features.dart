@@ -52,7 +52,7 @@ class ProFeaturesDialog extends StatelessWidget {
               IAPProductsProvider.maybeOf(context)?.buy(IAPProductType.paidFeatures);
             });
           },
-          child: Text(S.of(context).unlock),
+          child: Text(S.of(context).unlockFor(IAPProducts.productOf(context, IAPProductType.paidFeatures)!.price)),
         ),
       ],
     );

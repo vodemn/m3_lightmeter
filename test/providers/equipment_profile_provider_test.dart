@@ -26,6 +26,7 @@ void main() {
           IAPProduct(
             storeId: IAPProductType.paidFeatures.storeId,
             status: productStatus,
+            price: '0.0\$',
           ),
         ],
         child: EquipmentProfileProvider(

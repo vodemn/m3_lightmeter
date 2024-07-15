@@ -7,6 +7,8 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 import '../../../application_mock.dart';
 
+const _price = '0.0\$';
+
 void main() {
   Future<void> pumpApplication(WidgetTester tester) async {
     await tester.pumpWidget(
@@ -14,6 +16,7 @@ void main() {
         products: [
           IAPProduct(
             storeId: IAPProductType.paidFeatures.storeId,
+            price: _price,
           ),
         ],
         child: const WidgetTestApplicationMock(
@@ -33,9 +36,9 @@ void main() {
       expect(find.byType(TransparentDialog), findsOneWidget);
       expect(find.text(S.current.proFeatures), findsNWidgets(2));
       expect(find.text(S.current.cancel), findsOneWidget);
-      expect(find.text(S.current.unlock), findsOneWidget);
+      expect(find.text(S.current.unlockFor(_price)), findsOneWidget);
 
-      await tester.tap(find.text(S.current.unlock));
+      await tester.tap(find.text(S.current.unlockFor(_price)));
       await tester.pumpAndSettle();
       expect(find.byType(TransparentDialog), findsNothing);
     },
@@ -50,7 +53,7 @@ void main() {
       expect(find.byType(TransparentDialog), findsOneWidget);
       expect(find.text(S.current.proFeatures), findsNWidgets(2));
       expect(find.text(S.current.cancel), findsOneWidget);
-      expect(find.text(S.current.unlock), findsOneWidget);
+      expect(find.text(S.current.unlockFor(_price)), findsOneWidget);
 
       await tester.tap(find.text(S.current.cancel));
       await tester.pumpAndSettle();
