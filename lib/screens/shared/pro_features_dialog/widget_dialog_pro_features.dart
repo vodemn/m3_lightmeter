@@ -12,10 +12,10 @@ class ProFeaturesDialog extends StatelessWidget {
 
   double height(BuildContext context) => TransparentDialog.height(
         context,
-        title: S.of(context).proFeatures,
+        title: S.of(context).proFeaturesTitle,
         contextHeight: dialogTextHeight(
           context,
-          S.of(context).unlockProFeaturesDescription,
+          S.of(context).proFeaturesPromoText,
           Theme.of(context).textTheme.bodyMedium,
           Dimens.paddingL * 2,
         ),
@@ -25,14 +25,14 @@ class ProFeaturesDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return TransparentDialog(
       icon: Icons.star_outlined,
-      title: S.of(context).proFeatures,
+      title: S.of(context).proFeaturesTitle,
       scrollableContent: false,
       content: Flexible(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
             child: Text(
-              S.of(context).unlockProFeaturesDescription,
+              S.of(context).proFeaturesPromoText,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),

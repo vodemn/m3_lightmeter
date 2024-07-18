@@ -13,7 +13,7 @@ class BuyProListTile extends StatelessWidget {
     final isPending = status == IAPProductStatus.purchased || status == null;
     return ListTile(
       leading: const Icon(Icons.star_outlined),
-      title: Text(S.of(context).unlockProFeatures),
+      title: Text(S.of(context).proFeaturesTitle),
       onTap: !isPending
           ? () {
               showDialog(

@@ -34,7 +34,7 @@ void main() {
       await tester.tap(find.byType(BuyProListTile));
       await tester.pumpAndSettle();
       expect(find.byType(TransparentDialog), findsOneWidget);
-      expect(find.text(S.current.proFeatures), findsNWidgets(2));
+      expect(find.text(S.current.proFeaturesTitle), findsNWidgets(2));
       expect(find.text(S.current.cancel), findsOneWidget);
       expect(find.text(S.current.unlockFor(_price)), findsOneWidget);
 
@@ -51,7 +51,7 @@ void main() {
       await tester.tap(find.byType(BuyProListTile));
       await tester.pumpAndSettle();
       expect(find.byType(TransparentDialog), findsOneWidget);
-      expect(find.text(S.current.proFeatures), findsNWidgets(2));
+      expect(find.text(S.current.proFeaturesTitle), findsNWidgets(2));
       expect(find.text(S.current.cancel), findsOneWidget);
       expect(find.text(S.current.unlockFor(_price)), findsOneWidget);
 
