@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/films_provider.dart';
 
 enum AppFeature {
   reflectedLightMetering,

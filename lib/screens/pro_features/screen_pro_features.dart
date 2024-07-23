@@ -168,9 +168,6 @@ class _FeatureItem extends StatelessWidget {
 }
 
 class _FeatureHighlight extends StatelessWidget {
-  static double? _freeWidth;
-  static double? _proWidth;
-
   final bool highlight;
   final bool roundedTop;
   final bool roundedBottom;
@@ -185,20 +182,14 @@ class _FeatureHighlight extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _FeatureHighlight._freeWidth ??= textSize(
-      S.of(context).featuresFree,
-      Theme.of(context).textTheme.bodyMedium,
-      MediaQuery.sizeOf(context).width,
-    ).width;
-    _FeatureHighlight._proWidth ??= textSize(
-      S.of(context).featuresPro,
-      Theme.of(context).textTheme.bodyMedium,
-      MediaQuery.sizeOf(context).width,
-    ).width;
     return Container(
       constraints: BoxConstraints(
-        minWidth:
-            ((highlight ? _FeatureHighlight._proWidth : _FeatureHighlight._freeWidth) ?? 0.0) + Dimens.paddingM * 2,
+        minWidth: textSize(
+              highlight ? S.of(context).featuresPro : S.of(context).featuresFree,
+              Theme.of(context).textTheme.bodyMedium,
+              MediaQuery.sizeOf(context).width,
+            ).width +
+            Dimens.paddingM * 2,
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: Dimens.paddingM,
