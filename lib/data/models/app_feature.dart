@@ -13,6 +13,10 @@ enum AppFeature {
   timer,
   mainScreenCustomization;
 
+  static List<AppFeature> get androidFeatures => values;
+
+  static List<AppFeature> get iosFeatures => values.where((f) => f != AppFeature.incidedntLightMetering).toList();
+
   String name(BuildContext context) {
     switch (this) {
       case AppFeature.reflectedLightMetering:

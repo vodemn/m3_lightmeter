@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/app_feature.dart';
 import 'package:lightmeter/generated/l10n.dart';
@@ -9,7 +11,9 @@ import 'package:lightmeter/utils/text_height.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class ProFeaturesScreen extends StatelessWidget {
-  const ProFeaturesScreen({super.key});
+  final features = Platform.isAndroid ? AppFeature.androidFeatures : AppFeature.iosFeatures;
+
+  ProFeaturesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +51,8 @@ class ProFeaturesScreen extends StatelessWidget {
               ),
               const SliverToBoxAdapter(child: _FeaturesHeader()),
               SliverList.separated(
-                itemCount: AppFeature.values.length,
-                itemBuilder: (context, index) {
-                  return _FeatureItem(feature: AppFeature.values[index]);
-                },
+                itemCount: features.length,
+                itemBuilder: (_, index) => _FeatureItem(feature: features[index]),
                 separatorBuilder: (_, __) => const Padding(
                   padding: EdgeInsets.symmetric(horizontal: Dimens.paddingM),
                   child: Divider(),

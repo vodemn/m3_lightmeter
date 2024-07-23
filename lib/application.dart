@@ -45,7 +45,7 @@ class Application extends StatelessWidget {
         routes: {
           "metering": (_) => const ReleaseNotesFlow(child: MeteringFlow()),
           "settings": (_) => const SettingsFlow(),
-          "proFeatures": (_) => const ProFeaturesScreen(),
+          "proFeatures": (_) => ProFeaturesScreen(),
           "timer": (context) => TimerFlow(args: ModalRoute.of(context)!.settings.arguments! as TimerFlowArgs),
         },
       ),
