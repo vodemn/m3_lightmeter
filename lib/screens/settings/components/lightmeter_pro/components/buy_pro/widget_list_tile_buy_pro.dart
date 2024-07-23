@@ -15,7 +15,7 @@ class BuyProListTile extends StatelessWidget {
       title: Text(S.of(context).getPro),
       onTap: !isPending
           ? () {
-              Navigator.of(context).pushNamed('proFeatures');
+              Navigator.of(context).pushNamed("lightmeterPro");
             }
           : null,
       trailing: isPending

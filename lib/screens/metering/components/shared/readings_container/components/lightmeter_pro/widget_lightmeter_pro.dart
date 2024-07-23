@@ -9,7 +9,7 @@ class LightmeterProAnimatedDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed('proFeatures');
+        Navigator.of(context).pushNamed("lightmeterPro");
       },
       child: ReadingValueContainer(
         color: Theme.of(context).colorScheme.secondary,
