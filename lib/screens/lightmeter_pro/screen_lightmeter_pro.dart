@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/app_feature.dart';
 import 'package:lightmeter/generated/l10n.dart';
@@ -11,7 +10,8 @@ import 'package:lightmeter/utils/text_height.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class LightmeterProScreen extends StatelessWidget {
-  final features = Platform.isAndroid ? AppFeature.androidFeatures : AppFeature.iosFeatures;
+  final features =
+      defaultTargetPlatform == TargetPlatform.android ? AppFeature.androidFeatures : AppFeature.iosFeatures;
 
   LightmeterProScreen({super.key});
 
@@ -38,7 +38,7 @@ class LightmeterProScreen extends StatelessWidget {
                     Dimens.paddingM,
                     0,
                     Dimens.paddingM,
-                    Dimens.paddingM,
+                    Dimens.paddingS,
                   ),
                   child: Text(
                     S.of(context).proFeaturesWhatsIncluded,

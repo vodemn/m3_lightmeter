@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../integration_test/utils/finder_actions.dart';
 import '../../../integration_test/utils/platform_channel_mock.dart';
 import '../../application_mock.dart';
+import '../../utils/golden_test_set_theme.dart';
 
 class _MeteringScreenConfig {
   final IAPProductStatus iapProductStatus;
@@ -51,16 +52,6 @@ void main() {
     if (UserPreferencesProvider.evSourceTypeOf(context) != evSourceType) {
       UserPreferencesProvider.of(context).toggleEvSourceType();
     }
-    await tester.pumpAndSettle();
-  }
-
-  Future<void> setTheme(WidgetTester tester, Key scenarioWidgetKey, ThemeType themeType) async {
-    final flow = find.descendant(
-      of: find.byKey(scenarioWidgetKey),
-      matching: find.byType(MeteringFlow),
-    );
-    final BuildContext context = tester.element(flow);
-    UserPreferencesProvider.of(context).setThemeType(themeType);
     await tester.pumpAndSettle();
   }
 
@@ -110,7 +101,7 @@ void main() {
           onCreate: (scenarioWidgetKey) async {
             await setEvSource(tester, scenarioWidgetKey, scenario.evSourceType);
             if (scenarioWidgetKey.toString().contains('Dark')) {
-              await setTheme(tester, scenarioWidgetKey, ThemeType.dark);
+              await setTheme<MeteringFlow>(tester, scenarioWidgetKey, ThemeType.dark);
             }
             if (scenario.evSourceType == EvSourceType.camera) {
               await takePhoto(tester, scenarioWidgetKey);
