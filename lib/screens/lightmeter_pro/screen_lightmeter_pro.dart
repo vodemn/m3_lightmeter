@@ -10,10 +10,10 @@ import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/utils/text_height.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
-class ProFeaturesScreen extends StatelessWidget {
+class LightmeterProScreen extends StatelessWidget {
   final features = Platform.isAndroid ? AppFeature.androidFeatures : AppFeature.iosFeatures;
 
-  ProFeaturesScreen({super.key});
+  LightmeterProScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
