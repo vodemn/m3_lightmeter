@@ -4,7 +4,6 @@ import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
-import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
 import 'package:lightmeter/screens/timer/flow_timer.dart';
@@ -13,6 +12,7 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../application_mock.dart';
+import '../../utils/golden_test_set_theme.dart';
 
 class _TimerScreenConfig {
   final ShutterSpeedValue shutterSpeedValue;
@@ -52,16 +52,6 @@ final _testScenarios = [
 );
 
 void main() {
-  Future<void> setTheme(WidgetTester tester, Key scenarioWidgetKey, ThemeType themeType) async {
-    final flow = find.descendant(
-      of: find.byKey(scenarioWidgetKey),
-      matching: find.byType(TimerFlow),
-    );
-    final BuildContext context = tester.element(flow);
-    UserPreferencesProvider.of(context).setThemeType(themeType);
-    await tester.pumpAndSettle();
-  }
-
   Future<void> toggleTimer(WidgetTester tester, Key scenarioWidgetKey) async {
     final button = find.descendant(
       of: find.byKey(scenarioWidgetKey),
@@ -98,7 +88,7 @@ void main() {
           widget: _MockTimerFlow(scenario.shutterSpeedValue),
           onCreate: (scenarioWidgetKey) async {
             if (scenarioWidgetKey.toString().contains('Dark')) {
-              await setTheme(tester, scenarioWidgetKey, ThemeType.dark);
+              await setTheme<TimerFlow>(tester, scenarioWidgetKey, ThemeType.dark);
             }
             if (!scenario.isStopped) {
               await toggleTimer(tester, scenarioWidgetKey);

@@ -91,6 +91,7 @@ class _GoldenTestApplicationMockState extends State<GoldenTestApplicationMock> {
         IAPProduct(
           storeId: IAPProductType.paidFeatures.storeId,
           status: widget.productStatus,
+          price: '0.0\$',
         ),
       ],
       child: ApplicationWrapper(

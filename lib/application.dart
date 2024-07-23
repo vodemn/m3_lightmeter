@@ -5,6 +5,7 @@ import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
+import 'package:lightmeter/screens/lightmeter_pro/screen_lightmeter_pro.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
 import 'package:lightmeter/screens/shared/release_notes_dialog/flow_dialog_release_notes.dart';
@@ -44,6 +45,7 @@ class Application extends StatelessWidget {
         routes: {
           "metering": (_) => const ReleaseNotesFlow(child: MeteringFlow()),
           "settings": (_) => const SettingsFlow(),
+          "lightmeterPro": (_) => LightmeterProScreen(),
           "timer": (context) => TimerFlow(args: ModalRoute.of(context)!.settings.arguments! as TimerFlowArgs),
         },
       ),

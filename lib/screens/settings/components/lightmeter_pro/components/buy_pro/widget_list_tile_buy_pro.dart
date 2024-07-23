@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/shared/pro_features_dialog/widget_dialog_pro_features.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class BuyProListTile extends StatelessWidget {
@@ -12,14 +11,11 @@ class BuyProListTile extends StatelessWidget {
     final status = IAPProducts.productOf(context, IAPProductType.paidFeatures)?.status;
     final isPending = status == IAPProductStatus.purchased || status == null;
     return ListTile(
-      leading: const Icon(Icons.star_outlined),
-      title: Text(S.of(context).unlockProFeatures),
+      leading: const Icon(Icons.bolt),
+      title: Text(S.of(context).getPro),
       onTap: !isPending
           ? () {
-              showDialog(
-                context: context,
-                builder: (_) => const Dialog(child: ProFeaturesDialog()),
-              );
+              Navigator.of(context).pushNamed("lightmeterPro");
             }
           : null,
       trailing: isPending
