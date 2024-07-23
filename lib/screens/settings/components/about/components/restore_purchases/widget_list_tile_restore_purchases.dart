@@ -10,7 +10,7 @@ class RestorePurchasesListTile extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.restore_outlined),
       title: Text(S.of(context).restorePurchases),
-      onTap: IAPProductsProvider.of(context).restorePurchases,
+      onTap: IAPProductsProvider.maybeOf(context)?.restorePurchases,
     );
   }
 }
