@@ -142,7 +142,7 @@ class _FeatureItem extends StatelessWidget {
                     vertical: Dimens.paddingS,
                   ),
                   child: Text(
-                    feature.name,
+                    feature.name(context),
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),

@@ -104,9 +104,31 @@
         }
     },
     "proFeatures": "Fonctionnalités professionnelles",
-    "unlockProFeatures": "Déverrouiller les fonctionnalités professionnelles",
-    "unlockProFeaturesDescription": "Déverrouillez des fonctions professionnelles:\n \u2022 Profils d'équipement contenant des filtres pour l'ouverture, la vitesse d'obturation et plus encore, ainsi qu'une liste de films avec compensation pour ce que l'on appelle l'échec de réciprocité\n \u2022 Mesure spot & Histogramme\n \u2022 Et plus encore!\n\nEn débloquant les fonctionnalités Pro, vous soutenez le développement et permettez d'ajouter de nouvelles fonctionnalités à l'application.",
+    "proFeaturesTitle": "Lightmeter Pro",
     "unlock": "Déverrouiller",
+    "featuresFree": "Gratuit",
+    "featuresPro": "Pro",
+    "proFeaturesPromoText": "Lightmeter Pro offre tout ce dont vous avez besoin pour obtenir les meilleurs clichés!",
+    "proFeaturesWhatsIncluded": "Qu'est-ce qui est inclus?",
+    "featureReflectedLightMetering": "Mesure de la lumière réfléchie",
+    "featureIncidentLightMetering": "Mesure de la lumière incidente",
+    "featureIsoAndNdValues": "Large gamme de valeurs ISO et de filtres ND",
+    "featureTheme": "Personnalisation du thème",
+    "featureSpotMetering": "Mesure spot",
+    "featureHistogram": "Histogramme",
+    "featureListOfFilms": "Liste de plus de 20 films avec des formules de correction",
+    "featureEquipmentProfiles": "Profils de l'équipement",
+    "featureTimer": "Minuteur intégré pour longues expositions",
+    "featureMeteringScreenLayout": "Écran principal personnalisable",
+    "proFeaturesSupportText": "En achetant Lightmeter Pro, vous soutenez le développement et permettez l'ajout de nouvelles fonctionnalités à l'application.",
+    "unlockFor": "Déverrouiller pour {price}",
+    "@unlockFor": {
+        "price": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
     "tooltipAdd": "Ajouter",
     "tooltipClose": "Fermer",
     "tooltipExpand": "Élargir",

@@ -104,9 +104,31 @@
         }
     },
     "proFeatures": "Профессиональные настройки",
-    "unlockProFeatures": "Разблокировать профессиональные настройки",
-    "unlockProFeaturesDescription": "Вы можете разблокировать профессиональные настройки:\n \u2022 Профили оборудования, содержащие фильтры для диафрагмы, выдержки и других значений\n \u2022 Список пленок с компенсацией эффекта Шварцшильда\n \u2022 Точечный замер и гистограмма\n \u2022 И другие возможности!\n\nПолучая доступ к профессиональным настройкам, вы поддерживаете разработку и делаете возможным появление новых функций в приложении.",
+    "proFeaturesTitle": "Lightmeter Pro",
     "unlock": "Разблокировать",
+    "featuresFree": "Бесплатно",
+    "featuresPro": "Pro",
+    "proFeaturesPromoText": "Lightmeter Pro предоставляет все необходимое для получения лучших снимков!",
+    "proFeaturesWhatsIncluded": "Что включено?",
+    "featureReflectedLightMetering": "Замер отраженного света",
+    "featureIncidentLightMetering": "Замер падающего света",
+    "featureIsoAndNdValues": "Широкий диапазон значений ISO и фильтров ND",
+    "featureTheme": "Настройка темы",
+    "featureSpotMetering": "Точечный замер",
+    "featureHistogram": "Гистограмма",
+    "featureListOfFilms": "Список из 20+ фильмов с формулами коррекции",
+    "featureEquipmentProfiles": "Профили оборудования",
+    "featureTimer": "Встроенный таймер для длинных выдержек",
+    "featureMeteringScreenLayout": "Настраиваемый главный экран",
+    "proFeaturesSupportText": "Покупая Lightmeter Pro, вы поддерживаете разработку и делаете возможным добавление новых функций в приложение.",
+    "unlockFor": "Разблокировать за {price}",
+    "@unlockFor": {
+        "price": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
     "tooltipAdd": "Добавить",
     "tooltipClose": "Закрыть",
     "tooltipExpand": "Развернуть",
