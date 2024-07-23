@@ -12,12 +12,12 @@ class LightmeterProAnimatedDialog extends StatelessWidget {
         Navigator.of(context).pushNamed('proFeatures');
       },
       child: ReadingValueContainer(
-        color: Theme.of(context).colorScheme.errorContainer,
-        textColor: Theme.of(context).colorScheme.onErrorContainer,
+        color: Theme.of(context).colorScheme.secondary,
+        textColor: Theme.of(context).colorScheme.onSecondary,
         values: [
           ReadingValue(
             label: S.of(context).proFeaturesTitle,
-            value: S.of(context).unlock,
+            value: S.of(context).getPro,
           ),
         ],
       ),

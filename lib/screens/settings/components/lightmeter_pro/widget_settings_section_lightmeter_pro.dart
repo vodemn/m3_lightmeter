@@ -9,6 +9,8 @@ class LightmeterProSettingsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingsSection(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
+      foregroundColor: Theme.of(context).colorScheme.onSecondary,
       title: S.of(context).proFeaturesTitle,
       children: const [BuyProListTile()],
     );

@@ -67,8 +67,8 @@
     "equipmentProfile": "Оборудование",
     "equipmentProfiles": "Профили оборудования",
     "tapToAdd": "Нажмите, чтобы добавить",
-    "filmsInUse": "Используемые пленки",
-    "filmsInUseDescription": "Выберите пленки, которыми вы пользуетесь.",
+    "filmsInUse": "Используемые плёнки",
+    "filmsInUseDescription": "Выберите плёнки, которыми вы пользуетесь.",
     "general": "Общие",
     "keepScreenOn": "Запрет блокировки",
     "haptics": "Вибрация",
@@ -103,9 +103,8 @@
             }
         }
     },
-    "proFeatures": "Профессиональные настройки",
     "proFeaturesTitle": "Lightmeter Pro",
-    "unlock": "Разблокировать",
+    "getPro": "Купить Pro",
     "featuresFree": "Бесплатно",
     "featuresPro": "Pro",
     "proFeaturesPromoText": "Lightmeter Pro предоставляет все необходимое для получения лучших снимков!",
@@ -116,13 +115,13 @@
     "featureTheme": "Настройка темы",
     "featureSpotMetering": "Точечный замер",
     "featureHistogram": "Гистограмма",
-    "featureListOfFilms": "Список из 20+ фильмов с формулами коррекции",
+    "featureListOfFilms": "Список из 20+ плёнок с формулами коррекции",
     "featureEquipmentProfiles": "Профили оборудования",
     "featureTimer": "Встроенный таймер для длинных выдержек",
     "featureMeteringScreenLayout": "Настраиваемый главный экран",
     "proFeaturesSupportText": "Покупая Lightmeter Pro, вы поддерживаете разработку и делаете возможным добавление новых функций в приложение.",
-    "unlockFor": "Разблокировать за {price}",
-    "@unlockFor": {
+    "getNowFor": "Купить за {price}",
+    "@getNowFor": {
         "price": {
             "version": {
                 "type": "String"

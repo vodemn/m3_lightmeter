@@ -11,8 +11,8 @@ class BuyProListTile extends StatelessWidget {
     final status = IAPProducts.productOf(context, IAPProductType.paidFeatures)?.status;
     final isPending = status == IAPProductStatus.purchased || status == null;
     return ListTile(
-      leading: const Icon(Icons.star_outlined),
-      title: Text(S.of(context).unlock),
+      leading: const Icon(Icons.bolt),
+      title: Text(S.of(context).getPro),
       onTap: !isPending
           ? () {
               Navigator.of(context).pushNamed('proFeatures');

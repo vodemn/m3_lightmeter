@@ -103,8 +103,8 @@
             }
         }
     },
-    "unlock": "Unlock",
     "proFeaturesTitle": "Lightmeter Pro",
+    "getPro": "Get Pro now",
     "featuresFree": "Free",
     "featuresPro": "Pro",
     "proFeaturesPromoText": "Lightmeter Pro delivers everything you need to get the best shots!",
@@ -120,8 +120,8 @@
     "featureTimer": "Built-in timer for long exposure",
     "featureMeteringScreenLayout": "Customizable main screen",
     "proFeaturesSupportText": "By purchasing Lightmeter Pro you support the development and make it possible to add new features to the app.",
-    "unlockFor": "Unlock for {price}",
-    "@unlockFor": {
+    "getNowFor": "Get now for {price}",
+    "@getNowFor": {
         "price": {
             "version": {
                 "type": "String"

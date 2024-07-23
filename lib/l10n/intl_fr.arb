@@ -103,8 +103,8 @@
             }
         }
     },
-    "proFeatures": "Fonctionnalités professionnelles",
     "proFeaturesTitle": "Lightmeter Pro",
+    "getPro": "Acheter Pro",
     "unlock": "Déverrouiller",
     "featuresFree": "Gratuit",
     "featuresPro": "Pro",
@@ -121,8 +121,8 @@
     "featureTimer": "Minuteur intégré pour longues expositions",
     "featureMeteringScreenLayout": "Écran principal personnalisable",
     "proFeaturesSupportText": "En achetant Lightmeter Pro, vous soutenez le développement et permettez l'ajout de nouvelles fonctionnalités à l'application.",
-    "unlockFor": "Déverrouiller pour {price}",
-    "@unlockFor": {
+    "getNowFor": "Acheter maintenant {price}",
+    "@getNowFor": {
         "price": {
             "version": {
                 "type": "String"

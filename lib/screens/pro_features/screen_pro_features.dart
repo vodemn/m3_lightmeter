@@ -25,10 +25,7 @@ class ProFeaturesScreen extends StatelessWidget {
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Dimens.paddingM,
-                    vertical: Dimens.paddingS,
-                  ),
+                  padding: const EdgeInsets.all(Dimens.paddingM),
                   child: Text(
                     S.of(context).proFeaturesPromoText,
                     style: Theme.of(context).textTheme.bodyLarge,
@@ -39,9 +36,9 @@ class ProFeaturesScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
                     Dimens.paddingM,
-                    Dimens.paddingM,
-                    Dimens.paddingM,
                     0,
+                    Dimens.paddingM,
+                    Dimens.paddingM,
                   ),
                   child: Text(
                     S.of(context).proFeaturesWhatsIncluded,
@@ -82,8 +79,9 @@ class ProFeaturesScreen extends StatelessWidget {
                   ?.analytics
                   .setCustomKey('iap_product_type', IAPProductType.paidFeatures.storeId);
               IAPProductsProvider.maybeOf(context)?.buy(IAPProductType.paidFeatures);
+              Navigator.of(context).pop();
             },
-            child: Text(S.of(context).unlockFor(IAPProducts.productOf(context, IAPProductType.paidFeatures)!.price)),
+            child: Text(S.of(context).getNowFor(IAPProducts.productOf(context, IAPProductType.paidFeatures)!.price)),
           ),
         ),
       ],

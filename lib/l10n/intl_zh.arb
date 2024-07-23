@@ -104,7 +104,7 @@
         }
     },
     "proFeatures": "专业功能",
-    "unlock": "解锁",
+    "getPro": "购买专业版",
     "featuresFree": "免费",
     "featuresPro": "专业版",
     "proFeaturesPromoText": "Lightmeter Pro 提供您需要的一切，助您拍出最佳照片！",
@@ -120,8 +120,8 @@
     "featureTimer": "内置长曝光计时器",
     "featureMeteringScreenLayout": "可自定义的主屏幕",
     "proFeaturesSupportText": "通过购买Lightmeter Pro，您支持开发工作，并使添加新功能成为可能。",
-    "unlockFor": "解锁价格 {price}",
-    "@unlockFor": {
+    "getNowFor": "立即获取  {price}",
+    "@getNowFor": {
         "price": {
             "version": {
                 "type": "String"
