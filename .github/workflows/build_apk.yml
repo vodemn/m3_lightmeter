@@ -68,7 +68,7 @@ env:
 jobs:
   build-android:
     name: Build ${{ inputs.binary-type == 'apk' && '.apk' || '.aab' }}
-    runs-on: macos-11
+    runs-on: macos-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v3
