@@ -8,12 +8,13 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/provider_bottom_controls.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/widget_bottom_controls.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/provider_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/light_sensor_container/provider_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:lightmeter/screens/metering/utils/listener_equipment_profiles.dart';
+import 'package:lightmeter/screens/timer/flow_timer.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreen extends StatelessWidget {
@@ -23,7 +24,6 @@ class MeteringScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return _InheritedListeners(
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
         body: Column(
           children: [
             Expanded(
@@ -34,11 +34,20 @@ class MeteringScreen extends StatelessWidget {
                   nd: state.nd,
                   onIsoChanged: (value) => context.read<MeteringBloc>().add(IsoChangedEvent(value)),
                   onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
+                  onExposurePairTap: (value) => pushNamed(
+                    context,
+                    'timer',
+                    arguments: TimerFlowArgs(
+                      exposurePair: value,
+                      isoValue: state.iso,
+                      ndValue: state.nd,
+                    ),
+                  ),
                 ),
               ),
             ),
             BlocBuilder<MeteringBloc, MeteringState>(
-              builder: (context, state) => MeteringBottomControlsProvider(
+              builder: (context, state) => MeteringBottomControls(
                 ev: state is MeteringDataState ? state.ev : null,
                 ev100: state is MeteringDataState ? state.ev100 : null,
                 isMetering: state.isMetering,
@@ -46,18 +55,20 @@ class MeteringScreen extends StatelessWidget {
                     ? UserPreferencesProvider.of(context).toggleEvSourceType
                     : null,
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
-                onSettings: () {
-                  context.read<MeteringBloc>().add(const SettingsOpenedEvent());
-                  Navigator.pushNamed(context, 'settings').then((value) {
-                    context.read<MeteringBloc>().add(const SettingsClosedEvent());
-                  });
-                },
+                onSettings: () => pushNamed(context, 'settings'),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void pushNamed(BuildContext context, String routeName, {Object? arguments}) {
+    context.read<MeteringBloc>().add(const ScreenOnTopOpenedEvent());
+    Navigator.pushNamed(context, routeName, arguments: arguments).then((_) {
+      context.read<MeteringBloc>().add(const ScreenOnTopClosedEvent());
+    });
   }
 }
 
@@ -83,6 +94,7 @@ class MeteringContainerBuidler extends StatelessWidget {
   final NdValue nd;
   final ValueChanged<IsoValue> onIsoChanged;
   final ValueChanged<NdValue> onNdChanged;
+  final ValueChanged<ExposurePair> onExposurePairTap;
 
   const MeteringContainerBuidler({
     required this.ev,
@@ -90,6 +102,7 @@ class MeteringContainerBuidler extends StatelessWidget {
     required this.nd,
     required this.onIsoChanged,
     required this.onNdChanged,
+    required this.onExposurePairTap,
   });
 
   @override
@@ -113,6 +126,7 @@ class MeteringContainerBuidler extends StatelessWidget {
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,
+            onExposurePairTap: onExposurePairTap,
           )
         : LightSensorContainerProvider(
             fastest: fastest,
@@ -122,6 +136,7 @@ class MeteringContainerBuidler extends StatelessWidget {
             onIsoChanged: onIsoChanged,
             onNdChanged: onNdChanged,
             exposurePairs: exposurePairs,
+            onExposurePairTap: onExposurePairTap,
           );
   }
 
@@ -158,22 +173,40 @@ class MeteringContainerBuidler extends StatelessWidget {
       shutterSpeedOffset = 0;
     }
 
-    final int itemsCount = min(
+    int itemsCount = min(
           apertureValues.length + shutterSpeedOffset,
           shutterSpeedValues.length + apertureOffset,
         ) -
         max(apertureOffset, shutterSpeedOffset);
 
-    if (itemsCount <= 0) {
+    if (apertureOffset == apertureValues.length) {
       return List.empty();
+    }
+
+    final lastPreCalcShutterSpeed =
+        shutterSpeedValues.elementAtOrNull(itemsCount - 1 + shutterSpeedOffset) ?? shutterSpeedValues.last;
+    final preCalculatedItemsCount = itemsCount;
+    if (itemsCount <= 0) {
+      itemsCount = apertureValues.length;
+    } else {
+      itemsCount += (apertureValues.length - 1) - (itemsCount - 1 + apertureOffset);
     }
 
     final exposurePairs = List.generate(
       itemsCount,
-      (index) => ExposurePair(
-        apertureValues[index + apertureOffset],
-        shutterSpeedValues[index + shutterSpeedOffset],
-      ),
+      (index) {
+        final stopDifference = (index - (preCalculatedItemsCount - 1)) / (stopType.index + 1);
+        final newShutterSpeed = log2(lastPreCalcShutterSpeed.rawValue) + stopDifference;
+        return ExposurePair(
+          apertureValues[index + apertureOffset],
+          shutterSpeedValues.elementAtOrNull(index + shutterSpeedOffset) ??
+              ShutterSpeedValue(
+                calcShutterSpeed(newShutterSpeed),
+                false,
+                stopDifference == stopDifference.roundToDouble() ? StopType.full : stopType,
+              ),
+        );
+      },
       growable: false,
     );
 
@@ -191,7 +224,9 @@ class MeteringContainerBuidler extends StatelessWidget {
     );
     final endCutEV = max(
       equipmentApertureValues.last.difference(exposurePairs.last.aperture),
-      equipmentShutterSpeedValues.last.difference(exposurePairs.last.shutterSpeed),
+      equipmentShutterSpeedValues.last != ShutterSpeedValue.values.last
+          ? equipmentShutterSpeedValues.last.difference(exposurePairs.last.shutterSpeed)
+          : double.negativeInfinity,
     );
 
     final startCut = (startCutEV * (stopType.index + 1)).round().clamp(0, itemsCount);
@@ -201,5 +236,14 @@ class MeteringContainerBuidler extends StatelessWidget {
       return const [];
     }
     return exposurePairs.sublist(startCut, itemsCount - endCut);
+  }
+}
+
+double calcShutterSpeed(double stopValue) {
+  final shutterSpeed = pow(2, stopValue);
+  if (stopValue < 1.5) {
+    return (shutterSpeed * 10).round() / 10;
+  } else {
+    return shutterSpeed.roundToDouble();
   }
 }

@@ -27,7 +27,8 @@ void main() {
           IAPProduct(
             storeId: IAPProductType.paidFeatures.storeId,
             status: IAPProductStatus.purchased,
-          )
+            price: '0.0\$',
+          ),
         ],
         child: FilmsProvider(
           storageService: mockIAPStorageService,

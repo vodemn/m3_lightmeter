@@ -7,7 +7,7 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/metering/components/bottom_controls/components/measure_button/widget_button_measure.dart';
+import 'package:lightmeter/screens/metering/components/bottom_controls/widget_bottom_controls.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
@@ -16,6 +16,8 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widget_dialog_filter.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_range_picker/widget_dialog_picker_range.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
+import 'package:lightmeter/utils/double_to_zoom.dart';
+import 'package:lightmeter/utils/platform_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +28,7 @@ import 'utils/expectations.dart';
 
 @isTest
 void testE2E(String description) {
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({
       /// Metering values
       UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
@@ -37,18 +39,20 @@ void testE2E(String description) {
           MeteringScreenLayoutFeature.filmPicker: true,
         }.toJson(),
       ),
+
+      UserPreferencesService.seenChangelogVersionKey: await const PlatformUtils().version,
     });
   });
 
   testWidgets(
     description,
     (tester) async {
-      await tester.pumpApplication(equipmentProfiles: [], films: []);
+      await tester.pumpApplication(equipmentProfiles: [], filmsInUse: []);
 
       /// Create Praktica + Zenitar profile from scratch
       await tester.openSettings();
       await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.tap(find.byIcon(Icons.add).first);
+      await tester.tap(find.byIcon(Icons.add_outlined).first);
       await tester.pumpAndSettle();
       await tester.setProfileName(mockEquipmentProfiles[0].name);
       await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[0].name);
@@ -56,17 +60,21 @@ void testE2E(String description) {
       await tester.setNdValues(0, mockEquipmentProfiles[0].ndValues);
       await tester.setApertureValues(0, mockEquipmentProfiles[0].apertureValues);
       await tester.setShutterSpeedValues(0, mockEquipmentProfiles[0].shutterSpeedValues);
+      await tester.setZoomValue(0, mockEquipmentProfiles[0].lensZoom);
+      expect(find.text('x1.91'), findsOneWidget);
       expect(find.text('f/1.7 - f/16'), findsOneWidget);
-      expect(find.text('1/1000 - 16"'), findsOneWidget);
+      expect(find.text('1/1000 - B'), findsOneWidget);
 
       /// Create Praktica + Jupiter profile from Zenitar profile
-      await tester.tap(find.byIcon(Icons.copy).first);
+      await tester.tap(find.byIcon(Icons.copy_outlined).first);
       await tester.pumpAndSettle();
       await tester.setProfileName(mockEquipmentProfiles[1].name);
       await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[1].name);
       await tester.setApertureValues(1, mockEquipmentProfiles[1].apertureValues);
+      await tester.setZoomValue(1, mockEquipmentProfiles[1].lensZoom);
+      expect(find.text('x5.02'), findsOneWidget);
       expect(find.text('f/3.5 - f/22'), findsOneWidget);
-      expect(find.text('1/1000 - 16"'), findsNWidgets(2));
+      expect(find.text('1/1000 - B'), findsNWidgets(2));
       await tester.navigatorPop();
 
       /// Select some films
@@ -171,6 +179,9 @@ extension EquipmentProfileActions on WidgetTester {
 
   Future<void> setShutterSpeedValues(int profileIndex, List<ShutterSpeedValue> values) =>
       _setDialogRangePickerValues<ShutterSpeedValue>(profileIndex, S.current.shutterSpeedValues, values);
+
+  Future<void> setZoomValue(int profileIndex, double value) =>
+      _setDialogSliderPickerValue(profileIndex, S.current.lensZoom, value);
 }
 
 extension on WidgetTester {
@@ -185,7 +196,7 @@ extension on WidgetTester {
     bool deselectAll = true,
   }) async {
     if (deselectAll) {
-      await tap(find.byIcon(Icons.deselect));
+      await tap(find.byIcon(Icons.deselect_outlined));
       await pump();
     }
     for (final value in valuesToSelect) {
@@ -235,6 +246,30 @@ extension on WidgetTester {
 
     await tapSaveButton();
   }
+
+  Future<void> _setDialogSliderPickerValue(
+    int profileIndex,
+    String listTileTitle,
+    double value,
+  ) async {
+    await tap(find.text(listTileTitle).at(profileIndex));
+    await pumpAndSettle();
+
+    final sliderFinder = find.byType(Slider);
+    final trackWidth = getSize(sliderFinder).width - (2 * Dimens.paddingL);
+    final trackStep = trackWidth / (widget<Slider>(sliderFinder).max - widget<Slider>(sliderFinder).min);
+
+    final oldValue = widget<Slider>(sliderFinder).value;
+    final oldStart = (oldValue - 1) * trackStep;
+    final newStart = (value - 1) * trackStep;
+    await dragFrom(
+      getTopLeft(sliderFinder) + Offset(Dimens.paddingL + oldStart, getSize(sliderFinder).height / 2),
+      Offset(newStart - oldStart, 0),
+    );
+    await pump();
+
+    await tapSaveButton();
+  }
 }
 
 Future<void> _expectMeteringState(
@@ -257,6 +292,7 @@ Future<void> _expectMeteringState(
   await tester.scrollToTheLastExposurePair(equipmentProfile: equipmentProfile);
   expectExposurePairsListItem(tester, slowest.split(' - ')[0], slowest.split(' - ')[1]);
   expectMeasureButton(ev);
+  expect(find.text(equipmentProfile.lensZoom.toZoom()), findsOneWidget);
 }
 
 Future<void> _expectMeteringStateAndMeasure(
@@ -296,7 +332,7 @@ Future<void> _expectMeteringStateAndMeasure(
 
 void expectMeasureButton(double ev) {
   find.descendant(
-    of: find.byType(MeteringMeasureButton),
+    of: find.byType(MeteringBottomControls),
     matching: find.text('${ev.toStringAsFixed(1)}\n${S.current.ev}'),
   );
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -5,42 +7,59 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
+import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
+import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/screen_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
+import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
+import 'package:lightmeter/screens/timer/screen_timer.dart';
+import 'package:lightmeter/utils/platform_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../integration_test/mocks/paid_features_mock.dart';
 import '../integration_test/utils/widget_tester_actions.dart';
+import 'models/screenshot_args.dart';
 
 //https://stackoverflow.com/a/67186625/13167574
+
+const _mockFilm = Film('Ilford HP5+', 400);
+final Color _lightThemeColor = primaryColorsList[5];
+final Color _darkThemeColor = primaryColorsList[3];
+final ThemeData _themeLight = themeFrom(_lightThemeColor, Brightness.light);
+final ThemeData _themeDark = themeFrom(_darkThemeColor, Brightness.dark);
 
 /// Just a screenshot generator. No expectations here.
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding();
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  final Color lightThemeColor = primaryColorsList[5];
-  final Color darkThemeColor = primaryColorsList[3];
 
-  void mockSharedPrefs(ThemeType theme, Color color) {
-    // ignore: invalid_use_of_visible_for_testing_member
+  Future<void> mockSharedPrefs({
+    int iso = 400,
+    int nd = 0,
+    double calibration = 0.0,
+    required ThemeType theme,
+    required Color color,
+  }) async {
     SharedPreferences.setMockInitialValues({
       /// Metering values
       UserPreferencesService.evSourceTypeKey: EvSourceType.camera.index,
-      UserPreferencesService.isoKey: 400,
-      UserPreferencesService.ndFilterKey: 0,
+      UserPreferencesService.isoKey: iso,
+      UserPreferencesService.ndFilterKey: nd,
 
       /// Metering settings
       UserPreferencesService.stopTypeKey: StopType.third.index,
-      UserPreferencesService.cameraEvCalibrationKey: 0.0,
-      UserPreferencesService.lightSensorEvCalibrationKey: 0.0,
+      UserPreferencesService.cameraEvCalibrationKey: calibration,
+      UserPreferencesService.lightSensorEvCalibrationKey: calibration,
       UserPreferencesService.meteringScreenLayoutKey: json.encode(
         {
           MeteringScreenLayoutFeature.equipmentProfiles: true,
@@ -50,6 +69,7 @@ void main() {
       ),
 
       /// General settings
+      UserPreferencesService.autostartTimerKey: false,
       UserPreferencesService.caffeineKey: true,
       UserPreferencesService.hapticsKey: true,
       UserPreferencesService.volumeActionKey: VolumeAction.shutter.toString(),
@@ -59,66 +79,98 @@ void main() {
       UserPreferencesService.themeTypeKey: theme.index,
       UserPreferencesService.primaryColorKey: color.value,
       UserPreferencesService.dynamicColorKey: false,
+
+      UserPreferencesService.seenChangelogVersionKey: await const PlatformUtils().version,
     });
   }
 
+  setUpAll(() async {
+    if (Platform.isAndroid) await binding.convertFlutterSurfaceToImage();
+  });
+
   /// Generates several screenshots with the light theme
-  testWidgets(
-    'Generate light theme screenshots',
-    (tester) async {
-      mockSharedPrefs(ThemeType.light, lightThemeColor);
-      await tester.pumpApplication();
+  testWidgets('Generate light theme screenshots', (tester) async {
+    await mockSharedPrefs(theme: ThemeType.light, color: _lightThemeColor);
+    await tester.pumpApplication(
+      availableFilms: [_mockFilm],
+      filmsInUse: [_mockFilm],
+      selectedFilm: _mockFilm,
+    );
 
-      await tester.takePhoto();
-      await tester.takeScreenshot(binding, 'light-metering_reflected');
+    await tester.takePhoto();
+    await tester.takeScreenshotLight(binding, 'metering-reflected');
 
-      if (Platform.isAndroid) {
-        await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
-        await tester.pumpAndSettle();
-        await tester.toggleIncidentMetering(7.3);
-        await tester.takeScreenshot(binding, 'light-metering_incident');
-      }
-
-      await tester.openAnimatedPicker<IsoValuePicker>();
-      await tester.takeScreenshot(binding, 'light-metering_iso_picker');
-
-      await tester.tapCancelButton();
-      await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
+    if (Platform.isAndroid) {
+      await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
       await tester.pumpAndSettle();
-      await tester.takeScreenshot(binding, 'light-settings');
-
-      await tester.tapDescendantTextOf<SettingsScreen>(S.current.meteringScreenLayout);
-      await tester.takeScreenshot(binding, 'light-settings_metering_screen_layout');
-
-      await tester.tapCancelButton();
-      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.pumpAndSettle();
-      await tester.tapDescendantTextOf<EquipmentProfilesScreen>(mockEquipmentProfiles.first.name);
-      await tester.pumpAndSettle();
-      await tester.takeScreenshot(binding, 'light-equipment_profiles');
-
-      await tester.tap(find.byIcon(Icons.iso).first);
-      await tester.pumpAndSettle();
-      await tester.takeScreenshot(binding, 'light-equipment_profiles_iso_picker');
+      await tester.toggleIncidentMetering(7.3);
+      await tester.takeScreenshotLight(binding, 'metering-incident');
     }
-  );
+
+    await tester.openAnimatedPicker<IsoValuePicker>();
+    await tester.takeScreenshotLight(binding, 'metering-iso-picker');
+
+    await tester.tapCancelButton();
+    await tester.tap(find.byTooltip(S.current.tooltipOpenSettings));
+    await tester.pumpAndSettle();
+    await tester.takeScreenshotLight(binding, 'settings');
+
+    await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
+    await tester.pumpAndSettle();
+    await tester.tapDescendantTextOf<EquipmentProfilesScreen>(mockEquipmentProfiles.first.name);
+    await tester.pumpAndSettle();
+    await tester.takeScreenshotLight(binding, 'equipment-profiles');
+
+    await tester.tap(find.byIcon(Icons.iso_outlined).first);
+    await tester.pumpAndSettle();
+    await tester.takeScreenshotLight(binding, 'equipment-profiles-iso-picker');
+  });
 
   /// and the additionally the first one with the dark theme
   testWidgets(
     'Generate dark theme screenshots',
     (tester) async {
-      mockSharedPrefs(ThemeType.dark, darkThemeColor);
-      await tester.pumpApplication();
+      await mockSharedPrefs(theme: ThemeType.dark, color: _darkThemeColor);
+      await tester.pumpApplication(
+        availableFilms: [_mockFilm],
+        filmsInUse: [_mockFilm],
+        selectedFilm: _mockFilm,
+      );
 
       await tester.takePhoto();
-      await tester.takeScreenshot(binding, 'dark-metering_reflected');
+      await tester.takeScreenshotDark(binding, 'metering-reflected');
+    },
+  );
 
-      if (Platform.isAndroid) {
-        await tester.tap(find.byTooltip(S.current.tooltipUseLightSensor));
-        await tester.pumpAndSettle();
-        await tester.toggleIncidentMetering(7.3);
-        await tester.takeScreenshot(binding, 'dark-metering_incident');
-      }
+  testWidgets(
+    'Generate timer screenshot',
+    (tester) async {
+      const timerExposurePair = ExposurePair(
+        ApertureValue(16, StopType.full),
+        ShutterSpeedValue(8, false, StopType.full),
+      );
+      await mockSharedPrefs(
+        iso: 100,
+        nd: 8,
+        calibration: -0.3,
+        theme: ThemeType.light,
+        color: _lightThemeColor,
+      );
+      await tester.pumpApplication(
+        availableFilms: [_mockFilm],
+        filmsInUse: [_mockFilm],
+        selectedFilm: _mockFilm,
+      );
+
+      await tester.takePhoto();
+      await tester.scrollToExposurePair(
+        ev: 5,
+        exposurePair: timerExposurePair,
+      );
+      await tester.tap(find.text(timerExposurePair.shutterSpeed.toString()));
+      await tester.pumpAndSettle();
+      await tester.mockTimerResumedState(timerExposurePair.shutterSpeed);
+      await tester.takeScreenshotLight(binding, 'timer');
     },
   );
 }
@@ -126,12 +178,56 @@ void main() {
 final String _platformFolder = Platform.isAndroid ? 'android' : 'ios';
 
 extension on WidgetTester {
-  Future<void> takeScreenshot(IntegrationTestWidgetsFlutterBinding binding, String name) async {
-    if (Platform.isAndroid) {
-      await binding.convertFlutterSurfaceToImage();
-      await pumpAndSettle();
-    }
-    await binding.takeScreenshot("$_platformFolder/${const String.fromEnvironment('deviceName')}/$name");
+  Future<void> takeScreenshotLight(IntegrationTestWidgetsFlutterBinding binding, String name) =>
+      _takeScreenshot(binding, name, _themeLight);
+  Future<void> takeScreenshotDark(IntegrationTestWidgetsFlutterBinding binding, String name) =>
+      _takeScreenshot(binding, name, _themeDark);
+
+  Future<void> _takeScreenshot(IntegrationTestWidgetsFlutterBinding binding, String name, ThemeData theme) async {
+    final Color backgroundColor = theme.colorScheme.surface;
+    await binding.takeScreenshot(
+      ScreenshotArgs(
+        name: name,
+        deviceName: const String.fromEnvironment('deviceName'),
+        platformFolder: _platformFolder,
+        backgroundColor: backgroundColor.value.toRadixString(16),
+        isDark: theme.brightness == Brightness.dark,
+      ).toString(),
+    );
     await pumpAndSettle();
+  }
+}
+
+extension on WidgetTester {
+  Future<void> scrollToExposurePair({
+    double ev = mockPhotoEv100,
+    EquipmentProfile equipmentProfile = defaultEquipmentProfile,
+    required ExposurePair exposurePair,
+  }) async {
+    final exposurePairs = MeteringContainerBuidler.buildExposureValues(
+      ev,
+      StopType.third,
+      equipmentProfile,
+    );
+
+    await scrollUntilVisible(
+      find.byWidgetPredicate((widget) => widget is Row && widget.key == ValueKey(exposurePairs.indexOf(exposurePair))),
+      56,
+      scrollable: find.descendant(of: find.byType(ExposurePairsList), matching: find.byType(Scrollable)),
+    );
+  }
+
+  Future<void> mockTimerResumedState(ShutterSpeedValue shutterSpeedValue) async {
+    await tap(find.byType(AnimatedCircluarButton));
+    await pump(Dimens.durationS);
+
+    late final skipTimerDuration =
+        Duration(milliseconds: (shutterSpeedValue.value * 0.35 * Duration.millisecondsPerSecond).toInt());
+    await pump(skipTimerDuration);
+
+    final TimerScreenState state = this.state(find.byType(TimerScreen));
+    state.startStopIconController.stop();
+    state.timelineController.stop();
+    await pump();
   }
 }

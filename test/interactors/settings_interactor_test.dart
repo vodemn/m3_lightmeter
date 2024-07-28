@@ -86,6 +86,28 @@ void main() {
   );
 
   group(
+    'AutostartTimer',
+    () {
+      test('isAutostartTimerEnabled', () {
+        when(() => mockUserPreferencesService.autostartTimer).thenReturn(true);
+        expect(interactor.isAutostartTimerEnabled, true);
+        when(() => mockUserPreferencesService.autostartTimer).thenReturn(false);
+        expect(interactor.isAutostartTimerEnabled, false);
+        verify(() => mockUserPreferencesService.autostartTimer).called(2);
+      });
+
+      test('enableAutostartTimer(true)', () {
+        when(() => mockUserPreferencesService.autostartTimer = true).thenReturn(true);
+        interactor.enableAutostartTimer(true);
+        verify(() => mockUserPreferencesService.autostartTimer = true).called(1);
+        when(() => mockUserPreferencesService.autostartTimer = true).thenReturn(false);
+        interactor.enableAutostartTimer(false);
+        verify(() => mockUserPreferencesService.autostartTimer = false).called(1);
+      });
+    },
+  );
+
+  group(
     'Volume action',
     () {
       test('disableVolumeHandling()', () async {
@@ -123,8 +145,7 @@ void main() {
       });
 
       test('setVolumeAction(VolumeAction.shutter)', () async {
-        when(() => mockUserPreferencesService.volumeAction = VolumeAction.shutter)
-            .thenReturn(VolumeAction.shutter);
+        when(() => mockUserPreferencesService.volumeAction = VolumeAction.shutter).thenReturn(VolumeAction.shutter);
         when(() => mockVolumeEventsService.setVolumeHandling(true)).thenAnswer((_) async => true);
         expectLater(interactor.setVolumeAction(VolumeAction.shutter), isA<Future<void>>());
         verify(() => mockVolumeEventsService.setVolumeHandling(true)).called(1);
@@ -132,8 +153,7 @@ void main() {
       });
 
       test('setVolumeAction(VolumeAction.none)', () async {
-        when(() => mockUserPreferencesService.volumeAction = VolumeAction.none)
-            .thenReturn(VolumeAction.none);
+        when(() => mockUserPreferencesService.volumeAction = VolumeAction.none).thenReturn(VolumeAction.none);
         when(() => mockVolumeEventsService.setVolumeHandling(false)).thenAnswer((_) async => false);
         expectLater(interactor.setVolumeAction(VolumeAction.none), isA<Future<void>>());
         verify(() => mockVolumeEventsService.setVolumeHandling(false)).called(1);

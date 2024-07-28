@@ -11,13 +11,13 @@ class FilmsListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IAPListTile(
-      leading: const Icon(Icons.camera_roll),
+      leading: const Icon(Icons.camera_roll_outlined),
       title: Text(S.of(context).filmsInUse),
       onTap: () {
         showDialog<List<Film>>(
           context: context,
           builder: (_) => DialogFilter<Film>(
-            icon: const Icon(Icons.camera_roll),
+            icon: const Icon(Icons.camera_roll_outlined),
             title: S.of(context).filmsInUse,
             description: S.of(context).filmsInUseDescription,
             values: Films.of(context).sublist(1),

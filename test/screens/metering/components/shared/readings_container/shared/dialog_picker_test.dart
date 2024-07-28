@@ -51,7 +51,7 @@ extension WidgetTesterActions on WidgetTester {
           children: [
             Expanded(
               child: AnimatedDialogPicker<int>(
-                icon: Icons.iso,
+                icon: Icons.iso_outlined,
                 title: '',
                 subtitle: '',
                 selectedValue: 0,

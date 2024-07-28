@@ -16,7 +16,7 @@ class CalibrationDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool hasLightSensor = ServicesProvider.of(context).environment.hasLightSensor;
     return AlertDialog(
-      icon: const Icon(Icons.settings_brightness),
+      icon: const Icon(Icons.settings_brightness_outlined),
       titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(S.of(context).calibration),
       contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingL),
@@ -25,38 +25,27 @@ class CalibrationDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              hasLightSensor
-                  ? S.of(context).calibrationMessage
-                  : S.of(context).calibrationMessageCameraOnly,
+              hasLightSensor ? S.of(context).calibrationMessage : S.of(context).calibrationMessageCameraOnly,
             ),
             const SizedBox(height: Dimens.grid16),
             BlocBuilder<CalibrationDialogBloc, CalibrationDialogState>(
-              buildWhen: (previous, current) =>
-                  previous.cameraEvCalibration != current.cameraEvCalibration,
+              buildWhen: (previous, current) => previous.cameraEvCalibration != current.cameraEvCalibration,
               builder: (context, state) => _CalibrationUnit(
                 title: S.of(context).camera,
                 value: state.cameraEvCalibration,
-                onChanged: (value) => context
-                    .read<CalibrationDialogBloc>()
-                    .add(CameraEvCalibrationChangedEvent(value)),
-                onReset: () => context
-                    .read<CalibrationDialogBloc>()
-                    .add(const CameraEvCalibrationResetEvent()),
+                onChanged: (value) => context.read<CalibrationDialogBloc>().add(CameraEvCalibrationChangedEvent(value)),
+                onReset: () => context.read<CalibrationDialogBloc>().add(const CameraEvCalibrationResetEvent()),
               ),
             ),
             if (hasLightSensor)
               BlocBuilder<CalibrationDialogBloc, CalibrationDialogState>(
-                buildWhen: (previous, current) =>
-                    previous.lightSensorEvCalibration != current.lightSensorEvCalibration,
+                buildWhen: (previous, current) => previous.lightSensorEvCalibration != current.lightSensorEvCalibration,
                 builder: (context, state) => _CalibrationUnit(
                   title: S.of(context).lightSensor,
                   value: state.lightSensorEvCalibration,
-                  onChanged: (value) => context
-                      .read<CalibrationDialogBloc>()
-                      .add(LightSensorEvCalibrationChangedEvent(value)),
-                  onReset: () => context
-                      .read<CalibrationDialogBloc>()
-                      .add(const LightSensorEvCalibrationResetEvent()),
+                  onChanged: (value) =>
+                      context.read<CalibrationDialogBloc>().add(LightSensorEvCalibrationChangedEvent(value)),
+                  onReset: () => context.read<CalibrationDialogBloc>().add(const LightSensorEvCalibrationResetEvent()),
                 ),
               ),
           ],
@@ -116,11 +105,11 @@ class _CalibrationUnit extends StatelessWidget {
             ),
             IconButton(
               onPressed: onReset,
-              icon: const Icon(Icons.sync),
+              icon: const Icon(Icons.sync_outlined),
               tooltip: S.of(context).tooltipResetToZero,
             ),
           ],
-        )
+        ),
       ],
     );
   }

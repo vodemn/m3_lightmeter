@@ -58,16 +58,21 @@
     "ndFiltersFilterDescription": "Выберите ND фильтры для отображения. Это могут быть наиболее часто используемые ND фильтры или фильтры, подходящие под ваш объектив.",
     "shutterSpeedValues": "Значения выдержки",
     "shutterSpeedValuesFilterDescription": "Выберите диапазон значений выдержки. Обычно ограничивается возможностями вашей камеры.",
+    "shutterSpeedManualShort": "B",
+    "shutterSpeedManual": "Ручная",
     "isoValues": "Значения ISO",
     "isoValuesFilterDescription": "Выберите значения ISO для отображения. Это может быть наиболее часто используемые значения или значения, поддерживаемые вашей камерой.",
+    "lensZoom": "Зум объектива",
+    "lensZoomDescription": "Установите уровень зума относительно камеры телефона, чтобы он соответствовал видоискателю вашей камеры.",
     "equipmentProfile": "Оборудование",
     "equipmentProfiles": "Профили оборудования",
     "tapToAdd": "Нажмите, чтобы добавить",
-    "filmsInUse": "Используемые пленки",
-    "filmsInUseDescription": "Выберите пленки, которыми вы пользуетесь.",
+    "filmsInUse": "Используемые плёнки",
+    "filmsInUseDescription": "Выберите плёнки, которыми вы пользуетесь.",
     "general": "Общие",
     "keepScreenOn": "Запрет блокировки",
     "haptics": "Вибрация",
+    "autostartTimer": "Автозапуск таймера",
     "volumeKeysAction": "Затвор по кнопкам громкости",
     "language": "Язык",
     "chooseLanguage": "Выберите язык",
@@ -80,6 +85,7 @@
     "primaryColor": "Основной цвет",
     "choosePrimaryColor": "Выберите основной цвет",
     "about": "О приложении",
+    "restorePurchases": "Восстановить покупки",
     "sourceCode": "Исходный код",
     "reportIssue": "Сообщить о проблеме",
     "writeEmail": "Написать на почту",
@@ -97,10 +103,31 @@
             }
         }
     },
-    "proFeatures": "Профессиональные настройки",
-    "unlockProFeatures": "Разблокировать профессиональные настройки",
-    "unlockProFeaturesDescription": "Вы можете разблокировать профессиональные настройки:\n \u2022 Профили оборудования, содержащие фильтры для диафрагмы, выдержки и других значений\n \u2022 Список пленок с компенсацией эффекта Шварцшильда\n \u2022 Точечный замер и гистограмма\n \u2022 И другие возможности!\n\nПолучая доступ к профессиональным настройкам, вы поддерживаете разработку и делаете возможным появление новых функций в приложении.",
-    "unlock": "Разблокировать",
+    "proFeaturesTitle": "Lightmeter Pro",
+    "getPro": "Купить Pro",
+    "featuresFree": "Бесплатно",
+    "featuresPro": "Pro",
+    "proFeaturesPromoText": "Lightmeter Pro предоставляет все необходимое для получения лучших снимков!",
+    "proFeaturesWhatsIncluded": "Что включено?",
+    "featureReflectedLightMetering": "Замер отраженного света",
+    "featureIncidentLightMetering": "Замер падающего света",
+    "featureIsoAndNdValues": "Широкий диапазон значений ISO и фильтров ND",
+    "featureTheme": "Настройка темы",
+    "featureSpotMetering": "Точечный замер",
+    "featureHistogram": "Гистограмма",
+    "featureListOfFilms": "Список из 20+ плёнок с формулами коррекции",
+    "featureEquipmentProfiles": "Профили оборудования",
+    "featureTimer": "Встроенный таймер для длинных выдержек",
+    "featureMeteringScreenLayout": "Настраиваемый главный экран",
+    "proFeaturesSupportText": "Покупая Lightmeter Pro, вы поддерживаете разработку и делаете возможным добавление новых функций в приложение.",
+    "getNowFor": "Купить за {price}",
+    "@getNowFor": {
+        "price": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
     "tooltipAdd": "Добавить",
     "tooltipClose": "Закрыть",
     "tooltipExpand": "Развернуть",
@@ -112,5 +139,6 @@
     "tooltipResetToZero": "Сбросить до 0",
     "tooltipUseLightSensor": "Использовать датчик освещенности",
     "tooltipUseCamera": "Использовать камеру",
-    "tooltipOpenSettings": "Открыть настройки"
+    "tooltipOpenSettings": "Открыть настройки",
+    "exposurePair": "Пара экспозиции"
 }

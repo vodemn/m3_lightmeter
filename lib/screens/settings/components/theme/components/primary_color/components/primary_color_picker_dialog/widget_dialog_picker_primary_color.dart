@@ -24,7 +24,7 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      icon: const Icon(Icons.palette),
+      icon: const Icon(Icons.palette_outlined),
       titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(S.of(context).choosePrimaryColor),
       content: SizedBox(
@@ -124,7 +124,7 @@ class _SelectableColorItemState extends State<_SelectableColorItem> {
           duration: Dimens.durationS,
           child: widget.selected
               ? Icon(
-                  Icons.check,
+                  Icons.check_outlined,
                   color: ThemeData.estimateBrightnessForColor(widget.color) == Brightness.light
                       ? Colors.black
                       : Colors.white,

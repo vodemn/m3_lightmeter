@@ -58,8 +58,12 @@
     "ndFiltersFilterDescription": "选择要显示的 ND 滤镜系数。可能是您最常用的 ND 滤镜，也可能是适合您镜头的减光镜。",
     "shutterSpeedValues": "快门速度",
     "shutterSpeedValuesFilterDescription": "选择要显示的快门速度范围。这通常由您使用的相机机身决定。",
+    "shutterSpeedManualShort": "B",
+    "shutterSpeedManual": "手册",
     "isoValues": "ISO",
     "isoValuesFilterDescription": "选择要显示的 ISO 。这些可能是您常用的ISO值，也可以是相机支持的ISO范围。",
+    "lensZoom": "镜头变焦",
+    "lensZoomDescription": "设置相对于手机摄像头的变焦级别，使其与相机取景器相匹配。",
     "equipmentProfile": "设备配置",
     "equipmentProfiles": "设备配置",
     "tapToAdd": "点击添加",
@@ -68,6 +72,7 @@
     "general": "通用",
     "keepScreenOn": "保持屏幕常亮",
     "haptics": "震动",
+    "autostartTimer": "自动启动定时器",
     "volumeKeysAction": "音量键快门",
     "language": "语言",
     "chooseLanguage": "选择语言",
@@ -80,6 +85,7 @@
     "primaryColor": "主题颜色",
     "choosePrimaryColor": "选择主题颜色",
     "about": "关于",
+    "restorePurchases": "恢复购买",
     "sourceCode": "源代码",
     "reportIssue": "报告问题",
     "writeEmail": "Email",
@@ -97,10 +103,30 @@
             }
         }
     },
-    "proFeatures": "专业功能",
-    "unlockProFeatures": "解锁专业功能",
-    "unlockProFeaturesDescription": "\n \u2022 配置文件，其中包含光圈、快门速度等参数\n \u2022 胶卷列表，对胶片倒易率失效进行曝光补偿\n \u2022 点测光和直方图\n \u2022 和更多\n\n通过解锁专业版功能，您可以支持开发工作，帮助为应用程序添加新功能。",
-    "unlock": "解锁",
+    "getPro": "购买专业版",
+    "featuresFree": "免费",
+    "featuresPro": "专业版",
+    "proFeaturesPromoText": "Lightmeter Pro 提供您需要的一切，助您拍出最佳照片！",
+    "proFeaturesWhatsIncluded": "包括哪些内容？",
+    "featureReflectedLightMetering": "反射光测光",
+    "featureIncidentLightMetering": "入射光测光",
+    "featureIsoAndNdValues": "广泛的ISO和ND滤镜值范围",
+    "featureTheme": "主题自定义",
+    "featureSpotMetering": "点测光",
+    "featureHistogram": "直方图",
+    "featureListOfFilms": "20多部电影的修正公式列表",
+    "featureEquipmentProfiles": "设备配置文件",
+    "featureTimer": "内置长曝光计时器",
+    "featureMeteringScreenLayout": "可自定义的主屏幕",
+    "proFeaturesSupportText": "通过购买Lightmeter Pro，您支持开发工作，并使添加新功能成为可能。",
+    "getNowFor": "立即获取  {price}",
+    "@getNowFor": {
+        "price": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
     "tooltipAdd": "添加",
     "tooltipClose": "关闭",
     "tooltipExpand": "展开",
@@ -112,5 +138,6 @@
     "resetToZero": "重置为零",
     "tooltipUseLightSensor": "使用光线传感器",
     "tooltipUseCamera": "使用摄像头",
-    "tooltipOpenSettings": "打开设置"
+    "tooltipOpenSettings": "打开设置",
+    "exposurePair": "曝光对"
 }

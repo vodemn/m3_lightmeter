@@ -41,12 +41,12 @@ class _CenteredSliderState extends State<CenteredSlider> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: widget.isVertical ? double.maxFinite : Dimens.cameraSliderHandleSize,
-      width: !widget.isVertical ? double.maxFinite : Dimens.cameraSliderHandleSize,
+      height: widget.isVertical ? double.maxFinite : Dimens.cameraSliderHandleArea,
+      width: !widget.isVertical ? double.maxFinite : Dimens.cameraSliderHandleArea,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final biggestSize = widget.isVertical ? constraints.maxHeight : constraints.maxWidth;
-          final handleDistance = biggestSize - Dimens.cameraSliderHandleSize;
+          final handleDistance = biggestSize - Dimens.cameraSliderHandleArea;
           return RotatedBox(
             quarterTurns: widget.isVertical ? -1 : 0,
             child: GestureDetector(
@@ -60,11 +60,11 @@ class _CenteredSliderState extends State<CenteredSlider> {
                 handleDistance,
               ),
               child: SizedBox(
-                height: Dimens.cameraSliderHandleSize,
+                height: Dimens.cameraSliderHandleArea,
                 width: biggestSize,
                 child: _Slider(
                   handleDistance: handleDistance,
-                  handleSize: Dimens.cameraSliderHandleSize,
+                  handleSize: Dimens.cameraSliderHandleArea,
                   trackThickness: Dimens.cameraSliderTrackHeight,
                   value: relativeValue,
                   icon: RotatedBox(
@@ -81,12 +81,12 @@ class _CenteredSliderState extends State<CenteredSlider> {
   }
 
   void _updateHandlePosition(double offset, double handleDistance) {
-    if (offset <= Dimens.cameraSliderHandleSize / 2) {
+    if (offset <= Dimens.cameraSliderHandleArea / 2) {
       relativeValue = 0;
-    } else if (offset >= handleDistance + Dimens.cameraSliderHandleSize / 2) {
+    } else if (offset >= handleDistance + Dimens.cameraSliderHandleArea / 2) {
       relativeValue = 1;
     } else {
-      relativeValue = (offset - Dimens.cameraSliderHandleSize / 2) / handleDistance;
+      relativeValue = (offset - Dimens.cameraSliderHandleArea / 2) / handleDistance;
     }
     setState(() {});
     widget.onChanged(relativeValue * (widget.max - widget.min) + widget.min);
@@ -124,7 +124,7 @@ class _Slider extends StatelessWidget {
           ),
         ),
         AnimatedPositioned.fromRect(
-          duration: Dimens.durationM,
+          duration: Dimens.durationS,
           rect: Rect.fromCenter(
             center: Offset(
               handleSize / 2 + handleDistance * value,
@@ -133,15 +133,17 @@ class _Slider extends StatelessWidget {
             width: handleSize,
             height: handleSize,
           ),
-          child: _Handle(
-            color: Theme.of(context).colorScheme.primary,
-            size: handleSize,
-            child: IconTheme(
-              data: Theme.of(context).iconTheme.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    size: Dimens.cameraSliderHandleIconSize,
-                  ),
-              child: icon,
+          child: Center(
+            child: _Handle(
+              color: Theme.of(context).colorScheme.primary,
+              size: Dimens.cameraSliderHandleSize,
+              child: IconTheme(
+                data: Theme.of(context).iconTheme.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      size: Dimens.cameraSliderHandleIconSize,
+                    ),
+                child: icon,
+              ),
             ),
           ),
         ),
@@ -163,15 +165,15 @@ class _Handle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(size / 2),
-      child: SizedBox(
-        height: size,
-        width: size,
-        child: ColoredBox(
+    return SizedBox(
+      height: size,
+      width: size,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
           color: color,
-          child: child,
+          shape: BoxShape.circle,
         ),
+        child: child,
       ),
     );
   }

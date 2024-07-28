@@ -39,10 +39,10 @@ class MeasureErrorEvent extends MeteringEvent {
   const MeasureErrorEvent({required this.isMetering});
 }
 
-class SettingsOpenedEvent extends MeteringEvent {
-  const SettingsOpenedEvent();
+class ScreenOnTopOpenedEvent extends MeteringEvent {
+  const ScreenOnTopOpenedEvent();
 }
 
-class SettingsClosedEvent extends MeteringEvent {
-  const SettingsClosedEvent();
+class ScreenOnTopClosedEvent extends MeteringEvent {
+  const ScreenOnTopClosedEvent();
 }

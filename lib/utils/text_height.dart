@@ -17,6 +17,13 @@ double textHeight(
   String text,
   TextStyle? style,
   double maxWidth,
+) =>
+    textSize(text, style, maxWidth).height;
+
+Size textSize(
+  String text,
+  TextStyle? style,
+  double maxWidth,
 ) {
   final TextPainter titlePainter = TextPainter(
     text: TextSpan(
@@ -25,5 +32,5 @@ double textHeight(
     ),
     textDirection: TextDirection.ltr,
   )..layout(maxWidth: maxWidth);
-  return titlePainter.height;
+  return titlePainter.size;
 }

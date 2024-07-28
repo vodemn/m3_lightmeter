@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/equipment_list_tiles/widget_list_tiles_equipments.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/filter_list_tile/widget_list_tile_filter.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/range_picker_list_tile/widget_list_tile_range_picker.dart';
+import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/slider_picker_list_tile/widget_list_tile_slider_picker.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
+import 'package:lightmeter/utils/double_to_zoom.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfileContainer extends StatefulWidget {
@@ -28,8 +31,7 @@ class EquipmentProfileContainer extends StatefulWidget {
   State<EquipmentProfileContainer> createState() => EquipmentProfileContainerState();
 }
 
-class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
-    with TickerProviderStateMixin {
+class EquipmentProfileContainerState extends State<EquipmentProfileContainer> with TickerProviderStateMixin {
   late EquipmentProfile _equipmentData = EquipmentProfile(
     id: widget.data.id,
     name: widget.data.name,
@@ -37,6 +39,7 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
     ndValues: widget.data.ndValues,
     shutterSpeedValues: widget.data.shutterSpeedValues,
     isoValues: widget.data.isoValues,
+    lensZoom: widget.data.lensZoom,
   );
 
   late final AnimationController _controller = AnimationController(
@@ -55,6 +58,7 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
       ndValues: widget.data.ndValues,
       shutterSpeedValues: widget.data.shutterSpeedValues,
       isoValues: widget.data.isoValues,
+      lensZoom: widget.data.lensZoom,
     );
   }
 
@@ -113,6 +117,10 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
                 _equipmentData = _equipmentData.copyWith(shutterSpeedValues: value);
                 widget.onUpdate(_equipmentData);
               },
+              onLensZoomChanged: (value) {
+                _equipmentData = _equipmentData.copyWith(lensZoom: value);
+                widget.onUpdate(_equipmentData);
+              },
               onCopy: widget.onCopy,
               onDelete: widget.onDelete,
             ),
@@ -154,8 +162,7 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer>
 }
 
 class _AnimatedNameLeading extends AnimatedWidget {
-  const _AnimatedNameLeading({required AnimationController controller})
-      : super(listenable: controller);
+  const _AnimatedNameLeading({required AnimationController controller}) : super(listenable: controller);
 
   Animation<double> get _progress => listenable as Animation<double>;
 
@@ -164,7 +171,7 @@ class _AnimatedNameLeading extends AnimatedWidget {
     return Padding(
       padding: EdgeInsets.only(right: _progress.value * Dimens.grid8),
       child: Icon(
-        Icons.edit,
+        Icons.edit_outlined,
         size: _progress.value * Dimens.grid24,
       ),
     );
@@ -187,7 +194,7 @@ class _AnimatedArrowButton extends AnimatedWidget {
       onPressed: onPressed,
       icon: Transform.rotate(
         angle: _progress.value * pi,
-        child: const Icon(Icons.keyboard_arrow_down),
+        child: const Icon(Icons.keyboard_arrow_down_outlined),
       ),
       tooltip: _progress.value == 0 ? S.of(context).tooltipExpand : S.of(context).tooltipCollapse,
     );
@@ -200,6 +207,7 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
   final ValueChanged<List<IsoValue>> onIsoValuesSelecred;
   final ValueChanged<List<NdValue>> onNdValuesSelected;
   final ValueChanged<List<ShutterSpeedValue>> onShutterSpeedValuesSelected;
+  final ValueChanged<double> onLensZoomChanged;
   final VoidCallback onCopy;
   final VoidCallback onDelete;
 
@@ -210,6 +218,7 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
     required this.onIsoValuesSelecred,
     required this.onNdValuesSelected,
     required this.onShutterSpeedValuesSelected,
+    required this.onLensZoomChanged,
     required this.onCopy,
     required this.onDelete,
   }) : super(listenable: controller);
@@ -222,22 +231,57 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
       alignment: Alignment.topCenter,
       size: Size(
         double.maxFinite,
-        _progress.value * Dimens.grid56 * 5,
+        _progress.value * Dimens.grid56 * 6,
       ),
       // https://github.com/gskinnerTeam/flutter-folio/pull/62
       child: Opacity(
         opacity: _progress.value,
         child: Column(
           children: [
-            EquipmentListTiles(
-              selectedApertureValues: equipmentData.apertureValues,
-              selectedIsoValues: equipmentData.isoValues,
-              selectedNdValues: equipmentData.ndValues,
-              selectedShutterSpeedValues: equipmentData.shutterSpeedValues,
-              onApertureValuesSelected: onApertureValuesSelected,
-              onIsoValuesSelecred: onIsoValuesSelecred,
-              onNdValuesSelected: onNdValuesSelected,
-              onShutterSpeedValuesSelected: onShutterSpeedValuesSelected,
+            FilterListTile<IsoValue>(
+              icon: Icons.iso_outlined,
+              title: S.of(context).isoValues,
+              description: S.of(context).isoValuesFilterDescription,
+              values: IsoValue.values,
+              selectedValues: equipmentData.isoValues,
+              onChanged: onIsoValuesSelecred,
+            ),
+            FilterListTile<NdValue>(
+              icon: Icons.filter_b_and_w_outlined,
+              title: S.of(context).ndFilters,
+              description: S.of(context).ndFiltersFilterDescription,
+              values: NdValue.values,
+              selectedValues: equipmentData.ndValues,
+              onChanged: onNdValuesSelected,
+            ),
+            RangePickerListTile<ApertureValue>(
+              icon: Icons.camera_outlined,
+              title: S.of(context).apertureValues,
+              description: S.of(context).apertureValuesFilterDescription,
+              values: ApertureValue.values,
+              selectedValues: equipmentData.apertureValues,
+              onChanged: onApertureValuesSelected,
+            ),
+            RangePickerListTile<ShutterSpeedValue>(
+              icon: Icons.shutter_speed_outlined,
+              title: S.of(context).shutterSpeedValues,
+              description: S.of(context).shutterSpeedValuesFilterDescription,
+              values: ShutterSpeedValue.values,
+              selectedValues: equipmentData.shutterSpeedValues,
+              onChanged: onShutterSpeedValuesSelected,
+              trailingAdapter: (context, value) =>
+                  value.value == 1 ? S.of(context).shutterSpeedManualShort : value.toString(),
+              dialogValueAdapter: (context, value) =>
+                  value.value == 1 ? S.of(context).shutterSpeedManual : value.toString(),
+            ),
+            SliderPickerListTile(
+              icon: Icons.zoom_in_outlined,
+              title: S.of(context).lensZoom,
+              description: S.of(context).lensZoomDescription,
+              value: equipmentData.lensZoom,
+              range: const RangeValues(1, 7),
+              onChanged: onLensZoomChanged,
+              valueAdapter: (_, value) => value.toZoom(),
             ),
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
@@ -247,12 +291,12 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
                 children: [
                   IconButton(
                     onPressed: onCopy,
-                    icon: const Icon(Icons.copy),
+                    icon: const Icon(Icons.copy_outlined),
                     tooltip: S.of(context).tooltipCopy,
                   ),
                   IconButton(
                     onPressed: onDelete,
-                    icon: const Icon(Icons.delete),
+                    icon: const Icon(Icons.delete_outlined),
                     tooltip: S.of(context).tooltipDelete,
                   ),
                 ],

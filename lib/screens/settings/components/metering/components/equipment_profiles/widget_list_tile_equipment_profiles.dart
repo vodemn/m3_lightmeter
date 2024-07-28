@@ -10,7 +10,7 @@ class EquipmentProfilesListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IAPListTile(
-      leading: const Icon(Icons.camera),
+      leading: const Icon(Icons.camera_outlined),
       title: Text(S.of(context).equipmentProfiles),
       onTap: () {
         Navigator.of(context).push<EquipmentProfile>(

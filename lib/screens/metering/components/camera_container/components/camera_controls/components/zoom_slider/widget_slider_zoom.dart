@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lightmeter/screens/shared/centered_slider/widget_slider_centered.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/screens/shared/ruler_slider/widget_slider_ruler.dart';
+import 'package:lightmeter/utils/double_to_zoom.dart';
 
-class ZoomSlider extends StatelessWidget {
+class ZoomSlider extends StatefulWidget {
   final RangeValues range;
   final double value;
   final ValueChanged<double> onChanged;
@@ -14,13 +16,26 @@ class ZoomSlider extends StatelessWidget {
   });
 
   @override
+  State<ZoomSlider> createState() => _ZoomSliderState();
+}
+
+class _ZoomSliderState extends State<ZoomSlider> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    widget.onChanged(EquipmentProfiles.selectedOf(context).lensZoom);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return CenteredSlider(
-      icon: const Icon(Icons.search),
-      value: value,
-      min: range.start,
-      max: range.end,
-      onChanged: onChanged,
+    return RulerSlider(
+      range: widget.range,
+      value: widget.value,
+      onChanged: widget.onChanged,
+      icon: Icons.search_outlined,
+      defaultValue: EquipmentProfiles.selectedOf(context).lensZoom,
+      rulerValueAdapter: (value) => value.toStringAsFixed(0),
+      valueAdapter: (value) => value.toZoom(),
     );
   }
 }

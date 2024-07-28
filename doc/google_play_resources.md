@@ -6,26 +6,19 @@ Lightmeter
 
 ## Short description
 
-Simple and powerful metering app inspired by Google's Material Design 3.
+A simple and powerful metering app that can be used for any type of camera from film SLR to pinhole to cinematographic.
 
 ## Long description
 
-<b>Material Design</b>
-The user interface matches every single detail of the material design guidelines to ensure Lightmeter is an eye candy for you.
+A simple and easy to use metering app that can be used for any type of camera from film SLR to pinhole to cinematographic. The app contains the following features:
 
-<b>Easy to Use</b>
-No complicated or overblown menus but a familiar and clean interface.
+- A reflected light meter with spot metering (using the device's camera)
+- An incident light meter (using the device's light sensor)
+- An in-built timer for shooting long exposures
+- A wide range of ISO values sutable even for solarphotograpy
+- Reciprocity calculations for a variety of films
 
-<b>Customizability</b>
-There is an inbuilt theme engine with many different colors to choose from.
-
-<b>Features</b>
-•  Incident light metering (uses lightsensor)
-•  Reflected light metering (needs camera)
-•  ISO range from 3 to 6400
-•  Pre-built reciprocity for some films
-•  Calibration & ND filters
-and many more
+and many more!
 
 <b>NOTE</b>
 The accuracy of the measurements depends on your decice's hardware.

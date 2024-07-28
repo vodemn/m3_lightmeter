@@ -38,7 +38,7 @@ void main() {
       expect(find.descendant(of: pickerFinder, matching: find.text(S.current.fastestExposurePair)), findsOneWidget);
       expect(find.descendant(of: pickerFinder, matching: find.text(S.current.slowestExposurePair)), findsOneWidget);
       expect(find.descendant(of: pickerFinder, matching: find.text('f/1.0 - 1/2000')), findsOneWidget);
-      expect(find.descendant(of: pickerFinder, matching: find.text('f/45 - 16"')), findsOneWidget);
+      expect(find.descendant(of: pickerFinder, matching: find.text('f/45 - 1"')), findsOneWidget);
     },
   );
 }

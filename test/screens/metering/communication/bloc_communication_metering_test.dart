@@ -100,20 +100,20 @@ void main() {
   );
 
   group(
-    '`SettingsOpenedEvent`/`SettingsClosedEvent`',
+    '`ScreenOnTopOpenedEvent`/`ScreenOnTopClosedEvent`',
     () {
       blocTest<MeteringCommunicationBloc, MeteringCommunicationState>(
         'Multiple consequtive settings events',
         build: () => bloc,
         act: (bloc) async {
-          bloc.add(const SettingsOpenedEvent());
-          bloc.add(const SettingsOpenedEvent());
-          bloc.add(const SettingsOpenedEvent());
-          bloc.add(const SettingsClosedEvent());
-          bloc.add(const SettingsClosedEvent());
-          bloc.add(const SettingsClosedEvent());
-          bloc.add(const SettingsOpenedEvent());
-          bloc.add(const SettingsClosedEvent());
+          bloc.add(const ScreenOnTopOpenedEvent());
+          bloc.add(const ScreenOnTopOpenedEvent());
+          bloc.add(const ScreenOnTopOpenedEvent());
+          bloc.add(const ScreenOnTopClosedEvent());
+          bloc.add(const ScreenOnTopClosedEvent());
+          bloc.add(const ScreenOnTopClosedEvent());
+          bloc.add(const ScreenOnTopOpenedEvent());
+          bloc.add(const ScreenOnTopClosedEvent());
         },
         expect: () => [
           isA<SettingsOpenedState>(),

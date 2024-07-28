@@ -10,14 +10,14 @@ class StopTypeListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.straighten),
+      leading: const Icon(Icons.straighten_outlined),
       title: Text(S.of(context).fractionalStops),
       trailing: Text(_typeToString(context, UserPreferencesProvider.stopTypeOf(context))),
       onTap: () {
         showDialog<StopType>(
           context: context,
           builder: (_) => DialogPicker<StopType>(
-            icon: Icons.straighten,
+            icon: Icons.straighten_outlined,
             title: S.of(context).showFractionalStops,
             selectedValue: UserPreferencesProvider.stopTypeOf(context),
             values: StopType.values,

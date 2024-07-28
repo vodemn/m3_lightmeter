@@ -58,8 +58,12 @@
     "ndFiltersFilterDescription": "Sélectionnez les filtres ND à afficher. Ce sont peut-être vos filtres ND les plus couramment utilisés ou ceux qui correspondent à votre lentille.",
     "shutterSpeedValues": "Valeurs de la vitesse d'obturation",
     "shutterSpeedValuesFilterDescription": "Sélectionnez la plage de valeurs de vitesse d'obturation à afficher. Cela est généralement déterminé par le corps de l'appareil que vous utilisez.",
+    "shutterSpeedManualShort": "B",
+    "shutterSpeedManual": "Manuelle",
     "isoValues": "Valeurs ISO",
     "isoValuesFilterDescription": "Sélectionnez les valeurs ISO à afficher. Ce sont peut-être vos valeurs les plus couramment utilisées ou celles prises en charge par votre caméra.",
+    "lensZoom": "Zoom sur l'objectif",
+    "lensZoomDescription": "Réglez le niveau de zoom par rapport à l'appareil photo du téléphone pour qu'il corresponde au viseur de votre appareil photo.",
     "equipmentProfile": "Profil de l'équipement",
     "equipmentProfiles": "Profils de l'équipement",
     "tapToAdd": "Appuie pour ajouter",
@@ -68,6 +72,7 @@
     "general": "Général",
     "keepScreenOn": "Garder l'écran allumé",
     "haptics": "Haptiques",
+    "autostartTimer": "Minuterie de démarrage automatique",
     "volumeKeysAction": "Obturateur par boutons de volume",
     "language": "Langue",
     "chooseLanguage": "Choisissez la langue",
@@ -80,6 +85,7 @@
     "primaryColor": "Couleur primaire",
     "choosePrimaryColor": "Choisir la couleur primaire",
     "about": "À propos de l'application",
+    "restorePurchases": "Restaurer les achats",
     "sourceCode": "Code source",
     "reportIssue": "Rapporter un problème",
     "writeEmail": "Écrire un email",
@@ -97,10 +103,32 @@
             }
         }
     },
-    "proFeatures": "Fonctionnalités professionnelles",
-    "unlockProFeatures": "Déverrouiller les fonctionnalités professionnelles",
-    "unlockProFeaturesDescription": "Déverrouillez des fonctions professionnelles:\n \u2022 Profils d'équipement contenant des filtres pour l'ouverture, la vitesse d'obturation et plus encore, ainsi qu'une liste de films avec compensation pour ce que l'on appelle l'échec de réciprocité\n \u2022 Mesure spot & Histogramme\n \u2022 Et plus encore!\n\nEn débloquant les fonctionnalités Pro, vous soutenez le développement et permettez d'ajouter de nouvelles fonctionnalités à l'application.",
+    "proFeaturesTitle": "Lightmeter Pro",
+    "getPro": "Acheter Pro",
     "unlock": "Déverrouiller",
+    "featuresFree": "Gratuit",
+    "featuresPro": "Pro",
+    "proFeaturesPromoText": "Lightmeter Pro offre tout ce dont vous avez besoin pour obtenir les meilleurs clichés!",
+    "proFeaturesWhatsIncluded": "Qu'est-ce qui est inclus?",
+    "featureReflectedLightMetering": "Mesure de la lumière réfléchie",
+    "featureIncidentLightMetering": "Mesure de la lumière incidente",
+    "featureIsoAndNdValues": "Large gamme de valeurs ISO et de filtres ND",
+    "featureTheme": "Personnalisation du thème",
+    "featureSpotMetering": "Mesure spot",
+    "featureHistogram": "Histogramme",
+    "featureListOfFilms": "Liste de plus de 20 films avec des formules de correction",
+    "featureEquipmentProfiles": "Profils de l'équipement",
+    "featureTimer": "Minuteur intégré pour longues expositions",
+    "featureMeteringScreenLayout": "Écran principal personnalisable",
+    "proFeaturesSupportText": "En achetant Lightmeter Pro, vous soutenez le développement et permettez l'ajout de nouvelles fonctionnalités à l'application.",
+    "getNowFor": "Acheter maintenant {price}",
+    "@getNowFor": {
+        "price": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
     "tooltipAdd": "Ajouter",
     "tooltipClose": "Fermer",
     "tooltipExpand": "Élargir",
@@ -112,5 +140,6 @@
     "tooltipResetToZero": "Remise à zéro",
     "tooltipUseLightSensor": "Utiliser un capteur de lumière",
     "tooltipUseCamera": "Utiliser la caméra",
-    "tooltipOpenSettings": "Ouvrir les paramètres"
+    "tooltipOpenSettings": "Ouvrir les paramètres",
+    "exposurePair": "Paire d'exposition"
 }

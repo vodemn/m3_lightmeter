@@ -24,12 +24,15 @@ class UserPreferencesService {
 
   static const caffeineKey = "caffeine";
   static const hapticsKey = "haptics";
+  static const autostartTimerKey = "autostartTimer";
   static const volumeActionKey = "volumeAction";
   static const localeKey = "locale";
 
   static const themeTypeKey = "themeType";
   static const primaryColorKey = "primaryColor";
   static const dynamicColorKey = "dynamicColor";
+
+  static const seenChangelogVersionKey = "seenChangelogVersion";
 
   final SharedPreferences _sharedPreferences;
 
@@ -127,6 +130,9 @@ class UserPreferencesService {
   bool get haptics => _sharedPreferences.getBool(hapticsKey) ?? true;
   set haptics(bool value) => _sharedPreferences.setBool(hapticsKey, value);
 
+  bool get autostartTimer => _sharedPreferences.getBool(autostartTimerKey) ?? true;
+  set autostartTimer(bool value) => _sharedPreferences.setBool(autostartTimerKey, value);
+
   VolumeAction get volumeAction => VolumeAction.values.firstWhere(
         (e) => e.toString() == _sharedPreferences.getString(volumeActionKey),
         orElse: () => VolumeAction.shutter,
@@ -153,4 +159,7 @@ class UserPreferencesService {
 
   bool get dynamicColor => _sharedPreferences.getBool(dynamicColorKey) ?? false;
   set dynamicColor(bool value) => _sharedPreferences.setBool(dynamicColorKey, value);
+
+  String get seenChangelogVersion => _sharedPreferences.getString(seenChangelogVersionKey) ?? '';
+  set seenChangelogVersion(String value) => _sharedPreferences.setString(seenChangelogVersionKey, value);
 }

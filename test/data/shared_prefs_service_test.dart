@@ -326,6 +326,26 @@ void main() {
       verify(() => sharedPreferences.setBool(UserPreferencesService.hapticsKey, false)).called(1);
     });
   });
+
+  group('autostartTimer', () {
+    test('get default', () {
+      when(() => sharedPreferences.getBool(UserPreferencesService.autostartTimerKey)).thenReturn(null);
+      expect(service.autostartTimer, true);
+    });
+
+    test('get', () {
+      when(() => sharedPreferences.getBool(UserPreferencesService.autostartTimerKey)).thenReturn(true);
+      expect(service.autostartTimer, true);
+    });
+
+    test('set', () {
+      when(() => sharedPreferences.setBool(UserPreferencesService.autostartTimerKey, false))
+          .thenAnswer((_) => Future.value(true));
+      service.autostartTimer = false;
+      verify(() => sharedPreferences.setBool(UserPreferencesService.autostartTimerKey, false)).called(1);
+    });
+  });
+
   group('volumeAction', () {
     test('get default', () {
       when(() => sharedPreferences.getBool(UserPreferencesService.volumeActionKey)).thenReturn(null);

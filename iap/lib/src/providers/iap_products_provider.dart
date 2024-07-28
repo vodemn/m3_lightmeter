@@ -25,6 +25,7 @@ class IAPProductsProviderState extends State<IAPProductsProvider> {
         IAPProduct(
           storeId: IAPProductType.paidFeatures.storeId,
           status: IAPProductStatus.purchased,
+          price: '0.0\$',
         )
       ],
       child: widget.child,
@@ -32,6 +33,8 @@ class IAPProductsProviderState extends State<IAPProductsProvider> {
   }
 
   Future<void> buy(IAPProductType type) async {}
+
+  Future<void> restorePurchases() async {}
 }
 
 class IAPProducts extends InheritedModel<IAPProductType> {

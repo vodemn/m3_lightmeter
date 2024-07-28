@@ -1,5 +1,5 @@
 enum Feature { showUnlockProOnMainScreen }
 
 const featuresDefaultValues = {
-  Feature.showUnlockProOnMainScreen: false,
+  Feature.showUnlockProOnMainScreen: true,
 };

@@ -9,7 +9,7 @@ class CalibrationListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.settings_brightness),
+      leading: const Icon(Icons.settings_brightness_outlined),
       title: Text(S.of(context).calibration),
       onTap: () {
         showDialog<double>(

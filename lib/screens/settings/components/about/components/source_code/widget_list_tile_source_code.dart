@@ -9,7 +9,7 @@ class SourceCodeListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.code),
+      leading: const Icon(Icons.code_outlined),
       title: Text(S.of(context).sourceCode),
       onTap: () {
         launchUrl(

@@ -32,7 +32,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
       appBarActions: [
         IconButton(
           onPressed: _addProfile,
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add_outlined),
           tooltip: S.of(context).tooltipAdd,
         ),
       ],
@@ -41,7 +41,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: _EquipmentProfilesListPlaceholder(onTap: _addProfile),
-              )
+              ),
             ]
           : [
               SliverList(
@@ -150,7 +150,7 @@ class _EquipmentProfilesListPlaceholder extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(Dimens.paddingL),
               child: IconPlaceholder(
-                icon: Icons.add,
+                icon: Icons.add_outlined,
                 text: S.of(context).tapToAdd,
               ),
             ),

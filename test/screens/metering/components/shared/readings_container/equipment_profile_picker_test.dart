@@ -28,7 +28,8 @@ void main() {
           IAPProduct(
             storeId: IAPProductType.paidFeatures.storeId,
             status: IAPProductStatus.purchased,
-          )
+            price: '0.0\$',
+          ),
         ],
         child: EquipmentProfileProvider(
           storageService: mockIAPStorageService,
@@ -47,7 +48,7 @@ void main() {
       await pumpApplication(tester);
       expectReadingValueContainerText(S.current.equipmentProfile);
       await tester.openAnimatedPicker<EquipmentProfilePicker>();
-      expect(find.byIcon(Icons.camera), findsOneWidget);
+      expect(find.byIcon(Icons.camera_outlined), findsOneWidget);
       expectDialogPickerText<EquipmentProfile>(S.current.equipmentProfile);
     },
   );
@@ -91,7 +92,7 @@ final _mockEquipmentProfiles = [
     ndValues: NdValue.values.sublist(0, 3),
     shutterSpeedValues: ShutterSpeedValue.values.sublist(
       ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1000, true, StopType.full)),
-      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(16, false, StopType.full)) + 1,
+      ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1, false, StopType.full)) + 1,
     ),
     isoValues: const [
       IsoValue(50, StopType.full),

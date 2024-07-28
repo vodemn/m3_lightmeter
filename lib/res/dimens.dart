@@ -7,6 +7,11 @@ class Dimens {
   static const double borderRadiusL = 24;
   static const double borderRadiusXL = 32;
 
+  static const double elevationLevel0 = 0;
+  static const double elevationLevel1 = 1;
+  static const double elevationLevel2 = 3;
+  static const double elevationLevel3 = 6;
+
   static const double grid4 = 4;
   static const double grid8 = 8;
   static const double grid16 = 16;
@@ -38,7 +43,8 @@ class Dimens {
   // `CenteredSlider`
   static const double cameraSliderTrackHeight = grid4;
   static const double cameraSliderTrackRadius = cameraSliderTrackHeight / 2;
-  static const double cameraSliderHandleSize = 32;
+  static const double cameraSliderHandleArea = 32;
+  static const double cameraSliderHandleSize = 24;
   static const double cameraSliderHandleIconSize = cameraSliderHandleSize * 2 / 3;
 
   // Dialog
@@ -62,4 +68,7 @@ class Dimens {
     paddingL,
   );
   static const EdgeInsets dialogMargin = EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0);
+
+  // TODO(@vodemn) constrain dialogs with this value
+  static const double tabletMaxWidth = 600;
 }

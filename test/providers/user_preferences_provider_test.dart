@@ -317,7 +317,7 @@ void main() {
                 onPressed: () => UserPreferencesProvider.of(context).setThemeType(ThemeType.dark),
                 child: Text('${UserPreferencesProvider.themeTypeOf(context)}'),
               ),
-              Text('${Theme.of(context).colorScheme.brightness}')
+              Text('${Theme.of(context).colorScheme.brightness}'),
             ],
           ),
         );
@@ -344,7 +344,7 @@ void main() {
                 onPressed: () => UserPreferencesProvider.of(context).setThemeType(ThemeType.systemDefault),
                 child: Text('${UserPreferencesProvider.themeTypeOf(context)}'),
               ),
-              Text('${Theme.of(context).colorScheme.brightness}')
+              Text('${Theme.of(context).colorScheme.brightness}'),
             ],
           ),
         );

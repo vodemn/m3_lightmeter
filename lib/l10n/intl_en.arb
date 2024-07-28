@@ -58,8 +58,12 @@
     "ndFiltersFilterDescription": "Select the ND filters to display. These may be your most commonly used ND filters or the ones that fit your lens.",
     "shutterSpeedValues": "Shutter speed values",
     "shutterSpeedValuesFilterDescription": "Select the range of shutter speed values to display. This is usually determined by the camera body you are using.",
+    "shutterSpeedManualShort": "B",
+    "shutterSpeedManual": "Manual",
     "isoValues": "ISO values",
     "isoValuesFilterDescription": "Select the ISO values to display. These may be your most commonly used values or those supported by your camera.",
+    "lensZoom": "Lens zoom",
+    "lensZoomDescription": "Set the zoom level relative to the phone's camera to match your camera's viewfinder.",
     "equipmentProfile": "Equipment profile",
     "equipmentProfiles": "Equipment profiles",
     "tapToAdd": "Tap to add",
@@ -68,6 +72,7 @@
     "general": "General",
     "keepScreenOn": "Keep screen on",
     "haptics": "Haptics",
+    "autostartTimer": "Autostart timer",
     "volumeKeysAction": "Shutter by volume keys",
     "language": "Language",
     "chooseLanguage": "Choose language",
@@ -80,6 +85,7 @@
     "primaryColor": "Primary color",
     "choosePrimaryColor": "Choose primary color",
     "about": "About",
+    "restorePurchases": "Restore purchases",
     "sourceCode": "Source code",
     "reportIssue": "Report an issue",
     "writeEmail": "Write an email",
@@ -97,10 +103,31 @@
             }
         }
     },
-    "proFeatures": "Pro features",
-    "unlockProFeatures": "Unlock Pro features",
-    "unlockProFeaturesDescription": "Unlock professional features:\n \u2022 Equipment profiles containing filters for aperture, shutter speed, and more\n \u2022 List of films with compensation for what's known as reciprocity failure\n \u2022 Spot metering & Histogram\n \u2022 And more!\n\nBy unlocking Pro features you support the development and make it possible to add new features to the app.",
-    "unlock": "Unlock",
+    "proFeaturesTitle": "Lightmeter Pro",
+    "getPro": "Get Pro",
+    "featuresFree": "Free",
+    "featuresPro": "Pro",
+    "proFeaturesPromoText": "Lightmeter Pro delivers everything you need to get the best shots!",
+    "proFeaturesWhatsIncluded": "What's included?",
+    "featureReflectedLightMetering": "Reflected light metering",
+    "featureIncidentLightMetering": "Incident light metering",
+    "featureIsoAndNdValues": "Wide range of ISO and ND filters values",
+    "featureTheme": "Theme customization",
+    "featureSpotMetering": "Spot metering",
+    "featureHistogram": "Histogram",
+    "featureListOfFilms": "List of 20+ films with reciprocity formulas",
+    "featureEquipmentProfiles": "Equipment profiles",
+    "featureTimer": "Built-in timer for long exposure",
+    "featureMeteringScreenLayout": "Customizable main screen",
+    "proFeaturesSupportText": "By purchasing Lightmeter Pro you support the development and make it possible to add new features to the app.",
+    "getNowFor": "Get now for {price}",
+    "@getNowFor": {
+        "price": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
     "tooltipAdd": "Add",
     "tooltipClose": "Close",
     "tooltipExpand": "Expand",
@@ -112,5 +139,16 @@
     "tooltipResetToZero": "Reset to zero",
     "tooltipUseLightSensor": "Use lightsensor",
     "tooltipUseCamera": "Use camera",
-    "tooltipOpenSettings": "Open settings"
+    "tooltipOpenSettings": "Open settings",
+    "exposurePair": "Exposure pair",
+    "whatsnew": "What's new?",
+    "changesInVersion": "Changes in version {version}:",
+    "@changesInVersion": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
+    "close": "Close"
 }

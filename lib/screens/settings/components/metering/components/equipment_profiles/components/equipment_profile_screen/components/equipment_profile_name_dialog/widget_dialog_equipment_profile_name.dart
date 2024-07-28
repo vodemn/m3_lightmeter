@@ -23,7 +23,7 @@ class _EquipmentProfileNameDialogState extends State<EquipmentProfileNameDialog>
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      icon: const Icon(Icons.edit),
+      icon: const Icon(Icons.edit_outlined),
       titlePadding: Dimens.dialogIconTitlePadding,
       title: Text(S.of(context).equipmentProfileName),
       content: TextField(
