@@ -1,0 +1,3 @@
+- Added ISO values up to 25600.
+- Improved Pro features description.
+- Made "Restore purchases" option more accessible.
