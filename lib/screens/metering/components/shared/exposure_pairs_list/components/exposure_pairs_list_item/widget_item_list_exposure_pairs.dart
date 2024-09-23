@@ -50,20 +50,30 @@ class ExposurePairsListItem<T extends PhotographyStopValue> extends StatelessWid
 
 class _Title<T extends PhotographyStopValue> extends StatelessWidget {
   final T value;
+  late final String _title = value.toString();
 
-  const _Title(this.value, {super.key});
+  _Title(this.value, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: AutoSizeText(
-        value.toString(),
-        stepGranularity: 0.5,
-        style: labelTextStyle(context).copyWith(color: Theme.of(context).colorScheme.onBackground),
-        softWrap: false,
-        overflow: TextOverflow.fade,
-        maxLines: 1,
-      ),
+      child: _title.length > 5 // downsize text only for long values like 1/4000
+          ? AutoSizeText(
+              value.toString(),
+              stepGranularity: 0.5,
+              minFontSize: 10,
+              style: labelTextStyle(context).copyWith(color: Theme.of(context).colorScheme.onBackground),
+              softWrap: false,
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+            )
+          : Text(
+              value.toString(),
+              style: labelTextStyle(context).copyWith(color: Theme.of(context).colorScheme.onBackground),
+              softWrap: false,
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+            ),
     );
   }
 
