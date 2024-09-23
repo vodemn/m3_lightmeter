@@ -76,28 +76,31 @@ class CameraContainer extends StatelessWidget {
                 height: min(meteringContainerHeight, cameraPreviewHeight) + Dimens.paddingM * 2,
               ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: topBarOverflow >= 0 ? topBarOverflow : 0),
-                          child: ExposurePairsList(
-                            exposurePairs,
-                            onExposurePairTap: onExposurePairTap,
-                          ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: Dimens.paddingM - Dimens.grid8,
+                          top: topBarOverflow >= 0 ? topBarOverflow : 0,
+                        ),
+                        child: ExposurePairsList(
+                          exposurePairs,
+                          onExposurePairTap: onExposurePairTap,
                         ),
                       ),
-                      const SizedBox(width: Dimens.grid8),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: topBarOverflow <= 0 ? -topBarOverflow : 0),
-                          child: const _CameraControlsBuilder(),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.sizeOf(context).width / 2 - Dimens.grid4,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: topBarOverflow <= 0 ? -topBarOverflow : 0,
+                          right: Dimens.paddingM,
                         ),
+                        child: const _CameraControlsBuilder(),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
