@@ -40,14 +40,14 @@ class FilmsProviderState extends State<FilmsProvider> {
   Widget build(BuildContext context) {
     return Films(
       values: [
-        const Film.other(),
+        const FilmStub(),
         ...widget.availableFilms ?? films,
       ],
       filmsInUse: [
-        const Film.other(),
+        const FilmStub(),
         if (context.isPro) ..._filmsInUse,
       ],
-      selected: context.isPro ? _selected : const Film.other(),
+      selected: context.isPro ? _selected : const FilmStub(),
       child: widget.child,
     );
   }
@@ -68,9 +68,9 @@ class FilmsProviderState extends State<FilmsProvider> {
   }
 
   void _discardSelectedIfNotIncluded() {
-    if (_selected != const Film.other() && !_filmsInUse.contains(_selected)) {
-      _selected = const Film.other();
-      widget.storageService.selectedFilm = const Film.other();
+    if (_selected != const FilmStub() && !_filmsInUse.contains(_selected)) {
+      _selected = const FilmStub();
+      widget.storageService.selectedFilm = const FilmStub();
     }
   }
 }
@@ -86,12 +86,12 @@ class Films extends SelectableInheritedModel<Film> {
     required super.child,
   });
 
-  /// [Film.other()] + all the custom fields with actual reciprocity formulas
+  /// [FilmStub()] + all the custom fields with actual reciprocity formulas
   static List<Film> of(BuildContext context) {
     return InheritedModel.inheritFrom<Films>(context)!.values;
   }
 
-  /// [Film.other()] + films in use selected by user
+  /// [FilmStub()] + films in use selected by user
   static List<Film> inUseOf<T>(BuildContext context) {
     return InheritedModel.inheritFrom<Films>(
       context,

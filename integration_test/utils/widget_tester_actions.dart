@@ -24,7 +24,7 @@ extension WidgetTesterCommonActions on WidgetTester {
     String selectedEquipmentProfileId = '',
     List<Film>? availableFilms,
     List<Film>? filmsInUse,
-    Film selectedFilm = const Film.other(),
+    Film selectedFilm = const FilmStub(),
   }) async {
     await pumpWidget(
       MockIAPProductsProvider(

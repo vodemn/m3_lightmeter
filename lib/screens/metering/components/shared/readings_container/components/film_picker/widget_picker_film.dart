@@ -30,7 +30,7 @@ class FilmPicker extends StatelessWidget {
   }
 
   String _label(BuildContext context) {
-    if (Films.selectedOf(context) == const Film.other() || Films.selectedOf(context).iso == selectedIso.value) {
+    if (Films.selectedOf(context) == const FilmStub() || Films.selectedOf(context).iso == selectedIso.value) {
       return S.of(context).film;
     }
 

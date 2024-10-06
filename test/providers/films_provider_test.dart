@@ -96,7 +96,7 @@ void main() {
       testWidgets(
         'Select films in use',
         (tester) async {
-          when(() => mockIAPStorageService.selectedFilm).thenReturn(const Film.other());
+          when(() => mockIAPStorageService.selectedFilm).thenReturn(const FilmStub());
           when(() => mockIAPStorageService.filmsInUse).thenReturn([]);
 
           /// Init
@@ -113,14 +113,14 @@ void main() {
           expectSelectedFilmName('');
 
           verify(() => mockIAPStorageService.filmsInUse = mockFilms.skip(0).toList()).called(1);
-          verifyNever(() => mockIAPStorageService.selectedFilm = const Film.other());
+          verifyNever(() => mockIAPStorageService.selectedFilm = const FilmStub());
         },
       );
 
       testWidgets(
         'Select film',
         (tester) async {
-          when(() => mockIAPStorageService.selectedFilm).thenReturn(const Film.other());
+          when(() => mockIAPStorageService.selectedFilm).thenReturn(const FilmStub());
           when(() => mockIAPStorageService.filmsInUse).thenReturn(mockFilms);
 
           /// Init
@@ -156,14 +156,14 @@ void main() {
               expectSelectedFilmName('');
 
               verifyNever(() => mockIAPStorageService.filmsInUse = any<List<Film>>());
-              verify(() => mockIAPStorageService.selectedFilm = const Film.other()).called(1);
+              verify(() => mockIAPStorageService.selectedFilm = const FilmStub()).called(1);
             },
           );
 
           testWidgets(
             'None film selected',
             (tester) async {
-              when(() => mockIAPStorageService.selectedFilm).thenReturn(const Film.other());
+              when(() => mockIAPStorageService.selectedFilm).thenReturn(const FilmStub());
               when(() => mockIAPStorageService.filmsInUse).thenReturn([]);
 
               /// Init
@@ -172,7 +172,7 @@ void main() {
               expectSelectedFilmName('');
 
               verifyNever(() => mockIAPStorageService.filmsInUse = any<List<Film>>());
-              verifyNever(() => mockIAPStorageService.selectedFilm = const Film.other());
+              verifyNever(() => mockIAPStorageService.selectedFilm = const FilmStub());
             },
           );
         },
@@ -198,7 +198,7 @@ void main() {
           expectSelectedFilmName('');
 
           verify(() => mockIAPStorageService.filmsInUse = mockFilms.skip(1).toList()).called(1);
-          verify(() => mockIAPStorageService.selectedFilm = const Film.other()).called(1);
+          verify(() => mockIAPStorageService.selectedFilm = const FilmStub()).called(1);
         },
       );
     },
@@ -252,25 +252,8 @@ class _Application extends StatelessWidget {
   }
 }
 
-const mockFilms = [_MockFilm2x(), _MockFilm3x(), _MockFilm4x()];
-
-class _MockFilm2x extends Film {
-  const _MockFilm2x() : super('Mock film 2x', 400);
-
-  @override
-  double reciprocityFormula(double t) => t * 2;
-}
-
-class _MockFilm3x extends Film {
-  const _MockFilm3x() : super('Mock film 3x', 800);
-
-  @override
-  double reciprocityFormula(double t) => t * 3;
-}
-
-class _MockFilm4x extends Film {
-  const _MockFilm4x() : super('Mock film 4x', 1600);
-
-  @override
-  double reciprocityFormula(double t) => t * 4;
-}
+const mockFilms = [
+  FilmExponential(id: '1', name: 'Mock film 2x', iso: 400, exponent: 1.34),
+  FilmExponential(id: '2', name: 'Mock film 3x', iso: 800, exponent: 1.34),
+  FilmExponential(id: '3', name: 'Mock film 4x', iso: 1200, exponent: 1.34),
+];

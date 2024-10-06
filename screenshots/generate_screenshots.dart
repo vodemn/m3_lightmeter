@@ -32,7 +32,7 @@ import 'models/screenshot_args.dart';
 
 //https://stackoverflow.com/a/67186625/13167574
 
-const _mockFilm = Film('Ilford HP5+', 400);
+const _mockFilm = FilmExponential(id: '1', name: 'Ilford HP5+', iso: 400, exponent: 1.34);
 final Color _lightThemeColor = primaryColorsList[5];
 final Color _darkThemeColor = primaryColorsList[3];
 final ThemeData _themeLight = themeFrom(_lightThemeColor, Brightness.light);

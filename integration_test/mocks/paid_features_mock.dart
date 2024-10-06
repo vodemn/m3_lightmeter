@@ -20,7 +20,7 @@ class MockIAPProviders extends StatefulWidget {
     this.selectedEquipmentProfileId = '',
     List<Film>? availableFilms,
     List<Film>? filmsInUse,
-    this.selectedFilm = const Film.other(),
+    this.selectedFilm = const FilmStub(),
     required this.child,
     super.key,
   })  : availableFilms = availableFilms ?? mockFilms,
@@ -128,13 +128,9 @@ final mockEquipmentProfiles = [
   ),
 ];
 
-const mockFilms = [_MockFilm(100, 2), _MockFilm(400, 2), _MockFilm(3, 800), _MockFilm(400, 1.5)];
-
-class _MockFilm extends Film {
-  final double reciprocityMultiplier;
-
-  const _MockFilm(int iso, this.reciprocityMultiplier) : super('Mock film $iso x$reciprocityMultiplier', iso);
-
-  @override
-  double reciprocityFormula(double t) => t * reciprocityMultiplier;
-}
+const mockFilms = [
+  FilmExponential(id: '1', name: 'Mock film 1', iso: 100, exponent: 1.34),
+  FilmExponential(id: '2', name: 'Mock film 2', iso: 400, exponent: 1.34),
+  FilmExponential(id: '3', name: 'Mock film 3', iso: 800, exponent: 1.34),
+  FilmExponential(id: '4', name: 'Mock film 4', iso: 1200, exponent: 1.34),
+];

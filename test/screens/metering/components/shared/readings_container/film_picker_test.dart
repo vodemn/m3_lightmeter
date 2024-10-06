@@ -51,7 +51,7 @@ void main() {
     testWidgets(
       'Film.other()',
       (tester) async {
-        when(() => mockIAPStorageService.selectedFilm).thenReturn(const Film.other());
+        when(() => mockIAPStorageService.selectedFilm).thenReturn(const FilmStub());
         await pumpApplication(tester);
         expectReadingValueContainerText(S.current.film);
         expectReadingValueContainerText(S.current.none);
@@ -104,8 +104,8 @@ void main() {
 }
 
 const _films = [
-  Film('ISO 100 Film', 100),
-  Film('ISO 400 Film', 400),
-  Film('ISO 800 Film', 800),
-  Film('ISO 1600 Film', 1600),
+  FilmExponential(id: '', name: 'ISO 100 Film', iso: 100, exponent: 1.34),
+  FilmExponential(id: '', name: 'ISO 400 Film', iso: 400, exponent: 1.34),
+  FilmExponential(id: '', name: 'ISO 800 Film', iso: 800, exponent: 1.34),
+  FilmExponential(id: '', name: 'ISO 1600 Film', iso: 1600, exponent: 1.34),
 ];
