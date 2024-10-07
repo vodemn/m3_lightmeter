@@ -8,12 +8,10 @@ typedef _WidgetBuilder<W, T extends Identifiable> = W Function(BuildContext cont
 class ExpandableSectionList<T extends Identifiable> extends StatefulWidget {
   final List<T> values;
   final VoidCallback onSectionTitleTap;
-  final ExpandableSectionListItem Function(BuildContext context, int index) builder;
   final _WidgetBuilder<List<Widget>, T> contentBuilder;
   final _WidgetBuilder<List<IconButton>, T> actionsBuilder;
 
   const ExpandableSectionList({
-    required this.builder,
     required this.values,
     required this.onSectionTitleTap,
     required this.contentBuilder,
@@ -22,10 +20,10 @@ class ExpandableSectionList<T extends Identifiable> extends StatefulWidget {
   });
 
   @override
-  State<ExpandableSectionList> createState() => _ExpandableSectionListState();
+  State<ExpandableSectionList> createState() => _ExpandableSectionListState<T>();
 }
 
-class _ExpandableSectionListState extends State<ExpandableSectionList> {
+class _ExpandableSectionListState<T extends Identifiable> extends State<ExpandableSectionList<T>> {
   final Map<String, GlobalKey<ExpandableSectionListItemState>> keysMap = {};
 
   @override
