@@ -29,7 +29,9 @@ on:
         default: true
 
 env:
-  RELEASE_NOTES_FILE: release_notes_en_${{ inputs.version }}
+  RELEASE_NOTES_ARTIFACT_NAME: release_notes_en_${{ inputs.version }}
+  RELEASE_NOTES_FILE: release_notes_en_${{ inputs.version }}.md
+  RELEASE_NOTES_PATH: "assets/release_notes"
 
 jobs:
   run-integration-tests:
@@ -38,10 +40,25 @@ jobs:
     uses: ./.github/workflows/run_integration_tests.yml
     secrets: inherit
 
-  build-android:
-    name: Build Android
+  generate-release-notes:
+    name: Generate release notes
     needs: [run-integration-tests]
     if: ${{ always() && !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate release notes
+        run: |
+          echo ${{ inputs.release-notes }} > ${{ env.RELEASE_NOTES_FILE }}
+          perl -i -pe 's/\s{1}(-{1})/\n$1/g' ${{ env.RELEASE_NOTES_FILE }}
+      - name: Upload merged_native_libs.zip to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
+          path: ${{ env.RELEASE_NOTES_FILE }}
+
+  build-android:
+    name: Build Android
+    needs: [generate-release-notes]
     strategy:
       matrix:
         binary-type: [apk, appbundle]
@@ -55,32 +72,16 @@ jobs:
 
   build-ios:
     name: Build iOS
-    needs: [run-integration-tests]
-    if: ${{ always() && !failure() && !cancelled() }}
+    needs: [generate-release-notes]
     uses: ./.github/workflows/build_ipa.yml
     secrets: inherit
     with:
       stage-backend: false
       version: ${{ inputs.version }}
 
-  generate-release-notes:
-    name: Generate release notes
-    needs: [build-android, build-ios]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Generate release notes
-        run: |
-          echo ${{ inputs.release-notes }} > ${{ env.RELEASE_NOTES_FILE }}.md
-          perl -i -pe 's/\s{1}(-{1})/\n$1/g' ${{ env.RELEASE_NOTES_FILE }}.md
-      - name: Upload merged_native_libs.zip to artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.RELEASE_NOTES_FILE }}
-          path: ${{ env.RELEASE_NOTES_FILE }}.md
-
   create-github-release:
     name: Create Github release
-    needs: [generate-release-notes]
+    needs: [build-android, build-ios]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -95,10 +96,8 @@ jobs:
       - name: Download release notes
         uses: actions/download-artifact@v3
         with:
-          name: ${{ env.RELEASE_NOTES_FILE }}
-
-      - name: Move release notes to a folder
-        run: mv assets/release_notes/${{ env.RELEASE_NOTES_FILE }}.md ${{ env.RELEASE_NOTES_FILE }}
+          name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
+          path: ${{ env.RELEASE_NOTES_PATH }}
 
       - name: Commit changes
         run: |
@@ -127,11 +126,11 @@ jobs:
           artifacts: "m3_lightmeter.apk"
           skipIfReleaseExists: true
           tag: "v${{ github.event.inputs.version }}"
-          bodyFile: "${{ env.RELEASE_NOTES_FILE }}.md"
+          bodyFile: "${{ env.RELEASE_NOTES_PATH }}/${{ env.RELEASE_NOTES_FILE }}"
 
   create-google-play-release:
     name: Create Google Play release
-    needs: [generate-release-notes]
+    needs: [build-android, build-ios]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -151,13 +150,13 @@ jobs:
       - name: Download release notes
         uses: actions/download-artifact@v3
         with:
-          name: ${{ env.RELEASE_NOTES_FILE }}
+          name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
 
       - name: Move release notes to a folder
         run: |
-          mv assets/release_notes/${{ env.RELEASE_NOTES_FILE }}.md ${{ env.RELEASE_NOTES_FILE }}
+          mv ${{ env.RELEASE_NOTES_FILE }} whatsnew-en-US
           mkdir whatsnew
-          mv ${{ env.RELEASE_NOTES_FILE }} whatsnew
+          mv whatsnew-en-US whatsnew
 
       # https://unix.stackexchange.com/questions/13466/can-grep-output-only-specified-groupings-that-match'
       # https://stackoverflow.com/questions/74353311/github-workflow-unable-to-process-file-command-env-successfully
@@ -182,7 +181,7 @@ jobs:
 
   upload-to-app-store:
     name: Upload to App Store
-    needs: [generate-release-notes]
+    needs: [build-android, build-ios]
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
@@ -212,4 +211,4 @@ jobs:
             m3_lightmeter_apk
             m3_lightmeter_appbundle
             m3_lightmeter_ipa
-            ${{ env.RELEASE_NOTES_FILE }}
+            ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
