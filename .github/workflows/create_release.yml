@@ -102,34 +102,34 @@ jobs:
           name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
           path: ${{ env.RELEASE_NOTES_PATH }}
 
-      # - name: Commit changes
-      #   run: |
-      #     git config --local user.email "github-actions[bot]@users.noreply.github.com"
-      #     git config --local user.name "github-actions[bot]"
-      #     git add -A
-      #     git commit -m "Release v${{ inputs.version }}"
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git commit -m "Release v${{ inputs.version }}"
 
-      # - name: Push to main
-      #   uses: CasperWA/push-protected@v2
-      #   with:
-      #     token: ${{ secrets.PUSH_TO_MAIN_TOKEN }}
-      #     branch: ${{ github.ref_name }}
-      #     unprotect_reviews: true
+      - name: Push to main
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.PUSH_TO_MAIN_TOKEN }}
+          branch: ${{ github.ref_name }}
+          unprotect_reviews: true
 
-      # - name: Download apk
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: m3_lightmeter_apk
+      - name: Download apk
+        uses: actions/download-artifact@v3
+        with:
+          name: m3_lightmeter_apk
 
-      # - name: Rename apk
-      #   run: mv app-prod-release.apk m3_lightmeter.apk
+      - name: Rename apk
+        run: mv app-prod-release.apk m3_lightmeter.apk
 
-      # - uses: ncipollo/release-action@v1.12.0
-      #   with:
-      #     artifacts: "m3_lightmeter.apk"
-      #     skipIfReleaseExists: true
-      #     tag: "v${{ github.event.inputs.version }}"
-      #     bodyFile: "${{ env.RELEASE_NOTES_PATH }}/${{ env.RELEASE_NOTES_FILE }}"
+      - uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: "m3_lightmeter.apk"
+          skipIfReleaseExists: true
+          tag: "v${{ github.event.inputs.version }}"
+          bodyFile: "${{ env.RELEASE_NOTES_PATH }}/${{ env.RELEASE_NOTES_FILE }}"
 
   create-google-play-release:
     name: Create Google Play release
@@ -164,24 +164,24 @@ jobs:
 
       # https://unix.stackexchange.com/questions/13466/can-grep-output-only-specified-groupings-that-match'
       # https://stackoverflow.com/questions/74353311/github-workflow-unable-to-process-file-command-env-successfully
-      # - name: Create Google Play release name
-      #   id: release-name
-      #   run: |
-      #     RELEASE_NAME=$(echo "$(cat pubspec.yaml)" | sed -n -r "s/^version:\s{1}(.*)[+](.*)$/700\2 (\1)/p")
-      #     echo "release_name=$RELEASE_NAME" >> $GITHUB_ENV
+      - name: Create Google Play release name
+        id: release-name
+        run: |
+          RELEASE_NAME=$(echo "$(cat pubspec.yaml)" | sed -n -r "s/^version:\s{1}(.*)[+](.*)$/700\2 (\1)/p")
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_ENV
 
-      # - name: Create Google Play release
-      #   id: create-google-play-release-step
-      #   uses: r0adkll/upload-google-play@v1.1.1
-      #   with:
-      #     serviceAccountJsonPlainText: ${{ secrets.GH_ACTIONS_SERVICE_ACCOUNT_JSON }}
-      #     packageName: com.vodemn.lightmeter
-      #     releaseFiles: app-prod-release.aab
-      #     releaseName: ${{ env.release_name }}
-      #     track: production
-      #     status: completed
-      #     debugSymbols: merged_native_libs.zip
-      #     whatsNewDirectory: whatsnew
+      - name: Create Google Play release
+        id: create-google-play-release-step
+        uses: r0adkll/upload-google-play@v1.1.1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GH_ACTIONS_SERVICE_ACCOUNT_JSON }}
+          packageName: com.vodemn.lightmeter
+          releaseFiles: app-prod-release.aab
+          releaseName: ${{ env.release_name }}
+          track: production
+          status: completed
+          debugSymbols: merged_native_libs.zip
+          whatsNewDirectory: whatsnew
 
   upload-to-app-store:
     name: Upload to App Store
@@ -198,8 +198,8 @@ jobs:
         with:
           name: m3_lightmeter_ipa
 
-      # - name: Upload app to TestFlight
-      #   run: xcrun altool --upload-app -f lightmeter.ipa -t ios -u ${{ secrets.APP_STORE_USERNAME }} -p ${{ secrets.APP_STORE_PASSWORD }}
+      - name: Upload app to TestFlight
+        run: xcrun altool --upload-app -f lightmeter.ipa -t ios -u ${{ secrets.APP_STORE_USERNAME }} -p ${{ secrets.APP_STORE_PASSWORD }}
 
   cleanup:
     name: Cleanup
@@ -213,5 +213,7 @@ jobs:
         with:
           failOnError: false
           name: |
+            m3_lightmeter_apk
             m3_lightmeter_appbundle
             m3_lightmeter_ipa
+            ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
