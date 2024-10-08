@@ -59,6 +59,7 @@ jobs:
   build-android:
     name: Build Android
     needs: [generate-release-notes]
+    if: ${{ always() && !failure() && !cancelled() }}
     strategy:
       matrix:
         binary-type: [apk, appbundle]
@@ -73,6 +74,7 @@ jobs:
   build-ios:
     name: Build iOS
     needs: [generate-release-notes]
+    if: ${{ always() && !failure() && !cancelled() }}
     uses: ./.github/workflows/build_ipa.yml
     secrets: inherit
     with:
