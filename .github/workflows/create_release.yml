@@ -84,6 +84,7 @@ jobs:
   create-github-release:
     name: Create Github release
     needs: [build-android, build-ios]
+    if: ${{ always() && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -133,6 +134,7 @@ jobs:
   create-google-play-release:
     name: Create Google Play release
     needs: [build-android, build-ios]
+    if: ${{ always() && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -184,6 +186,7 @@ jobs:
   upload-to-app-store:
     name: Upload to App Store
     needs: [build-android, build-ios]
+    if: ${{ always() && !failure() && !cancelled() }}
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
