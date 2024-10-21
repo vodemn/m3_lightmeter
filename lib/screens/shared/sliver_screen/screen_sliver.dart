@@ -3,7 +3,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
 class SliverScreen extends StatelessWidget {
-  final String title;
+  final Widget title;
   final List<Widget> appBarActions;
   final List<Widget> slivers;
 
@@ -29,12 +29,12 @@ class SliverScreen extends StatelessWidget {
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: false,
                 titlePadding: const EdgeInsets.all(Dimens.paddingM),
-                title: Text(
-                  title,
+                title: DefaultTextStyle(
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontSize: Dimens.grid24,
                   ),
+                  child: title,
                 ),
               ),
               actions: [

@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/screens/settings/components/about/widget_settings_section_about.dart';
-import 'package:lightmeter/screens/settings/components/general/widget_settings_section_general.dart';
-import 'package:lightmeter/screens/settings/components/lightmeter_pro/widget_settings_section_lightmeter_pro.dart';
-import 'package:lightmeter/screens/settings/components/metering/widget_settings_section_metering.dart';
-import 'package:lightmeter/screens/settings/components/shared/expandable_section_list/components/expandable_section_list_item/widget_expandable_section_list_item.dart';
+import 'package:lightmeter/providers/films_provider.dart';
+import 'package:lightmeter/screens/films/components/film_formula_input/widget_film_formula_input.dart';
 import 'package:lightmeter/screens/settings/components/shared/expandable_section_list/widget_expandable_section_list.dart';
-import 'package:lightmeter/screens/settings/components/theme/widget_settings_section_theme.dart';
-import 'package:lightmeter/screens/settings/flow_settings.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
-import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -24,31 +18,29 @@ class _FilmsScreenState extends State<FilmsScreen> {
   @override
   Widget build(BuildContext context) {
     return SliverScreen(
-      title: 'Films',
+      title: Text('Films'),
       appBarActions: [
         IconButton(
-          onPressed: () {},
+          onPressed: _addFilm,
           icon: const Icon(Icons.add_outlined),
           tooltip: S.of(context).tooltipAdd,
         ),
       ],
       slivers: [
-        ExpandableSectionList<Film>(
-          values: films,
+        ExpandableSectionList<FilmExponential>(
+          values: [],
           onSectionTitleTap: () {},
           contentBuilder: (context, value) => [
             ListTile(
               leading: const Icon(Icons.iso),
               title: Text(S.of(context).iso),
               trailing: Text(value.iso.toString()),
-              onTap: () {
-                
-              },
+              onTap: () {},
             ),
             ListTile(
               leading: const Icon(Icons.equalizer),
               title: Text('Formula'),
-              trailing: Text('x^1.34'),
+              trailing: Text(value.exponent.toString()),
             ),
           ],
           actionsBuilder: (context, value) => [
@@ -67,5 +59,16 @@ class _FilmsScreenState extends State<FilmsScreen> {
         SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
       ],
     );
+  }
+
+  void _addFilm([EquipmentProfile? copyFrom]) {
+    showDialog<String>(
+      context: context,
+      builder: (_) => const FilmFormulaDialog(),
+    ).then((name) {
+      if (name != null) {
+        FilmsProvider.of(context).addFilm(name);
+      }
+    });
   }
 }

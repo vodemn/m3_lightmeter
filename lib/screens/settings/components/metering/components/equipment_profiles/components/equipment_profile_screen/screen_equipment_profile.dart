@@ -28,7 +28,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   @override
   Widget build(BuildContext context) {
     return SliverScreen(
-      title: S.of(context).equipmentProfiles,
+      title: Text(S.of(context).equipmentProfiles),
       appBarActions: [
         IconButton(
           onPressed: _addProfile,
