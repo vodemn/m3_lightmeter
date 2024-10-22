@@ -150,5 +150,9 @@
             }
         }
     },
-    "close": "Close"
+    "close": "Close",
+    "filmFormula": "Formula",
+    "filmFormulaExponential": "T=t^Rf",
+    "filmFormulaExponentialRf": "Rf",
+    "name": "Name"
 }

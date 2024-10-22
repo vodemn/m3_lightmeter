@@ -1,8 +1,15 @@
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmEditState {
-  final FilmExponential film;
+  final String name;
   final IsoValue isoValue;
+  final double? exponent;
+  final bool canSave;
 
-  const FilmEditState(this.film, this.isoValue);
+  const FilmEditState({
+    required this.name,
+    required this.isoValue,
+    required this.exponent,
+    required this.canSave,
+  });
 }

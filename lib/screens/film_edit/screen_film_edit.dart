@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/film_edit/bloc_film_edit.dart';
+import 'package:lightmeter/screens/film_edit/components/exponential_formula_input/widget_input_exponential_formula.dart';
 import 'package:lightmeter/screens/film_edit/event_film_edit.dart';
 import 'package:lightmeter/screens/film_edit/state_film_edit.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/animated_dialog_picker/components/dialog_picker/widget_picker_dialog.dart';
-import 'package:lightmeter/screens/settings/components/shared/dialog_filter/widget_dialog_filter.dart';
-import 'package:lightmeter/screens/settings/components/shared/expandable_section_list/widget_expandable_section_list.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
+import 'package:lightmeter/screens/shared/text_field/widget_text_field.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmEditScreen extends StatefulWidget {
@@ -22,42 +24,86 @@ class _FilmEditScreenState extends State<FilmEditScreen> {
   Widget build(BuildContext context) {
     return SliverScreen(
       title: BlocBuilder<FilmEditBloc, FilmEditState>(
-        buildWhen: (previous, current) => previous.film.name != current.film.name,
-        builder: (context, state) => TextFormField(
-          initialValue: state.film.name,
-          onChanged: (value) {},
-        ),
+        buildWhen: (previous, current) => previous.name != current.name,
+        builder: (_, state) => Text(state.name),
       ),
       appBarActions: [
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.save),
+        BlocBuilder<FilmEditBloc, FilmEditState>(
+          buildWhen: (previous, current) => previous.canSave != current.canSave,
+          builder: (context, state) => IconButton(
+            onPressed: state.canSave ? () {} : null,
+            icon: const Icon(Icons.save),
+          ),
         ),
       ],
       slivers: [
         SliverToBoxAdapter(
-          child: BlocBuilder<FilmEditBloc, FilmEditState>(
-            buildWhen: (previous, current) => previous.isoValue != current.isoValue,
-            builder: (context, state) => _IsoPickerListTile(
-              selected: state.isoValue,
-              onChanged: (value) {
-                context.read<FilmEditBloc>().add(FilmEditIsoChangedEvent(value));
-              },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              Dimens.paddingM,
+              0,
+              Dimens.paddingM,
+              Dimens.paddingM,
             ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: BlocBuilder<FilmEditBloc, FilmEditState>(
-            buildWhen: (previous, current) => previous.film.exponent != current.film.exponent,
-            builder: (context, state) => ListTile(
-              leading: const Icon(Icons.equalizer),
-              title: Text('Formula'),
-              trailing: Text(state.film.exponent.toString()),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
+                child: Column(
+                  children: [
+                    _NameFieldBuilder(),
+                    BlocBuilder<FilmEditBloc, FilmEditState>(
+                      buildWhen: (previous, current) => previous.isoValue != current.isoValue,
+                      builder: (context, state) => _IsoPickerListTile(
+                        selected: state.isoValue,
+                        onChanged: (value) {
+                          context.read<FilmEditBloc>().add(FilmEditIsoChangedEvent(value));
+                        },
+                      ),
+                    ),
+                    BlocBuilder<FilmEditBloc, FilmEditState>(
+                      buildWhen: (previous, current) => previous.exponent != current.exponent,
+                      builder: (context, state) => ExponentialFormulaInput(
+                        value: state.exponent,
+                        onChanged: (value) {
+                          context.read<FilmEditBloc>().add(FilmEditExpChangedEvent(value));
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
         SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
       ],
+    );
+  }
+}
+
+class _NameFieldBuilder extends StatelessWidget {
+  const _NameFieldBuilder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: Dimens.paddingM,
+        top: Dimens.paddingS / 2,
+        right: Dimens.paddingL,
+        bottom: Dimens.paddingS / 2,
+      ),
+      child: BlocBuilder<FilmEditBloc, FilmEditState>(
+        buildWhen: (previous, current) => previous.name != current.name,
+        builder: (context, state) => LightmeterTextField(
+          initialValue: state.name,
+          onChanged: (value) {
+            context.read<FilmEditBloc>().add(FilmEditNameChangedEvent(value));
+          },
+          style: Theme.of(context).listTileTheme.titleTextStyle,
+          leading: const Icon(Icons.edit_outlined),
+        ),
+      ),
     );
   }
 }

@@ -17,9 +17,9 @@ class FilmEditIsoChangedEvent extends FilmEditEvent {
 }
 
 class FilmEditExpChangedEvent extends FilmEditEvent {
-  final double exp;
+  final double? exponent;
 
-  const FilmEditExpChangedEvent(this.exp);
+  const FilmEditExpChangedEvent(this.exponent);
 }
 
 class FilmEditSaveEvent extends FilmEditEvent {
