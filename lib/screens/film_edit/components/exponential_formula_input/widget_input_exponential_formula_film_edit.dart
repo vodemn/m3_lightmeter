@@ -4,21 +4,21 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/text_field/widget_text_field.dart';
 
-class ExponentialFormulaInput extends StatefulWidget {
+class FilmEditExponentialFormulaInput extends StatefulWidget {
   final double? value;
   final ValueChanged<double?> onChanged;
 
-  const ExponentialFormulaInput({
+  const FilmEditExponentialFormulaInput({
     super.key,
     required this.value,
     required this.onChanged,
   });
 
   @override
-  State<ExponentialFormulaInput> createState() => _ExponentialFormulaInputState();
+  State<FilmEditExponentialFormulaInput> createState() => _FilmEditExponentialFormulaInputState();
 }
 
-class _ExponentialFormulaInputState extends State<ExponentialFormulaInput> {
+class _FilmEditExponentialFormulaInputState extends State<FilmEditExponentialFormulaInput> {
   TextStyle get style =>
       Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).listTileTheme.textColor);
 
