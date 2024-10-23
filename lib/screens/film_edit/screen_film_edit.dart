@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
@@ -24,8 +23,8 @@ class _FilmEditScreenState extends State<FilmEditScreen> {
   Widget build(BuildContext context) {
     return SliverScreen(
       title: BlocBuilder<FilmEditBloc, FilmEditState>(
-        buildWhen: (previous, current) => previous.name != current.name,
-        builder: (_, state) => Text(state.name),
+        buildWhen: (previous, current) => false,
+        builder: (context, state) => Text(state.isEdit ? S.of(context).editFilmTitle : S.of(context).addFilmTitle),
       ),
       appBarActions: [
         BlocBuilder<FilmEditBloc, FilmEditState>(
@@ -97,6 +96,8 @@ class _NameFieldBuilder extends StatelessWidget {
         buildWhen: (previous, current) => previous.name != current.name,
         builder: (context, state) => LightmeterTextField(
           initialValue: state.name,
+          maxLength: 48,
+          hintText: S.of(context).name,
           onChanged: (value) {
             context.read<FilmEditBloc>().add(FilmEditNameChangedEvent(value));
           },

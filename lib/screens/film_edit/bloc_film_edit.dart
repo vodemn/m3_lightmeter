@@ -4,10 +4,13 @@ import 'package:lightmeter/screens/film_edit/state_film_edit.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
+  static const _defaultFilm = FilmExponential(name: '', iso: 100, exponent: 1.3);
   final FilmExponential _originalFilm;
   FilmExponential _newFilm;
 
-  FilmEditBloc(FilmExponential film)
+  factory FilmEditBloc(FilmExponential? film) => film != null ? FilmEditBloc._(film) : FilmEditBloc._(_defaultFilm);
+
+  FilmEditBloc._(FilmExponential film)
       : _originalFilm = film,
         _newFilm = film,
         super(
@@ -16,6 +19,7 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
             isoValue: IsoValue.values.firstWhere((element) => element.value == film.iso),
             exponent: film.exponent,
             canSave: false,
+            isEdit: film != _defaultFilm,
           ),
         ) {
     on<FilmEditEvent>(
@@ -42,6 +46,7 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
         isoValue: state.isoValue,
         exponent: state.exponent,
         canSave: _canSave(event.name, state.exponent),
+        isEdit: state.isEdit,
       ),
     );
   }
@@ -54,6 +59,7 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
         isoValue: event.iso,
         exponent: state.exponent,
         canSave: _canSave(state.name, state.exponent),
+        isEdit: state.isEdit,
       ),
     );
   }
@@ -68,6 +74,7 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
         isoValue: state.isoValue,
         exponent: event.exponent,
         canSave: _canSave(state.name, event.exponent),
+        isEdit: state.isEdit,
       ),
     );
   }
