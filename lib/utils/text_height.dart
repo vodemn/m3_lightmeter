@@ -34,3 +34,7 @@ Size textSize(
   )..layout(maxWidth: maxWidth);
   return titlePainter.size;
 }
+
+extension TextLineHeight on TextStyle {
+  double get lineHeight => fontSize! * height!;
+}
