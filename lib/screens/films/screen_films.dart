@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/film_edit/flow_film_edit.dart';
@@ -71,14 +72,14 @@ class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStat
 
   void _addFilm() {
     Navigator.of(context).pushNamed(
-      'filmEdit',
+      NavigationRoutes.filmEditScreen.name,
       arguments: const FilmEditArgs(film: FilmExponential(name: '', iso: 100, exponent: 1.3)),
     );
   }
 
   void _editFilm(FilmExponential film) {
     Navigator.of(context).pushNamed(
-      'filmEdit',
+      NavigationRoutes.filmEditScreen.name,
       arguments: FilmEditArgs(film: film),
     );
   }
