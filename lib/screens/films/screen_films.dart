@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/films_provider.dart';
-import 'package:lightmeter/screens/films/components/film_formula_input/widget_film_formula_input.dart';
+import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/shared/expandable_section_list/widget_expandable_section_list.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmsScreen extends StatefulWidget {
@@ -14,11 +13,20 @@ class FilmsScreen extends StatefulWidget {
   State<FilmsScreen> createState() => _FilmsScreenState();
 }
 
-class _FilmsScreenState extends State<FilmsScreen> {
+class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStateMixin {
+  late final tabController = TabController(length: 2, vsync: this);
+
   @override
   Widget build(BuildContext context) {
     return SliverScreen(
-      title: Text('Films'),
+      title: Text(S.of(context).films),
+      bottom: TabBar(
+        controller: tabController,
+        tabs: [
+          Tab(text: S.of(context).filmsInUse),
+          Tab(text: S.of(context).filmsCustom),
+        ],
+      ),
       appBarActions: [
         IconButton(
           onPressed: _addFilm,
@@ -27,48 +35,76 @@ class _FilmsScreenState extends State<FilmsScreen> {
         ),
       ],
       slivers: [
-        ExpandableSectionList<FilmExponential>(
-          values: [],
-          onSectionTitleTap: () {},
-          contentBuilder: (context, value) => [
-            ListTile(
-              leading: const Icon(Icons.iso),
-              title: Text(S.of(context).iso),
-              trailing: Text(value.iso.toString()),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.equalizer),
-              title: Text('Formula'),
-              trailing: Text(value.exponent.toString()),
-            ),
-          ],
-          actionsBuilder: (context, value) => [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.copy_outlined),
-              tooltip: S.of(context).tooltipCopy,
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.delete_outlined),
-              tooltip: S.of(context).tooltipDelete,
-            ),
-          ],
+        SliverFillRemaining(
+          // The inner (body) scroll view must use this scroll controller so that
+          // the independent scroll positions can be kept in sync.
+          child: TabBarView(
+            controller: tabController,
+            children: [
+              _FilmsListBuilder(
+                films: Films.of(context).skip(1).toList(),
+                onFilmSelected: (film, value) {},
+              ),
+              _FilmsListBuilder(
+                films: Films.of(context).skip(1).toList(),
+                onFilmSelected: (film, value) {},
+              ),
+            ],
+          ),
         ),
-        SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
       ],
     );
   }
 
-  void _addFilm([EquipmentProfile? copyFrom]) {
-    showDialog<String>(
-      context: context,
-      builder: (_) => const FilmFormulaDialog(),
-    ).then((name) {
-      if (name != null) {
-        FilmsProvider.of(context).addFilm(name);
-      }
-    });
+  void _addFilm([EquipmentProfile? copyFrom]) {}
+}
+
+class _FilmsListBuilder extends StatelessWidget {
+  final List<Film> films;
+  final void Function(Film film, bool value) onFilmSelected;
+  final void Function()? onFilmEdit;
+
+  const _FilmsListBuilder({
+    required this.films,
+    required this.onFilmSelected,
+    this.onFilmEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(Dimens.paddingM).add(EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom)),
+      itemCount: films.length,
+      itemBuilder: (_, index) => Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: index == 0 ? const Radius.circular(Dimens.borderRadiusL) : Radius.zero,
+            topRight: index == 0 ? const Radius.circular(Dimens.borderRadiusL) : Radius.zero,
+            bottomLeft: index == films.length - 1 ? const Radius.circular(Dimens.borderRadiusL) : Radius.zero,
+            bottomRight: index == films.length - 1 ? const Radius.circular(Dimens.borderRadiusL) : Radius.zero,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: index == 0 ? Dimens.paddingM : 0.0,
+            bottom: index == films.length - 1 ? Dimens.paddingM : 0.0,
+          ),
+          child: CheckboxListTile(
+            controlAffinity: ListTileControlAffinity.leading,
+            value: Films.inUseOf(context).contains(films[index]),
+            title: Text(films[index].name),
+            onChanged: (value) {
+              onFilmSelected(films[index], value ?? false);
+            },
+            secondary: onFilmEdit != null
+                ? IconButton(
+                    onPressed: onFilmEdit,
+                    icon: const Icon(Icons.edit),
+                  )
+                : null,
+          ),
+        ),
+      ),
+    );
   }
 }
