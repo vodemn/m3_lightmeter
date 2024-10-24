@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/settings/components/shared/expandable_section_list/widget_expandable_section_list.dart';
+import 'package:lightmeter/screens/film_edit/flow_film_edit.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -17,6 +17,12 @@ class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStat
   late final tabController = TabController(length: 2, vsync: this);
 
   @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SliverScreen(
       title: Text(S.of(context).films),
@@ -28,16 +34,22 @@ class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStat
         ],
       ),
       appBarActions: [
-        IconButton(
-          onPressed: _addFilm,
-          icon: const Icon(Icons.add_outlined),
-          tooltip: S.of(context).tooltipAdd,
+        AnimatedBuilder(
+          animation: tabController,
+          builder: (context, _) => AnimatedSwitcher(
+            duration: Dimens.switchDuration,
+            child: tabController.index == 0
+                ? const SizedBox.shrink()
+                : IconButton(
+                    onPressed: _addFilm,
+                    icon: const Icon(Icons.add_outlined),
+                    tooltip: S.of(context).tooltipAdd,
+                  ),
+          ),
         ),
       ],
       slivers: [
         SliverFillRemaining(
-          // The inner (body) scroll view must use this scroll controller so that
-          // the independent scroll positions can be kept in sync.
           child: TabBarView(
             controller: tabController,
             children: [
@@ -45,9 +57,10 @@ class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStat
                 films: Films.of(context).skip(1).toList(),
                 onFilmSelected: (film, value) {},
               ),
-              _FilmsListBuilder(
-                films: Films.of(context).skip(1).toList(),
+              _FilmsListBuilder<FilmExponential>(
+                films: Films.of(context).skip(1).whereType<FilmExponential>().toList(),
                 onFilmSelected: (film, value) {},
+                onFilmEdit: _editFilm,
               ),
             ],
           ),
@@ -56,13 +69,25 @@ class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStat
     );
   }
 
-  void _addFilm([EquipmentProfile? copyFrom]) {}
+  void _addFilm() {
+    Navigator.of(context).pushNamed(
+      'filmEdit',
+      arguments: const FilmEditArgs(film: FilmExponential(name: '', iso: 100, exponent: 1.3)),
+    );
+  }
+
+  void _editFilm(FilmExponential film) {
+    Navigator.of(context).pushNamed(
+      'filmEdit',
+      arguments: FilmEditArgs(film: film),
+    );
+  }
 }
 
-class _FilmsListBuilder extends StatelessWidget {
-  final List<Film> films;
-  final void Function(Film film, bool value) onFilmSelected;
-  final void Function()? onFilmEdit;
+class _FilmsListBuilder<T extends Film> extends StatelessWidget {
+  final List<T> films;
+  final void Function(T film, bool value) onFilmSelected;
+  final void Function(T film)? onFilmEdit;
 
   const _FilmsListBuilder({
     required this.films,
@@ -98,7 +123,7 @@ class _FilmsListBuilder extends StatelessWidget {
             },
             secondary: onFilmEdit != null
                 ? IconButton(
-                    onPressed: onFilmEdit,
+                    onPressed: () => onFilmEdit!(films[index]),
                     icon: const Icon(Icons.edit),
                   )
                 : null,
