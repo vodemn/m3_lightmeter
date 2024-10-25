@@ -50,6 +50,7 @@ class Application extends StatelessWidget {
           NavigationRoutes.meteringScreen.name: (_) => const ReleaseNotesFlow(child: MeteringFlow()),
           NavigationRoutes.settingsScreen.name: (_) => const SettingsFlow(),
           NavigationRoutes.filmsListScreen.name: (_) => const FilmsScreen(),
+          NavigationRoutes.filmAddScreen.name: (_) => const FilmEditFlow(args: FilmEditArgs()),
           NavigationRoutes.filmEditScreen.name: (context) => FilmEditFlow(args: context.routeArgs<FilmEditArgs>()),
           NavigationRoutes.proFeaturesScreen.name: (_) => LightmeterProScreen(),
           NavigationRoutes.timerScreen.name: (context) => TimerFlow(args: context.routeArgs<TimerFlowArgs>()),

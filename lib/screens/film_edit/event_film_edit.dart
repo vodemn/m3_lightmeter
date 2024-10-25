@@ -25,3 +25,7 @@ class FilmEditExpChangedEvent extends FilmEditEvent {
 class FilmEditSaveEvent extends FilmEditEvent {
   const FilmEditSaveEvent();
 }
+
+class FilmEditDeleteEvent extends FilmEditEvent {
+  const FilmEditDeleteEvent();
+}

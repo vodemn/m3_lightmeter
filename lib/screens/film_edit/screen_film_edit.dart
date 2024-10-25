@@ -11,7 +11,12 @@ import 'package:lightmeter/screens/film_edit/state_film_edit.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 
 class FilmEditScreen extends StatefulWidget {
-  const FilmEditScreen({super.key});
+  final bool isEdit;
+
+  const FilmEditScreen({
+    required this.isEdit,
+    super.key,
+  });
 
   @override
   State<FilmEditScreen> createState() => _FilmEditScreenState();
@@ -21,18 +26,28 @@ class _FilmEditScreenState extends State<FilmEditScreen> {
   @override
   Widget build(BuildContext context) {
     return SliverScreen(
-      title: BlocBuilder<FilmEditBloc, FilmEditState>(
-        buildWhen: (previous, current) => false,
-        builder: (context, state) => Text(state.isEdit ? S.of(context).editFilmTitle : S.of(context).addFilmTitle),
-      ),
+      title: Text(widget.isEdit ? S.of(context).editFilmTitle : S.of(context).addFilmTitle),
       appBarActions: [
         BlocBuilder<FilmEditBloc, FilmEditState>(
           buildWhen: (previous, current) => previous.canSave != current.canSave,
           builder: (context, state) => IconButton(
-            onPressed: state.canSave ? () {} : null,
+            onPressed: state.canSave
+                ? () {
+                    context.read<FilmEditBloc>().add(const FilmEditSaveEvent());
+                    Navigator.of(context).pop();
+                  }
+                : null,
             icon: const Icon(Icons.save),
           ),
         ),
+        if (widget.isEdit)
+          IconButton(
+            onPressed: () {
+              context.read<FilmEditBloc>().add(const FilmEditDeleteEvent());
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.delete),
+          ),
       ],
       slivers: [
         SliverToBoxAdapter(

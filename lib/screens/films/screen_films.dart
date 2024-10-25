@@ -55,12 +55,12 @@ class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStat
             controller: tabController,
             children: [
               _FilmsListBuilder(
-                films: Films.of(context).skip(1).toList(),
-                onFilmSelected: (film, value) {},
+                films: Films.predefinedFilmsOf(context).toList(),
+                onFilmSelected: FilmsProvider.of(context).toggleFilm,
               ),
               _FilmsListBuilder<FilmExponential>(
-                films: Films.of(context).skip(1).whereType<FilmExponential>().toList(),
-                onFilmSelected: (film, value) {},
+                films: Films.customFilmsOf(context).toList(),
+                onFilmSelected: FilmsProvider.of(context).toggleFilm,
                 onFilmEdit: _editFilm,
               ),
             ],
@@ -72,8 +72,8 @@ class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStat
 
   void _addFilm() {
     Navigator.of(context).pushNamed(
-      NavigationRoutes.filmEditScreen.name,
-      arguments: const FilmEditArgs(film: FilmExponential(name: '', iso: 100, exponent: 1.3)),
+      NavigationRoutes.filmAddScreen.name,
+      arguments: const FilmEditArgs(),
     );
   }
 

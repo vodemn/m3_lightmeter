@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/utils/context_utils.dart';
-import 'package:lightmeter/utils/selectable_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -25,13 +24,23 @@ class FilmsProvider extends StatefulWidget {
 }
 
 class FilmsProviderState extends State<FilmsProvider> {
-  late List<Film> _filmsInUse;
+  late final Map<String, _SelectableFilm<Film>> predefinedFilms = Map.fromEntries(
+    (widget.availableFilms ?? films).map(
+      (film) => MapEntry(
+        film.id,
+        (
+          film: film,
+          selected: widget.storageService.filmsInUse.contains(film),
+        ),
+      ),
+    ),
+  );
+  final Map<String, _SelectableFilm<FilmExponential>> customFilms = {};
   late Film _selected;
 
   @override
   void initState() {
     super.initState();
-    _filmsInUse = widget.storageService.filmsInUse;
     _selected = widget.storageService.selectedFilm;
     _discardSelectedIfNotIncluded();
   }
@@ -39,20 +48,34 @@ class FilmsProviderState extends State<FilmsProvider> {
   @override
   Widget build(BuildContext context) {
     return Films(
-      values: [
-        const FilmStub(),
-        ...widget.availableFilms ?? films,
-      ],
-      filmsInUse: [
-        const FilmStub(),
-        if (context.isPro) ..._filmsInUse,
-      ],
+      predefinedFilms: predefinedFilms,
+      customFilms: customFilms,
       selected: context.isPro ? _selected : const FilmStub(),
       child: widget.child,
     );
   }
 
-  void setFilm(Film film) {
+  /* Both type of films **/
+
+  void toggleFilm(Film film, bool enabled) {
+    Film? targetFilm = predefinedFilms[film.id]?.film;
+    if (targetFilm != null) {
+      predefinedFilms[film.id] = (film: film, selected: enabled);
+      _discardSelectedIfNotIncluded();
+      setState(() {});
+      return;
+    }
+
+    targetFilm = customFilms[film.id]?.film;
+    if (targetFilm != null) {
+      customFilms[film.id] = (film: film as FilmExponential, selected: enabled);
+      _discardSelectedIfNotIncluded();
+      setState(() {});
+      return;
+    }
+  }
+
+  void selectFilm(Film film) {
     if (_selected != film) {
       _selected = film;
       widget.storageService.selectedFilm = film;
@@ -60,47 +83,99 @@ class FilmsProviderState extends State<FilmsProvider> {
     }
   }
 
-  void saveFilms(List<Film> films) {
-    _filmsInUse = films;
-    widget.storageService.filmsInUse = films;
+  /* Custom films **/
+
+  void addCustomFilm(FilmExponential film) {
+    customFilms[film.id] = (film: film, selected: false);
+    setState(() {});
+  }
+
+  void updateCustomFilm(FilmExponential film) {
+    customFilms[film.id] = (film: film, selected: customFilms[film.id]!.selected);
+    setState(() {});
+  }
+
+  // TODO: add delete button to UI
+  void deleteCustomFilm(FilmExponential film) {
+    customFilms.remove(film.id);
     _discardSelectedIfNotIncluded();
     setState(() {});
   }
 
   void _discardSelectedIfNotIncluded() {
-    if (_selected != const FilmStub() && !_filmsInUse.contains(_selected)) {
+    if (_selected != const FilmStub() &&
+        !predefinedFilms.values.any((e) => e.film == _selected) &&
+        !customFilms.values.any((e) => e.film == _selected)) {
       _selected = const FilmStub();
       widget.storageService.selectedFilm = const FilmStub();
     }
   }
 }
 
-class Films extends SelectableInheritedModel<Film> {
-  final List<Film> filmsInUse;
+typedef _SelectableFilm<T extends Film> = ({T film, bool selected});
+
+enum _FilmsModelAspect {
+  customFilmsList,
+  predefinedFilmsList,
+  filmsInUse,
+  selected,
+}
+
+class Films extends InheritedModel<_FilmsModelAspect> {
+  final Map<String, _SelectableFilm<Film>> predefinedFilms;
+
+  @protected
+  final Map<String, _SelectableFilm<FilmExponential>> customFilms;
+  final Film selected;
 
   const Films({
-    super.key,
-    required super.values,
-    required this.filmsInUse,
-    required super.selected,
+    required this.predefinedFilms,
+    required this.customFilms,
+    required this.selected,
     required super.child,
   });
 
-  /// [FilmStub()] + all the custom fields with actual reciprocity formulas
-  static List<Film> of(BuildContext context) {
-    return InheritedModel.inheritFrom<Films>(context)!.values;
+  static List<Film> predefinedFilmsOf<T>(BuildContext context) {
+    return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.predefinedFilmsList)!
+        .predefinedFilms
+        .values
+        .map((value) => value.film)
+        .toList();
+  }
+
+  static List<FilmExponential> customFilmsOf<T>(BuildContext context) {
+    return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.customFilmsList)!
+        .customFilms
+        .values
+        .map((value) => value.film)
+        .toList();
   }
 
   /// [FilmStub()] + films in use selected by user
   static List<Film> inUseOf<T>(BuildContext context) {
-    return InheritedModel.inheritFrom<Films>(
-      context,
-      aspect: SelectableAspect.list,
-    )!
-        .filmsInUse;
+    final model = InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.filmsInUse)!;
+    return [
+      const FilmStub(),
+      ...model.customFilms.values.where((e) => e.selected).map((e) => e.film),
+      ...model.predefinedFilms.values.where((e) => e.selected).map((e) => e.film),
+    ];
   }
 
   static Film selectedOf(BuildContext context) {
-    return InheritedModel.inheritFrom<Films>(context, aspect: SelectableAspect.selected)!.selected;
+    return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.selected)!.selected;
+  }
+
+  @override
+  bool updateShouldNotify(Films _) => true;
+
+  @override
+  bool updateShouldNotifyDependent(Films oldWidget, Set<_FilmsModelAspect> dependencies) {
+    if (dependencies.contains(_FilmsModelAspect.customFilmsList)) {}
+    if (dependencies.contains(_FilmsModelAspect.selected)) {
+      return selected != oldWidget.selected;
+    } else {
+      // TODO: reduce unnecessary notifications
+      return true;
+    }
   }
 }

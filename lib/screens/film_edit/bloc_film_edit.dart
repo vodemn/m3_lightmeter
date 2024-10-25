@@ -1,17 +1,40 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/screens/film_edit/event_film_edit.dart';
 import 'package:lightmeter/screens/film_edit/state_film_edit.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+import 'package:uuid/uuid.dart';
 
 class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
   static const _defaultFilm = FilmExponential(name: '', iso: 100, exponent: 1.3);
+
+  final FilmsProviderState filmsProvider;
   final FilmExponential _originalFilm;
   FilmExponential _newFilm;
+  final bool _isEdit;
 
-  factory FilmEditBloc(FilmExponential? film) => film != null ? FilmEditBloc._(film) : FilmEditBloc._(_defaultFilm);
+  factory FilmEditBloc(
+    FilmsProviderState filmsProvider, {
+    required FilmExponential? film,
+    required bool isEdit,
+  }) =>
+      film != null
+          ? FilmEditBloc._(
+              filmsProvider,
+              film,
+              isEdit,
+            )
+          : FilmEditBloc._(
+              filmsProvider,
+              _defaultFilm,
+              isEdit,
+            );
 
-  FilmEditBloc._(FilmExponential film)
-      : _originalFilm = film,
+  FilmEditBloc._(
+    this.filmsProvider,
+    FilmExponential film,
+    this._isEdit,
+  )   : _originalFilm = film,
         _newFilm = film,
         super(
           FilmEditState(
@@ -19,7 +42,6 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
             isoValue: IsoValue.values.firstWhere((element) => element.value == film.iso),
             exponent: film.exponent,
             canSave: false,
-            isEdit: film != _defaultFilm,
           ),
         ) {
     on<FilmEditEvent>(
@@ -33,6 +55,8 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
             _onExpChanged(e, emit);
           case FilmEditSaveEvent():
             _onSave(event, emit);
+          case FilmEditDeleteEvent():
+            _onDelete(event, emit);
         }
       },
     );
@@ -46,7 +70,6 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
         isoValue: state.isoValue,
         exponent: state.exponent,
         canSave: _canSave(event.name, state.exponent),
-        isEdit: state.isEdit,
       ),
     );
   }
@@ -59,7 +82,6 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
         isoValue: event.iso,
         exponent: state.exponent,
         canSave: _canSave(state.name, state.exponent),
-        isEdit: state.isEdit,
       ),
     );
   }
@@ -74,12 +96,35 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
         isoValue: state.isoValue,
         exponent: event.exponent,
         canSave: _canSave(state.name, event.exponent),
-        isEdit: state.isEdit,
       ),
     );
   }
 
-  Future<void> _onSave(FilmEditSaveEvent _, Emitter emit) async {}
+  Future<void> _onSave(FilmEditSaveEvent _, Emitter emit) async {
+    if (_isEdit) {
+      filmsProvider.updateCustomFilm(
+        FilmExponential(
+          id: _originalFilm.id,
+          name: state.name,
+          iso: state.isoValue.value,
+          exponent: state.exponent!,
+        ),
+      );
+    } else {
+      filmsProvider.addCustomFilm(
+        FilmExponential(
+          id: const Uuid().v1(),
+          name: state.name,
+          iso: state.isoValue.value,
+          exponent: state.exponent!,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onDelete(FilmEditDeleteEvent _, Emitter emit) async {
+    filmsProvider.deleteCustomFilm(_originalFilm);
+  }
 
   bool _canSave(String name, double? exponent) {
     return name.isNotEmpty && exponent != null && _newFilm != _originalFilm;
