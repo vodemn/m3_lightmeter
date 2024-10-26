@@ -95,7 +95,6 @@ class FilmsProviderState extends State<FilmsProvider> {
     setState(() {});
   }
 
-  // TODO: add delete button to UI
   void deleteCustomFilm(FilmExponential film) {
     customFilms.remove(film.id);
     _discardSelectedIfNotIncluded();
@@ -170,12 +169,7 @@ class Films extends InheritedModel<_FilmsModelAspect> {
 
   @override
   bool updateShouldNotifyDependent(Films oldWidget, Set<_FilmsModelAspect> dependencies) {
-    if (dependencies.contains(_FilmsModelAspect.customFilmsList)) {}
-    if (dependencies.contains(_FilmsModelAspect.selected)) {
-      return selected != oldWidget.selected;
-    } else {
-      // TODO: reduce unnecessary notifications
-      return true;
-    }
+    // TODO: reduce unnecessary notifications
+    return true;
   }
 }

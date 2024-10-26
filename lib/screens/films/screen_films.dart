@@ -4,6 +4,7 @@ import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/film_edit/flow_film_edit.dart';
+import 'package:lightmeter/screens/shared/sliver_placeholder/widget_sliver_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -16,6 +17,14 @@ class FilmsScreen extends StatefulWidget {
 
 class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStateMixin {
   late final tabController = TabController(length: 2, vsync: this);
+
+  @override
+  void initState() {
+    super.initState();
+    tabController.addListener(() {
+      setState(() {});
+    });
+  }
 
   @override
   void dispose() {
@@ -50,22 +59,19 @@ class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStat
         ),
       ],
       slivers: [
-        SliverFillRemaining(
-          child: TabBarView(
-            controller: tabController,
-            children: [
-              _FilmsListBuilder(
-                films: Films.predefinedFilmsOf(context).toList(),
-                onFilmSelected: FilmsProvider.of(context).toggleFilm,
-              ),
-              _FilmsListBuilder<FilmExponential>(
-                films: Films.customFilmsOf(context).toList(),
-                onFilmSelected: FilmsProvider.of(context).toggleFilm,
-                onFilmEdit: _editFilm,
-              ),
-            ],
-          ),
-        ),
+        if (tabController.index == 0)
+          _FilmsListBuilder(
+            films: Films.predefinedFilmsOf(context).toList(),
+            onFilmSelected: FilmsProvider.of(context).toggleFilm,
+          )
+        else if (tabController.index == 1 && Films.customFilmsOf(context).isNotEmpty)
+          _FilmsListBuilder<FilmExponential>(
+            films: Films.customFilmsOf(context).toList(),
+            onFilmSelected: FilmsProvider.of(context).toggleFilm,
+            onFilmEdit: _editFilm,
+          )
+        else
+          SliverPlaceholder(onTap: _addFilm),
       ],
     );
   }
@@ -98,36 +104,41 @@ class _FilmsListBuilder<T extends Film> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(Dimens.paddingM).add(EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom)),
+    return SliverList.builder(
       itemCount: films.length,
-      itemBuilder: (_, index) => Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: index == 0 ? const Radius.circular(Dimens.borderRadiusL) : Radius.zero,
-            topRight: index == 0 ? const Radius.circular(Dimens.borderRadiusL) : Radius.zero,
-            bottomLeft: index == films.length - 1 ? const Radius.circular(Dimens.borderRadiusL) : Radius.zero,
-            bottomRight: index == films.length - 1 ? const Radius.circular(Dimens.borderRadiusL) : Radius.zero,
-          ),
+      itemBuilder: (_, index) => Padding(
+        padding: EdgeInsets.fromLTRB(
+          Dimens.paddingM,
+          index == 0 ? Dimens.paddingM : 0,
+          Dimens.paddingM,
+          index == films.length - 1 ? Dimens.paddingM + MediaQuery.paddingOf(context).bottom : 0.0,
         ),
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: index == 0 ? Dimens.paddingM : 0.0,
-            bottom: index == films.length - 1 ? Dimens.paddingM : 0.0,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: index == 0 ? const Radius.circular(Dimens.borderRadiusL) : Radius.zero,
+              bottom: index == films.length - 1 ? const Radius.circular(Dimens.borderRadiusL) : Radius.zero,
+            ),
           ),
-          child: CheckboxListTile(
-            controlAffinity: ListTileControlAffinity.leading,
-            value: Films.inUseOf(context).contains(films[index]),
-            title: Text(films[index].name),
-            onChanged: (value) {
-              onFilmSelected(films[index], value ?? false);
-            },
-            secondary: onFilmEdit != null
-                ? IconButton(
-                    onPressed: () => onFilmEdit!(films[index]),
-                    icon: const Icon(Icons.edit),
-                  )
-                : null,
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: index == 0 ? Dimens.paddingM : 0.0,
+              bottom: index == films.length - 1 ? Dimens.paddingM : 0.0,
+            ),
+            child: CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
+              value: Films.inUseOf(context).contains(films[index]),
+              title: Text(films[index].name),
+              onChanged: (value) {
+                onFilmSelected(films[index], value ?? false);
+              },
+              secondary: onFilmEdit != null
+                  ? IconButton(
+                      onPressed: () => onFilmEdit!(films[index]),
+                      icon: const Icon(Icons.edit),
+                    )
+                  : null,
+            ),
           ),
         ),
       ),
