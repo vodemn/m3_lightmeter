@@ -4,13 +4,13 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmsProvider extends StatefulWidget {
+  final FilmsStorageService filmsStorageService;
   final IAPStorageService storageService;
-  final List<Film>? availableFilms;
   final Widget child;
 
   const FilmsProvider({
+    required this.filmsStorageService,
     required this.storageService,
-    this.availableFilms,
     required this.child,
     super.key,
   });
@@ -24,25 +24,16 @@ class FilmsProvider extends StatefulWidget {
 }
 
 class FilmsProviderState extends State<FilmsProvider> {
-  late final Map<String, _SelectableFilm<Film>> predefinedFilms = Map.fromEntries(
-    (widget.availableFilms ?? films).map(
-      (film) => MapEntry(
-        film.id,
-        (
-          film: film,
-          selected: widget.storageService.filmsInUse.contains(film),
-        ),
-      ),
-    ),
-  );
-  final Map<String, _SelectableFilm<FilmExponential>> customFilms = {};
-  late Film _selected;
+  final Map<String, SelectableFilm<Film>> predefinedFilms = {};
+  final Map<String, SelectableFilm<FilmExponential>> customFilms = {};
+  late String _selectedId;
+
+  Film get _selectedFilm => customFilms[_selectedId]?.film ?? predefinedFilms[_selectedId]?.film ?? const FilmStub();
 
   @override
   void initState() {
     super.initState();
-    _selected = widget.storageService.selectedFilm;
-    _discardSelectedIfNotIncluded();
+    _init();
   }
 
   @override
@@ -50,68 +41,74 @@ class FilmsProviderState extends State<FilmsProvider> {
     return Films(
       predefinedFilms: predefinedFilms,
       customFilms: customFilms,
-      selected: context.isPro ? _selected : const FilmStub(),
+      selected: context.isPro ? _selectedFilm : const FilmStub(),
       child: widget.child,
     );
   }
 
   /* Both type of films **/
 
-  void toggleFilm(Film film, bool enabled) {
-    Film? targetFilm = predefinedFilms[film.id]?.film;
-    if (targetFilm != null) {
-      predefinedFilms[film.id] = (film: film, selected: enabled);
-      _discardSelectedIfNotIncluded();
-      setState(() {});
+  Future<void> toggleFilm(Film film, bool enabled) async {
+    if (predefinedFilms.containsKey(film.id)) {
+      predefinedFilms[film.id] = (film: film, isUsed: enabled);
+    } else if (customFilms.containsKey(film.id)) {
+      customFilms[film.id] = (film: film as FilmExponential, isUsed: enabled);
+    } else {
       return;
     }
-
-    targetFilm = customFilms[film.id]?.film;
-    if (targetFilm != null) {
-      customFilms[film.id] = (film: film as FilmExponential, selected: enabled);
-      _discardSelectedIfNotIncluded();
-      setState(() {});
-      return;
-    }
+    await widget.filmsStorageService.toggleFilm(film, enabled);
+    _discardSelectedIfNotIncluded();
+    setState(() {});
   }
 
   void selectFilm(Film film) {
-    if (_selected != film) {
-      _selected = film;
-      widget.storageService.selectedFilm = film;
+    if (_selectedFilm != film) {
+      _selectedId = film.id;
+      widget.storageService.selectedFilmId = _selectedId;
       setState(() {});
     }
   }
 
   /* Custom films **/
 
-  void addCustomFilm(FilmExponential film) {
-    customFilms[film.id] = (film: film, selected: false);
+  Future<void> addCustomFilm(FilmExponential film) async {
+    await widget.filmsStorageService.addFilm(film);
+    customFilms[film.id] = (film: film, isUsed: false);
     setState(() {});
   }
 
-  void updateCustomFilm(FilmExponential film) {
-    customFilms[film.id] = (film: film, selected: customFilms[film.id]!.selected);
+  Future<void> updateCustomFilm(FilmExponential film) async {
+    await widget.filmsStorageService.updateFilm(film);
+    customFilms[film.id] = (film: film, isUsed: customFilms[film.id]!.isUsed);
     setState(() {});
   }
 
-  void deleteCustomFilm(FilmExponential film) {
+  Future<void> deleteCustomFilm(FilmExponential film) async {
+    await widget.filmsStorageService.deleteFilm(film);
     customFilms.remove(film.id);
     _discardSelectedIfNotIncluded();
     setState(() {});
   }
 
+  Future<void> _init() async {
+    _selectedId = widget.storageService.selectedFilmId;
+    predefinedFilms.addAll(await widget.filmsStorageService.getPredefinedFilms());
+    customFilms.addAll(await widget.filmsStorageService.getCustomFilms());
+    _discardSelectedIfNotIncluded();
+    if (mounted) setState(() {});
+  }
+
   void _discardSelectedIfNotIncluded() {
-    if (_selected != const FilmStub() &&
-        !predefinedFilms.values.any((e) => e.film == _selected) &&
-        !customFilms.values.any((e) => e.film == _selected)) {
-      _selected = const FilmStub();
-      widget.storageService.selectedFilm = const FilmStub();
+    if (_selectedId == const FilmStub().id) {
+      return;
+    }
+    final isSelectedUsed = predefinedFilms[_selectedId]?.isUsed ?? customFilms[_selectedId]?.isUsed ?? false;
+    if (!isSelectedUsed) {
+      _selectedId = const FilmStub().id;
+      widget.storageService.selectedFilmId = _selectedId;
     }
   }
 }
-
-typedef _SelectableFilm<T extends Film> = ({T film, bool selected});
 
 enum _FilmsModelAspect {
   customFilmsList,
@@ -121,10 +118,10 @@ enum _FilmsModelAspect {
 }
 
 class Films extends InheritedModel<_FilmsModelAspect> {
-  final Map<String, _SelectableFilm<Film>> predefinedFilms;
+  final Map<String, SelectableFilm<Film>> predefinedFilms;
 
   @protected
-  final Map<String, _SelectableFilm<FilmExponential>> customFilms;
+  final Map<String, SelectableFilm<FilmExponential>> customFilms;
   final Film selected;
 
   const Films({
@@ -155,8 +152,8 @@ class Films extends InheritedModel<_FilmsModelAspect> {
     final model = InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.filmsInUse)!;
     return [
       const FilmStub(),
-      ...model.customFilms.values.where((e) => e.selected).map((e) => e.film),
-      ...model.predefinedFilms.values.where((e) => e.selected).map((e) => e.film),
+      ...model.customFilms.values.where((e) => e.isUsed).map((e) => e.film),
+      ...model.predefinedFilms.values.where((e) => e.isUsed).map((e) => e.film),
     ];
   }
 
