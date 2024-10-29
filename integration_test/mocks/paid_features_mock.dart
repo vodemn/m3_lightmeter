@@ -45,6 +45,7 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
     when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
 
     mockFilmsStorageService = _MockFilmsStorageService();
+    when(() => mockFilmsStorageService.init()).thenAnswer((_) async {});
     when(() => mockFilmsStorageService.getPredefinedFilms()).thenAnswer((_) => Future.value(widget.predefinedFilms));
     when(() => mockFilmsStorageService.getCustomFilms()).thenAnswer((_) => Future.value(widget.customFilms));
     when(() => mockFilmsStorageService.selectedFilmId).thenReturn(widget.selectedFilmId);
@@ -135,10 +136,10 @@ final mockEquipmentProfiles = [
 ];
 
 const mockFilms = [
-  FilmMultiplying(id: '1', name: 'Mock film 1', iso: 100, reciprocityMultiplier: 2),
-  FilmMultiplying(id: '2', name: 'Mock film 2', iso: 400, reciprocityMultiplier: 2),
-  FilmMultiplying(id: '3', name: 'Mock film 3', iso: 800, reciprocityMultiplier: 3),
-  FilmMultiplying(id: '4', name: 'Mock film 4', iso: 1200, reciprocityMultiplier: 1.5),
+  _FilmMultiplying(id: '1', name: 'Mock film 1', iso: 100, reciprocityMultiplier: 2),
+  _FilmMultiplying(id: '2', name: 'Mock film 2', iso: 400, reciprocityMultiplier: 2),
+  _FilmMultiplying(id: '3', name: 'Mock film 3', iso: 800, reciprocityMultiplier: 3),
+  _FilmMultiplying(id: '4', name: 'Mock film 4', iso: 1200, reciprocityMultiplier: 1.5),
 ];
 
 extension FilmMapper on List<Film> {
@@ -146,15 +147,15 @@ extension FilmMapper on List<Film> {
       Map.fromEntries(map((e) => MapEntry(e.id, (film: e as T, isUsed: isUsed))));
 }
 
-class FilmMultiplying extends FilmExponential {
+class _FilmMultiplying extends FilmExponential {
   final double reciprocityMultiplier;
 
-  const FilmMultiplying({
+  const _FilmMultiplying({
     String? id,
-    required super.name,
+    required String name,
     required super.iso,
     required this.reciprocityMultiplier,
-  }) : super(id: id ?? name, exponent: 1);
+  }) : super(id: id ?? name, name: 'Mock film $iso x$reciprocityMultiplier', exponent: 1);
 
   @override
   ShutterSpeedValue reciprocityFailure(ShutterSpeedValue shutterSpeed) {
@@ -173,7 +174,7 @@ class FilmMultiplying extends FilmExponential {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
-    return other is FilmMultiplying &&
+    return other is _FilmMultiplying &&
         other.id == id &&
         other.name == name &&
         other.iso == iso &&

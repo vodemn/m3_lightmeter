@@ -7,7 +7,6 @@ import 'package:lightmeter/data/permissions_service.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 // coverage:ignore-start
 class ServicesProvider extends InheritedWidget {
@@ -20,9 +19,6 @@ class ServicesProvider extends InheritedWidget {
   final UserPreferencesService userPreferencesService;
   final VolumeEventsService volumeEventsService;
 
-  // IAP
-  final FilmsStorageService filmsStorageService;
-
   const ServicesProvider({
     required this.analytics,
     required this.caffeineService,
@@ -32,7 +28,6 @@ class ServicesProvider extends InheritedWidget {
     required this.permissionsService,
     required this.userPreferencesService,
     required this.volumeEventsService,
-    required this.filmsStorageService,
     required super.child,
   });
 

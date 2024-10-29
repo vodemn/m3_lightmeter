@@ -51,7 +51,6 @@ class ApplicationWrapper extends StatelessWidget {
             permissionsService: const PermissionsService(),
             userPreferencesService: userPreferencesService,
             volumeEventsService: const VolumeEventsService(LocalPlatform()),
-            filmsStorageService: filmsStorageService,
             child: RemoteConfigProvider(
               remoteConfigService: remoteConfigService,
               child: EquipmentProfileProvider(
