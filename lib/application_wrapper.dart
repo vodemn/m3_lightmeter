@@ -58,7 +58,6 @@ class ApplicationWrapper extends StatelessWidget {
                 storageService: iapService,
                 child: FilmsProvider(
                   filmsStorageService: filmsStorageService,
-                  storageService: iapService,
                   child: UserPreferencesProvider(
                     hasLightSensor: hasLightSensor,
                     userPreferencesService: userPreferencesService,

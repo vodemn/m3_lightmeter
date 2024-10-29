@@ -5,12 +5,10 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmsProvider extends StatefulWidget {
   final FilmsStorageService filmsStorageService;
-  final IAPStorageService storageService;
   final Widget child;
 
   const FilmsProvider({
     required this.filmsStorageService,
-    required this.storageService,
     required this.child,
     super.key,
   });
@@ -39,8 +37,8 @@ class FilmsProviderState extends State<FilmsProvider> {
   @override
   Widget build(BuildContext context) {
     return Films(
-      predefinedFilms: predefinedFilms,
-      customFilms: customFilms,
+      predefinedFilms: context.isPro ? predefinedFilms : {},
+      customFilms: context.isPro ? customFilms : {},
       selected: context.isPro ? _selectedFilm : const FilmStub(),
       child: widget.child,
     );
@@ -64,7 +62,7 @@ class FilmsProviderState extends State<FilmsProvider> {
   void selectFilm(Film film) {
     if (_selectedFilm != film) {
       _selectedId = film.id;
-      widget.storageService.selectedFilmId = _selectedId;
+      widget.filmsStorageService.selectedFilmId = _selectedId;
       setState(() {});
     }
   }
@@ -91,7 +89,7 @@ class FilmsProviderState extends State<FilmsProvider> {
   }
 
   Future<void> _init() async {
-    _selectedId = widget.storageService.selectedFilmId;
+    _selectedId = widget.filmsStorageService.selectedFilmId;
     predefinedFilms.addAll(await widget.filmsStorageService.getPredefinedFilms());
     customFilms.addAll(await widget.filmsStorageService.getCustomFilms());
     _discardSelectedIfNotIncluded();
@@ -105,7 +103,7 @@ class FilmsProviderState extends State<FilmsProvider> {
     final isSelectedUsed = predefinedFilms[_selectedId]?.isUsed ?? customFilms[_selectedId]?.isUsed ?? false;
     if (!isSelectedUsed) {
       _selectedId = const FilmStub().id;
-      widget.storageService.selectedFilmId = _selectedId;
+      widget.filmsStorageService.selectedFilmId = _selectedId;
     }
   }
 }
