@@ -47,7 +47,6 @@ class _AppBar extends StatelessWidget {
     required this.title,
     this.appBarActions = const [],
     this.bottom,
-    super.key,
   });
 
   @override
