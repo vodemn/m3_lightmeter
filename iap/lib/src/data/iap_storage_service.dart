@@ -8,10 +8,4 @@ class IAPStorageService {
 
   List<EquipmentProfile> get equipmentProfiles => [];
   set equipmentProfiles(List<EquipmentProfile> profiles) {}
-
-  Film get selectedFilm => const FilmStub();
-  set selectedFilm(Film value) {}
-
-  List<Film> get filmsInUse => [];
-  set filmsInUse(List<Film> profiles) {}
 }
