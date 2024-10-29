@@ -92,9 +92,9 @@ void main() {
   testWidgets('Generate light theme screenshots', (tester) async {
     await mockSharedPrefs(theme: ThemeType.light, color: _lightThemeColor);
     await tester.pumpApplication(
-      availableFilms: [_mockFilm],
-      filmsInUse: [_mockFilm],
-      selectedFilm: _mockFilm,
+      predefinedFilms: [_mockFilm].toFilmsMap(),
+      customFilms: {},
+      selectedFilmId: _mockFilm.id,
     );
 
     await tester.takePhoto();
@@ -132,9 +132,9 @@ void main() {
     (tester) async {
       await mockSharedPrefs(theme: ThemeType.dark, color: _darkThemeColor);
       await tester.pumpApplication(
-        availableFilms: [_mockFilm],
-        filmsInUse: [_mockFilm],
-        selectedFilm: _mockFilm,
+        predefinedFilms: [_mockFilm].toFilmsMap(),
+        customFilms: {},
+        selectedFilmId: _mockFilm.id,
       );
 
       await tester.takePhoto();
@@ -157,9 +157,9 @@ void main() {
         color: _lightThemeColor,
       );
       await tester.pumpApplication(
-        availableFilms: [_mockFilm],
-        filmsInUse: [_mockFilm],
-        selectedFilm: _mockFilm,
+        predefinedFilms: [_mockFilm].toFilmsMap(),
+        customFilms: {},
+        selectedFilmId: _mockFilm.id,
       );
 
       await tester.takePhoto();

@@ -7,24 +7,27 @@ import 'package:mocktail/mocktail.dart';
 
 class _MockIAPStorageService extends Mock implements IAPStorageService {}
 
+class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
+
 class MockIAPProviders extends StatefulWidget {
   final List<EquipmentProfile>? equipmentProfiles;
   final String selectedEquipmentProfileId;
-  final List<Film> availableFilms;
-  final List<Film> filmsInUse;
-  final Film selectedFilm;
+  final Map<String, SelectableFilm<Film>> predefinedFilms;
+  final Map<String, SelectableFilm<FilmExponential>> customFilms;
+  final String selectedFilmId;
   final Widget child;
 
-  const MockIAPProviders({
+  MockIAPProviders({
     this.equipmentProfiles = const [],
     this.selectedEquipmentProfileId = '',
-    List<Film>? availableFilms,
-    List<Film>? filmsInUse,
-    this.selectedFilm = const FilmStub(),
+    Map<String, SelectableFilm<Film>>? predefinedFilms,
+    Map<String, SelectableFilm<FilmExponential>>? customFilms,
+    String? selectedFilmId,
     required this.child,
     super.key,
-  })  : availableFilms = availableFilms ?? mockFilms,
-        filmsInUse = filmsInUse ?? mockFilms;
+  })  : predefinedFilms = predefinedFilms ?? mockFilms.toFilmsMap(),
+        customFilms = customFilms ?? mockFilms.toFilmsMap(),
+        selectedFilmId = selectedFilmId ?? const FilmStub().id;
 
   @override
   State<MockIAPProviders> createState() => _MockIAPProvidersState();
@@ -32,6 +35,7 @@ class MockIAPProviders extends StatefulWidget {
 
 class _MockIAPProvidersState extends State<MockIAPProviders> {
   late final _MockIAPStorageService mockIAPStorageService;
+  late final _MockFilmsStorageService mockFilmsStorageService;
 
   @override
   void initState() {
@@ -39,8 +43,11 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
     mockIAPStorageService = _MockIAPStorageService();
     when(() => mockIAPStorageService.equipmentProfiles).thenReturn(widget.equipmentProfiles ?? mockEquipmentProfiles);
     when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
-    when(() => mockIAPStorageService.filmsInUse).thenReturn(widget.filmsInUse);
-    when(() => mockIAPStorageService.selectedFilm).thenReturn(widget.selectedFilm);
+
+    mockFilmsStorageService = _MockFilmsStorageService();
+    when(() => mockFilmsStorageService.getPredefinedFilms()).thenAnswer((_) => Future.value(widget.predefinedFilms));
+    when(() => mockFilmsStorageService.getCustomFilms()).thenAnswer((_) => Future.value(widget.customFilms));
+    when(() => mockFilmsStorageService.selectedFilmId).thenReturn(widget.selectedFilmId);
   }
 
   @override
@@ -48,8 +55,7 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
     return EquipmentProfileProvider(
       storageService: mockIAPStorageService,
       child: FilmsProvider(
-        storageService: mockIAPStorageService,
-        availableFilms: widget.availableFilms,
+        filmsStorageService: mockFilmsStorageService,
         child: widget.child,
       ),
     );
@@ -129,8 +135,51 @@ final mockEquipmentProfiles = [
 ];
 
 const mockFilms = [
-  FilmExponential(id: '1', name: 'Mock film 1', iso: 100, exponent: 1.34),
-  FilmExponential(id: '2', name: 'Mock film 2', iso: 400, exponent: 1.34),
-  FilmExponential(id: '3', name: 'Mock film 3', iso: 800, exponent: 1.34),
-  FilmExponential(id: '4', name: 'Mock film 4', iso: 1200, exponent: 1.34),
+  FilmMultiplying(id: '1', name: 'Mock film 1', iso: 100, reciprocityMultiplier: 2),
+  FilmMultiplying(id: '2', name: 'Mock film 2', iso: 400, reciprocityMultiplier: 2),
+  FilmMultiplying(id: '3', name: 'Mock film 3', iso: 800, reciprocityMultiplier: 3),
+  FilmMultiplying(id: '4', name: 'Mock film 4', iso: 1200, reciprocityMultiplier: 1.5),
 ];
+
+extension FilmMapper on List<Film> {
+  Map<String, ({T film, bool isUsed})> toFilmsMap<T extends Film>({bool isUsed = true}) =>
+      Map.fromEntries(map((e) => MapEntry(e.id, (film: e as T, isUsed: isUsed))));
+}
+
+class FilmMultiplying extends FilmExponential {
+  final double reciprocityMultiplier;
+
+  const FilmMultiplying({
+    String? id,
+    required super.name,
+    required super.iso,
+    required this.reciprocityMultiplier,
+  }) : super(id: id ?? name, exponent: 1);
+
+  @override
+  ShutterSpeedValue reciprocityFailure(ShutterSpeedValue shutterSpeed) {
+    if (shutterSpeed.isFraction) {
+      return shutterSpeed;
+    } else {
+      return ShutterSpeedValue(
+        shutterSpeed.rawValue * reciprocityMultiplier,
+        shutterSpeed.isFraction,
+        shutterSpeed.stopType,
+      );
+    }
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is FilmMultiplying &&
+        other.id == id &&
+        other.name == name &&
+        other.iso == iso &&
+        other.reciprocityMultiplier == reciprocityMultiplier;
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, iso, reciprocityMultiplier, runtimeType);
+}
