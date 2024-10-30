@@ -39,6 +39,8 @@ on:
 
 env:
   FLAVOR: "prod"
+  RELEASE_NOTES_ARTIFACT_NAME: release_notes_en_${{ inputs.version }}
+  RELEASE_NOTES_PATH: "assets/release_notes"
 
 jobs:
   build:
@@ -103,6 +105,12 @@ jobs:
 
       - name: Increment build number & replace version number
         run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
+
+      - name: Download release notes
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
+          path: ${{ env.RELEASE_NOTES_PATH }}
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2

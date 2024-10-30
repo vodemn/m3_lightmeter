@@ -1,0 +1,4 @@
+- Added shutter speed values up to 1/4000.
+- Added auto scaling for long values in the exposure pairs list.
+- Fixed false purchasable status when offline.
+- Fixed a delay when fetching product status on startup.
