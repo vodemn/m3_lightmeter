@@ -9,6 +9,7 @@ enum AppFeature {
   spotMetering,
   histogram,
   listOfFilms,
+  customFilms,
   equipmentProfiles,
   timer,
   mainScreenCustomization;
@@ -33,6 +34,8 @@ enum AppFeature {
         return S.of(context).featureHistogram;
       case AppFeature.listOfFilms:
         return S.of(context).featureListOfFilms;
+      case AppFeature.customFilms:
+        return S.of(context).featureCustomFilms;
       case AppFeature.equipmentProfiles:
         return S.of(context).featureEquipmentProfiles;
       case AppFeature.timer:

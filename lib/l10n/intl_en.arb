@@ -114,6 +114,7 @@
     "featureSpotMetering": "Spot metering",
     "featureHistogram": "Histogram",
     "featureListOfFilms": "List of 20+ films with reciprocity formulas",
+    "featureCustomFilms": "Ability to create custom films",
     "featureEquipmentProfiles": "Equipment profiles",
     "featureTimer": "Built-in timer for long exposure",
     "featureMeteringScreenLayout": "Customizable main screen",

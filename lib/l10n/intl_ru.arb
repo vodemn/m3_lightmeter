@@ -116,6 +116,7 @@
     "featureSpotMetering": "Точечный замер",
     "featureHistogram": "Гистограмма",
     "featureListOfFilms": "Список из 20+ плёнок с формулами коррекции",
+    "featureCustomFilms": "Возможность создания собственных плёнок",
     "featureEquipmentProfiles": "Профили оборудования",
     "featureTimer": "Встроенный таймер для длинных выдержек",
     "featureMeteringScreenLayout": "Настраиваемый главный экран",
