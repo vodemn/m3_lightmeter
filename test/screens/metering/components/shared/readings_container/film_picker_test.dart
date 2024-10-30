@@ -20,6 +20,9 @@ void main() {
     when(() => mockFilmsStorageService.getPredefinedFilms()).thenAnswer(
       (_) => Future.value(Map.fromEntries(_films.map((e) => MapEntry(e.id, (film: e, isUsed: true))))),
     );
+    when(() => mockFilmsStorageService.getCustomFilms()).thenAnswer(
+      (_) => Future.value({}),
+    );
   });
 
   Future<void> pumpApplication(WidgetTester tester) async {
@@ -51,7 +54,7 @@ void main() {
 
   group('Film push/pull label', () {
     testWidgets(
-      'Film.other()',
+      'FilmStub()',
       (tester) async {
         when(() => mockFilmsStorageService.selectedFilmId).thenReturn(const FilmStub().id);
         await pumpApplication(tester);
