@@ -30,11 +30,11 @@ dependencies:
   m3_lightmeter_iap:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_iap"
-      ref: v0.11.1
+      ref: v1.0.0
   m3_lightmeter_resources:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_resources"
-      ref: v1.4.0
+      ref: v2.0.0
   material_color_utilities: 0.5.0
   package_info_plus: 4.2.0
   permission_handler: 10.4.3
@@ -63,10 +63,6 @@ dev_dependencies:
   test: 1.24.3
 
 dependency_overrides:
-  m3_lightmeter_resources:
-    git:
-      url: "https://github.com/vodemn/m3_lightmeter_resources"
-      ref: v1.4.0
   material_color_utilities: 0.11.1
 
 flutter:
