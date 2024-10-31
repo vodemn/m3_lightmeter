@@ -70,8 +70,9 @@ class FilmsProviderState extends State<FilmsProvider> {
   /* Custom films **/
 
   Future<void> addCustomFilm(FilmExponential film) async {
-    await widget.filmsStorageService.addFilm(film);
-    customFilms[film.id] = (film: film, isUsed: false);
+    // ignore: avoid_redundant_argument_values
+    await widget.filmsStorageService.addFilm(film, isUsed: true);
+    customFilms[film.id] = (film: film, isUsed: true);
     setState(() {});
   }
 
