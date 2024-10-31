@@ -30,7 +30,7 @@ dependencies:
   m3_lightmeter_iap:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_iap"
-      ref: v1.0.0
+      ref: v1.0.1
   m3_lightmeter_resources:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_resources"
