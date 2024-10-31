@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LightmeterTextField extends TextFormField {
   LightmeterTextField({
     super.controller,
-    super.focusNode,
+    super.autofocus,
     super.initialValue,
     super.inputFormatters,
     super.maxLength,

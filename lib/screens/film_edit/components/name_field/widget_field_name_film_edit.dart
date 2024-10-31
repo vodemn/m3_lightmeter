@@ -24,6 +24,7 @@ class FilmEditNameField extends StatelessWidget {
       ),
       child: LightmeterTextField(
         initialValue: name,
+        autofocus: true,
         maxLength: 48,
         hintText: S.of(context).name,
         onChanged: onChanged,
