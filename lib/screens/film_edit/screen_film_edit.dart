@@ -25,79 +25,94 @@ class FilmEditScreen extends StatefulWidget {
 class _FilmEditScreenState extends State<FilmEditScreen> {
   @override
   Widget build(BuildContext context) {
-    return SliverScreen(
-      title: Text(widget.isEdit ? S.of(context).editFilmTitle : S.of(context).addFilmTitle),
-      appBarActions: [
-        BlocBuilder<FilmEditBloc, FilmEditState>(
-          buildWhen: (previous, current) => previous.canSave != current.canSave,
-          builder: (context, state) => IconButton(
-            onPressed: state.canSave
-                ? () {
-                    context.read<FilmEditBloc>().add(const FilmEditSaveEvent());
-                    Navigator.of(context).pop();
-                  }
-                : null,
-            icon: const Icon(Icons.save),
-          ),
-        ),
-        if (widget.isEdit)
-          IconButton(
-            onPressed: () {
-              context.read<FilmEditBloc>().add(const FilmEditDeleteEvent());
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.delete),
-          ),
-      ],
-      slivers: [
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              Dimens.paddingM,
-              0,
-              Dimens.paddingM,
-              Dimens.paddingM,
+    return BlocConsumer<FilmEditBloc, FilmEditState>(
+      listenWhen: (previous, current) => previous.isLoading != current.isLoading,
+      listener: (context, state) {
+        if (state.isLoading) {
+          FocusScope.of(context).unfocus();
+        } else {
+          Navigator.of(context).pop();
+        }
+      },
+      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
+      builder: (context, state) => IgnorePointer(
+        ignoring: state.isLoading,
+        child: SliverScreen(
+          title: Text(widget.isEdit ? S.of(context).editFilmTitle : S.of(context).addFilmTitle),
+          appBarActions: [
+            BlocBuilder<FilmEditBloc, FilmEditState>(
+              buildWhen: (previous, current) => previous.canSave != current.canSave,
+              builder: (context, state) => IconButton(
+                onPressed: state.canSave
+                    ? () {
+                        context.read<FilmEditBloc>().add(const FilmEditSaveEvent());
+                      }
+                    : null,
+                icon: const Icon(Icons.save),
+              ),
             ),
-            child: Card(
+            if (widget.isEdit)
+              IconButton(
+                onPressed: () {
+                  context.read<FilmEditBloc>().add(const FilmEditDeleteEvent());
+                },
+                icon: const Icon(Icons.delete),
+              ),
+          ],
+          slivers: [
+            SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
-                child: Column(
-                  children: [
-                    BlocBuilder<FilmEditBloc, FilmEditState>(
-                      buildWhen: (previous, current) => previous.name != current.name,
-                      builder: (context, state) => FilmEditNameField(
-                        name: state.name,
-                        onChanged: (value) {
-                          context.read<FilmEditBloc>().add(FilmEditNameChangedEvent(value));
-                        },
+                padding: const EdgeInsets.fromLTRB(
+                  Dimens.paddingM,
+                  0,
+                  Dimens.paddingM,
+                  Dimens.paddingM,
+                ),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
+                    child: Opacity(
+                      opacity: state.isLoading ? Dimens.disabledOpacity : Dimens.enabledOpacity,
+                      child: Column(
+                        children: [
+                          BlocBuilder<FilmEditBloc, FilmEditState>(
+                            buildWhen: (previous, current) => previous.name != current.name,
+                            builder: (context, state) => FilmEditNameField(
+                              name: state.name,
+                              onChanged: (value) {
+                                context.read<FilmEditBloc>().add(FilmEditNameChangedEvent(value));
+                              },
+                            ),
+                          ),
+                          BlocBuilder<FilmEditBloc, FilmEditState>(
+                            buildWhen: (previous, current) => previous.isoValue != current.isoValue,
+                            builder: (context, state) => FilmEditIsoPicker(
+                              selected: state.isoValue,
+                              onChanged: (value) {
+                                context.read<FilmEditBloc>().add(FilmEditIsoChangedEvent(value));
+                              },
+                            ),
+                          ),
+                          BlocBuilder<FilmEditBloc, FilmEditState>(
+                            buildWhen: (previous, current) => previous.exponent != current.exponent,
+                            builder: (context, state) => FilmEditExponentialFormulaInput(
+                              value: state.exponent,
+                              onChanged: (value) {
+                                context.read<FilmEditBloc>().add(FilmEditExpChangedEvent(value));
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    BlocBuilder<FilmEditBloc, FilmEditState>(
-                      buildWhen: (previous, current) => previous.isoValue != current.isoValue,
-                      builder: (context, state) => FilmEditIsoPicker(
-                        selected: state.isoValue,
-                        onChanged: (value) {
-                          context.read<FilmEditBloc>().add(FilmEditIsoChangedEvent(value));
-                        },
-                      ),
-                    ),
-                    BlocBuilder<FilmEditBloc, FilmEditState>(
-                      buildWhen: (previous, current) => previous.exponent != current.exponent,
-                      builder: (context, state) => FilmEditExponentialFormulaInput(
-                        value: state.exponent,
-                        onChanged: (value) {
-                          context.read<FilmEditBloc>().add(FilmEditExpChangedEvent(value));
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
+            SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
+          ],
         ),
-        SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
-      ],
+      ),
     );
   }
 }

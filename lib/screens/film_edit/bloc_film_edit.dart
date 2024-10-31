@@ -45,18 +45,18 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
           ),
         ) {
     on<FilmEditEvent>(
-      (event, emit) {
+      (event, emit) async {
         switch (event) {
           case final FilmEditNameChangedEvent e:
-            _onNameChanged(e, emit);
+            await _onNameChanged(e, emit);
           case final FilmEditIsoChangedEvent e:
-            _onIsoChanged(e, emit);
+            await _onIsoChanged(e, emit);
           case final FilmEditExpChangedEvent e:
-            _onExpChanged(e, emit);
+            await _onExpChanged(e, emit);
           case FilmEditSaveEvent():
-            _onSave(event, emit);
+            await _onSave(event, emit);
           case FilmEditDeleteEvent():
-            _onDelete(event, emit);
+            await _onDelete(event, emit);
         }
       },
     );
@@ -65,10 +65,8 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
   Future<void> _onNameChanged(FilmEditNameChangedEvent event, Emitter emit) async {
     _newFilm = _newFilm.copyWith(name: event.name);
     emit(
-      FilmEditState(
+      state.copyWith(
         name: event.name,
-        isoValue: state.isoValue,
-        exponent: state.exponent,
         canSave: _canSave(event.name, state.exponent),
       ),
     );
@@ -77,10 +75,8 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
   Future<void> _onIsoChanged(FilmEditIsoChangedEvent event, Emitter emit) async {
     _newFilm = _newFilm.copyWith(iso: event.iso.value);
     emit(
-      FilmEditState(
-        name: state.name,
+      state.copyWith(
         isoValue: event.iso,
-        exponent: state.exponent,
         canSave: _canSave(state.name, state.exponent),
       ),
     );
@@ -101,8 +97,9 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
   }
 
   Future<void> _onSave(FilmEditSaveEvent _, Emitter emit) async {
+    emit(state.copyWith(isLoading: true));
     if (_isEdit) {
-      filmsProvider.updateCustomFilm(
+      await filmsProvider.updateCustomFilm(
         FilmExponential(
           id: _originalFilm.id,
           name: state.name,
@@ -111,7 +108,7 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
         ),
       );
     } else {
-      filmsProvider.addCustomFilm(
+      await filmsProvider.addCustomFilm(
         FilmExponential(
           id: const Uuid().v1(),
           name: state.name,
@@ -120,10 +117,13 @@ class FilmEditBloc extends Bloc<FilmEditEvent, FilmEditState> {
         ),
       );
     }
+    emit(state.copyWith(isLoading: false));
   }
 
   Future<void> _onDelete(FilmEditDeleteEvent _, Emitter emit) async {
-    filmsProvider.deleteCustomFilm(_originalFilm);
+    emit(state.copyWith(isLoading: true));
+    await filmsProvider.deleteCustomFilm(_originalFilm);
+    emit(state.copyWith(isLoading: false));
   }
 
   bool _canSave(String name, double? exponent) {
