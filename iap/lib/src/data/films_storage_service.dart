@@ -14,7 +14,7 @@ class FilmsStorageService {
   String get selectedFilmId => '';
   set selectedFilmId(String id) {}
 
-  Future<void> addFilm(FilmExponential _) async {}
+  Future<void> addFilm(FilmExponential _, {bool isUsed = true}) async {}
 
   Future<void> updateFilm(FilmExponential _) async {}
 
