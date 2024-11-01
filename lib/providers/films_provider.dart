@@ -24,15 +24,9 @@ class FilmsProvider extends StatefulWidget {
 class FilmsProviderState extends State<FilmsProvider> {
   final Map<String, SelectableFilm<Film>> predefinedFilms = {};
   final Map<String, SelectableFilm<FilmExponential>> customFilms = {};
-  late String _selectedId;
+  String _selectedId = '';
 
   Film get _selectedFilm => customFilms[_selectedId]?.film ?? predefinedFilms[_selectedId]?.film ?? const FilmStub();
-
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +36,14 @@ class FilmsProviderState extends State<FilmsProvider> {
       selected: context.isPro ? _selectedFilm : const FilmStub(),
       child: widget.child,
     );
+  }
+
+  Future<void> init() async {
+    _selectedId = widget.filmsStorageService.selectedFilmId;
+    predefinedFilms.addAll(await widget.filmsStorageService.getPredefinedFilms());
+    customFilms.addAll(await widget.filmsStorageService.getCustomFilms());
+    _discardSelectedIfNotIncluded();
+    if (mounted) setState(() {});
   }
 
   /* Both type of films **/
@@ -87,14 +89,6 @@ class FilmsProviderState extends State<FilmsProvider> {
     customFilms.remove(film.id);
     _discardSelectedIfNotIncluded();
     setState(() {});
-  }
-
-  Future<void> _init() async {
-    _selectedId = widget.filmsStorageService.selectedFilmId;
-    predefinedFilms.addAll(await widget.filmsStorageService.getPredefinedFilms());
-    customFilms.addAll(await widget.filmsStorageService.getCustomFilms());
-    _discardSelectedIfNotIncluded();
-    if (mounted) setState(() {});
   }
 
   void _discardSelectedIfNotIncluded() {
