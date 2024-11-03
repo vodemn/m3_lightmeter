@@ -115,6 +115,7 @@
     "featureSpotMetering": "点测光",
     "featureHistogram": "直方图",
     "featureListOfFilms": "20多部电影的修正公式列表",
+    "featureCustomFilms": "创建自定义胶片的能力",
     "featureEquipmentProfiles": "设备配置文件",
     "featureTimer": "内置长曝光计时器",
     "featureMeteringScreenLayout": "可自定义的主屏幕",

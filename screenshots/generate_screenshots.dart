@@ -32,7 +32,7 @@ import 'models/screenshot_args.dart';
 
 //https://stackoverflow.com/a/67186625/13167574
 
-const _mockFilm = Film('Ilford HP5+', 400);
+const _mockFilm = FilmExponential(id: '1', name: 'Ilford HP5+', iso: 400, exponent: 1.34);
 final Color _lightThemeColor = primaryColorsList[5];
 final Color _darkThemeColor = primaryColorsList[3];
 final ThemeData _themeLight = themeFrom(_lightThemeColor, Brightness.light);
@@ -92,9 +92,9 @@ void main() {
   testWidgets('Generate light theme screenshots', (tester) async {
     await mockSharedPrefs(theme: ThemeType.light, color: _lightThemeColor);
     await tester.pumpApplication(
-      availableFilms: [_mockFilm],
-      filmsInUse: [_mockFilm],
-      selectedFilm: _mockFilm,
+      predefinedFilms: [_mockFilm].toFilmsMap(),
+      customFilms: {},
+      selectedFilmId: _mockFilm.id,
     );
 
     await tester.takePhoto();
@@ -132,9 +132,9 @@ void main() {
     (tester) async {
       await mockSharedPrefs(theme: ThemeType.dark, color: _darkThemeColor);
       await tester.pumpApplication(
-        availableFilms: [_mockFilm],
-        filmsInUse: [_mockFilm],
-        selectedFilm: _mockFilm,
+        predefinedFilms: [_mockFilm].toFilmsMap(),
+        customFilms: {},
+        selectedFilmId: _mockFilm.id,
       );
 
       await tester.takePhoto();
@@ -157,9 +157,9 @@ void main() {
         color: _lightThemeColor,
       );
       await tester.pumpApplication(
-        availableFilms: [_mockFilm],
-        filmsInUse: [_mockFilm],
-        selectedFilm: _mockFilm,
+        predefinedFilms: [_mockFilm].toFilmsMap(),
+        customFilms: {},
+        selectedFilmId: _mockFilm.id,
       );
 
       await tester.takePhoto();

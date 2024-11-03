@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
@@ -15,7 +16,7 @@ class BuyProListTile extends StatelessWidget {
       title: Text(S.of(context).getPro),
       onTap: !isPending
           ? () {
-              Navigator.of(context).pushNamed("lightmeterPro");
+              Navigator.of(context).pushNamed(NavigationRoutes.proFeaturesScreen.name);
             }
           : null,
       trailing: isPending

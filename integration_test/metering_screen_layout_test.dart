@@ -135,7 +135,7 @@ void testToggleLayoutFeatures(String description) {
       testWidgets(
         'Film picker',
         (tester) async {
-          await tester.pumpApplication(selectedFilm: mockFilms.first);
+          await tester.pumpApplication(selectedFilmId: mockFilms.first.id);
           await tester.takePhoto();
           expectPickerTitle<FilmPicker>(mockFilms.first.name);
           expectExtremeExposurePairs('f/1.0 - 1/320', 'f/45 - 12"');

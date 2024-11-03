@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/data/analytics/api/analytics_firebase.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
@@ -18,32 +19,47 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:platform/platform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ApplicationWrapper extends StatelessWidget {
+class ApplicationWrapper extends StatefulWidget {
   final Environment env;
   final Widget child;
 
   const ApplicationWrapper(this.env, {required this.child, super.key});
 
   @override
+  State<ApplicationWrapper> createState() => _ApplicationWrapperState();
+}
+
+class _ApplicationWrapperState extends State<ApplicationWrapper> {
+  late final remoteConfigService = widget.env.buildType != BuildType.dev
+      ? const RemoteConfigService(LightmeterAnalytics(api: LightmeterAnalyticsFirebase()))
+      : const MockRemoteConfigService();
+
+  late final IAPStorageService iapStorageService;
+  late final UserPreferencesService userPreferencesService;
+  late final bool hasLightSensor;
+
+  final filmsStorageService = FilmsStorageService();
+
+  late final Future<void> _initFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _initFuture = _initialize();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final remoteConfigService = env.buildType != BuildType.dev
-        ? const RemoteConfigService(LightmeterAnalytics(api: LightmeterAnalyticsFirebase()))
-        : const MockRemoteConfigService();
     return FutureBuilder(
-      future: Future.wait<dynamic>([
-        SharedPreferences.getInstance(),
-        const LightSensorService(LocalPlatform()).hasSensor(),
-        remoteConfigService.activeAndFetchFeatures(),
-      ]),
-      builder: (_, snapshot) {
-        if (snapshot.data != null) {
-          final iapService = IAPStorageService(snapshot.data![0] as SharedPreferences);
-          final userPreferencesService = UserPreferencesService(snapshot.data![0] as SharedPreferences);
-          final hasLightSensor = snapshot.data![1] as bool;
+      future: _initFuture,
+      builder: (context, snapshot) {
+        if (snapshot.error != null) {
+          return Center(child: Text(snapshot.error!.toString()));
+        } else if (snapshot.connectionState == ConnectionState.done) {
           return ServicesProvider(
             analytics: const LightmeterAnalytics(api: LightmeterAnalyticsFirebase()),
             caffeineService: const CaffeineService(),
-            environment: env.copyWith(hasLightSensor: hasLightSensor),
+            environment: widget.env.copyWith(hasLightSensor: hasLightSensor),
             hapticsService: const HapticsService(),
             lightSensorService: const LightSensorService(LocalPlatform()),
             permissionsService: const PermissionsService(),
@@ -52,25 +68,41 @@ class ApplicationWrapper extends StatelessWidget {
             child: RemoteConfigProvider(
               remoteConfigService: remoteConfigService,
               child: EquipmentProfileProvider(
-                storageService: iapService,
+                storageService: iapStorageService,
                 child: FilmsProvider(
-                  storageService: iapService,
+                  filmsStorageService: filmsStorageService,
+                  onInitialized: _onFilmsProviderInitialized,
                   child: UserPreferencesProvider(
                     hasLightSensor: hasLightSensor,
                     userPreferencesService: userPreferencesService,
-                    child: child,
+                    child: widget.child,
                   ),
                 ),
               ),
             ),
           );
-        } else if (snapshot.error != null) {
-          return Center(child: Text(snapshot.error!.toString()));
         }
 
-        // TODO(@vodemn): maybe user splashscreen instead
         return const SizedBox();
       },
     );
+  }
+
+  Future<void> _initialize() async {
+    await Future.wait([
+      SharedPreferences.getInstance(),
+      const LightSensorService(LocalPlatform()).hasSensor(),
+      remoteConfigService.activeAndFetchFeatures(),
+      filmsStorageService.init(),
+    ]).then((value) {
+      final sharedPrefs = (value[0] as SharedPreferences?)!;
+      iapStorageService = IAPStorageService(sharedPrefs);
+      userPreferencesService = UserPreferencesService(sharedPrefs);
+      hasLightSensor = value[1] as bool? ?? false;
+    });
+  }
+
+  void _onFilmsProviderInitialized() {
+    FlutterNativeSplash.remove();
   }
 }

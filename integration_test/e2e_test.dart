@@ -47,7 +47,11 @@ void testE2E(String description) {
   testWidgets(
     description,
     (tester) async {
-      await tester.pumpApplication(equipmentProfiles: [], filmsInUse: []);
+      await tester.pumpApplication(
+        equipmentProfiles: [],
+        predefinedFilms: mockFilms.toFilmsMap(isUsed: true),
+        customFilms: {},
+      );
 
       /// Create Praktica + Zenitar profile from scratch
       await tester.openSettings();
@@ -76,11 +80,6 @@ void testE2E(String description) {
       expect(find.text('f/3.5 - f/22'), findsOneWidget);
       expect(find.text('1/1000 - B'), findsNWidgets(2));
       await tester.navigatorPop();
-
-      /// Select some films
-      await tester.tap(find.text(S.current.filmsInUse));
-      await tester.pumpAndSettle();
-      await tester.setDialogFilterValues<Film>([mockFilms[0], mockFilms[1]], deselectAll: false);
       await tester.navigatorPop();
 
       /// Select some initial settings according to the selected gear and film

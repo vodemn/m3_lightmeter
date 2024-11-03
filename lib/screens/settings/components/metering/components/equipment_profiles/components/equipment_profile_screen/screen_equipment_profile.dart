@@ -4,7 +4,7 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
-import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
+import 'package:lightmeter/screens/shared/sliver_placeholder/widget_sliver_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -28,7 +28,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
   @override
   Widget build(BuildContext context) {
     return SliverScreen(
-      title: S.of(context).equipmentProfiles,
+      title: Text(S.of(context).equipmentProfiles),
       appBarActions: [
         IconButton(
           onPressed: _addProfile,
@@ -37,12 +37,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
         ),
       ],
       slivers: profilesCount == 1
-          ? [
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: _EquipmentProfilesListPlaceholder(onTap: _addProfile),
-              ),
-            ]
+          ? [SliverPlaceholder(onTap: _addProfile)]
           : [
               SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -129,34 +124,5 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
     } else {
       // profile updated, no need to updated keys
     }
-  }
-}
-
-class _EquipmentProfilesListPlaceholder extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _EquipmentProfilesListPlaceholder({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: Dimens.sliverAppBarExpandedHeight),
-      child: FractionallySizedBox(
-        widthFactor: 1 / 1.618,
-        child: Center(
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.all(Dimens.paddingL),
-              child: IconPlaceholder(
-                icon: Icons.add_outlined,
-                text: S.of(context).tapToAdd,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

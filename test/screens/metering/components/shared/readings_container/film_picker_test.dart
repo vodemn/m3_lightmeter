@@ -10,14 +10,19 @@ import 'package:mocktail/mocktail.dart';
 import '../../../../../application_mock.dart';
 import 'utils.dart';
 
-class _MockIAPStorageService extends Mock implements IAPStorageService {}
+class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
 
 void main() {
-  late final _MockIAPStorageService mockIAPStorageService;
+  late final _MockFilmsStorageService mockFilmsStorageService;
 
   setUpAll(() {
-    mockIAPStorageService = _MockIAPStorageService();
-    when(() => mockIAPStorageService.filmsInUse).thenReturn(_films);
+    mockFilmsStorageService = _MockFilmsStorageService();
+    when(() => mockFilmsStorageService.getPredefinedFilms()).thenAnswer(
+      (_) => Future.value(Map.fromEntries(_films.map((e) => MapEntry(e.id, (film: e, isUsed: true))))),
+    );
+    when(() => mockFilmsStorageService.getCustomFilms()).thenAnswer(
+      (_) => Future.value({}),
+    );
   });
 
   Future<void> pumpApplication(WidgetTester tester) async {
@@ -31,7 +36,7 @@ void main() {
           ),
         ],
         child: FilmsProvider(
-          storageService: mockIAPStorageService,
+          filmsStorageService: mockFilmsStorageService,
           child: const WidgetTestApplicationMock(
             child: Row(
               children: [
@@ -49,9 +54,9 @@ void main() {
 
   group('Film push/pull label', () {
     testWidgets(
-      'Film.other()',
+      'FilmStub()',
       (tester) async {
-        when(() => mockIAPStorageService.selectedFilm).thenReturn(const Film.other());
+        when(() => mockFilmsStorageService.selectedFilmId).thenReturn(const FilmStub().id);
         await pumpApplication(tester);
         expectReadingValueContainerText(S.current.film);
         expectReadingValueContainerText(S.current.none);
@@ -61,7 +66,7 @@ void main() {
     testWidgets(
       'Film with the same ISO',
       (tester) async {
-        when(() => mockIAPStorageService.selectedFilm).thenReturn(_films[1]);
+        when(() => mockFilmsStorageService.selectedFilmId).thenReturn(_films[1].id);
         await pumpApplication(tester);
         expectReadingValueContainerText(S.current.film);
         expectReadingValueContainerText(_films[1].name);
@@ -71,7 +76,7 @@ void main() {
     testWidgets(
       'Film with greater ISO',
       (tester) async {
-        when(() => mockIAPStorageService.selectedFilm).thenReturn(_films[2]);
+        when(() => mockFilmsStorageService.selectedFilmId).thenReturn(_films[2].id);
         await pumpApplication(tester);
         expectReadingValueContainerText(S.current.filmPull);
         expectReadingValueContainerText(_films[2].name);
@@ -81,7 +86,7 @@ void main() {
     testWidgets(
       'Film with lower ISO',
       (tester) async {
-        when(() => mockIAPStorageService.selectedFilm).thenReturn(_films[0]);
+        when(() => mockFilmsStorageService.selectedFilmId).thenReturn(_films[0].id);
         await pumpApplication(tester);
         expectReadingValueContainerText(S.current.filmPush);
         expectReadingValueContainerText(_films[0].name);
@@ -92,7 +97,7 @@ void main() {
   testWidgets(
     'Film picker shows only films in use',
     (tester) async {
-      when(() => mockIAPStorageService.selectedFilm).thenReturn(_films[0]);
+      when(() => mockFilmsStorageService.selectedFilmId).thenReturn(_films[0].id);
       await pumpApplication(tester);
       await tester.openAnimatedPicker<FilmPicker>();
       expectRadioListTile<Film>(S.current.none, isSelected: true);
@@ -104,8 +109,8 @@ void main() {
 }
 
 const _films = [
-  Film('ISO 100 Film', 100),
-  Film('ISO 400 Film', 400),
-  Film('ISO 800 Film', 800),
-  Film('ISO 1600 Film', 1600),
+  FilmExponential(id: '1', name: 'ISO 100 Film', iso: 100, exponent: 1.34),
+  FilmExponential(id: '2', name: 'ISO 400 Film', iso: 400, exponent: 1.34),
+  FilmExponential(id: '3', name: 'ISO 800 Film', iso: 800, exponent: 1.34),
+  FilmExponential(id: '4', name: 'ISO 1600 Film', iso: 1600, exponent: 1.34),
 ];

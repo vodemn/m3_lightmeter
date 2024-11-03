@@ -67,7 +67,8 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
       style: ListTileStyle.list,
       iconColor: scheme.onSurface,
       textColor: scheme.onSurface,
-      subtitleTextStyle: theme.textTheme.bodyMedium!.copyWith(color: scheme.onSurfaceVariant),
+      subtitleTextStyle: theme.textTheme.bodyMedium,
+      leadingAndTrailingTextStyle: theme.textTheme.bodyMedium,
     ),
   );
 }
