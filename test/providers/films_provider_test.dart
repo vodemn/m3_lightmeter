@@ -50,19 +50,19 @@ void main() {
   }
 
   void expectPredefinedFilmsCount(int count) {
-    expect(find.text('Predefined films count: $count'), findsOneWidget);
+    expect(find.text(_PredefinedFilmsCount.text(count)), findsOneWidget);
   }
 
   void expectCustomFilmsCount(int count) {
-    expect(find.text('Custom films count: $count'), findsOneWidget);
+    expect(find.text(_CustomFilmsCount.text(count)), findsOneWidget);
   }
 
   void expectFilmsInUseCount(int count) {
-    expect(find.text('Films in use count: $count'), findsOneWidget);
+    expect(find.text(_FilmsInUseCount.text(count)), findsOneWidget);
   }
 
   void expectSelectedFilmName(String name) {
-    expect(find.text('Selected film: $name'), findsOneWidget);
+    expect(find.text(_SelectedFilm.text(name)), findsOneWidget);
   }
 
   group(
@@ -234,20 +234,64 @@ class _Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
         body: Center(
           child: Column(
             children: [
-              Text("Predefined films count: ${Films.predefinedFilmsOf(context).length}"),
-              Text("Custom films count: ${Films.customFilmsOf(context).length}"),
-              Text("Films in use count: ${Films.inUseOf(context).length}"),
-              Text("Selected film: ${Films.selectedOf(context).name}"),
+              _PredefinedFilmsCount(),
+              _CustomFilmsCount(),
+              _FilmsInUseCount(),
+              _SelectedFilm(),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class _PredefinedFilmsCount extends StatelessWidget {
+  static String text(int count) => "Predefined films count: $count";
+
+  const _PredefinedFilmsCount();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text(Films.predefinedFilmsOf(context).length));
+  }
+}
+
+class _CustomFilmsCount extends StatelessWidget {
+  static String text(int count) => "Custom films count: $count";
+
+  const _CustomFilmsCount();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text(Films.customFilmsOf(context).length));
+  }
+}
+
+class _FilmsInUseCount extends StatelessWidget {
+  static String text(int count) => "Films in use count: $count";
+
+  const _FilmsInUseCount();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text(Films.inUseOf(context).length));
+  }
+}
+
+class _SelectedFilm extends StatelessWidget {
+  static String text(String name) => "Selected film: $name}";
+
+  const _SelectedFilm();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text(Films.selectedOf(context).name));
   }
 }
 
