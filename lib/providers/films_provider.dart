@@ -170,9 +170,11 @@ class Films extends InheritedModel<_FilmsModelAspect> {
   @override
   bool updateShouldNotifyDependent(Films oldWidget, Set<_FilmsModelAspect> dependencies) {
     return (dependencies.contains(_FilmsModelAspect.selected) && oldWidget.selected != selected) ||
-        (dependencies.contains(_FilmsModelAspect.predefinedFilms) &&
+        ((dependencies.contains(_FilmsModelAspect.predefinedFilms) ||
+                dependencies.contains(_FilmsModelAspect.filmsInUse)) &&
             const DeepCollectionEquality().equals(oldWidget.predefinedFilms, predefinedFilms)) ||
-        (dependencies.contains(_FilmsModelAspect.customFilms) &&
+        ((dependencies.contains(_FilmsModelAspect.customFilms) ||
+                dependencies.contains(_FilmsModelAspect.filmsInUse)) &&
             const DeepCollectionEquality().equals(oldWidget.customFilms, customFilms));
   }
 }
