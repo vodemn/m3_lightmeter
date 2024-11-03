@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
@@ -113,8 +114,8 @@ class FilmsProviderState extends State<FilmsProvider> {
 }
 
 enum _FilmsModelAspect {
-  customFilmsList,
-  predefinedFilmsList,
+  customFilms,
+  predefinedFilms,
   filmsInUse,
   selected,
 }
@@ -134,7 +135,7 @@ class Films extends InheritedModel<_FilmsModelAspect> {
   });
 
   static List<Film> predefinedFilmsOf<T>(BuildContext context) {
-    return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.predefinedFilmsList)!
+    return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.predefinedFilms)!
         .predefinedFilms
         .values
         .map((value) => value.film)
@@ -142,7 +143,7 @@ class Films extends InheritedModel<_FilmsModelAspect> {
   }
 
   static List<FilmExponential> customFilmsOf<T>(BuildContext context) {
-    return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.customFilmsList)!
+    return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.customFilms)!
         .customFilms
         .values
         .map((value) => value.film)
@@ -168,7 +169,10 @@ class Films extends InheritedModel<_FilmsModelAspect> {
 
   @override
   bool updateShouldNotifyDependent(Films oldWidget, Set<_FilmsModelAspect> dependencies) {
-    // TODO: reduce unnecessary notifications
-    return true;
+    return (dependencies.contains(_FilmsModelAspect.selected) && oldWidget.selected != selected) ||
+        (dependencies.contains(_FilmsModelAspect.predefinedFilms) &&
+            const DeepCollectionEquality().equals(oldWidget.predefinedFilms, predefinedFilms)) ||
+        (dependencies.contains(_FilmsModelAspect.predefinedFilms) &&
+            const DeepCollectionEquality().equals(oldWidget.predefinedFilms, predefinedFilms));
   }
 }
