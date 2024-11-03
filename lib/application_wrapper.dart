@@ -39,7 +39,6 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
   late final bool hasLightSensor;
 
   final filmsStorageService = FilmsStorageService();
-  final filmsProviderKey = GlobalKey<FilmsProviderState>();
 
   late final Future<void> _initFuture;
 
@@ -51,28 +50,28 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return FilmsProvider(
-      key: filmsProviderKey,
-      filmsStorageService: filmsStorageService,
-      child: FutureBuilder(
-        future: _initFuture,
-        builder: (context, snapshot) {
-          if (snapshot.error != null) {
-            return Center(child: Text(snapshot.error!.toString()));
-          } else if (snapshot.connectionState == ConnectionState.done) {
-            return ServicesProvider(
-              analytics: const LightmeterAnalytics(api: LightmeterAnalyticsFirebase()),
-              caffeineService: const CaffeineService(),
-              environment: widget.env.copyWith(hasLightSensor: hasLightSensor),
-              hapticsService: const HapticsService(),
-              lightSensorService: const LightSensorService(LocalPlatform()),
-              permissionsService: const PermissionsService(),
-              userPreferencesService: userPreferencesService,
-              volumeEventsService: const VolumeEventsService(LocalPlatform()),
-              child: RemoteConfigProvider(
-                remoteConfigService: remoteConfigService,
-                child: EquipmentProfileProvider(
-                  storageService: iapStorageService,
+    return FutureBuilder(
+      future: _initFuture,
+      builder: (context, snapshot) {
+        if (snapshot.error != null) {
+          return Center(child: Text(snapshot.error!.toString()));
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return ServicesProvider(
+            analytics: const LightmeterAnalytics(api: LightmeterAnalyticsFirebase()),
+            caffeineService: const CaffeineService(),
+            environment: widget.env.copyWith(hasLightSensor: hasLightSensor),
+            hapticsService: const HapticsService(),
+            lightSensorService: const LightSensorService(LocalPlatform()),
+            permissionsService: const PermissionsService(),
+            userPreferencesService: userPreferencesService,
+            volumeEventsService: const VolumeEventsService(LocalPlatform()),
+            child: RemoteConfigProvider(
+              remoteConfigService: remoteConfigService,
+              child: EquipmentProfileProvider(
+                storageService: iapStorageService,
+                child: FilmsProvider(
+                  filmsStorageService: filmsStorageService,
+                  onInitialized: _onFilmsProviderInitialized,
                   child: UserPreferencesProvider(
                     hasLightSensor: hasLightSensor,
                     userPreferencesService: userPreferencesService,
@@ -80,12 +79,12 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
                   ),
                 ),
               ),
-            );
-          }
+            ),
+          );
+        }
 
-          return const SizedBox();
-        },
-      ),
+        return const SizedBox();
+      },
     );
   }
 
@@ -94,13 +93,16 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
       SharedPreferences.getInstance(),
       const LightSensorService(LocalPlatform()).hasSensor(),
       remoteConfigService.activeAndFetchFeatures(),
-      filmsStorageService.init().then((_) => filmsProviderKey.currentState?.init()),
+      filmsStorageService.init(),
     ]).then((value) {
       final sharedPrefs = (value[0] as SharedPreferences?)!;
       iapStorageService = IAPStorageService(sharedPrefs);
       userPreferencesService = UserPreferencesService(sharedPrefs);
       hasLightSensor = value[1] as bool? ?? false;
-      FlutterNativeSplash.remove();
     });
+  }
+
+  void _onFilmsProviderInitialized() {
+    FlutterNativeSplash.remove();
   }
 }

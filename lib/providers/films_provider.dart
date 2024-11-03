@@ -5,10 +5,12 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmsProvider extends StatefulWidget {
   final FilmsStorageService filmsStorageService;
+  final VoidCallback? onInitialized;
   final Widget child;
 
   const FilmsProvider({
     required this.filmsStorageService,
+    this.onInitialized,
     required this.child,
     super.key,
   });
@@ -29,6 +31,12 @@ class FilmsProviderState extends State<FilmsProvider> {
   Film get _selectedFilm => customFilms[_selectedId]?.film ?? predefinedFilms[_selectedId]?.film ?? const FilmStub();
 
   @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Films(
       predefinedFilms: context.isPro ? predefinedFilms : {},
@@ -38,12 +46,13 @@ class FilmsProviderState extends State<FilmsProvider> {
     );
   }
 
-  Future<void> init() async {
+  Future<void> _init() async {
     _selectedId = widget.filmsStorageService.selectedFilmId;
     predefinedFilms.addAll(await widget.filmsStorageService.getPredefinedFilms());
     customFilms.addAll(await widget.filmsStorageService.getCustomFilms());
     _discardSelectedIfNotIncluded();
     if (mounted) setState(() {});
+    widget.onInitialized?.call();
   }
 
   /* Both type of films **/
