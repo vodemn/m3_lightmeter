@@ -172,7 +172,7 @@ class Films extends InheritedModel<_FilmsModelAspect> {
     return (dependencies.contains(_FilmsModelAspect.selected) && oldWidget.selected != selected) ||
         (dependencies.contains(_FilmsModelAspect.predefinedFilms) &&
             const DeepCollectionEquality().equals(oldWidget.predefinedFilms, predefinedFilms)) ||
-        (dependencies.contains(_FilmsModelAspect.predefinedFilms) &&
-            const DeepCollectionEquality().equals(oldWidget.predefinedFilms, predefinedFilms));
+        (dependencies.contains(_FilmsModelAspect.customFilms) &&
+            const DeepCollectionEquality().equals(oldWidget.customFilms, customFilms));
   }
 }
