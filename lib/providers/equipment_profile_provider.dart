@@ -3,14 +3,15 @@ import 'package:lightmeter/utils/context_utils.dart';
 import 'package:lightmeter/utils/selectable_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-import 'package:uuid/uuid.dart';
 
 class EquipmentProfileProvider extends StatefulWidget {
-  final IAPStorageService storageService;
+  final EquipmentProfilesStorageService storageService;
+  final VoidCallback? onInitialized;
   final Widget child;
 
   const EquipmentProfileProvider({
     required this.storageService,
+    this.onInitialized,
     required this.child,
     super.key,
   });
@@ -33,19 +34,15 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     isoValues: IsoValue.values,
   );
 
-  List<EquipmentProfile> _customProfiles = [];
+  final Map<String, EquipmentProfile> _customProfiles = {};
   String _selectedId = '';
 
-  EquipmentProfile get _selectedProfile => _customProfiles.firstWhere(
-        (e) => e.id == _selectedId,
-        orElse: () => _defaultProfile,
-      );
+  EquipmentProfile get _selectedProfile => _customProfiles[_selectedId] ?? _defaultProfile;
 
   @override
   void initState() {
     super.initState();
-    _selectedId = widget.storageService.selectedEquipmentProfileId;
-    _customProfiles = widget.storageService.equipmentProfiles;
+    _init();
   }
 
   @override
@@ -53,11 +50,18 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     return EquipmentProfiles(
       values: [
         _defaultProfile,
-        if (context.isPro) ..._customProfiles,
+        if (context.isPro) ..._customProfiles.values,
       ],
       selected: context.isPro ? _selectedProfile : _defaultProfile,
       child: widget.child,
     );
+  }
+
+  Future<void> _init() async {
+    _selectedId = widget.storageService.selectedEquipmentProfileId;
+    _customProfiles.addAll(await widget.storageService.getProfiles());
+    if (mounted) setState(() {});
+    widget.onInitialized?.call();
   }
 
   void setProfile(EquipmentProfile data) {
@@ -69,40 +73,35 @@ class EquipmentProfileProviderState extends State<EquipmentProfileProvider> {
     }
   }
 
-  /// Creates a default equipment profile
-  void addProfile(String name, [EquipmentProfile? copyFrom]) {
-    _customProfiles.add(
-      EquipmentProfile(
-        id: const Uuid().v1(),
-        name: name,
-        apertureValues: copyFrom?.apertureValues ?? ApertureValue.values,
-        ndValues: copyFrom?.ndValues ?? NdValue.values,
-        shutterSpeedValues: copyFrom?.shutterSpeedValues ?? ShutterSpeedValue.values,
-        isoValues: copyFrom?.isoValues ?? IsoValue.values,
-      ),
+  Future<void> addProfile(EquipmentProfile profile) async {
+    await widget.storageService.addProfile(profile);
+    _customProfiles[profile.id] = profile;
+    setState(() {});
+  }
+
+  Future<void> updateProfile(EquipmentProfile profile) async {
+    final oldProfile = _customProfiles[profile.id]!;
+    await widget.storageService.updateProfile(
+      id: profile.id,
+      name: oldProfile.name != profile.name ? profile.name : null,
+      apertureValues: oldProfile.apertureValues != profile.apertureValues ? profile.apertureValues : null,
+      shutterSpeedValues:
+          oldProfile.shutterSpeedValues != profile.shutterSpeedValues ? profile.shutterSpeedValues : null,
+      isoValues: oldProfile.isoValues != profile.isoValues ? profile.isoValues : null,
+      ndValues: oldProfile.ndValues != profile.ndValues ? profile.ndValues : null,
+      lensZoom: oldProfile.lensZoom != profile.lensZoom ? profile.lensZoom : null,
     );
-    _refreshSavedProfiles();
+    _customProfiles[profile.id] = profile;
+    setState(() {});
   }
 
-  void updateProfile(EquipmentProfile data) {
-    final indexToUpdate = _customProfiles.indexWhere((element) => element.id == data.id);
-    if (indexToUpdate >= 0) {
-      _customProfiles[indexToUpdate] = data;
-      _refreshSavedProfiles();
-    }
-  }
-
-  void deleteProfile(EquipmentProfile data) {
-    if (data.id == _selectedId) {
+  Future<void> deleteProfile(EquipmentProfile profile) async {
+    await widget.storageService.deleteProfile(profile.id);
+    if (profile.id == _selectedId) {
       _selectedId = _defaultProfile.id;
       widget.storageService.selectedEquipmentProfileId = _defaultProfile.id;
     }
-    _customProfiles.remove(data);
-    _refreshSavedProfiles();
-  }
-
-  void _refreshSavedProfiles() {
-    widget.storageService.equipmentProfiles = _customProfiles;
+    _customProfiles.remove(profile.id);
     setState(() {});
   }
 }

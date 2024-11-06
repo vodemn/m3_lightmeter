@@ -79,7 +79,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
       builder: (_) => const EquipmentProfileNameDialog(),
     ).then((name) {
       if (name != null) {
-        EquipmentProfileProvider.of(context).addProfile(name, copyFrom);
+        //EquipmentProfileProvider.of(context).addProfile(name, copyFrom);
       }
     });
   }

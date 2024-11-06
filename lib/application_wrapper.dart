@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lightmeter/data/analytics/analytics.dart';
@@ -34,11 +36,14 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
       ? const RemoteConfigService(LightmeterAnalytics(api: LightmeterAnalyticsFirebase()))
       : const MockRemoteConfigService();
 
-  late final IAPStorageService iapStorageService;
   late final UserPreferencesService userPreferencesService;
   late final bool hasLightSensor;
 
+  final equipmentProfilesStorageService = EquipmentProfilesStorageService();
+  final equipmentProfilesStorageServiceCompleter = Completer<void>();
+
   final filmsStorageService = FilmsStorageService();
+  final filmsStorageServiceCompleter = Completer<void>();
 
   late final Future<void> _initFuture;
 
@@ -68,10 +73,11 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
             child: RemoteConfigProvider(
               remoteConfigService: remoteConfigService,
               child: EquipmentProfileProvider(
-                storageService: iapStorageService,
+                storageService: equipmentProfilesStorageService,
+                onInitialized: equipmentProfilesStorageServiceCompleter.complete,
                 child: FilmsProvider(
-                  filmsStorageService: filmsStorageService,
-                  onInitialized: _onFilmsProviderInitialized,
+                  storageService: filmsStorageService,
+                  onInitialized: filmsStorageServiceCompleter.complete,
                   child: UserPreferencesProvider(
                     hasLightSensor: hasLightSensor,
                     userPreferencesService: userPreferencesService,
@@ -95,14 +101,12 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
       remoteConfigService.activeAndFetchFeatures(),
       filmsStorageService.init(),
     ]).then((value) {
-      final sharedPrefs = (value[0] as SharedPreferences?)!;
-      iapStorageService = IAPStorageService(sharedPrefs);
-      userPreferencesService = UserPreferencesService(sharedPrefs);
+      userPreferencesService = UserPreferencesService((value[0] as SharedPreferences?)!);
       hasLightSensor = value[1] as bool? ?? false;
     });
-  }
-
-  void _onFilmsProviderInitialized() {
-    FlutterNativeSplash.remove();
+    await Future.wait([
+      equipmentProfilesStorageServiceCompleter.future,
+      filmsStorageServiceCompleter.future,
+    ]).then((_) => FlutterNativeSplash.remove());
   }
 }

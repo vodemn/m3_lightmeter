@@ -5,12 +5,12 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmsProvider extends StatefulWidget {
-  final FilmsStorageService filmsStorageService;
+  final FilmsStorageService storageService;
   final VoidCallback? onInitialized;
   final Widget child;
 
   const FilmsProvider({
-    required this.filmsStorageService,
+    required this.storageService,
     this.onInitialized,
     required this.child,
     super.key,
@@ -48,9 +48,9 @@ class FilmsProviderState extends State<FilmsProvider> {
   }
 
   Future<void> _init() async {
-    _selectedId = widget.filmsStorageService.selectedFilmId;
-    predefinedFilms.addAll(await widget.filmsStorageService.getPredefinedFilms());
-    customFilms.addAll(await widget.filmsStorageService.getCustomFilms());
+    _selectedId = widget.storageService.selectedFilmId;
+    predefinedFilms.addAll(await widget.storageService.getPredefinedFilms());
+    customFilms.addAll(await widget.storageService.getCustomFilms());
     _discardSelectedIfNotIncluded();
     if (mounted) setState(() {});
     widget.onInitialized?.call();
@@ -66,7 +66,7 @@ class FilmsProviderState extends State<FilmsProvider> {
     } else {
       return;
     }
-    await widget.filmsStorageService.toggleFilm(film, enabled);
+    await widget.storageService.toggleFilm(film, enabled);
     _discardSelectedIfNotIncluded();
     setState(() {});
   }
@@ -74,7 +74,7 @@ class FilmsProviderState extends State<FilmsProvider> {
   void selectFilm(Film film) {
     if (_selectedFilm != film) {
       _selectedId = film.id;
-      widget.filmsStorageService.selectedFilmId = _selectedId;
+      widget.storageService.selectedFilmId = _selectedId;
       setState(() {});
     }
   }
@@ -83,19 +83,19 @@ class FilmsProviderState extends State<FilmsProvider> {
 
   Future<void> addCustomFilm(FilmExponential film) async {
     // ignore: avoid_redundant_argument_values
-    await widget.filmsStorageService.addFilm(film, isUsed: true);
+    await widget.storageService.addFilm(film, isUsed: true);
     customFilms[film.id] = (film: film, isUsed: true);
     setState(() {});
   }
 
   Future<void> updateCustomFilm(FilmExponential film) async {
-    await widget.filmsStorageService.updateFilm(film);
+    await widget.storageService.updateFilm(film);
     customFilms[film.id] = (film: film, isUsed: customFilms[film.id]!.isUsed);
     setState(() {});
   }
 
   Future<void> deleteCustomFilm(FilmExponential film) async {
-    await widget.filmsStorageService.deleteFilm(film);
+    await widget.storageService.deleteFilm(film);
     customFilms.remove(film.id);
     _discardSelectedIfNotIncluded();
     setState(() {});
@@ -108,7 +108,7 @@ class FilmsProviderState extends State<FilmsProvider> {
     final isSelectedUsed = predefinedFilms[_selectedId]?.isUsed ?? customFilms[_selectedId]?.isUsed ?? false;
     if (!isSelectedUsed) {
       _selectedId = const FilmStub().id;
-      widget.filmsStorageService.selectedFilmId = _selectedId;
+      widget.storageService.selectedFilmId = _selectedId;
     }
   }
 }
