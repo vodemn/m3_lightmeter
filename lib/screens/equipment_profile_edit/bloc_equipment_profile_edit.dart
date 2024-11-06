@@ -145,7 +145,7 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
     emit(state.copyWith(isLoading: false));
   }
 
-  bool _canSave(String name, double? exponent) {
-    return name.isNotEmpty && exponent != null && _newEquipmentProfile != _originalEquipmentProfile;
+  bool _canSave(String name, double? lensZoom) {
+    return name.isNotEmpty && lensZoom != null && _newEquipmentProfile != _originalEquipmentProfile;
   }
 }
