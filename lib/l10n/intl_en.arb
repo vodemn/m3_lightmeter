@@ -160,5 +160,7 @@
     "filmFormulaExponential": "T=t^Rf",
     "filmFormulaExponentialRf": "Rf",
     "filmFormulaExponentialRfPlaceholder": "1.3",
-    "name": "Name"
+    "name": "Name",
+    "addEquipmentProfileTitle": "Add equipment profile",
+    "editEquipmentProfileTitle": "Edit equipment profile"
 }

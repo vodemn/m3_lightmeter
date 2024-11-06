@@ -3,7 +3,6 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/widget_container_equipment_profile.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
 import 'package:lightmeter/screens/shared/sliver_placeholder/widget_sliver_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -73,24 +72,11 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> {
     );
   }
 
-  void _addProfile([EquipmentProfile? copyFrom]) {
-    showDialog<String>(
-      context: context,
-      builder: (_) => const EquipmentProfileNameDialog(),
-    ).then((name) {
-      if (name != null) {
-        //EquipmentProfileProvider.of(context).addProfile(name, copyFrom);
-      }
-    });
-  }
+  void _addProfile([EquipmentProfile? copyFrom]) {}
 
-  void _updateProfileAt(EquipmentProfile data) {
-    EquipmentProfileProvider.of(context).updateProfile(data);
-  }
+  void _updateProfileAt(EquipmentProfile data) {}
 
-  void _removeProfileAt(EquipmentProfile data) {
-    EquipmentProfileProvider.of(context).deleteProfile(data);
-  }
+  void _removeProfileAt(EquipmentProfile data) {}
 
   void _keepExpandedAt(int index) {
     keysMap.values.toList().getRange(0, index).forEach((element) {

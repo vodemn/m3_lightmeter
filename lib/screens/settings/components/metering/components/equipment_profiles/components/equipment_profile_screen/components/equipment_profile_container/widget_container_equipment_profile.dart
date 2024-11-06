@@ -4,11 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/filter_list_tile/widget_list_tile_filter.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/range_picker_list_tile/widget_list_tile_range_picker.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_container/components/slider_picker_list_tile/widget_list_tile_slider_picker.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/components/equipment_profile_name_dialog/widget_dialog_equipment_profile_name.dart';
-import 'package:lightmeter/utils/double_to_zoom.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfileContainer extends StatefulWidget {
@@ -130,17 +125,7 @@ class EquipmentProfileContainerState extends State<EquipmentProfileContainer> wi
     );
   }
 
-  void _showNameDialog() {
-    showDialog<String>(
-      context: context,
-      builder: (_) => EquipmentProfileNameDialog(initialValue: _equipmentData.name),
-    ).then((value) {
-      if (value != null) {
-        _equipmentData = _equipmentData.copyWith(name: value);
-        widget.onUpdate(_equipmentData);
-      }
-    });
-  }
+  void _showNameDialog() {}
 
   void expand() {
     widget.onExpand();
@@ -238,51 +223,6 @@ class _AnimatedEquipmentListTiles extends AnimatedWidget {
         opacity: _progress.value,
         child: Column(
           children: [
-            FilterListTile<IsoValue>(
-              icon: Icons.iso_outlined,
-              title: S.of(context).isoValues,
-              description: S.of(context).isoValuesFilterDescription,
-              values: IsoValue.values,
-              selectedValues: equipmentData.isoValues,
-              onChanged: onIsoValuesSelecred,
-            ),
-            FilterListTile<NdValue>(
-              icon: Icons.filter_b_and_w_outlined,
-              title: S.of(context).ndFilters,
-              description: S.of(context).ndFiltersFilterDescription,
-              values: NdValue.values,
-              selectedValues: equipmentData.ndValues,
-              onChanged: onNdValuesSelected,
-            ),
-            RangePickerListTile<ApertureValue>(
-              icon: Icons.camera_outlined,
-              title: S.of(context).apertureValues,
-              description: S.of(context).apertureValuesFilterDescription,
-              values: ApertureValue.values,
-              selectedValues: equipmentData.apertureValues,
-              onChanged: onApertureValuesSelected,
-            ),
-            RangePickerListTile<ShutterSpeedValue>(
-              icon: Icons.shutter_speed_outlined,
-              title: S.of(context).shutterSpeedValues,
-              description: S.of(context).shutterSpeedValuesFilterDescription,
-              values: ShutterSpeedValue.values,
-              selectedValues: equipmentData.shutterSpeedValues,
-              onChanged: onShutterSpeedValuesSelected,
-              trailingAdapter: (context, value) =>
-                  value.value == 1 ? S.of(context).shutterSpeedManualShort : value.toString(),
-              dialogValueAdapter: (context, value) =>
-                  value.value == 1 ? S.of(context).shutterSpeedManual : value.toString(),
-            ),
-            SliderPickerListTile(
-              icon: Icons.zoom_in_outlined,
-              title: S.of(context).lensZoom,
-              description: S.of(context).lensZoomDescription,
-              value: equipmentData.lensZoom,
-              range: const RangeValues(1, 7),
-              onChanged: onLensZoomChanged,
-              valueAdapter: (_, value) => value.toZoom(),
-            ),
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
               trailing: Row(
