@@ -72,7 +72,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
             volumeEventsService: const VolumeEventsService(LocalPlatform()),
             child: RemoteConfigProvider(
               remoteConfigService: remoteConfigService,
-              child: EquipmentProfileProvider(
+              child: EquipmentProfilesProvider(
                 storageService: equipmentProfilesStorageService,
                 onInitialized: equipmentProfilesStorageServiceCompleter.complete,
                 child: FilmsProvider(

@@ -1,10 +1,10 @@
 enum NavigationRoutes {
   meteringScreen,
   settingsScreen,
-  filmsListScreen,
-  filmEditScreen,
   equipmentProfilesListScreen,
   equipmentProfileEditScreen,
+  filmsListScreen,
+  filmEditScreen,
   proFeaturesScreen,
   timerScreen,
 }

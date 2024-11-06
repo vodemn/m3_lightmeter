@@ -48,7 +48,7 @@ void testE2E(String description) {
     description,
     (tester) async {
       await tester.pumpApplication(
-        equipmentProfiles: [],
+        equipmentProfiles: {},
         predefinedFilms: mockFilms.toFilmsMap(isUsed: true),
         customFilms: {},
       );
@@ -58,7 +58,7 @@ void testE2E(String description) {
       await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
       await tester.tap(find.byIcon(Icons.add_outlined).first);
       await tester.pumpAndSettle();
-      await tester.setProfileName(mockEquipmentProfiles[0].name);
+      await tester.selectProfileName(mockEquipmentProfiles[0].name);
       await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[0].name);
       await tester.setIsoValues(0, mockEquipmentProfiles[0].isoValues);
       await tester.setNdValues(0, mockEquipmentProfiles[0].ndValues);
@@ -72,7 +72,7 @@ void testE2E(String description) {
       /// Create Praktica + Jupiter profile from Zenitar profile
       await tester.tap(find.byIcon(Icons.copy_outlined).first);
       await tester.pumpAndSettle();
-      await tester.setProfileName(mockEquipmentProfiles[1].name);
+      await tester.selectProfileName(mockEquipmentProfiles[1].name);
       await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[1].name);
       await tester.setApertureValues(1, mockEquipmentProfiles[1].apertureValues);
       await tester.setZoomValue(1, mockEquipmentProfiles[1].lensZoom);
@@ -152,7 +152,7 @@ extension EquipmentProfileActions on WidgetTester {
     await pump(Dimens.durationM);
   }
 
-  Future<void> setProfileName(String name) async {
+  Future<void> selectProfileName(String name) async {
     await enterText(find.byType(TextField), name);
     await pump();
     await tapSaveButton();

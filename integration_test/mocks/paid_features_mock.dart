@@ -5,12 +5,12 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
-class _MockIAPStorageService extends Mock implements IAPStorageService {}
+class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProfilesStorageService {}
 
 class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
 
 class MockIAPProviders extends StatefulWidget {
-  final List<EquipmentProfile>? equipmentProfiles;
+  final Map<String, EquipmentProfile> equipmentProfiles;
   final String selectedEquipmentProfileId;
   final Map<String, SelectableFilm<Film>> predefinedFilms;
   final Map<String, SelectableFilm<FilmExponential>> customFilms;
@@ -18,14 +18,15 @@ class MockIAPProviders extends StatefulWidget {
   final Widget child;
 
   MockIAPProviders({
-    this.equipmentProfiles = const [],
+    Map<String, EquipmentProfile>? equipmentProfiles,
     this.selectedEquipmentProfileId = '',
     Map<String, SelectableFilm<Film>>? predefinedFilms,
     Map<String, SelectableFilm<FilmExponential>>? customFilms,
     String? selectedFilmId,
     required this.child,
     super.key,
-  })  : predefinedFilms = predefinedFilms ?? mockFilms.toFilmsMap(),
+  })  : equipmentProfiles = equipmentProfiles ?? mockEquipmentProfiles.toProfilesMap(),
+        predefinedFilms = predefinedFilms ?? mockFilms.toFilmsMap(),
         customFilms = customFilms ?? mockFilms.toFilmsMap(),
         selectedFilmId = selectedFilmId ?? const FilmStub().id;
 
@@ -34,15 +35,18 @@ class MockIAPProviders extends StatefulWidget {
 }
 
 class _MockIAPProvidersState extends State<MockIAPProviders> {
-  late final _MockIAPStorageService mockIAPStorageService;
+  late final _MockEquipmentProfilesStorageService mockEquipmentProfilesStorageService;
   late final _MockFilmsStorageService mockFilmsStorageService;
 
   @override
   void initState() {
     super.initState();
-    mockIAPStorageService = _MockIAPStorageService();
-    when(() => mockIAPStorageService.equipmentProfiles).thenReturn(widget.equipmentProfiles ?? mockEquipmentProfiles);
-    when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
+    mockEquipmentProfilesStorageService = _MockEquipmentProfilesStorageService();
+    when(() => mockEquipmentProfilesStorageService.init()).thenAnswer((_) async {});
+    when(() => mockEquipmentProfilesStorageService.getProfiles())
+        .thenAnswer((_) => Future.value(widget.equipmentProfiles));
+    when(() => mockEquipmentProfilesStorageService.selectedEquipmentProfileId)
+        .thenReturn(widget.selectedEquipmentProfileId);
 
     mockFilmsStorageService = _MockFilmsStorageService();
     when(() => mockFilmsStorageService.init()).thenAnswer((_) async {});
@@ -53,10 +57,10 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
 
   @override
   Widget build(BuildContext context) {
-    return EquipmentProfileProvider(
-      storageService: mockIAPStorageService,
+    return EquipmentProfilesProvider(
+      storageService: mockEquipmentProfilesStorageService,
       child: FilmsProvider(
-        filmsStorageService: mockFilmsStorageService,
+        storageService: mockFilmsStorageService,
         child: widget.child,
       ),
     );
@@ -141,6 +145,10 @@ const mockFilms = [
   _FilmMultiplying(id: '3', name: 'Mock film 3', iso: 800, reciprocityMultiplier: 3),
   _FilmMultiplying(id: '4', name: 'Mock film 4', iso: 1200, reciprocityMultiplier: 1.5),
 ];
+
+extension EquipmentProfileMapper on List<EquipmentProfile> {
+  Map<String, EquipmentProfile> toProfilesMap() => Map.fromEntries(map((e) => MapEntry(e.id, e)));
+}
 
 extension FilmMapper on List<Film> {
   Map<String, ({T film, bool isUsed})> toFilmsMap<T extends Film>({bool isUsed = true}) =>

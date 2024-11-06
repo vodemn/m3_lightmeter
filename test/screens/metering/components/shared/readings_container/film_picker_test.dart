@@ -36,7 +36,7 @@ void main() {
           ),
         ],
         child: FilmsProvider(
-          filmsStorageService: mockFilmsStorageService,
+          storageService: mockFilmsStorageService,
           child: const WidgetTestApplicationMock(
             child: Row(
               children: [

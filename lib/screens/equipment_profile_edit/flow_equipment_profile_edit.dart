@@ -20,7 +20,7 @@ class EquipmentProfileEditFlow extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => EquipmentProfileEditBloc(
-        EquipmentProfileProvider.of(context),
+        EquipmentProfilesProvider.of(context),
         profile: args.profile,
         isEdit: args.profile != null,
       ),

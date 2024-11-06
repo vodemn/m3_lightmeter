@@ -7,18 +7,19 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../../../../integration_test/mocks/paid_features_mock.dart';
 import '../../../../../application_mock.dart';
 import 'utils.dart';
 
-class _MockIAPStorageService extends Mock implements IAPStorageService {}
+class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProfilesStorageService {}
 
 void main() {
-  late final _MockIAPStorageService mockIAPStorageService;
+  late final _MockEquipmentProfilesStorageService storageService;
 
   setUpAll(() {
-    mockIAPStorageService = _MockIAPStorageService();
-    when(() => mockIAPStorageService.equipmentProfiles).thenReturn(_mockEquipmentProfiles);
-    when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn('');
+    storageService = _MockEquipmentProfilesStorageService();
+    when(() => storageService.getProfiles()).thenAnswer((_) async => _mockEquipmentProfiles.toProfilesMap());
+    when(() => storageService.selectedEquipmentProfileId).thenReturn('');
   });
 
   Future<void> pumpApplication(WidgetTester tester) async {
@@ -31,8 +32,8 @@ void main() {
             price: '0.0\$',
           ),
         ],
-        child: EquipmentProfileProvider(
-          storageService: mockIAPStorageService,
+        child: EquipmentProfilesProvider(
+          storageService: storageService,
           child: const WidgetTestApplicationMock(
             child: Row(children: [Expanded(child: EquipmentProfilePicker())]),
           ),
@@ -59,7 +60,7 @@ void main() {
       testWidgets(
         'None',
         (tester) async {
-          when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn('');
+          when(() => storageService.selectedEquipmentProfileId).thenReturn('');
           await pumpApplication(tester);
           expectReadingValueContainerText(S.current.none);
           await tester.openAnimatedPicker<EquipmentProfilePicker>();
@@ -70,7 +71,7 @@ void main() {
       testWidgets(
         'Praktica + Zenitar',
         (tester) async {
-          when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn(_mockEquipmentProfiles.first.id);
+          when(() => storageService.selectedEquipmentProfileId).thenReturn(_mockEquipmentProfiles.first.id);
           await pumpApplication(tester);
           expectReadingValueContainerText(_mockEquipmentProfiles.first.name);
           await tester.openAnimatedPicker<EquipmentProfilePicker>();

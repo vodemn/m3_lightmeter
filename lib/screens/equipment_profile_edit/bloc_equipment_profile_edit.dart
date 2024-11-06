@@ -6,22 +6,13 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:uuid/uuid.dart';
 
 class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, EquipmentProfileEditState> {
-  static const EquipmentProfile _defaultProfile = EquipmentProfile(
-    id: '',
-    name: '',
-    apertureValues: ApertureValue.values,
-    ndValues: NdValue.values,
-    shutterSpeedValues: ShutterSpeedValue.values,
-    isoValues: IsoValue.values,
-  );
-
-  final EquipmentProfileProviderState profilesProvider;
+  final EquipmentProfilesProviderState profilesProvider;
   final EquipmentProfile _originalEquipmentProfile;
   EquipmentProfile _newEquipmentProfile;
   final bool _isEdit;
 
   factory EquipmentProfileEditBloc(
-    EquipmentProfileProviderState profilesProvider, {
+    EquipmentProfilesProviderState profilesProvider, {
     required EquipmentProfile? profile,
     required bool isEdit,
   }) =>
@@ -33,7 +24,7 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
             )
           : EquipmentProfileEditBloc._(
               profilesProvider,
-              _defaultProfile,
+              EquipmentProfilesProvider.defaultProfile,
               isEdit,
             );
 

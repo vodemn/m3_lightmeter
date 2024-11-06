@@ -108,7 +108,6 @@ class _GoldenTestApplicationMockState extends State<GoldenTestApplicationMock> {
       ],
       child: _MockApplicationWrapper(
         child: MockIAPProviders(
-          equipmentProfiles: mockEquipmentProfiles,
           selectedEquipmentProfileId: mockEquipmentProfiles.first.id,
           selectedFilmId: mockFilms.first.id,
           child: Builder(

@@ -6,15 +6,28 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../../integration_test/mocks/paid_features_mock.dart';
 import '../../../function_mock.dart';
 
-class _MockIAPStorageService extends Mock implements IAPStorageService {}
+class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProfilesStorageService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  final storageService = _MockIAPStorageService();
-  final equipmentProfileProviderKey = GlobalKey<EquipmentProfileProviderState>();
+  final storageService = _MockEquipmentProfilesStorageService();
   final onDidChangeDependencies = MockValueChanged<EquipmentProfile>();
+
+  setUp(() {
+    registerFallbackValue(_customProfiles.first);
+    when(() => storageService.addProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
+    when(
+      () => storageService.updateProfile(
+        id: any<String>(named: 'id'),
+        name: any<String>(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => storageService.deleteProfile(any<String>())).thenAnswer((_) async {});
+    when(() => storageService.getProfiles()).thenAnswer((_) => Future.value(_customProfiles.toProfilesMap()));
+  });
 
   tearDown(() {
     reset(onDidChangeDependencies);
@@ -31,8 +44,7 @@ void main() {
             price: '0.0\$',
           ),
         ],
-        child: EquipmentProfileProvider(
-          key: equipmentProfileProviderKey,
+        child: EquipmentProfilesProvider(
           storageService: storageService,
           child: MaterialApp(
             home: EquipmentProfileListener(
@@ -48,11 +60,10 @@ void main() {
   testWidgets(
     'Trigger `onDidChangeDependencies` by selecting a new profile',
     (tester) async {
-      when(() => storageService.equipmentProfiles).thenReturn(List.from(_customProfiles));
       when(() => storageService.selectedEquipmentProfileId).thenReturn('');
       await pumpTestWidget(tester);
 
-      equipmentProfileProviderKey.currentState!.setProfile(_customProfiles[0]);
+      tester.equipmentProfilesProvider.selectProfile(_customProfiles[0]);
       await tester.pump();
       verify(() => onDidChangeDependencies.onChanged(_customProfiles[0])).called(1);
     },
@@ -61,18 +72,17 @@ void main() {
   testWidgets(
     'Trigger `onDidChangeDependencies` by updating the selected profile',
     (tester) async {
-      when(() => storageService.equipmentProfiles).thenReturn(List.from(_customProfiles));
       when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles[0].id);
       await pumpTestWidget(tester);
 
       final updatedProfile1 = _customProfiles[0].copyWith(name: 'Test 1 updated');
-      equipmentProfileProviderKey.currentState!.updateProfile(updatedProfile1);
+      await tester.equipmentProfilesProvider.updateProfile(updatedProfile1);
       await tester.pump();
       verify(() => onDidChangeDependencies.onChanged(updatedProfile1)).called(1);
 
       /// Verify that updating the not selected profile doesn't trigger the callback
       final updatedProfile2 = _customProfiles[1].copyWith(name: 'Test 2 updated');
-      equipmentProfileProviderKey.currentState!.updateProfile(updatedProfile2);
+      await tester.equipmentProfilesProvider.updateProfile(updatedProfile2);
       await tester.pump();
       verifyNever(() => onDidChangeDependencies.onChanged(updatedProfile2));
     },
@@ -81,16 +91,22 @@ void main() {
   testWidgets(
     "Don't trigger `onDidChangeDependencies` by updating the unselected profile",
     (tester) async {
-      when(() => storageService.equipmentProfiles).thenReturn(List.from(_customProfiles));
       when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles[0].id);
       await pumpTestWidget(tester);
 
       final updatedProfile2 = _customProfiles[1].copyWith(name: 'Test 2 updated');
-      equipmentProfileProviderKey.currentState!.updateProfile(updatedProfile2);
+      await tester.equipmentProfilesProvider.updateProfile(updatedProfile2);
       await tester.pump();
       verifyNever(() => onDidChangeDependencies.onChanged(updatedProfile2));
     },
   );
+}
+
+extension on WidgetTester {
+  EquipmentProfilesProviderState get equipmentProfilesProvider {
+    final BuildContext context = element(find.byType(MaterialApp));
+    return EquipmentProfilesProvider.of(context);
+  }
 }
 
 final List<EquipmentProfile> _customProfiles = [
