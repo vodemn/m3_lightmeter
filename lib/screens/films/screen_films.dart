@@ -78,7 +78,7 @@ class _FilmsScreenState extends State<FilmsScreen> with SingleTickerProviderStat
 
   void _addFilm() {
     Navigator.of(context).pushNamed(
-      NavigationRoutes.filmAddScreen.name,
+      NavigationRoutes.filmEditScreen.name,
       arguments: const FilmEditArgs(),
     );
   }
