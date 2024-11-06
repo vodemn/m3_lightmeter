@@ -112,9 +112,9 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
   Future<void> _onSave(EquipmentProfileSaveEvent _, Emitter emit) async {
     emit(state.copyWith(isLoading: true));
     if (_isEdit) {
-      await profilesProvider.addProfile(
+      await profilesProvider.updateProfile(
         EquipmentProfile(
-          id: const Uuid().v1(),
+          id: _originalEquipmentProfile.id,
           name: state.name,
           apertureValues: state.apertureValues,
           ndValues: state.ndValues,
@@ -124,9 +124,9 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
         ),
       );
     } else {
-      await profilesProvider.updateProfile(
+      await profilesProvider.addProfile(
         EquipmentProfile(
-          id: _originalEquipmentProfile.id,
+          id: const Uuid().v1(),
           name: state.name,
           apertureValues: state.apertureValues,
           ndValues: state.ndValues,

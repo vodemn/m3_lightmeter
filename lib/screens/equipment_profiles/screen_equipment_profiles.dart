@@ -19,7 +19,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
   @override
   Widget build(BuildContext context) {
     return SliverScreen(
-      title: Text(S.of(context).films),
+      title: Text(S.of(context).equipmentProfiles),
       appBarActions: [
         IconButton(
           onPressed: _addProfile,
@@ -28,9 +28,9 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
         ),
       ],
       slivers: [
-        if (EquipmentProfiles.of(context).isNotEmpty)
+        if (EquipmentProfiles.of(context).length > 1)
           _EquipmentProfilesListBuilder(
-            values: EquipmentProfiles.of(context).toList(),
+            values: EquipmentProfiles.of(context).skip(1).toList(),
             onEdit: _editProfile,
           )
         else
