@@ -51,6 +51,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
   void initState() {
     super.initState();
     _initFuture = _initialize();
+    _removeSplashscreen();
   }
 
   @override
@@ -99,14 +100,20 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
       SharedPreferences.getInstance(),
       const LightSensorService(LocalPlatform()).hasSensor(),
       remoteConfigService.activeAndFetchFeatures(),
+      equipmentProfilesStorageService.init(),
       filmsStorageService.init(),
     ]).then((value) {
       userPreferencesService = UserPreferencesService((value[0] as SharedPreferences?)!);
       hasLightSensor = value[1] as bool? ?? false;
     });
-    await Future.wait([
+  }
+
+  void _removeSplashscreen() {
+    Future.wait([
       equipmentProfilesStorageServiceCompleter.future,
       filmsStorageServiceCompleter.future,
-    ]).then((_) => FlutterNativeSplash.remove());
+    ]).then((_) {
+      FlutterNativeSplash.remove();
+    });
   }
 }
