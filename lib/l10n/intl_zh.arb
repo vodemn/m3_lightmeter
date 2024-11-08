@@ -140,5 +140,7 @@
     "tooltipUseLightSensor": "使用光线传感器",
     "tooltipUseCamera": "使用摄像头",
     "tooltipOpenSettings": "打开设置",
-    "exposurePair": "曝光对"
+    "exposurePair": "曝光对",
+    "addEquipmentProfileTitle": "添加简介",
+    "editEquipmentProfileTitle": "编辑个人资料"
 }

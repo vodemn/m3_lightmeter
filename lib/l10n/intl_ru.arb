@@ -141,5 +141,7 @@
     "tooltipUseLightSensor": "Использовать датчик освещенности",
     "tooltipUseCamera": "Использовать камеру",
     "tooltipOpenSettings": "Открыть настройки",
-    "exposurePair": "Пара экспозиции"
+    "exposurePair": "Пара экспозиции",
+    "addEquipmentProfileTitle": "Добавить профиль",
+    "editEquipmentProfileTitle": "Редактировать профиль"
 }

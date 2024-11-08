@@ -142,5 +142,7 @@
     "tooltipUseLightSensor": "Utiliser un capteur de lumière",
     "tooltipUseCamera": "Utiliser la caméra",
     "tooltipOpenSettings": "Ouvrir les paramètres",
-    "exposurePair": "Paire d'exposition"
+    "exposurePair": "Paire d'exposition",
+    "addEquipmentProfileTitle": "Add profile",
+    "editEquipmentProfileTitle": "Editer le profil"
 }

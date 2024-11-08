@@ -161,6 +161,6 @@
     "filmFormulaExponentialRf": "Rf",
     "filmFormulaExponentialRfPlaceholder": "1.3",
     "name": "Name",
-    "addEquipmentProfileTitle": "Add equipment profile",
-    "editEquipmentProfileTitle": "Edit equipment profile"
+    "addEquipmentProfileTitle": "Add equipment",
+    "editEquipmentProfileTitle": "Edit equipment"
 }
