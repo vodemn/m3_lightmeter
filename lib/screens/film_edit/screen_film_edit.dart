@@ -48,7 +48,7 @@ class _FilmEditScreenState extends State<FilmEditScreen> {
                         context.read<FilmEditBloc>().add(const FilmEditSaveEvent());
                       }
                     : null,
-                icon: const Icon(Icons.save),
+                icon: const Icon(Icons.save_outlined),
               ),
             ),
             if (widget.isEdit)
@@ -56,7 +56,7 @@ class _FilmEditScreenState extends State<FilmEditScreen> {
                 onPressed: () {
                   context.read<FilmEditBloc>().add(const FilmEditDeleteEvent());
                 },
-                icon: const Icon(Icons.delete),
+                icon: const Icon(Icons.delete_outline),
               ),
           ],
           slivers: [

@@ -51,7 +51,7 @@ class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen>
                         context.read<EquipmentProfileEditBloc>().add(const EquipmentProfileSaveEvent());
                       }
                     : null,
-                icon: const Icon(Icons.save),
+                icon: const Icon(Icons.save_outlined),
               ),
             ),
             if (widget.isEdit)
@@ -59,7 +59,7 @@ class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen>
                 onPressed: () {
                   context.read<EquipmentProfileEditBloc>().add(const EquipmentProfileDeleteEvent());
                 },
-                icon: const Icon(Icons.delete),
+                icon: const Icon(Icons.delete_outline),
               ),
           ],
           slivers: [
