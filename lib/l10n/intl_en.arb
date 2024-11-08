@@ -152,7 +152,6 @@
     "close": "Close",
     "films": "Films",
     "filmsInUse": "Films in use",
-    "filmsInUseDescription": "Select films which you use.",
     "filmsCustom": "Custom films",
     "addFilmTitle": "Add film",
     "editFilmTitle": "Edit film",
