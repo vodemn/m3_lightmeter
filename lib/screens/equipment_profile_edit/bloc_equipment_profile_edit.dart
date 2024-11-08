@@ -62,6 +62,8 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
             await _onLensZoomChanged(e, emit);
           case EquipmentProfileSaveEvent():
             await _onSave(event, emit);
+          case EquipmentProfileCopyEvent():
+            await _onCopy(event, emit);
           case EquipmentProfileDeleteEvent():
             await _onDelete(event, emit);
         }
@@ -137,6 +139,11 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
       );
     }
     emit(state.copyWith(isLoading: false));
+  }
+
+  Future<void> _onCopy(EquipmentProfileCopyEvent _, Emitter emit) async {
+    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: false, profileToCopy: _originalEquipmentProfile));
   }
 
   Future<void> _onDelete(EquipmentProfileDeleteEvent _, Emitter emit) async {

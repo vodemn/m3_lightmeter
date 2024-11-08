@@ -5,16 +5,23 @@ import 'package:lightmeter/screens/equipment_profile_edit/bloc_equipment_profile
 import 'package:lightmeter/screens/equipment_profile_edit/screen_equipment_profile_edit.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
+enum EquipmentProfileEditType { add, edit }
+
 class EquipmentProfileEditArgs {
+  final EquipmentProfileEditType editType;
   final EquipmentProfile? profile;
 
-  const EquipmentProfileEditArgs({this.profile});
+  const EquipmentProfileEditArgs({required this.editType, this.profile});
 }
 
 class EquipmentProfileEditFlow extends StatelessWidget {
   final EquipmentProfileEditArgs args;
+  final bool _isEdit;
 
-  const EquipmentProfileEditFlow({required this.args, super.key});
+  EquipmentProfileEditFlow({
+    required this.args,
+    super.key,
+  }) : _isEdit = args.editType == EquipmentProfileEditType.edit;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +29,9 @@ class EquipmentProfileEditFlow extends StatelessWidget {
       create: (_) => EquipmentProfileEditBloc(
         EquipmentProfilesProvider.of(context),
         profile: args.profile,
-        isEdit: args.profile != null,
+        isEdit: _isEdit,
       ),
-      child: EquipmentProfileEditScreen(isEdit: args.profile != null),
+      child: EquipmentProfileEditScreen(isEdit: _isEdit),
     );
   }
 }

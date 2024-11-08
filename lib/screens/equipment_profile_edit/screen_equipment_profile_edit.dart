@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/bloc_equipment_profile_edit.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/components/filter_list_tile/widget_list_tile_filter.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/components/range_picker_list_tile/widget_list_tile_range_picker.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/components/slider_picker_list_tile/widget_list_tile_slider_picker.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/event_equipment_profile_edit.dart';
+import 'package:lightmeter/screens/equipment_profile_edit/flow_equipment_profile_edit.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/state_equipment_profile_edit.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/screens/shared/text_field/widget_text_field.dart';
@@ -34,7 +36,17 @@ class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen>
         if (state.isLoading) {
           FocusScope.of(context).unfocus();
         } else {
-          Navigator.of(context).pop();
+          if (state.profileToCopy != null) {
+            Navigator.of(context).pushReplacementNamed(
+              NavigationRoutes.equipmentProfileEditScreen.name,
+              arguments: EquipmentProfileEditArgs(
+                editType: EquipmentProfileEditType.add,
+                profile: state.profileToCopy,
+              ),
+            );
+          } else {
+            Navigator.of(context).pop();
+          }
         }
       },
       buildWhen: (previous, current) => previous.isLoading != current.isLoading,
@@ -54,6 +66,18 @@ class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen>
                 icon: const Icon(Icons.save_outlined),
               ),
             ),
+            if (widget.isEdit)
+              BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
+                buildWhen: (previous, current) => previous.canSave != current.canSave,
+                builder: (context, state) => IconButton(
+                  onPressed: state.canSave
+                      ? null
+                      : () {
+                          context.read<EquipmentProfileEditBloc>().add(const EquipmentProfileCopyEvent());
+                        },
+                  icon: const Icon(Icons.copy_outlined),
+                ),
+              ),
             if (widget.isEdit)
               IconButton(
                 onPressed: () {

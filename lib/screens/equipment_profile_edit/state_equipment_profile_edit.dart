@@ -9,6 +9,7 @@ class EquipmentProfileEditState {
   final double lensZoom;
   final bool canSave;
   final bool isLoading;
+  final EquipmentProfile? profileToCopy;
 
   const EquipmentProfileEditState({
     required this.name,
@@ -19,6 +20,7 @@ class EquipmentProfileEditState {
     required this.lensZoom,
     required this.canSave,
     this.isLoading = false,
+    this.profileToCopy,
   });
 
   EquipmentProfileEditState copyWith({
@@ -30,6 +32,7 @@ class EquipmentProfileEditState {
     double? lensZoom,
     bool? canSave,
     bool? isLoading,
+    EquipmentProfile? profileToCopy,
   }) =>
       EquipmentProfileEditState(
         name: name ?? this.name,
@@ -40,5 +43,6 @@ class EquipmentProfileEditState {
         lensZoom: lensZoom ?? this.lensZoom,
         canSave: canSave ?? this.canSave,
         isLoading: isLoading ?? this.isLoading,
+        profileToCopy: profileToCopy ?? this.profileToCopy,
       );
 }

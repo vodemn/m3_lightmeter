@@ -42,14 +42,17 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
   void _addProfile() {
     Navigator.of(context).pushNamed(
       NavigationRoutes.equipmentProfileEditScreen.name,
-      arguments: const EquipmentProfileEditArgs(),
+      arguments: const EquipmentProfileEditArgs(editType: EquipmentProfileEditType.add),
     );
   }
 
   void _editProfile(EquipmentProfile profile) {
     Navigator.of(context).pushNamed(
       NavigationRoutes.equipmentProfileEditScreen.name,
-      arguments: EquipmentProfileEditArgs(profile: profile),
+      arguments: EquipmentProfileEditArgs(
+        editType: EquipmentProfileEditType.edit,
+        profile: profile,
+      ),
     );
   }
 }

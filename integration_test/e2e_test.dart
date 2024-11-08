@@ -67,10 +67,11 @@ void testE2E(String description) {
       expect(find.text('x1.91'), findsOneWidget);
       expect(find.text('f/1.7 - f/16'), findsOneWidget);
       expect(find.text('1/1000 - B'), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.save_outlined));
-      await tester.pump();
+      await tester.saveEdits();
 
       /// Create Praktica + Jupiter profile from Zenitar profile
+      await tester.tap(find.byIcon(Icons.edit));
+      await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.copy_outlined).first);
       await tester.pumpAndSettle();
       await tester.enterProfileName(mockEquipmentProfiles[1].name);
@@ -78,7 +79,12 @@ void testE2E(String description) {
       await tester.setZoomValue(mockEquipmentProfiles[1].lensZoom);
       expect(find.text('x5.02'), findsOneWidget);
       expect(find.text('f/3.5 - f/22'), findsOneWidget);
-      expect(find.text('1/1000 - B'), findsNWidgets(2));
+      expect(find.text('1/1000 - B'), findsNWidgets(1));
+      await tester.saveEdits();
+
+      /// Verify that both profiles were added and leave to the main screen
+      expect(find.text(mockEquipmentProfiles[0].name), findsOneWidget);
+      expect(find.text(mockEquipmentProfiles[1].name), findsOneWidget);
       await tester.navigatorPop();
       await tester.navigatorPop();
 
@@ -179,6 +185,11 @@ extension on WidgetTester {
     await openAnimatedPicker<P>();
     await tapDescendantTextOf<DialogPicker<V>>(valueToSelect);
     await tapSelectButton();
+  }
+
+  Future<void> saveEdits() async {
+    await tap(find.byIcon(Icons.save_outlined));
+    await pumpAndSettle(Dimens.durationML);
   }
 
   Future<void> setDialogFilterValues<T>(

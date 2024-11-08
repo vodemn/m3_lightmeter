@@ -44,6 +44,10 @@ class EquipmentProfileSaveEvent extends EquipmentProfileEditEvent {
   const EquipmentProfileSaveEvent();
 }
 
+class EquipmentProfileCopyEvent extends EquipmentProfileEditEvent {
+  const EquipmentProfileCopyEvent();
+}
+
 class EquipmentProfileDeleteEvent extends EquipmentProfileEditEvent {
   const EquipmentProfileDeleteEvent();
 }
