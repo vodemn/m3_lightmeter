@@ -56,7 +56,7 @@ class _FilmEditScreenState extends State<FilmEditScreen> {
                 onPressed: () {
                   context.read<FilmEditBloc>().add(const FilmEditDeleteEvent());
                 },
-                icon: const Icon(Icons.delete_outline),
+                icon: const Icon(Icons.delete_outlined),
               ),
           ],
           slivers: [

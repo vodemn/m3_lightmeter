@@ -83,7 +83,7 @@ class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen>
                 onPressed: () {
                   context.read<EquipmentProfileEditBloc>().add(const EquipmentProfileDeleteEvent());
                 },
-                icon: const Icon(Icons.delete_outline),
+                icon: const Icon(Icons.delete_outlined),
               ),
           ],
           slivers: [

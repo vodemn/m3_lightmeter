@@ -148,6 +148,17 @@ void testE2E(String description) {
         nd: 'None',
         ev: mockPhotoEv100 + 1,
       );
+
+      /// Delete profile
+      await tester.openSettings();
+      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
+      await tester.tap(find.text(mockEquipmentProfiles[0].name).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.edit).first);
+      await tester.pumpAndSettle();
+      await tester.deleteEdits();
+      expect(find.text(mockEquipmentProfiles[0].name), findsNothing);
+      expect(find.text(mockEquipmentProfiles[1].name), findsOneWidget);
     },
   );
 }
@@ -189,6 +200,11 @@ extension on WidgetTester {
 
   Future<void> saveEdits() async {
     await tap(find.byIcon(Icons.save_outlined));
+    await pumpAndSettle(Dimens.durationML);
+  }
+
+  Future<void> deleteEdits() async {
+    await tap(find.byIcon(Icons.delete_outlined));
     await pumpAndSettle(Dimens.durationML);
   }
 
