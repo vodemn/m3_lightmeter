@@ -41,12 +41,21 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
   @override
   void initState() {
     super.initState();
+    registerFallbackValue(defaultEquipmentProfile);
     mockEquipmentProfilesStorageService = _MockEquipmentProfilesStorageService();
     when(() => mockEquipmentProfilesStorageService.init()).thenAnswer((_) async {});
     when(() => mockEquipmentProfilesStorageService.getProfiles())
         .thenAnswer((_) => Future.value(widget.equipmentProfiles));
     when(() => mockEquipmentProfilesStorageService.selectedEquipmentProfileId)
         .thenReturn(widget.selectedEquipmentProfileId);
+    when(() => mockEquipmentProfilesStorageService.addProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
+    when(
+      () => mockEquipmentProfilesStorageService.updateProfile(
+        id: any<String>(named: 'id'),
+        name: any<String>(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => mockEquipmentProfilesStorageService.deleteProfile(any<String>())).thenAnswer((_) async {});
 
     mockFilmsStorageService = _MockFilmsStorageService();
     when(() => mockFilmsStorageService.init()).thenAnswer((_) async {});
