@@ -67,8 +67,6 @@
     "equipmentProfile": "Оборудование",
     "equipmentProfiles": "Профили оборудования",
     "tapToAdd": "Нажмите, чтобы добавить",
-    "filmsInUse": "Используемые плёнки",
-    "filmsInUseDescription": "Выберите плёнки, которыми вы пользуетесь.",
     "general": "Общие",
     "keepScreenOn": "Запрет блокировки",
     "haptics": "Вибрация",
@@ -141,5 +139,17 @@
     "tooltipUseLightSensor": "Использовать датчик освещенности",
     "tooltipUseCamera": "Использовать камеру",
     "tooltipOpenSettings": "Открыть настройки",
-    "exposurePair": "Пара экспозиции"
+    "exposurePair": "Пара экспозиции",
+    "films": "Плёнки",
+    "filmsInUse": "Используемые плёнки",
+    "filmsCustom": "Пользовательские плёнки",
+    "addFilmTitle": "Добавить плёнку",
+    "editFilmTitle": "Редактировать плёнку",
+    "filmFormula": "Формула",
+    "filmFormulaExponential": "T=t^Rf",
+    "filmFormulaExponentialRf": "Rf",
+    "filmFormulaExponentialRfPlaceholder": "1.3",
+    "name": "Название",
+    "addEquipmentProfileTitle": "Добавить профиль",
+    "editEquipmentProfileTitle": "Редактировать профиль"
 }

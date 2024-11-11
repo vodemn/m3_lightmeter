@@ -7,6 +7,8 @@ import 'package:lightmeter/navigation/modal_route_args_parser.dart';
 import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
+import 'package:lightmeter/screens/equipment_profile_edit/flow_equipment_profile_edit.dart';
+import 'package:lightmeter/screens/equipment_profiles/screen_equipment_profiles.dart';
 import 'package:lightmeter/screens/film_edit/flow_film_edit.dart';
 import 'package:lightmeter/screens/films/screen_films.dart';
 import 'package:lightmeter/screens/lightmeter_pro/screen_lightmeter_pro.dart';
@@ -49,8 +51,10 @@ class Application extends StatelessWidget {
         routes: {
           NavigationRoutes.meteringScreen.name: (_) => const ReleaseNotesFlow(child: MeteringFlow()),
           NavigationRoutes.settingsScreen.name: (_) => const SettingsFlow(),
+          NavigationRoutes.equipmentProfilesListScreen.name: (_) => const EquipmentProfilesScreen(),
+          NavigationRoutes.equipmentProfileEditScreen.name: (context) =>
+              EquipmentProfileEditFlow(args: context.routeArgs<EquipmentProfileEditArgs>()),
           NavigationRoutes.filmsListScreen.name: (_) => const FilmsScreen(),
-          NavigationRoutes.filmAddScreen.name: (_) => const FilmEditFlow(args: FilmEditArgs()),
           NavigationRoutes.filmEditScreen.name: (context) => FilmEditFlow(args: context.routeArgs<FilmEditArgs>()),
           NavigationRoutes.proFeaturesScreen.name: (_) => LightmeterProScreen(),
           NavigationRoutes.timerScreen.name: (context) => TimerFlow(args: context.routeArgs<TimerFlowArgs>()),

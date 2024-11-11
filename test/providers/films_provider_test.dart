@@ -9,25 +9,24 @@ class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  late _MockFilmsStorageService mockFilmsStorageService;
+  late _MockFilmsStorageService storageService;
 
   setUpAll(() {
-    mockFilmsStorageService = _MockFilmsStorageService();
+    storageService = _MockFilmsStorageService();
   });
 
   setUp(() {
     registerFallbackValue(mockCustomFilms.first);
-    when(() => mockFilmsStorageService.toggleFilm(any<Film>(), any<bool>())).thenAnswer((_) async {});
-    when(() => mockFilmsStorageService.addFilm(any<FilmExponential>())).thenAnswer((_) async {});
-    when(() => mockFilmsStorageService.updateFilm(any<FilmExponential>())).thenAnswer((_) async {});
-    when(() => mockFilmsStorageService.deleteFilm(any<FilmExponential>())).thenAnswer((_) async {});
-    when(() => mockFilmsStorageService.getPredefinedFilms())
-        .thenAnswer((_) => Future.value(mockPredefinedFilms.toFilmsMap()));
-    when(() => mockFilmsStorageService.getCustomFilms()).thenAnswer((_) => Future.value(mockCustomFilms.toFilmsMap()));
+    when(() => storageService.toggleFilm(any<Film>(), any<bool>())).thenAnswer((_) async {});
+    when(() => storageService.addFilm(any<FilmExponential>())).thenAnswer((_) async {});
+    when(() => storageService.updateFilm(any<FilmExponential>())).thenAnswer((_) async {});
+    when(() => storageService.deleteFilm(any<FilmExponential>())).thenAnswer((_) async {});
+    when(() => storageService.getPredefinedFilms()).thenAnswer((_) => Future.value(mockPredefinedFilms.toFilmsMap()));
+    when(() => storageService.getCustomFilms()).thenAnswer((_) => Future.value(mockCustomFilms.toFilmsMap()));
   });
 
   tearDown(() {
-    reset(mockFilmsStorageService);
+    reset(storageService);
   });
 
   Future<void> pumpTestWidget(WidgetTester tester, IAPProductStatus productStatus) async {
@@ -41,7 +40,7 @@ void main() {
           ),
         ],
         child: FilmsProvider(
-          filmsStorageService: mockFilmsStorageService,
+          storageService: storageService,
           child: const _Application(),
         ),
       ),
@@ -69,11 +68,10 @@ void main() {
     'FilmsProvider dependency on IAPProductStatus',
     () {
       setUp(() {
-        when(() => mockFilmsStorageService.selectedFilmId).thenReturn(mockPredefinedFilms.first.id);
-        when(() => mockFilmsStorageService.getPredefinedFilms())
+        when(() => storageService.selectedFilmId).thenReturn(mockPredefinedFilms.first.id);
+        when(() => storageService.getPredefinedFilms())
             .thenAnswer((_) => Future.value(mockPredefinedFilms.toFilmsMap()));
-        when(() => mockFilmsStorageService.getCustomFilms())
-            .thenAnswer((_) => Future.value(mockCustomFilms.toFilmsMap()));
+        when(() => storageService.getCustomFilms()).thenAnswer((_) => Future.value(mockCustomFilms.toFilmsMap()));
       });
 
       testWidgets(
@@ -117,7 +115,7 @@ void main() {
       testWidgets(
         'toggle predefined film',
         (tester) async {
-          when(() => mockFilmsStorageService.selectedFilmId).thenReturn(mockPredefinedFilms.first.id);
+          when(() => storageService.selectedFilmId).thenReturn(mockPredefinedFilms.first.id);
           await pumpTestWidget(tester, IAPProductStatus.purchased);
           expectPredefinedFilmsCount(mockPredefinedFilms.length);
           expectCustomFilmsCount(mockCustomFilms.length);
@@ -131,15 +129,15 @@ void main() {
           expectFilmsInUseCount(mockPredefinedFilms.length - 1 + mockCustomFilms.length + 1);
           expectSelectedFilmName('');
 
-          verify(() => mockFilmsStorageService.toggleFilm(mockPredefinedFilms.first, false)).called(1);
-          verify(() => mockFilmsStorageService.selectedFilmId = '').called(1);
+          verify(() => storageService.toggleFilm(mockPredefinedFilms.first, false)).called(1);
+          verify(() => storageService.selectedFilmId = '').called(1);
         },
       );
 
       testWidgets(
         'toggle custom film',
         (tester) async {
-          when(() => mockFilmsStorageService.selectedFilmId).thenReturn(mockCustomFilms.first.id);
+          when(() => storageService.selectedFilmId).thenReturn(mockCustomFilms.first.id);
           await pumpTestWidget(tester, IAPProductStatus.purchased);
           expectPredefinedFilmsCount(mockPredefinedFilms.length);
           expectCustomFilmsCount(mockCustomFilms.length);
@@ -153,8 +151,8 @@ void main() {
           expectFilmsInUseCount(mockPredefinedFilms.length - 1 + mockCustomFilms.length + 1);
           expectSelectedFilmName('');
 
-          verify(() => mockFilmsStorageService.toggleFilm(mockCustomFilms.first, false)).called(1);
-          verify(() => mockFilmsStorageService.selectedFilmId = '').called(1);
+          verify(() => storageService.toggleFilm(mockCustomFilms.first, false)).called(1);
+          verify(() => storageService.selectedFilmId = '').called(1);
         },
       );
     },
@@ -163,7 +161,7 @@ void main() {
   testWidgets(
     'selectFilm',
     (tester) async {
-      when(() => mockFilmsStorageService.selectedFilmId).thenReturn('');
+      when(() => storageService.selectedFilmId).thenReturn('');
       await pumpTestWidget(tester, IAPProductStatus.purchased);
       expectSelectedFilmName('');
 
@@ -175,16 +173,16 @@ void main() {
       await tester.pump();
       expectSelectedFilmName(mockCustomFilms.first.name);
 
-      verify(() => mockFilmsStorageService.selectedFilmId = mockPredefinedFilms.first.id).called(1);
-      verify(() => mockFilmsStorageService.selectedFilmId = mockCustomFilms.first.id).called(1);
+      verify(() => storageService.selectedFilmId = mockPredefinedFilms.first.id).called(1);
+      verify(() => storageService.selectedFilmId = mockCustomFilms.first.id).called(1);
     },
   );
 
   testWidgets(
     'Custom film CRUD',
     (tester) async {
-      when(() => mockFilmsStorageService.selectedFilmId).thenReturn('');
-      when(() => mockFilmsStorageService.getCustomFilms()).thenAnswer((_) => Future.value({}));
+      when(() => storageService.selectedFilmId).thenReturn('');
+      when(() => storageService.getCustomFilms()).thenAnswer((_) => Future.value({}));
       await pumpTestWidget(tester, IAPProductStatus.purchased);
       expectPredefinedFilmsCount(mockPredefinedFilms.length);
       expectCustomFilmsCount(0);
@@ -199,16 +197,16 @@ void main() {
       expectCustomFilmsCount(1);
       expectFilmsInUseCount(mockPredefinedFilms.length + 1 + 1);
       expectSelectedFilmName(mockCustomFilms.first.name);
-      verify(() => mockFilmsStorageService.addFilm(mockCustomFilms.first)).called(1);
-      verify(() => mockFilmsStorageService.toggleFilm(mockCustomFilms.first, true)).called(1);
-      verify(() => mockFilmsStorageService.selectedFilmId = mockCustomFilms.first.id).called(1);
+      verify(() => storageService.addFilm(mockCustomFilms.first)).called(1);
+      verify(() => storageService.toggleFilm(mockCustomFilms.first, true)).called(1);
+      verify(() => storageService.selectedFilmId = mockCustomFilms.first.id).called(1);
 
       const editedFilmName = 'Edited custom film 2x';
       final editedFilm = mockCustomFilms.first.copyWith(name: editedFilmName);
       await tester.filmsProvider.updateCustomFilm(editedFilm);
       await tester.pump();
       expectSelectedFilmName(editedFilm.name);
-      verify(() => mockFilmsStorageService.updateFilm(editedFilm)).called(1);
+      verify(() => storageService.updateFilm(editedFilm)).called(1);
 
       await tester.filmsProvider.deleteCustomFilm(editedFilm);
       await tester.pump();
@@ -216,8 +214,8 @@ void main() {
       expectCustomFilmsCount(0);
       expectFilmsInUseCount(mockPredefinedFilms.length + 0 + 1);
       expectSelectedFilmName('');
-      verify(() => mockFilmsStorageService.deleteFilm(editedFilm)).called(1);
-      verify(() => mockFilmsStorageService.selectedFilmId = '').called(1);
+      verify(() => storageService.deleteFilm(editedFilm)).called(1);
+      verify(() => storageService.selectedFilmId = '').called(1);
     },
   );
 }
@@ -307,6 +305,6 @@ const mockCustomFilms = [
 ];
 
 extension on List<Film> {
-  Map<String, ({T film, bool isUsed})> toFilmsMap<T extends Film>() =>
-      Map.fromEntries(map((e) => MapEntry(e.id, (film: e as T, isUsed: true))));
+  Map<String, ({T value, bool isUsed})> toFilmsMap<T extends Film>() =>
+      Map.fromEntries(map((e) => MapEntry(e.id, (value: e as T, isUsed: true))));
 }

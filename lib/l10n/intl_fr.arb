@@ -67,8 +67,6 @@
     "equipmentProfile": "Profil de l'équipement",
     "equipmentProfiles": "Profils de l'équipement",
     "tapToAdd": "Appuie pour ajouter",
-    "filmsInUse": "Films en usage",
-    "filmsInUseDescription": "Sélectionnez les films que vous utilisez.",
     "general": "Général",
     "keepScreenOn": "Garder l'écran allumé",
     "haptics": "Haptiques",
@@ -142,5 +140,17 @@
     "tooltipUseLightSensor": "Utiliser un capteur de lumière",
     "tooltipUseCamera": "Utiliser la caméra",
     "tooltipOpenSettings": "Ouvrir les paramètres",
-    "exposurePair": "Paire d'exposition"
+    "exposurePair": "Paire d'exposition",
+    "films": "Films",
+    "filmsInUse": "Films en usage",
+    "filmsCustom": "Films personnalisés",
+    "addFilmTitle": "Ajouter un film",
+    "editFilmTitle": "Editer le film",
+    "filmFormula": "Formule",
+    "filmFormulaExponential": "T=t^Rf",
+    "filmFormulaExponentialRf": "Rf",
+    "filmFormulaExponentialRfPlaceholder": "1.3",
+    "name": "Titre",
+    "addEquipmentProfileTitle": "Ajouter un profil",
+    "editEquipmentProfileTitle": "Editer le profil"
 }
