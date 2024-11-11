@@ -25,8 +25,8 @@ class FilmsProvider extends StatefulWidget {
 }
 
 class FilmsProviderState extends State<FilmsProvider> {
-  final Map<String, SelectableValue<Film>> predefinedFilms = {};
-  final Map<String, SelectableValue<FilmExponential>> customFilms = {};
+  final TogglableMap<Film> predefinedFilms = {};
+  final TogglableMap<FilmExponential> customFilms = {};
   String _selectedId = '';
 
   Film get _selectedFilm => customFilms[_selectedId]?.value ?? predefinedFilms[_selectedId]?.value ?? const FilmStub();
@@ -121,10 +121,10 @@ enum _FilmsModelAspect {
 }
 
 class Films extends InheritedModel<_FilmsModelAspect> {
-  final Map<String, SelectableValue<Film>> predefinedFilms;
+  final TogglableMap<Film> predefinedFilms;
 
   @protected
-  final Map<String, SelectableValue<FilmExponential>> customFilms;
+  final TogglableMap<FilmExponential> customFilms;
   final Film selected;
 
   const Films({

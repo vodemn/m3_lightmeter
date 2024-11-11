@@ -50,7 +50,7 @@ void testE2E(String description) {
     (tester) async {
       await tester.pumpApplication(
         equipmentProfiles: {},
-        predefinedFilms: mockFilms.toSelectableMap(),
+        predefinedFilms: mockFilms.toTogglableMap(),
         customFilms: {},
       );
 

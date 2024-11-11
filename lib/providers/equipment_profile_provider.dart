@@ -34,7 +34,7 @@ class EquipmentProfilesProvider extends StatefulWidget {
 }
 
 class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
-  final SelectableMap<EquipmentProfile> _customProfiles = {};
+  final TogglableMap<EquipmentProfile> _customProfiles = {};
   String _selectedId = '';
 
   EquipmentProfile get _selectedProfile =>
@@ -135,7 +135,7 @@ enum _EquipmentProfilesModelAspect {
 }
 
 class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
-  final SelectableMap<EquipmentProfile> profiles;
+  final TogglableMap<EquipmentProfile> profiles;
   final EquipmentProfile selected;
 
   const EquipmentProfiles({

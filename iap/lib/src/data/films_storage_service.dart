@@ -22,11 +22,11 @@ class FilmsStorageService {
 
   Future<void> deleteFilm(FilmExponential _) async {}
 
-  Future<Map<String, SelectableValue<Film>>> getPredefinedFilms() async {
+  Future<TogglableMap<Film>> getPredefinedFilms() async {
     return const {};
   }
 
-  Future<Map<String, SelectableValue<FilmExponential>>> getCustomFilms() async {
+  Future<TogglableMap<FilmExponential>> getCustomFilms() async {
     return const {};
   }
 }

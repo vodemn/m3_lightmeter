@@ -10,24 +10,24 @@ class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProf
 class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
 
 class MockIAPProviders extends StatefulWidget {
-  final SelectableMap<EquipmentProfile> equipmentProfiles;
+  final TogglableMap<EquipmentProfile> equipmentProfiles;
   final String selectedEquipmentProfileId;
-  final Map<String, SelectableValue<Film>> predefinedFilms;
-  final Map<String, SelectableValue<FilmExponential>> customFilms;
+  final TogglableMap<Film> predefinedFilms;
+  final TogglableMap<FilmExponential> customFilms;
   final String selectedFilmId;
   final Widget child;
 
   MockIAPProviders({
-    SelectableMap<EquipmentProfile>? equipmentProfiles,
+    TogglableMap<EquipmentProfile>? equipmentProfiles,
     this.selectedEquipmentProfileId = '',
-    Map<String, SelectableValue<Film>>? predefinedFilms,
-    Map<String, SelectableValue<FilmExponential>>? customFilms,
+    TogglableMap<Film>? predefinedFilms,
+    TogglableMap<FilmExponential>? customFilms,
     String? selectedFilmId,
     required this.child,
     super.key,
-  })  : equipmentProfiles = equipmentProfiles ?? mockEquipmentProfiles.toSelectableMap(),
-        predefinedFilms = predefinedFilms ?? mockFilms.toSelectableMap(),
-        customFilms = customFilms ?? mockFilms.toSelectableMap(),
+  })  : equipmentProfiles = equipmentProfiles ?? mockEquipmentProfiles.toTogglableMap(),
+        predefinedFilms = predefinedFilms ?? mockFilms.toTogglableMap(),
+        customFilms = customFilms ?? mockFilms.toTogglableMap(),
         selectedFilmId = selectedFilmId ?? const FilmStub().id;
 
   @override

@@ -17,7 +17,7 @@ void main() {
 
   setUpAll(() {
     storageService = _MockEquipmentProfilesStorageService();
-    when(() => storageService.getProfiles()).thenAnswer((_) async => _mockEquipmentProfiles.toSelectableMap());
+    when(() => storageService.getProfiles()).thenAnswer((_) async => _mockEquipmentProfiles.toTogglableMap());
     when(() => storageService.selectedEquipmentProfileId).thenReturn('');
   });
 
@@ -84,7 +84,7 @@ void main() {
     'Equipment profile picker shows only profiles in use',
     (tester) async {
       when(() => storageService.getProfiles())
-          .thenAnswer((_) async => _mockEquipmentProfiles.skip(1).toList().toSelectableMap());
+          .thenAnswer((_) async => _mockEquipmentProfiles.skip(1).toList().toTogglableMap());
       await pumpApplication(tester);
       await tester.openAnimatedPicker<EquipmentProfilePicker>();
       expectRadioListTile<EquipmentProfile>(S.current.none, isSelected: true);

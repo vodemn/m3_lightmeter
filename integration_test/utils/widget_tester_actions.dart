@@ -20,10 +20,10 @@ const mockPhotoEv100 = 8.3;
 extension WidgetTesterCommonActions on WidgetTester {
   Future<void> pumpApplication({
     IAPProductStatus productStatus = IAPProductStatus.purchased,
-    SelectableMap<EquipmentProfile>? equipmentProfiles,
+    TogglableMap<EquipmentProfile>? equipmentProfiles,
     String selectedEquipmentProfileId = '',
-    Map<String, SelectableValue<Film>>? predefinedFilms,
-    Map<String, SelectableValue<FilmExponential>>? customFilms,
+    TogglableMap<Film>? predefinedFilms,
+    TogglableMap<FilmExponential>? customFilms,
     String selectedFilmId = '',
   }) async {
     await pumpWidget(
