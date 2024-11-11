@@ -32,7 +32,7 @@ dependencies:
   m3_lightmeter_iap:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_iap"
-      ref: feature/ML-196
+      ref: v2.1.0
   m3_lightmeter_resources:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_resources"
