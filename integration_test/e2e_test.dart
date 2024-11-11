@@ -153,8 +153,6 @@ void testE2E(String description) {
       /// Delete profile
       await tester.openSettings();
       await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.tap(find.text(mockEquipmentProfiles[0].name).first);
-      await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.edit).first);
       await tester.pumpAndSettle();
       await tester.deleteEdits();

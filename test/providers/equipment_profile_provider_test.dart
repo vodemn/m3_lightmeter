@@ -22,6 +22,7 @@ void main() {
       () => storageService.updateProfile(
         id: any<String>(named: 'id'),
         name: any<String>(named: 'name'),
+        isUsed: any<bool>(named: 'isUsed'),
       ),
     ).thenAnswer((_) async {});
     when(() => storageService.deleteProfile(any<String>())).thenAnswer((_) async {});
@@ -53,6 +54,10 @@ void main() {
 
   void expectEquipmentProfilesCount(int count) {
     expect(find.text(_EquipmentProfilesCount.text(count)), findsOneWidget);
+  }
+
+  void expectEquipmentProfilesInUseCount(int count) {
+    expect(find.text(_EquipmentProfilesInUseCount.text(count)), findsOneWidget);
   }
 
   void expectSelectedEquipmentProfileName(String name) {
@@ -93,6 +98,26 @@ void main() {
           expectSelectedEquipmentProfileName('');
         },
       );
+    },
+  );
+
+  testWidgets(
+    'toggleProfile',
+    (tester) async {
+      when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles.first.id);
+      await pumpTestWidget(tester, IAPProductStatus.purchased);
+      expectEquipmentProfilesCount(_customProfiles.length + 1);
+      expectEquipmentProfilesInUseCount(_customProfiles.length + 1);
+      expectSelectedEquipmentProfileName(_customProfiles.first.name);
+
+      await tester.equipmentProfilesProvider.toggleProfile(_customProfiles.first, false);
+      await tester.pump();
+      expectEquipmentProfilesCount(_customProfiles.length + 1);
+      expectEquipmentProfilesInUseCount(_customProfiles.length + 1 - 1);
+      expectSelectedEquipmentProfileName('');
+
+      verify(() => storageService.updateProfile(id: _customProfiles.first.id, isUsed: false)).called(1);
+      verify(() => storageService.selectedEquipmentProfileId = '').called(1);
     },
   );
 
@@ -167,6 +192,7 @@ class _Application extends StatelessWidget {
           child: Column(
             children: [
               _EquipmentProfilesCount(),
+              _EquipmentProfilesInUseCount(),
               _SelectedEquipmentProfile(),
             ],
           ),
@@ -184,6 +210,17 @@ class _EquipmentProfilesCount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(text(EquipmentProfiles.of(context).length));
+  }
+}
+
+class _EquipmentProfilesInUseCount extends StatelessWidget {
+  static String text(int count) => "Profiles in use count: $count";
+
+  const _EquipmentProfilesInUseCount();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text(EquipmentProfiles.inUseOf(context).length));
   }
 }
 

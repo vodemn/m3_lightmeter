@@ -79,6 +79,18 @@ void main() {
       );
     },
   );
+
+  testWidgets(
+    'Equipment profile picker shows only profiles in use',
+    (tester) async {
+      when(() => storageService.getProfiles())
+          .thenAnswer((_) async => _mockEquipmentProfiles.skip(1).toList().toSelectableMap());
+      await pumpApplication(tester);
+      await tester.openAnimatedPicker<EquipmentProfilePicker>();
+      expectRadioListTile<EquipmentProfile>(S.current.none, isSelected: true);
+      expectRadioListTile<EquipmentProfile>(_mockEquipmentProfiles[1].name);
+    },
+  );
 }
 
 final _mockEquipmentProfiles = [
