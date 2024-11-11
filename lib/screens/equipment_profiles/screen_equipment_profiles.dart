@@ -32,6 +32,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
           _EquipmentProfilesListBuilder(
             values: EquipmentProfiles.of(context).skip(1).toList(),
             onEdit: _editProfile,
+            onCheckbox: EquipmentProfilesProvider.of(context).toggleProfile,
           )
         else
           SliverPlaceholder(onTap: _addProfile),
@@ -60,10 +61,12 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
 class _EquipmentProfilesListBuilder extends StatelessWidget {
   final List<EquipmentProfile> values;
   final void Function(EquipmentProfile film) onEdit;
+  final void Function(EquipmentProfile film, bool value) onCheckbox;
 
   const _EquipmentProfilesListBuilder({
     required this.values,
     required this.onEdit,
+    required this.onCheckbox,
   });
 
   @override
@@ -92,8 +95,8 @@ class _EquipmentProfilesListBuilder extends StatelessWidget {
             child: CheckboxListTile(
               title: Text(values[index].name),
               controlAffinity: ListTileControlAffinity.leading,
-              value: false,
-              onChanged: (value) {},
+              value: EquipmentProfiles.inUseOf(context).contains(values[index]),
+              onChanged: (value) => onCheckbox(values[index], value ?? false),
               secondary: IconButton(
                 onPressed: () => onEdit(values[index]),
                 icon: const Icon(Icons.edit),

@@ -14,7 +14,7 @@ class EquipmentProfilePicker extends StatelessWidget {
       icon: Icons.camera_outlined,
       title: S.of(context).equipmentProfile,
       selectedValue: EquipmentProfiles.selectedOf(context),
-      values: EquipmentProfiles.of(context),
+      values: EquipmentProfiles.inUseOf(context),
       itemTitleBuilder: (_, value) => Text(value.id.isEmpty ? S.of(context).none : value.name),
       onChanged: EquipmentProfilesProvider.of(context).selectProfile,
       closedChild: ReadingValueContainer.singleValue(

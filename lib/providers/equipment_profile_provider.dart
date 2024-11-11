@@ -37,7 +37,8 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
   final SelectableMap<EquipmentProfile> _customProfiles = {};
   String _selectedId = '';
 
-  EquipmentProfile get _selectedProfile => _customProfiles[_selectedId] ?? EquipmentProfilesProvider.defaultProfile;
+  EquipmentProfile get _selectedProfile =>
+      _customProfiles[_selectedId]?.value ?? EquipmentProfilesProvider.defaultProfile;
 
   @override
   void initState() {
@@ -57,18 +58,19 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
   Future<void> _init() async {
     _selectedId = widget.storageService.selectedEquipmentProfileId;
     _customProfiles.addAll(await widget.storageService.getProfiles());
+    _discardSelectedIfNotIncluded();
     if (mounted) setState(() {});
     widget.onInitialized?.call();
   }
 
   Future<void> addProfile(EquipmentProfile profile) async {
     await widget.storageService.addProfile(profile);
-    _customProfiles[profile.id] = profile;
+    _customProfiles[profile.id] = (value: profile, isUsed: true);
     setState(() {});
   }
 
   Future<void> updateProfile(EquipmentProfile profile) async {
-    final oldProfile = _customProfiles[profile.id]!;
+    final oldProfile = _customProfiles[profile.id]!.value;
     await widget.storageService.updateProfile(
       id: profile.id,
       name: oldProfile.name != profile.name ? profile.name : null,
@@ -79,7 +81,7 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
       ndValues: oldProfile.ndValues != profile.ndValues ? profile.ndValues : null,
       lensZoom: oldProfile.lensZoom != profile.lensZoom ? profile.lensZoom : null,
     );
-    _customProfiles[profile.id] = profile;
+    _customProfiles[profile.id] = (value: profile, isUsed: _customProfiles[profile.id]!.isUsed);
     setState(() {});
   }
 
@@ -90,6 +92,7 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
       widget.storageService.selectedEquipmentProfileId = EquipmentProfilesProvider.defaultProfile.id;
     }
     _customProfiles.remove(profile.id);
+    _discardSelectedIfNotIncluded();
     setState(() {});
   }
 
@@ -101,15 +104,38 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
       widget.storageService.selectedEquipmentProfileId = _selectedProfile.id;
     }
   }
+
+  Future<void> toggleProfile(EquipmentProfile profile, bool enabled) async {
+    if (_customProfiles.containsKey(profile.id)) {
+      _customProfiles[profile.id] = (value: profile, isUsed: enabled);
+    } else {
+      return;
+    }
+    await widget.storageService.updateProfile(id: profile.id, isUsed: enabled);
+    _discardSelectedIfNotIncluded();
+    setState(() {});
+  }
+
+  void _discardSelectedIfNotIncluded() {
+    if (_selectedId == EquipmentProfilesProvider.defaultProfile.id) {
+      return;
+    }
+    final isSelectedUsed = _customProfiles[_selectedId]?.isUsed ?? false;
+    if (!isSelectedUsed) {
+      _selectedId = EquipmentProfilesProvider.defaultProfile.id;
+      widget.storageService.selectedEquipmentProfileId = _selectedId;
+    }
+  }
 }
 
 enum _EquipmentProfilesModelAspect {
   profiles,
+  profilesInUse,
   selected,
 }
 
 class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
-  final Map<String, EquipmentProfile> profiles;
+  final SelectableMap<EquipmentProfile> profiles;
   final EquipmentProfile selected;
 
   const EquipmentProfiles({
@@ -122,7 +148,23 @@ class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
   static List<EquipmentProfile> of(BuildContext context) {
     final model =
         InheritedModel.inheritFrom<EquipmentProfiles>(context, aspect: _EquipmentProfilesModelAspect.profiles)!;
-    return List.from([EquipmentProfilesProvider.defaultProfile, ...model.profiles.values]);
+    return List<EquipmentProfile>.from(
+      [
+        EquipmentProfilesProvider.defaultProfile,
+        ...model.profiles.values.map((p) => p.value),
+      ],
+    );
+  }
+
+  static List<EquipmentProfile> inUseOf(BuildContext context) {
+    final model =
+        InheritedModel.inheritFrom<EquipmentProfiles>(context, aspect: _EquipmentProfilesModelAspect.profilesInUse)!;
+    return List<EquipmentProfile>.from(
+      [
+        EquipmentProfilesProvider.defaultProfile,
+        ...model.profiles.values.where((p) => p.isUsed).map((p) => p.value),
+      ],
+    );
   }
 
   static EquipmentProfile selectedOf(BuildContext context) {
@@ -137,7 +179,7 @@ class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
   bool updateShouldNotifyDependent(EquipmentProfiles oldWidget, Set<_EquipmentProfilesModelAspect> dependencies) {
     return (dependencies.contains(_EquipmentProfilesModelAspect.selected) && oldWidget.selected != selected) ||
         ((dependencies.contains(_EquipmentProfilesModelAspect.profiles) ||
-                dependencies.contains(_EquipmentProfilesModelAspect.profiles)) &&
+                dependencies.contains(_EquipmentProfilesModelAspect.profilesInUse)) &&
             const DeepCollectionEquality().equals(oldWidget.profiles, profiles));
   }
 }
