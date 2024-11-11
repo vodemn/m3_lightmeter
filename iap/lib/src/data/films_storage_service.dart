@@ -1,15 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-
-typedef SelectableValue<T extends Film> = ({T film, bool isUsed});
 
 class FilmsStorageService {
   FilmsStorageService();
 
   Future<void> init() async {}
-
-  @visibleForTesting
-  Future<void> createTable(dynamic _) async {}
 
   String get selectedFilmId => '';
   set selectedFilmId(String id) {}

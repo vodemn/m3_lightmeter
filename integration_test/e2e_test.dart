@@ -18,7 +18,6 @@ import 'package:lightmeter/screens/settings/components/shared/dialog_range_picke
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:lightmeter/utils/double_to_zoom.dart';
 import 'package:lightmeter/utils/platform_utils.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';

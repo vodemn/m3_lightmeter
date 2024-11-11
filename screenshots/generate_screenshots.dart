@@ -23,7 +23,6 @@ import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
 import 'package:lightmeter/screens/timer/screen_timer.dart';
 import 'package:lightmeter/utils/platform_utils.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
