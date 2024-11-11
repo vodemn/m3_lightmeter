@@ -70,7 +70,7 @@ void testE2E(String description) {
       await tester.saveEdits();
 
       /// Create Praktica + Jupiter profile from Zenitar profile
-      await tester.tap(find.byIcon(Icons.edit));
+      await tester.tap(find.byIcon(Icons.edit_outlined));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.copy_outlined).first);
       await tester.pumpAndSettle();
@@ -152,7 +152,7 @@ void testE2E(String description) {
       /// Delete profile
       await tester.openSettings();
       await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.tap(find.byIcon(Icons.edit).first);
+      await tester.tap(find.byIcon(Icons.edit_outlined).first);
       await tester.pumpAndSettle();
       await tester.deleteEdits();
       expect(find.text(mockEquipmentProfiles[0].name), findsNothing);

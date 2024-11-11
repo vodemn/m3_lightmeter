@@ -135,7 +135,7 @@ class _FilmsListBuilder<T extends Film> extends StatelessWidget {
               secondary: onFilmEdit != null
                   ? IconButton(
                       onPressed: () => onFilmEdit!(films[index]),
-                      icon: const Icon(Icons.edit),
+                      icon: const Icon(Icons.edit_outlined),
                     )
                   : null,
             ),

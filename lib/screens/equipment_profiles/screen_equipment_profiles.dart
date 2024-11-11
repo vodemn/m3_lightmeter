@@ -99,7 +99,7 @@ class _EquipmentProfilesListBuilder extends StatelessWidget {
               onChanged: (value) => onCheckbox(values[index], value ?? false),
               secondary: IconButton(
                 onPressed: () => onEdit(values[index]),
-                icon: const Icon(Icons.edit),
+                icon: const Icon(Icons.edit_outlined),
               ),
             ),
           ),
