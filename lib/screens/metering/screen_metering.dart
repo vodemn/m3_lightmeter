@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
+import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
@@ -36,7 +37,7 @@ class MeteringScreen extends StatelessWidget {
                   onNdChanged: (value) => context.read<MeteringBloc>().add(NdChangedEvent(value)),
                   onExposurePairTap: (value) => pushNamed(
                     context,
-                    'timer',
+                    NavigationRoutes.timerScreen.name,
                     arguments: TimerFlowArgs(
                       exposurePair: value,
                       isoValue: state.iso,
@@ -55,7 +56,10 @@ class MeteringScreen extends StatelessWidget {
                     ? UserPreferencesProvider.of(context).toggleEvSourceType
                     : null,
                 onMeasure: () => context.read<MeteringBloc>().add(const MeasureEvent()),
-                onSettings: () => pushNamed(context, 'settings'),
+                onSettings: () => pushNamed(
+                  context,
+                  NavigationRoutes.settingsScreen.name,
+                ),
               ),
             ),
           ],

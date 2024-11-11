@@ -47,40 +47,45 @@ void testE2E(String description) {
   testWidgets(
     description,
     (tester) async {
-      await tester.pumpApplication(equipmentProfiles: [], filmsInUse: []);
+      await tester.pumpApplication(
+        equipmentProfiles: {},
+        predefinedFilms: mockFilms.toTogglableMap(),
+        customFilms: {},
+      );
 
       /// Create Praktica + Zenitar profile from scratch
       await tester.openSettings();
       await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
       await tester.tap(find.byIcon(Icons.add_outlined).first);
       await tester.pumpAndSettle();
-      await tester.setProfileName(mockEquipmentProfiles[0].name);
-      await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[0].name);
-      await tester.setIsoValues(0, mockEquipmentProfiles[0].isoValues);
-      await tester.setNdValues(0, mockEquipmentProfiles[0].ndValues);
-      await tester.setApertureValues(0, mockEquipmentProfiles[0].apertureValues);
-      await tester.setShutterSpeedValues(0, mockEquipmentProfiles[0].shutterSpeedValues);
-      await tester.setZoomValue(0, mockEquipmentProfiles[0].lensZoom);
+      await tester.enterProfileName(mockEquipmentProfiles[0].name);
+      await tester.setIsoValues(mockEquipmentProfiles[0].isoValues);
+      await tester.setNdValues(mockEquipmentProfiles[0].ndValues);
+      await tester.setApertureValues(mockEquipmentProfiles[0].apertureValues);
+      await tester.setShutterSpeedValues(mockEquipmentProfiles[0].shutterSpeedValues);
+      await tester.setZoomValue(mockEquipmentProfiles[0].lensZoom);
       expect(find.text('x1.91'), findsOneWidget);
       expect(find.text('f/1.7 - f/16'), findsOneWidget);
       expect(find.text('1/1000 - B'), findsOneWidget);
+      await tester.saveEdits();
 
       /// Create Praktica + Jupiter profile from Zenitar profile
+      await tester.tap(find.byIcon(Icons.edit_outlined));
+      await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.copy_outlined).first);
       await tester.pumpAndSettle();
-      await tester.setProfileName(mockEquipmentProfiles[1].name);
-      await tester.expandEquipmentProfileContainer(mockEquipmentProfiles[1].name);
-      await tester.setApertureValues(1, mockEquipmentProfiles[1].apertureValues);
-      await tester.setZoomValue(1, mockEquipmentProfiles[1].lensZoom);
+      await tester.enterProfileName(mockEquipmentProfiles[1].name);
+      await tester.setApertureValues(mockEquipmentProfiles[1].apertureValues);
+      await tester.setZoomValue(mockEquipmentProfiles[1].lensZoom);
       expect(find.text('x5.02'), findsOneWidget);
       expect(find.text('f/3.5 - f/22'), findsOneWidget);
-      expect(find.text('1/1000 - B'), findsNWidgets(2));
-      await tester.navigatorPop();
+      expect(find.text('1/1000 - B'), findsNWidgets(1));
+      await tester.saveEdits();
 
-      /// Select some films
-      await tester.tap(find.text(S.current.filmsInUse));
-      await tester.pumpAndSettle();
-      await tester.setDialogFilterValues<Film>([mockFilms[0], mockFilms[1]], deselectAll: false);
+      /// Verify that both profiles were added and leave to the main screen
+      expect(find.text(mockEquipmentProfiles[0].name), findsOneWidget);
+      expect(find.text(mockEquipmentProfiles[1].name), findsOneWidget);
+      await tester.navigatorPop();
       await tester.navigatorPop();
 
       /// Select some initial settings according to the selected gear and film
@@ -143,45 +148,45 @@ void testE2E(String description) {
         nd: 'None',
         ev: mockPhotoEv100 + 1,
       );
+
+      /// Delete profile
+      await tester.openSettings();
+      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
+      await tester.tap(find.byIcon(Icons.edit_outlined).first);
+      await tester.pumpAndSettle();
+      await tester.deleteEdits();
+      expect(find.text(mockEquipmentProfiles[0].name), findsNothing);
+      expect(find.text(mockEquipmentProfiles[1].name), findsOneWidget);
     },
   );
 }
 
 extension EquipmentProfileActions on WidgetTester {
-  Future<void> expandEquipmentProfileContainer(String name) async {
-    await tap(find.text(name));
-    await pump(Dimens.durationM);
-  }
-
-  Future<void> setProfileName(String name) async {
+  Future<void> enterProfileName(String name) async {
     await enterText(find.byType(TextField), name);
     await pump();
-    await tapSaveButton();
   }
 
-  Future<void> setIsoValues(int profileIndex, List<IsoValue> values) =>
-      _openAndSetDialogFilterValues<IsoValue>(profileIndex, S.current.isoValues, values);
-  Future<void> setNdValues(int profileIndex, List<NdValue> values) =>
-      _openAndSetDialogFilterValues<NdValue>(profileIndex, S.current.ndFilters, values);
+  Future<void> setIsoValues(List<IsoValue> values) =>
+      _openAndSetDialogFilterValues<IsoValue>(S.current.isoValues, values);
+  Future<void> setNdValues(List<NdValue> values) => _openAndSetDialogFilterValues<NdValue>(S.current.ndFilters, values);
   Future<void> _openAndSetDialogFilterValues<T extends PhotographyValue>(
-    int profileIndex,
     String listTileTitle,
     List<T> valuesToSelect, {
     bool deselectAll = true,
   }) async {
-    await tap(find.text(listTileTitle).at(profileIndex));
+    await tap(find.text(listTileTitle));
     await pumpAndSettle();
     await setDialogFilterValues(valuesToSelect, deselectAll: deselectAll);
   }
 
-  Future<void> setApertureValues(int profileIndex, List<ApertureValue> values) =>
-      _setDialogRangePickerValues<ApertureValue>(profileIndex, S.current.apertureValues, values);
+  Future<void> setApertureValues(List<ApertureValue> values) =>
+      _setDialogRangePickerValues<ApertureValue>(S.current.apertureValues, values);
 
-  Future<void> setShutterSpeedValues(int profileIndex, List<ShutterSpeedValue> values) =>
-      _setDialogRangePickerValues<ShutterSpeedValue>(profileIndex, S.current.shutterSpeedValues, values);
+  Future<void> setShutterSpeedValues(List<ShutterSpeedValue> values) =>
+      _setDialogRangePickerValues<ShutterSpeedValue>(S.current.shutterSpeedValues, values);
 
-  Future<void> setZoomValue(int profileIndex, double value) =>
-      _setDialogSliderPickerValue(profileIndex, S.current.lensZoom, value);
+  Future<void> setZoomValue(double value) => _setDialogSliderPickerValue(S.current.lensZoom, value);
 }
 
 extension on WidgetTester {
@@ -189,6 +194,16 @@ extension on WidgetTester {
     await openAnimatedPicker<P>();
     await tapDescendantTextOf<DialogPicker<V>>(valueToSelect);
     await tapSelectButton();
+  }
+
+  Future<void> saveEdits() async {
+    await tap(find.byIcon(Icons.save_outlined));
+    await pumpAndSettle(Dimens.durationML);
+  }
+
+  Future<void> deleteEdits() async {
+    await tap(find.byIcon(Icons.delete_outlined));
+    await pumpAndSettle(Dimens.durationML);
   }
 
   Future<void> setDialogFilterValues<T>(
@@ -213,11 +228,10 @@ extension on WidgetTester {
   }
 
   Future<void> _setDialogRangePickerValues<T extends PhotographyValue>(
-    int profileIndex,
     String listTileTitle,
     List<T> valuesToSelect,
   ) async {
-    await tap(find.text(listTileTitle).at(profileIndex));
+    await tap(find.text(listTileTitle));
     await pumpAndSettle();
 
     final dialog = widget<DialogRangePicker<T>>(find.byType(DialogRangePicker<T>));
@@ -248,11 +262,10 @@ extension on WidgetTester {
   }
 
   Future<void> _setDialogSliderPickerValue(
-    int profileIndex,
     String listTileTitle,
     double value,
   ) async {
-    await tap(find.text(listTileTitle).at(profileIndex));
+    await tap(find.text(listTileTitle));
     await pumpAndSettle();
 
     final sliderFinder = find.byType(Slider);

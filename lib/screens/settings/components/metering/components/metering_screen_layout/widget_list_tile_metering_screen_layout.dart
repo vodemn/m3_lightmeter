@@ -36,10 +36,10 @@ class MeteringScreenLayoutListTile extends StatelessWidget {
             },
             onSave: (value) {
               if (!value[MeteringScreenLayoutFeature.equipmentProfiles]!) {
-                EquipmentProfileProvider.of(context).setProfile(EquipmentProfiles.of(context).first);
+                EquipmentProfilesProvider.of(context).selectProfile(EquipmentProfiles.of(context).first);
               }
               if (!value[MeteringScreenLayoutFeature.filmPicker]!) {
-                FilmsProvider.of(context).setFilm(const Film.other());
+                FilmsProvider.of(context).selectFilm(const FilmStub());
               }
               UserPreferencesProvider.of(context).setMeteringScreenLayout(value);
             },

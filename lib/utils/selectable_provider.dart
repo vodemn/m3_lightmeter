@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 enum SelectableAspect { list, selected }
 
+
+
 class SelectableInheritedModel<T> extends InheritedModel<SelectableAspect> {
   const SelectableInheritedModel({
     super.key,

@@ -1,17 +1,17 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/utils/context_utils.dart';
-import 'package:lightmeter/utils/selectable_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmsProvider extends StatefulWidget {
-  final IAPStorageService storageService;
-  final List<Film>? availableFilms;
+  final FilmsStorageService storageService;
+  final VoidCallback? onInitialized;
   final Widget child;
 
   const FilmsProvider({
     required this.storageService,
-    this.availableFilms,
+    this.onInitialized,
     required this.child,
     super.key,
   });
@@ -25,82 +25,156 @@ class FilmsProvider extends StatefulWidget {
 }
 
 class FilmsProviderState extends State<FilmsProvider> {
-  late List<Film> _filmsInUse;
-  late Film _selected;
+  final TogglableMap<Film> predefinedFilms = {};
+  final TogglableMap<FilmExponential> customFilms = {};
+  String _selectedId = '';
+
+  Film get _selectedFilm => customFilms[_selectedId]?.value ?? predefinedFilms[_selectedId]?.value ?? const FilmStub();
 
   @override
   void initState() {
     super.initState();
-    _filmsInUse = widget.storageService.filmsInUse;
-    _selected = widget.storageService.selectedFilm;
-    _discardSelectedIfNotIncluded();
+    _init();
   }
 
   @override
   Widget build(BuildContext context) {
     return Films(
-      values: [
-        const Film.other(),
-        ...widget.availableFilms ?? films,
-      ],
-      filmsInUse: [
-        const Film.other(),
-        if (context.isPro) ..._filmsInUse,
-      ],
-      selected: context.isPro ? _selected : const Film.other(),
+      predefinedFilms: context.isPro ? predefinedFilms : {},
+      customFilms: context.isPro ? customFilms : {},
+      selected: context.isPro ? _selectedFilm : const FilmStub(),
       child: widget.child,
     );
   }
 
-  void setFilm(Film film) {
-    if (_selected != film) {
-      _selected = film;
-      widget.storageService.selectedFilm = film;
+  Future<void> _init() async {
+    _selectedId = widget.storageService.selectedFilmId;
+    predefinedFilms.addAll(await widget.storageService.getPredefinedFilms());
+    customFilms.addAll(await widget.storageService.getCustomFilms());
+    _discardSelectedIfNotIncluded();
+    if (mounted) setState(() {});
+    widget.onInitialized?.call();
+  }
+
+  /* Both type of films **/
+
+  Future<void> toggleFilm(Film film, bool enabled) async {
+    if (predefinedFilms.containsKey(film.id)) {
+      predefinedFilms[film.id] = (value: film, isUsed: enabled);
+    } else if (customFilms.containsKey(film.id)) {
+      customFilms[film.id] = (value: film as FilmExponential, isUsed: enabled);
+    } else {
+      return;
+    }
+    await widget.storageService.toggleFilm(film, enabled);
+    _discardSelectedIfNotIncluded();
+    setState(() {});
+  }
+
+  void selectFilm(Film film) {
+    if (_selectedFilm != film) {
+      _selectedId = film.id;
+      widget.storageService.selectedFilmId = _selectedId;
       setState(() {});
     }
   }
 
-  void saveFilms(List<Film> films) {
-    _filmsInUse = films;
-    widget.storageService.filmsInUse = films;
+  /* Custom films **/
+
+  Future<void> addCustomFilm(FilmExponential film) async {
+    // ignore: avoid_redundant_argument_values
+    await widget.storageService.addFilm(film, isUsed: true);
+    customFilms[film.id] = (value: film, isUsed: true);
+    setState(() {});
+  }
+
+  Future<void> updateCustomFilm(FilmExponential film) async {
+    await widget.storageService.updateFilm(film);
+    customFilms[film.id] = (value: film, isUsed: customFilms[film.id]!.isUsed);
+    setState(() {});
+  }
+
+  Future<void> deleteCustomFilm(FilmExponential film) async {
+    await widget.storageService.deleteFilm(film);
+    customFilms.remove(film.id);
     _discardSelectedIfNotIncluded();
     setState(() {});
   }
 
   void _discardSelectedIfNotIncluded() {
-    if (_selected != const Film.other() && !_filmsInUse.contains(_selected)) {
-      _selected = const Film.other();
-      widget.storageService.selectedFilm = const Film.other();
+    if (_selectedId == const FilmStub().id) {
+      return;
+    }
+    final isSelectedUsed = predefinedFilms[_selectedId]?.isUsed ?? customFilms[_selectedId]?.isUsed ?? false;
+    if (!isSelectedUsed) {
+      _selectedId = const FilmStub().id;
+      widget.storageService.selectedFilmId = _selectedId;
     }
   }
 }
 
-class Films extends SelectableInheritedModel<Film> {
-  final List<Film> filmsInUse;
+enum _FilmsModelAspect {
+  customFilms,
+  predefinedFilms,
+  filmsInUse,
+  selected,
+}
+
+class Films extends InheritedModel<_FilmsModelAspect> {
+  final TogglableMap<Film> predefinedFilms;
+
+  @protected
+  final TogglableMap<FilmExponential> customFilms;
+  final Film selected;
 
   const Films({
-    super.key,
-    required super.values,
-    required this.filmsInUse,
-    required super.selected,
+    required this.predefinedFilms,
+    required this.customFilms,
+    required this.selected,
     required super.child,
   });
 
-  /// [Film.other()] + all the custom fields with actual reciprocity formulas
-  static List<Film> of(BuildContext context) {
-    return InheritedModel.inheritFrom<Films>(context)!.values;
+  static List<Film> predefinedFilmsOf<T>(BuildContext context) {
+    return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.predefinedFilms)!
+        .predefinedFilms
+        .values
+        .map((value) => value.value)
+        .toList();
   }
 
-  /// [Film.other()] + films in use selected by user
+  static List<FilmExponential> customFilmsOf<T>(BuildContext context) {
+    return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.customFilms)!
+        .customFilms
+        .values
+        .map((value) => value.value)
+        .toList();
+  }
+
+  /// [FilmStub()] + films in use selected by user
   static List<Film> inUseOf<T>(BuildContext context) {
-    return InheritedModel.inheritFrom<Films>(
-      context,
-      aspect: SelectableAspect.list,
-    )!
-        .filmsInUse;
+    final model = InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.filmsInUse)!;
+    return [
+      const FilmStub(),
+      ...model.customFilms.values.where((e) => e.isUsed).map((e) => e.value),
+      ...model.predefinedFilms.values.where((e) => e.isUsed).map((e) => e.value),
+    ];
   }
 
   static Film selectedOf(BuildContext context) {
-    return InheritedModel.inheritFrom<Films>(context, aspect: SelectableAspect.selected)!.selected;
+    return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.selected)!.selected;
+  }
+
+  @override
+  bool updateShouldNotify(Films _) => true;
+
+  @override
+  bool updateShouldNotifyDependent(Films oldWidget, Set<_FilmsModelAspect> dependencies) {
+    return (dependencies.contains(_FilmsModelAspect.selected) && oldWidget.selected != selected) ||
+        ((dependencies.contains(_FilmsModelAspect.predefinedFilms) ||
+                dependencies.contains(_FilmsModelAspect.filmsInUse)) &&
+            const DeepCollectionEquality().equals(oldWidget.predefinedFilms, predefinedFilms)) ||
+        ((dependencies.contains(_FilmsModelAspect.customFilms) ||
+                dependencies.contains(_FilmsModelAspect.filmsInUse)) &&
+            const DeepCollectionEquality().equals(oldWidget.customFilms, customFilms));
   }
 }

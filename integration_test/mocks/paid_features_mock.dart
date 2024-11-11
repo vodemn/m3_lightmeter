@@ -5,51 +5,71 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
-class _MockIAPStorageService extends Mock implements IAPStorageService {}
+class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProfilesStorageService {}
+
+class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
 
 class MockIAPProviders extends StatefulWidget {
-  final List<EquipmentProfile>? equipmentProfiles;
+  final TogglableMap<EquipmentProfile> equipmentProfiles;
   final String selectedEquipmentProfileId;
-  final List<Film> availableFilms;
-  final List<Film> filmsInUse;
-  final Film selectedFilm;
+  final TogglableMap<Film> predefinedFilms;
+  final TogglableMap<FilmExponential> customFilms;
+  final String selectedFilmId;
   final Widget child;
 
-  const MockIAPProviders({
-    this.equipmentProfiles = const [],
+  MockIAPProviders({
+    TogglableMap<EquipmentProfile>? equipmentProfiles,
     this.selectedEquipmentProfileId = '',
-    List<Film>? availableFilms,
-    List<Film>? filmsInUse,
-    this.selectedFilm = const Film.other(),
+    TogglableMap<Film>? predefinedFilms,
+    TogglableMap<FilmExponential>? customFilms,
+    String? selectedFilmId,
     required this.child,
     super.key,
-  })  : availableFilms = availableFilms ?? mockFilms,
-        filmsInUse = filmsInUse ?? mockFilms;
+  })  : equipmentProfiles = equipmentProfiles ?? mockEquipmentProfiles.toTogglableMap(),
+        predefinedFilms = predefinedFilms ?? mockFilms.toTogglableMap(),
+        customFilms = customFilms ?? mockFilms.toTogglableMap(),
+        selectedFilmId = selectedFilmId ?? const FilmStub().id;
 
   @override
   State<MockIAPProviders> createState() => _MockIAPProvidersState();
 }
 
 class _MockIAPProvidersState extends State<MockIAPProviders> {
-  late final _MockIAPStorageService mockIAPStorageService;
+  late final _MockEquipmentProfilesStorageService mockEquipmentProfilesStorageService;
+  late final _MockFilmsStorageService mockFilmsStorageService;
 
   @override
   void initState() {
     super.initState();
-    mockIAPStorageService = _MockIAPStorageService();
-    when(() => mockIAPStorageService.equipmentProfiles).thenReturn(widget.equipmentProfiles ?? mockEquipmentProfiles);
-    when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
-    when(() => mockIAPStorageService.filmsInUse).thenReturn(widget.filmsInUse);
-    when(() => mockIAPStorageService.selectedFilm).thenReturn(widget.selectedFilm);
+    registerFallbackValue(defaultEquipmentProfile);
+    mockEquipmentProfilesStorageService = _MockEquipmentProfilesStorageService();
+    when(() => mockEquipmentProfilesStorageService.init()).thenAnswer((_) async {});
+    when(() => mockEquipmentProfilesStorageService.getProfiles())
+        .thenAnswer((_) => Future.value(widget.equipmentProfiles));
+    when(() => mockEquipmentProfilesStorageService.selectedEquipmentProfileId)
+        .thenReturn(widget.selectedEquipmentProfileId);
+    when(() => mockEquipmentProfilesStorageService.addProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
+    when(
+      () => mockEquipmentProfilesStorageService.updateProfile(
+        id: any<String>(named: 'id'),
+        name: any<String>(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => mockEquipmentProfilesStorageService.deleteProfile(any<String>())).thenAnswer((_) async {});
+
+    mockFilmsStorageService = _MockFilmsStorageService();
+    when(() => mockFilmsStorageService.init()).thenAnswer((_) async {});
+    when(() => mockFilmsStorageService.getPredefinedFilms()).thenAnswer((_) => Future.value(widget.predefinedFilms));
+    when(() => mockFilmsStorageService.getCustomFilms()).thenAnswer((_) => Future.value(widget.customFilms));
+    when(() => mockFilmsStorageService.selectedFilmId).thenReturn(widget.selectedFilmId);
   }
 
   @override
   Widget build(BuildContext context) {
-    return EquipmentProfileProvider(
-      storageService: mockIAPStorageService,
+    return EquipmentProfilesProvider(
+      storageService: mockEquipmentProfilesStorageService,
       child: FilmsProvider(
-        storageService: mockIAPStorageService,
-        availableFilms: widget.availableFilms,
+        storageService: mockFilmsStorageService,
         child: widget.child,
       ),
     );
@@ -128,13 +148,47 @@ final mockEquipmentProfiles = [
   ),
 ];
 
-const mockFilms = [_MockFilm(100, 2), _MockFilm(400, 2), _MockFilm(3, 800), _MockFilm(400, 1.5)];
+const mockFilms = [
+  _FilmMultiplying(id: '1', name: 'Mock film 1', iso: 100, reciprocityMultiplier: 2),
+  _FilmMultiplying(id: '2', name: 'Mock film 2', iso: 400, reciprocityMultiplier: 2),
+  _FilmMultiplying(id: '3', name: 'Mock film 3', iso: 800, reciprocityMultiplier: 3),
+  _FilmMultiplying(id: '4', name: 'Mock film 4', iso: 1200, reciprocityMultiplier: 1.5),
+];
 
-class _MockFilm extends Film {
+class _FilmMultiplying extends FilmExponential {
   final double reciprocityMultiplier;
 
-  const _MockFilm(int iso, this.reciprocityMultiplier) : super('Mock film $iso x$reciprocityMultiplier', iso);
+  const _FilmMultiplying({
+    String? id,
+    required String name,
+    required super.iso,
+    required this.reciprocityMultiplier,
+  }) : super(id: id ?? name, name: 'Mock film $iso x$reciprocityMultiplier', exponent: 1);
 
   @override
-  double reciprocityFormula(double t) => t * reciprocityMultiplier;
+  ShutterSpeedValue reciprocityFailure(ShutterSpeedValue shutterSpeed) {
+    if (shutterSpeed.isFraction) {
+      return shutterSpeed;
+    } else {
+      return ShutterSpeedValue(
+        shutterSpeed.rawValue * reciprocityMultiplier,
+        shutterSpeed.isFraction,
+        shutterSpeed.stopType,
+      );
+    }
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is _FilmMultiplying &&
+        other.id == id &&
+        other.name == name &&
+        other.iso == iso &&
+        other.reciprocityMultiplier == reciprocityMultiplier;
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, iso, reciprocityMultiplier, runtimeType);
 }

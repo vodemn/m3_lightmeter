@@ -15,10 +15,10 @@ import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/screens/equipment_profiles/screen_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
-import 'package:lightmeter/screens/settings/components/metering/components/equipment_profiles/components/equipment_profile_screen/screen_equipment_profile.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
 import 'package:lightmeter/screens/timer/screen_timer.dart';
@@ -32,7 +32,7 @@ import 'models/screenshot_args.dart';
 
 //https://stackoverflow.com/a/67186625/13167574
 
-const _mockFilm = Film('Ilford HP5+', 400);
+const _mockFilm = FilmExponential(id: '1', name: 'Ilford HP5+', iso: 400, exponent: 1.34);
 final Color _lightThemeColor = primaryColorsList[5];
 final Color _darkThemeColor = primaryColorsList[3];
 final ThemeData _themeLight = themeFrom(_lightThemeColor, Brightness.light);
@@ -92,9 +92,9 @@ void main() {
   testWidgets('Generate light theme screenshots', (tester) async {
     await mockSharedPrefs(theme: ThemeType.light, color: _lightThemeColor);
     await tester.pumpApplication(
-      availableFilms: [_mockFilm],
-      filmsInUse: [_mockFilm],
-      selectedFilm: _mockFilm,
+      predefinedFilms: [_mockFilm].toTogglableMap(),
+      customFilms: {},
+      selectedFilmId: _mockFilm.id,
     );
 
     await tester.takePhoto();
@@ -132,9 +132,9 @@ void main() {
     (tester) async {
       await mockSharedPrefs(theme: ThemeType.dark, color: _darkThemeColor);
       await tester.pumpApplication(
-        availableFilms: [_mockFilm],
-        filmsInUse: [_mockFilm],
-        selectedFilm: _mockFilm,
+        predefinedFilms: [_mockFilm].toTogglableMap(),
+        customFilms: {},
+        selectedFilmId: _mockFilm.id,
       );
 
       await tester.takePhoto();
@@ -157,9 +157,9 @@ void main() {
         color: _lightThemeColor,
       );
       await tester.pumpApplication(
-        availableFilms: [_mockFilm],
-        filmsInUse: [_mockFilm],
-        selectedFilm: _mockFilm,
+        predefinedFilms: [_mockFilm].toTogglableMap(),
+        customFilms: {},
+        selectedFilmId: _mockFilm.id,
       );
 
       await tester.takePhoto();

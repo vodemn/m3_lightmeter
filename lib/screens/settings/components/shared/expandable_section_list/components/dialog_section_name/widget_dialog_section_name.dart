@@ -2,16 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
-class EquipmentProfileNameDialog extends StatefulWidget {
+class ExpandableSectionNameDialog extends StatefulWidget {
+  final String title;
+  final String hint;
   final String initialValue;
 
-  const EquipmentProfileNameDialog({this.initialValue = '', super.key});
+  const ExpandableSectionNameDialog({
+    this.initialValue = '',
+    required this.title,
+    required this.hint,
+    super.key,
+  });
 
   @override
-  State<EquipmentProfileNameDialog> createState() => _EquipmentProfileNameDialogState();
+  State<ExpandableSectionNameDialog> createState() => _ExpandableSectionNameDialogState();
 }
 
-class _EquipmentProfileNameDialogState extends State<EquipmentProfileNameDialog> {
+class _ExpandableSectionNameDialogState extends State<ExpandableSectionNameDialog> {
   late final _nameController = TextEditingController(text: widget.initialValue);
 
   @override
@@ -25,11 +32,11 @@ class _EquipmentProfileNameDialogState extends State<EquipmentProfileNameDialog>
     return AlertDialog(
       icon: const Icon(Icons.edit_outlined),
       titlePadding: Dimens.dialogIconTitlePadding,
-      title: Text(S.of(context).equipmentProfileName),
+      title: Text(widget.title),
       content: TextField(
         autofocus: true,
         controller: _nameController,
-        decoration: InputDecoration(hintText: S.of(context).equipmentProfileNameHint),
+        decoration: InputDecoration(hintText: widget.hint),
       ),
       actions: [
         TextButton(

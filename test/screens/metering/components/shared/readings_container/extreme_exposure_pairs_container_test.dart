@@ -50,9 +50,9 @@ extension WidgetTesterActions on WidgetTester {
   }) async {
     await pumpWidget(
       Films(
-        values: const [Film.other()],
-        filmsInUse: const [Film.other()],
-        selected: const Film.other(),
+        predefinedFilms: const {},
+        customFilms: const {},
+        selected: const FilmStub(),
         child: WidgetTestApplicationMock(
           child: Row(
             children: [
