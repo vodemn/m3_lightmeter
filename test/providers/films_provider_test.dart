@@ -305,6 +305,6 @@ const mockCustomFilms = [
 ];
 
 extension on List<Film> {
-  Map<String, ({T film, bool isUsed})> toFilmsMap<T extends Film>() =>
-      Map.fromEntries(map((e) => MapEntry(e.id, (film: e as T, isUsed: true))));
+  Map<String, ({T value, bool isUsed})> toFilmsMap<T extends Film>() =>
+      Map.fromEntries(map((e) => MapEntry(e.id, (value: e as T, isUsed: true))));
 }

@@ -18,7 +18,7 @@ void main() {
   setUpAll(() {
     mockFilmsStorageService = _MockFilmsStorageService();
     when(() => mockFilmsStorageService.getPredefinedFilms()).thenAnswer(
-      (_) => Future.value(Map.fromEntries(_films.map((e) => MapEntry(e.id, (film: e, isUsed: true))))),
+      (_) => Future.value(Map.fromEntries(_films.map((e) => MapEntry(e.id, (value: e, isUsed: true))))),
     );
     when(() => mockFilmsStorageService.getCustomFilms()).thenAnswer(
       (_) => Future.value({}),

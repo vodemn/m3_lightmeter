@@ -25,11 +25,11 @@ class FilmsProvider extends StatefulWidget {
 }
 
 class FilmsProviderState extends State<FilmsProvider> {
-  final Map<String, SelectableFilm<Film>> predefinedFilms = {};
-  final Map<String, SelectableFilm<FilmExponential>> customFilms = {};
+  final Map<String, SelectableValue<Film>> predefinedFilms = {};
+  final Map<String, SelectableValue<FilmExponential>> customFilms = {};
   String _selectedId = '';
 
-  Film get _selectedFilm => customFilms[_selectedId]?.film ?? predefinedFilms[_selectedId]?.film ?? const FilmStub();
+  Film get _selectedFilm => customFilms[_selectedId]?.value ?? predefinedFilms[_selectedId]?.value ?? const FilmStub();
 
   @override
   void initState() {
@@ -60,9 +60,9 @@ class FilmsProviderState extends State<FilmsProvider> {
 
   Future<void> toggleFilm(Film film, bool enabled) async {
     if (predefinedFilms.containsKey(film.id)) {
-      predefinedFilms[film.id] = (film: film, isUsed: enabled);
+      predefinedFilms[film.id] = (value: film, isUsed: enabled);
     } else if (customFilms.containsKey(film.id)) {
-      customFilms[film.id] = (film: film as FilmExponential, isUsed: enabled);
+      customFilms[film.id] = (value: film as FilmExponential, isUsed: enabled);
     } else {
       return;
     }
@@ -84,13 +84,13 @@ class FilmsProviderState extends State<FilmsProvider> {
   Future<void> addCustomFilm(FilmExponential film) async {
     // ignore: avoid_redundant_argument_values
     await widget.storageService.addFilm(film, isUsed: true);
-    customFilms[film.id] = (film: film, isUsed: true);
+    customFilms[film.id] = (value: film, isUsed: true);
     setState(() {});
   }
 
   Future<void> updateCustomFilm(FilmExponential film) async {
     await widget.storageService.updateFilm(film);
-    customFilms[film.id] = (film: film, isUsed: customFilms[film.id]!.isUsed);
+    customFilms[film.id] = (value: film, isUsed: customFilms[film.id]!.isUsed);
     setState(() {});
   }
 
@@ -121,10 +121,10 @@ enum _FilmsModelAspect {
 }
 
 class Films extends InheritedModel<_FilmsModelAspect> {
-  final Map<String, SelectableFilm<Film>> predefinedFilms;
+  final Map<String, SelectableValue<Film>> predefinedFilms;
 
   @protected
-  final Map<String, SelectableFilm<FilmExponential>> customFilms;
+  final Map<String, SelectableValue<FilmExponential>> customFilms;
   final Film selected;
 
   const Films({
@@ -138,7 +138,7 @@ class Films extends InheritedModel<_FilmsModelAspect> {
     return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.predefinedFilms)!
         .predefinedFilms
         .values
-        .map((value) => value.film)
+        .map((value) => value.value)
         .toList();
   }
 
@@ -146,7 +146,7 @@ class Films extends InheritedModel<_FilmsModelAspect> {
     return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.customFilms)!
         .customFilms
         .values
-        .map((value) => value.film)
+        .map((value) => value.value)
         .toList();
   }
 
@@ -155,8 +155,8 @@ class Films extends InheritedModel<_FilmsModelAspect> {
     final model = InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.filmsInUse)!;
     return [
       const FilmStub(),
-      ...model.customFilms.values.where((e) => e.isUsed).map((e) => e.film),
-      ...model.predefinedFilms.values.where((e) => e.isUsed).map((e) => e.film),
+      ...model.customFilms.values.where((e) => e.isUsed).map((e) => e.value),
+      ...model.predefinedFilms.values.where((e) => e.isUsed).map((e) => e.value),
     ];
   }
 

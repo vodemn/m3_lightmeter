@@ -23,6 +23,7 @@ import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
 import 'package:lightmeter/screens/timer/screen_timer.dart';
 import 'package:lightmeter/utils/platform_utils.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -92,7 +93,7 @@ void main() {
   testWidgets('Generate light theme screenshots', (tester) async {
     await mockSharedPrefs(theme: ThemeType.light, color: _lightThemeColor);
     await tester.pumpApplication(
-      predefinedFilms: [_mockFilm].toFilmsMap(),
+      predefinedFilms: [_mockFilm].toSelectableMap(),
       customFilms: {},
       selectedFilmId: _mockFilm.id,
     );
@@ -132,7 +133,7 @@ void main() {
     (tester) async {
       await mockSharedPrefs(theme: ThemeType.dark, color: _darkThemeColor);
       await tester.pumpApplication(
-        predefinedFilms: [_mockFilm].toFilmsMap(),
+        predefinedFilms: [_mockFilm].toSelectableMap(),
         customFilms: {},
         selectedFilmId: _mockFilm.id,
       );
@@ -157,7 +158,7 @@ void main() {
         color: _lightThemeColor,
       );
       await tester.pumpApplication(
-        predefinedFilms: [_mockFilm].toFilmsMap(),
+        predefinedFilms: [_mockFilm].toSelectableMap(),
         customFilms: {},
         selectedFilmId: _mockFilm.id,
       );

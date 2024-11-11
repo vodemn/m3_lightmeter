@@ -89,9 +89,12 @@ class _EquipmentProfilesListBuilder extends StatelessWidget {
               top: index == 0 ? Dimens.paddingM : 0.0,
               bottom: index == values.length - 1 ? Dimens.paddingM : 0.0,
             ),
-            child: ListTile(
+            child: CheckboxListTile(
               title: Text(values[index].name),
-              trailing: IconButton(
+              controlAffinity: ListTileControlAffinity.leading,
+              value: false,
+              onChanged: (value) {},
+              secondary: IconButton(
                 onPressed: () => onEdit(values[index]),
                 icon: const Icon(Icons.edit),
               ),

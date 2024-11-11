@@ -18,7 +18,7 @@ void main() {
 
   setUpAll(() {
     storageService = _MockEquipmentProfilesStorageService();
-    when(() => storageService.getProfiles()).thenAnswer((_) async => _mockEquipmentProfiles.toProfilesMap());
+    when(() => storageService.getProfiles()).thenAnswer((_) async => _mockEquipmentProfiles.toSelectableMap());
     when(() => storageService.selectedEquipmentProfileId).thenReturn('');
   });
 

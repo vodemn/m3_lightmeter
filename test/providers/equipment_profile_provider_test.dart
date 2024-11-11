@@ -27,7 +27,7 @@ void main() {
       ),
     ).thenAnswer((_) async {});
     when(() => storageService.deleteProfile(any<String>())).thenAnswer((_) async {});
-    when(() => storageService.getProfiles()).thenAnswer((_) => Future.value(_customProfiles.toProfilesMap()));
+    when(() => storageService.getProfiles()).thenAnswer((_) => Future.value(_customProfiles.toSelectableMap()));
   });
 
   tearDown(() {
@@ -66,7 +66,7 @@ void main() {
     () {
       setUp(() {
         when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles.first.id);
-        when(() => storageService.getProfiles()).thenAnswer((_) => Future.value(_customProfiles.toProfilesMap()));
+        when(() => storageService.getProfiles()).thenAnswer((_) => Future.value(_customProfiles.toSelectableMap()));
       });
 
       testWidgets(

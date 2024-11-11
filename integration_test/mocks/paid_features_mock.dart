@@ -10,24 +10,24 @@ class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProf
 class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
 
 class MockIAPProviders extends StatefulWidget {
-  final Map<String, EquipmentProfile> equipmentProfiles;
+  final SelectableMap<EquipmentProfile> equipmentProfiles;
   final String selectedEquipmentProfileId;
-  final Map<String, SelectableFilm<Film>> predefinedFilms;
-  final Map<String, SelectableFilm<FilmExponential>> customFilms;
+  final Map<String, SelectableValue<Film>> predefinedFilms;
+  final Map<String, SelectableValue<FilmExponential>> customFilms;
   final String selectedFilmId;
   final Widget child;
 
   MockIAPProviders({
-    Map<String, EquipmentProfile>? equipmentProfiles,
+    SelectableMap<EquipmentProfile>? equipmentProfiles,
     this.selectedEquipmentProfileId = '',
-    Map<String, SelectableFilm<Film>>? predefinedFilms,
-    Map<String, SelectableFilm<FilmExponential>>? customFilms,
+    Map<String, SelectableValue<Film>>? predefinedFilms,
+    Map<String, SelectableValue<FilmExponential>>? customFilms,
     String? selectedFilmId,
     required this.child,
     super.key,
-  })  : equipmentProfiles = equipmentProfiles ?? mockEquipmentProfiles.toProfilesMap(),
-        predefinedFilms = predefinedFilms ?? mockFilms.toFilmsMap(),
-        customFilms = customFilms ?? mockFilms.toFilmsMap(),
+  })  : equipmentProfiles = equipmentProfiles ?? mockEquipmentProfiles.toSelectableMap(),
+        predefinedFilms = predefinedFilms ?? mockFilms.toSelectableMap(),
+        customFilms = customFilms ?? mockFilms.toSelectableMap(),
         selectedFilmId = selectedFilmId ?? const FilmStub().id;
 
   @override
@@ -154,15 +154,6 @@ const mockFilms = [
   _FilmMultiplying(id: '3', name: 'Mock film 3', iso: 800, reciprocityMultiplier: 3),
   _FilmMultiplying(id: '4', name: 'Mock film 4', iso: 1200, reciprocityMultiplier: 1.5),
 ];
-
-extension EquipmentProfileMapper on List<EquipmentProfile> {
-  Map<String, EquipmentProfile> toProfilesMap() => Map.fromEntries(map((e) => MapEntry(e.id, e)));
-}
-
-extension FilmMapper on List<Film> {
-  Map<String, ({T film, bool isUsed})> toFilmsMap<T extends Film>({bool isUsed = true}) =>
-      Map.fromEntries(map((e) => MapEntry(e.id, (film: e as T, isUsed: isUsed))));
-}
 
 class _FilmMultiplying extends FilmExponential {
   final double reciprocityMultiplier;

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-typedef SelectableFilm<T extends Film> = ({T film, bool isUsed});
+typedef SelectableValue<T extends Film> = ({T film, bool isUsed});
 
 class FilmsStorageService {
   FilmsStorageService();
@@ -22,11 +22,11 @@ class FilmsStorageService {
 
   Future<void> deleteFilm(FilmExponential _) async {}
 
-  Future<Map<String, SelectableFilm<Film>>> getPredefinedFilms() async {
+  Future<Map<String, SelectableValue<Film>>> getPredefinedFilms() async {
     return const {};
   }
 
-  Future<Map<String, SelectableFilm<FilmExponential>>> getCustomFilms() async {
+  Future<Map<String, SelectableValue<FilmExponential>>> getCustomFilms() async {
     return const {};
   }
 }

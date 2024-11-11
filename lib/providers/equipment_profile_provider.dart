@@ -34,7 +34,7 @@ class EquipmentProfilesProvider extends StatefulWidget {
 }
 
 class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
-  final Map<String, EquipmentProfile> _customProfiles = {};
+  final SelectableMap<EquipmentProfile> _customProfiles = {};
   String _selectedId = '';
 
   EquipmentProfile get _selectedProfile => _customProfiles[_selectedId] ?? EquipmentProfilesProvider.defaultProfile;
