@@ -12,7 +12,7 @@ on:
 jobs:
   run-integration-tests:
     name: Run integration tests
-    timeout-minutes: 60
+    timeout-minutes: 90
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
