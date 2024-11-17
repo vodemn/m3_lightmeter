@@ -1,2 +1,0 @@
-- [Pro] Added the ability to create custom films.
-- [Pro] Added the ability to select equipment profiles in use.

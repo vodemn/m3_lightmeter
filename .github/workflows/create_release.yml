@@ -9,7 +9,7 @@
 
 name: Create new release
 
-run-name: Release v${{ inputs.version }}
+run-name: Release v${{ inputs.version }}${{ inputs.release-track == 'beta' && '-Beta' || ''  }}
 
 on:
   workflow_dispatch:
@@ -137,7 +137,7 @@ jobs:
           artifacts: "m3_lightmeter.apk"
           skipIfReleaseExists: true
           prerelease: ${{ inputs.release-track == 'beta' }}
-          tag: "v${{ github.event.inputs.version }}"
+          tag: "v${{ github.event.inputs.version }}${{ inputs.release-track == 'beta' && '-beta' || ''  }}"
           bodyFile: "${{ env.RELEASE_NOTES_PATH }}/${{ env.RELEASE_NOTES_FILE }}"
 
   create-google-play-release:
