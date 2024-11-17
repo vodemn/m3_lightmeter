@@ -83,22 +83,42 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
 
   Future<void> _onApertureValuesChanged(EquipmentProfileApertureValuesChangedEvent event, Emitter emit) async {
     _newEquipmentProfile = _newEquipmentProfile.copyWith(apertureValues: event.apertureValues);
-    emit(state.copyWith(apertureValues: event.apertureValues));
+    emit(
+      state.copyWith(
+        apertureValues: event.apertureValues,
+        canSave: _canSave(state.name, state.lensZoom),
+      ),
+    );
   }
 
   Future<void> _onShutterSpeedValuesChanged(EquipmentProfileShutterSpeedValuesChangedEvent event, Emitter emit) async {
     _newEquipmentProfile = _newEquipmentProfile.copyWith(shutterSpeedValues: event.shutterSpeedValues);
-    emit(state.copyWith(shutterSpeedValues: event.shutterSpeedValues));
+    emit(
+      state.copyWith(
+        shutterSpeedValues: event.shutterSpeedValues,
+        canSave: _canSave(state.name, state.lensZoom),
+      ),
+    );
   }
 
   Future<void> _onIsoValuesChanged(EquipmentProfileIsoValuesChangedEvent event, Emitter emit) async {
     _newEquipmentProfile = _newEquipmentProfile.copyWith(isoValues: event.isoValues);
-    emit(state.copyWith(isoValues: event.isoValues));
+    emit(
+      state.copyWith(
+        isoValues: event.isoValues,
+        canSave: _canSave(state.name, state.lensZoom),
+      ),
+    );
   }
 
   Future<void> _onNdValuesChanged(EquipmentProfileNdValuesChangedEvent event, Emitter emit) async {
     _newEquipmentProfile = _newEquipmentProfile.copyWith(ndValues: event.ndValues);
-    emit(state.copyWith(ndValues: event.ndValues));
+    emit(
+      state.copyWith(
+        ndValues: event.ndValues,
+        canSave: _canSave(state.name, state.lensZoom),
+      ),
+    );
   }
 
   Future<void> _onLensZoomChanged(EquipmentProfileLensZoomChangedEvent event, Emitter emit) async {
