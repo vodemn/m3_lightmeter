@@ -48,7 +48,6 @@ app.*.map.json
 /ios/build/
 /ios/Runner.xcodeproj/project.pbxproj
 
-pubspec.lock
 /ios/Podfile.lock
 
 .fvm/
