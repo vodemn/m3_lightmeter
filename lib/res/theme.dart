@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/utils/color_to_int.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
 const primaryColorsList = [
@@ -75,7 +76,7 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
 
 ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
   final scheme = SchemeTonalSpot(
-    sourceColorHct: Hct.fromInt(primaryColor.value),
+    sourceColorHct: Hct.fromInt(primaryColor.toInt()),
     isDark: brightness == Brightness.dark,
     contrastLevel: 0.0,
   );
