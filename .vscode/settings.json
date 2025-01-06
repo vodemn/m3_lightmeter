@@ -1,6 +1,6 @@
 {
     "task.slowProviderWarning": true,
-    "dart.flutterSdkPath": "fvm",
+    "dart.flutterSdkPath": ".fvm/flutter_sdk",
     "search.exclude": {
         "**/.fvm": true
     },
