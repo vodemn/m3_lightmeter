@@ -221,7 +221,13 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
     });
   }
 
-  Future<void> close() => _animateReverse().then((_) => Navigator.of(context).pop());
+  Future<void> close() {
+    return _animateReverse().then((_) {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
+  }
 }
 
 class _AnimatedOverlay extends StatelessWidget {

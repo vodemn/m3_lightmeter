@@ -14,6 +14,7 @@ class LanguageListTile extends StatelessWidget {
       title: Text(S.of(context).language),
       trailing: Text(UserPreferencesProvider.localeOf(context).localizedName),
       onTap: () {
+        final prefs = UserPreferencesProvider.of(context);
         showDialog<SupportedLocale>(
           context: context,
           builder: (_) => DialogPicker<SupportedLocale>(
@@ -21,11 +22,11 @@ class LanguageListTile extends StatelessWidget {
             title: S.of(context).chooseLanguage,
             selectedValue: UserPreferencesProvider.localeOf(context),
             values: SupportedLocale.values,
-            titleAdapter: (context, value) => value.localizedName,
+            titleAdapter: (_, value) => value.localizedName,
           ),
         ).then((value) {
           if (value != null) {
-            UserPreferencesProvider.of(context).setLocale(value);
+            prefs.setLocale(value);
           }
         });
       },

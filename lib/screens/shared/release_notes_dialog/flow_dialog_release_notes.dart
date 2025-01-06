@@ -21,10 +21,11 @@ class ReleaseNotesFlow extends StatelessWidget {
       child: BlocListener<ReleaseNotesBloc, ReleaseNotesState>(
         listener: (context, state) {
           if (state is ShowReleaseNotesDialogState) {
+            final bloc = context.read<ReleaseNotesBloc>();
             showDialog(
               context: context,
               builder: (_) => ReleaseNotesDialog(version: state.version),
-            ).then((_) => context.read<ReleaseNotesBloc>().setChangelogVersion());
+            ).then((_) => bloc.setChangelogVersion());
           }
         },
         child: child,
