@@ -120,7 +120,7 @@ class _Slider extends StatelessWidget {
           width: handleDistance + trackThickness,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(trackThickness / 2),
-            child: ColoredBox(color: Theme.of(context).colorScheme.surfaceVariant),
+            child: ColoredBox(color: Theme.of(context).colorScheme.surfaceContainerHighest),
           ),
         ),
         AnimatedPositioned.fromRect(

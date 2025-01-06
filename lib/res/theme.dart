@@ -33,7 +33,7 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
       elevation: Dimens.elevationLevel0,
       scrolledUnderElevation: Dimens.elevationLevel2,
       color: scheme.surface,
-      foregroundColor: scheme.onBackground,
+      foregroundColor: scheme.onSurface,
       surfaceTintColor: scheme.surfaceTint,
     ),
     cardTheme: CardTheme(
@@ -83,8 +83,6 @@ ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
 
   return ColorScheme(
     brightness: brightness,
-    background: Color(scheme.background),
-    onBackground: Color(scheme.onBackground),
     error: Color(scheme.error),
     onError: Color(scheme.onError),
     errorContainer: Color(scheme.errorContainer),
@@ -103,7 +101,7 @@ ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
     onTertiaryContainer: Color(scheme.onTertiaryContainer),
     surface: Color(scheme.surface),
     onSurface: Color(scheme.onSurface),
-    surfaceVariant: Color(scheme.surfaceVariant),
+    surfaceContainerHighest: Color(scheme.surfaceContainerHighest),
     onSurfaceVariant: Color(scheme.onSurfaceVariant),
     outline: Color(scheme.outline),
     outlineVariant: Color(scheme.outlineVariant),

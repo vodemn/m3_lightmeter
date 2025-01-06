@@ -78,7 +78,7 @@ class ExposurePairsList extends StatelessWidget {
                                       ? constraints.maxHeight / 2
                                       : constraints.maxHeight,
                                   child: ColoredBox(
-                                    color: Theme.of(context).colorScheme.onBackground,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                     child: const SizedBox(width: 1),
                                   ),
                                 ),
