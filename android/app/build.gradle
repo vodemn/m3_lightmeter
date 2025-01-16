@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     compileSdkVersion 34
-    ndkVersion flutter.ndkVersion
+    ndkVersion "27.0.12077973"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -48,7 +48,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 34            
         ndk {
             debugSymbolLevel 'FULL'
@@ -98,6 +98,7 @@ android {
             }
         }
     }
+    namespace 'com.vodemn.lightmeter'
 }
 
 flutter {
