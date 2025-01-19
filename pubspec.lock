@@ -728,10 +728,10 @@ packages:
     dependency: transitive
     description:
       name: in_app_purchase_storekit
-      sha256: "250b3865da1f4abf0d0e1eda9556734ee22ab5ebfe47a59227d8d9aeaa1c03e8"
+      sha256: "52caf1051fec8018adabd2d1e775a44cb389972ed868a746c4fc28a301734d41"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.20+2"
+    version: "0.3.20+4"
   integration_test:
     dependency: "direct dev"
     description: flutter

@@ -112,6 +112,7 @@ jobs:
         run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
 
       - name: Download release notes
+        continue-on-error: true
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
