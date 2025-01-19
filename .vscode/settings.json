@@ -1,25 +1,25 @@
 {
-    "task.slowProviderWarning": true,
-    "dart.flutterSdkPath": ".fvm/flutter_sdk",
-    "search.exclude": {
-        "**/.fvm": true
-    },
-    "files.watcherExclude": {
-        "**/.fvm": true
-    },
-    "dart.lineLength": 120,
-    "[dart]": {
-        "editor.rulers": [
-            120,
-        ],
-        "editor.selectionHighlight": true,
-        "editor.suggest.snippetsPreventQuickSuggestions": false,
-        "editor.suggestSelection": "first",
-        "editor.tabCompletion": "onlySnippets",
-        "editor.wordBasedSuggestions": "off"
-    },
-    "dart.doNotFormat": [
-        "**/generated/**",
-        "lib/data/**"
+  "task.slowProviderWarning": true,
+  "dart.flutterSdkPath": ".fvm/versions/3.27.1",
+  "search.exclude": {
+    "**/.fvm": true
+  },
+  "files.watcherExclude": {
+    "**/.fvm": true
+  },
+  "dart.lineLength": 120,
+  "[dart]": {
+    "editor.rulers": [
+      120
     ],
+    "editor.selectionHighlight": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  },
+  "dart.doNotFormat": [
+    "**/generated/**",
+    "lib/data/**"
+  ]
 }
