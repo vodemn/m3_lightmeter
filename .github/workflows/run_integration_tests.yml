@@ -39,6 +39,7 @@ jobs:
           flutter pub get
           flutter pub run intl_utils:generate
           flutter analyze lib --fatal-infos
+          dart pub global activate flutterfire_cli
 
       - name: Launch iOS simulator
         uses: futureware-tech/simulator-action@v3
