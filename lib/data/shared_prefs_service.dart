@@ -7,6 +7,7 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
+import 'package:lightmeter/utils/color_to_int.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -155,7 +156,7 @@ class UserPreferencesService {
   set themeType(ThemeType value) => _sharedPreferences.setInt(themeTypeKey, value.index);
 
   Color get primaryColor => Color(_sharedPreferences.getInt(primaryColorKey) ?? 0xff2196f3);
-  set primaryColor(Color value) => _sharedPreferences.setInt(primaryColorKey, value.value);
+  set primaryColor(Color value) => _sharedPreferences.setInt(primaryColorKey, value.toInt());
 
   bool get dynamicColor => _sharedPreferences.getBool(dynamicColorKey) ?? false;
   set dynamicColor(bool value) => _sharedPreferences.setBool(dynamicColorKey, value);

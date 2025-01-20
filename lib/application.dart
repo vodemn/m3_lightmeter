@@ -44,7 +44,7 @@ class Application extends StatelessWidget {
         ],
         supportedLocales: S.delegate.supportedLocales,
         builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
           child: child!,
         ),
         initialRoute: NavigationRoutes.meteringScreen.name,

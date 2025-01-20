@@ -34,7 +34,7 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 
 ### 1. Install Flutter
 
-To build this app you need to install Flutter 3.13.9 stable. [How to install](https://docs.flutter.dev/get-started/install).
+To build this app you need to install Flutter 3.27.1 stable. [How to install](https://docs.flutter.dev/get-started/install).
 
 ### 2. Project setup
 

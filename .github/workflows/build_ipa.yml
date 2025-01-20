@@ -45,7 +45,7 @@ env:
 jobs:
   build:
     name: Build .ipa
-    runs-on: macos-13
+    runs-on: macos-latest
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v3
@@ -92,11 +92,11 @@ jobs:
       - name: Restore ExportOptions.plist
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.APP_STORE_EXPORT_OPTIONS }}" "ios/Runner/ExportOptions.plist"
 
-      - name: Restore firebase_app_id_file.json
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_APP_ID_FILE }}" "ios/firebase_app_id_file.json"
-
-      - name: Restore firebase_options.dart
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
+      - name: Setup Firebase
+        run: |
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_APP_ID_FILE }}" "ios/firebase_app_id_file.json"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_JSON }}" "firebase.json"
 
       - name: Restore constants.dart
         env:
@@ -107,6 +107,7 @@ jobs:
         run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
 
       - name: Download release notes
+        continue-on-error: true
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
@@ -116,13 +117,14 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: "3.13.9"
+          flutter-version: "3.27.1"
 
       - name: Prepare flutter project
         run: |
           flutter --version
           flutter pub get
           flutter pub run intl_utils:generate
+          dart pub global activate flutterfire_cli
 
       - name: Build .ipa
         run: |

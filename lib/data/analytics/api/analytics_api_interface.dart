@@ -1,7 +1,7 @@
 abstract class ILightmeterAnalyticsApi {
   Future<void> logEvent(
     String eventName, {
-    Map<String, dynamic>? parameters,
+    Map<String, Object>? parameters,
   });
 
   Future<void> logCrash(

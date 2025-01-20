@@ -4,9 +4,14 @@ import 'package:lightmeter/constants.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class WriteEmailListTile extends StatelessWidget {
+class WriteEmailListTile extends StatefulWidget {
   const WriteEmailListTile({super.key});
 
+  @override
+  State<WriteEmailListTile> createState() => _WriteEmailListTileState();
+}
+
+class _WriteEmailListTileState extends State<WriteEmailListTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -20,24 +25,30 @@ class WriteEmailListTile extends StatelessWidget {
               mailToUrl,
               mode: LaunchMode.externalApplication,
             );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(S.of(context).youDontHaveMailApp),
-                behavior: SnackBarBehavior.floating,
-                action: SnackBarAction(
-                  label: S.of(context).copyEmail,
-                  onPressed: () {
-                    FlutterClipboard.copy(contactEmail).then((_) {
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                    });
-                  },
-                ),
-              ),
-            );
+          } else if (mounted) {
+            _showSnackBar();
           }
         });
       },
+    );
+  }
+
+  Future<void> _showSnackBar() async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(S.of(context).youDontHaveMailApp),
+        behavior: SnackBarBehavior.floating,
+        action: SnackBarAction(
+          label: S.of(context).copyEmail,
+          onPressed: () {
+            FlutterClipboard.copy(contactEmail).then((_) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+              }
+            });
+          },
+        ),
+      ),
     );
   }
 }
