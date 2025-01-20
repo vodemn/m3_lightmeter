@@ -178,8 +178,8 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         opaque: false,
         transitionDuration: Duration.zero,
         reverseTransitionDuration: Duration.zero,
-        pageBuilder: (_, __, ___) => WillPopScope(
-          onWillPop: () => _animateReverse().then((value) => true),
+        pageBuilder: (_, __, ___) => PopScope(
+          onPopInvokedWithResult: (_, __) => _animateReverse().then((value) => true),
           child: _AnimatedOverlay(
             controller: _animationController,
             barrierColorAnimation: _barrierColorAnimation,
@@ -221,7 +221,13 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
     });
   }
 
-  Future<void> close() => _animateReverse().then((_) => Navigator.of(context).pop());
+  Future<void> close() {
+    return _animateReverse().then((_) {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
+  }
 }
 
 class _AnimatedOverlay extends StatelessWidget {

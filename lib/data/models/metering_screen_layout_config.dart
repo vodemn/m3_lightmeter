@@ -8,7 +8,7 @@ typedef MeteringScreenLayoutConfig = Map<MeteringScreenLayoutFeature, bool>;
 
 extension MeteringScreenLayoutConfigJson on MeteringScreenLayoutConfig {
   static MeteringScreenLayoutConfig fromJson(Map<String, dynamic> data) {
-    int? migratedIndex(MeteringScreenLayoutFeature feature) {
+    int migratedIndex(MeteringScreenLayoutFeature feature) {
       switch (feature) {
         case MeteringScreenLayoutFeature.extremeExposurePairs:
           return 0;
@@ -16,8 +16,6 @@ extension MeteringScreenLayoutConfigJson on MeteringScreenLayoutConfig {
           return 1;
         case MeteringScreenLayoutFeature.equipmentProfiles:
           return 3;
-        default:
-          return null;
       }
     }
 

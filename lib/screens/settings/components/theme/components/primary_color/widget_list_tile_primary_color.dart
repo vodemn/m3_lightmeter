@@ -22,12 +22,13 @@ class PrimaryColorListTile extends StatelessWidget {
       leading: const Icon(Icons.palette_outlined),
       title: Text(S.of(context).primaryColor),
       onTap: () {
+        final prefs = UserPreferencesProvider.of(context);
         showDialog<Color>(
           context: context,
           builder: (_) => const PrimaryColorDialogPicker(),
         ).then((value) {
           if (value != null) {
-            UserPreferencesProvider.of(context).setPrimaryColor(value);
+            prefs.setPrimaryColor(value);
           }
         });
       },

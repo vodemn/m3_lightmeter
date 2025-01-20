@@ -91,7 +91,6 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       case communication_states.SettingsClosedState():
         _settingsOpened = false;
         add(const InitializeEvent());
-      default:
     }
   }
 

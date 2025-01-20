@@ -14,6 +14,7 @@ class ThemeTypeListTile extends StatelessWidget {
       title: Text(S.of(context).theme),
       trailing: Text(_typeToString(context, UserPreferencesProvider.themeTypeOf(context))),
       onTap: () {
+        final prefs = UserPreferencesProvider.of(context);
         showDialog<ThemeType>(
           context: context,
           builder: (_) => DialogPicker<ThemeType>(
@@ -25,7 +26,7 @@ class ThemeTypeListTile extends StatelessWidget {
           ),
         ).then((value) {
           if (value != null) {
-            UserPreferencesProvider.of(context).setThemeType(value);
+            prefs.setThemeType(value);
           }
         });
       },

@@ -27,11 +27,12 @@ jobs:
           bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
           bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_IOS }}" "ios/Runner/GoogleService-Info.plist"
           bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_APP_ID_FILE }}" "ios/firebase_app_id_file.json"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_JSON }}" "firebase.json"
 
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: "3.13.9"
+          flutter-version: "3.27.1"
 
       - name: Prepare app
         run: |
@@ -39,6 +40,7 @@ jobs:
           flutter pub get
           flutter pub run intl_utils:generate
           flutter analyze lib --fatal-infos
+          dart pub global activate flutterfire_cli
 
       - name: Launch iOS simulator
         uses: futureware-tech/simulator-action@v3
