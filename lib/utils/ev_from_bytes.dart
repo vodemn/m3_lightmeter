@@ -13,12 +13,12 @@ Future<double> evFromImage(Uint8List bytes) async {
   final iso = double.tryParse("${tags[_isoExifKey]}");
   final apertureValueRatio = (tags[_apertureExifKey]?.values as IfdRatios?)?.ratios.first;
   final speedValueRatio = (tags[_shutterSpeedExifKey]?.values as IfdRatios?)?.ratios.first;
-  
+
   if (iso == null || apertureValueRatio == null || speedValueRatio == null) {
     throw ArgumentError(
       'Error parsing EXIF',
       [
-        if (iso == null) '$_isoExifKey: "${tags[_isoExifKey]?.printable}"',
+        if (iso == null) '$_isoExifKey: ${tags[_isoExifKey]?.printable} ${tags[_isoExifKey]?.printable.runtimeType}',
         if (apertureValueRatio == null) '$_apertureExifKey: $apertureValueRatio',
         if (speedValueRatio == null) '$_shutterSpeedExifKey: $speedValueRatio',
       ].join(', '),
