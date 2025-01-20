@@ -62,14 +62,14 @@ class _Title<T extends PhotographyStopValue> extends StatelessWidget {
               value.toString(),
               stepGranularity: 0.5,
               minFontSize: 10,
-              style: labelTextStyle(context).copyWith(color: Theme.of(context).colorScheme.onBackground),
+              style: labelTextStyle(context).copyWith(color: Theme.of(context).colorScheme.onSurface),
               softWrap: false,
               overflow: TextOverflow.fade,
               maxLines: 1,
             )
           : Text(
               value.toString(),
-              style: labelTextStyle(context).copyWith(color: Theme.of(context).colorScheme.onBackground),
+              style: labelTextStyle(context).copyWith(color: Theme.of(context).colorScheme.onSurface),
               softWrap: false,
               overflow: TextOverflow.fade,
               maxLines: 1,
@@ -97,7 +97,7 @@ class _Tick extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: Theme.of(context).colorScheme.onBackground,
+      color: Theme.of(context).colorScheme.onSurface,
       child: SizedBox(
         height: 1,
         width: _length,

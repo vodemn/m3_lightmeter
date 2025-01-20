@@ -3,6 +3,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
 import 'package:lightmeter/screens/shared/filled_circle/widget_circle_filled.dart';
+import 'package:lightmeter/utils/color_to_int.dart';
 
 class PrimaryColorDialogPicker extends StatefulWidget {
   const PrimaryColorDialogPicker({super.key});
@@ -45,7 +46,7 @@ class _PrimaryColorDialogPickerState extends State<PrimaryColorDialogPicker> {
                       padding: EdgeInsets.only(left: index == 0 ? 0 : Dimens.paddingS),
                       child: _SelectableColorItem(
                         color: color,
-                        selected: color.value == _selected.value,
+                        selected: color.toInt() == _selected.toInt(),
                         onTap: () {
                           setState(() {
                             _selected = color;

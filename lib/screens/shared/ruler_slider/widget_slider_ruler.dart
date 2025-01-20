@@ -30,7 +30,7 @@ class RulerSlider extends StatelessWidget {
       children: [
         Text(
           valueAdapter(value),
-          style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onBackground),
+          style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface),
         ),
         const SizedBox(height: Dimens.grid4),
         Expanded(
@@ -78,7 +78,7 @@ class _Ruler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mainTicksFontSize = Theme.of(context).textTheme.bodySmall!.fontSize!;
-    final itemsColor = Theme.of(context).colorScheme.onBackground;
+    final itemsColor = Theme.of(context).colorScheme.onSurface;
     return LayoutBuilder(
       builder: (context, constraints) {
         final bool showAllMainTicks =

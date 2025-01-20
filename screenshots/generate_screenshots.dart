@@ -22,6 +22,7 @@ import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
 import 'package:lightmeter/screens/timer/screen_timer.dart';
+import 'package:lightmeter/utils/color_to_int.dart';
 import 'package:lightmeter/utils/platform_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -77,7 +78,7 @@ void main() {
 
       /// Theme settings
       UserPreferencesService.themeTypeKey: theme.index,
-      UserPreferencesService.primaryColorKey: color.value,
+      UserPreferencesService.primaryColorKey: color.toInt(),
       UserPreferencesService.dynamicColorKey: false,
 
       UserPreferencesService.seenChangelogVersionKey: await const PlatformUtils().version,
@@ -190,7 +191,7 @@ extension on WidgetTester {
         name: name,
         deviceName: const String.fromEnvironment('deviceName'),
         platformFolder: _platformFolder,
-        backgroundColor: backgroundColor.value.toRadixString(16),
+        backgroundColor: backgroundColor.toInt().toRadixString(16),
         isDark: theme.brightness == Brightness.dark,
       ).toString(),
     );

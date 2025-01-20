@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -48,7 +50,6 @@ app.*.map.json
 /ios/build/
 /ios/Runner.xcodeproj/project.pbxproj
 
-pubspec.lock
 /ios/Podfile.lock
 
 .fvm/
@@ -64,3 +65,5 @@ coverage/
 test/coverage_helper_test.dart
 **/failures/*.png
 screenshots/generated/raw/
+
+firebase.json

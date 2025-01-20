@@ -69,9 +69,14 @@ class MeteringScreen extends StatelessWidget {
   }
 
   void pushNamed(BuildContext context, String routeName, {Object? arguments}) {
-    context.read<MeteringBloc>().add(const ScreenOnTopOpenedEvent());
-    Navigator.pushNamed(context, routeName, arguments: arguments).then((_) {
-      context.read<MeteringBloc>().add(const ScreenOnTopClosedEvent());
+    final bloc = context.read<MeteringBloc>();
+    bloc.add(const ScreenOnTopOpenedEvent());
+    Navigator.pushNamed(
+      context,
+      routeName,
+      arguments: arguments,
+    ).then((_) {
+      bloc.add(const ScreenOnTopClosedEvent());
     });
   }
 }

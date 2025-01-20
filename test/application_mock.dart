@@ -47,7 +47,7 @@ class WidgetTestApplicationMock extends StatelessWidget {
       ],
       supportedLocales: S.delegate.supportedLocales,
       builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
         child: child!,
       ),
       home: Scaffold(body: child),
@@ -124,7 +124,7 @@ class _GoldenTestApplicationMockState extends State<GoldenTestApplicationMock> {
                 ],
                 supportedLocales: S.delegate.supportedLocales,
                 builder: (context, child) => MediaQuery(
-                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
                   child: child!,
                 ),
                 home: widget.child,

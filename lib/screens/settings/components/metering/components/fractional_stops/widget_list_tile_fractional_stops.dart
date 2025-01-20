@@ -14,6 +14,7 @@ class StopTypeListTile extends StatelessWidget {
       title: Text(S.of(context).fractionalStops),
       trailing: Text(_typeToString(context, UserPreferencesProvider.stopTypeOf(context))),
       onTap: () {
+        final prefs = UserPreferencesProvider.of(context);
         showDialog<StopType>(
           context: context,
           builder: (_) => DialogPicker<StopType>(
@@ -25,7 +26,7 @@ class StopTypeListTile extends StatelessWidget {
           ),
         ).then((value) {
           if (value != null) {
-            UserPreferencesProvider.of(context).setStopType(value);
+            prefs.setStopType(value);
           }
         });
       },
