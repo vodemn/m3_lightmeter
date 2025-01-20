@@ -100,8 +100,10 @@ jobs:
       - name: Restore google-services.json
         run: bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_ANDROID }}" "android/app/google-services.json"
 
-      - name: Restore firebase_options.dart
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
+      - name: Setup Firebase
+        run: |
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_JSON }}" "firebase.json"
 
       - name: Restore constants.dart
         env:

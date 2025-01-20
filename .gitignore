@@ -65,3 +65,5 @@ coverage/
 test/coverage_helper_test.dart
 **/failures/*.png
 screenshots/generated/raw/
+
+firebase.json
