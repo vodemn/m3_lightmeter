@@ -10,15 +10,15 @@ import 'package:mocktail/mocktail.dart';
 import '../../../../../application_mock.dart';
 import 'utils.dart';
 
-class _MockIAPStorageService extends Mock implements IAPStorageService {}
+class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProfilesStorageService {}
 
 void main() {
-  late final _MockIAPStorageService mockIAPStorageService;
+  late final _MockEquipmentProfilesStorageService storageService;
 
   setUpAll(() {
-    mockIAPStorageService = _MockIAPStorageService();
-    when(() => mockIAPStorageService.equipmentProfiles).thenReturn(_mockEquipmentProfiles);
-    when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn('');
+    storageService = _MockEquipmentProfilesStorageService();
+    when(() => storageService.getProfiles()).thenAnswer((_) async => _mockEquipmentProfiles.toTogglableMap());
+    when(() => storageService.selectedEquipmentProfileId).thenReturn('');
   });
 
   Future<void> pumpApplication(WidgetTester tester) async {
@@ -31,8 +31,8 @@ void main() {
             price: '0.0\$',
           ),
         ],
-        child: EquipmentProfileProvider(
-          storageService: mockIAPStorageService,
+        child: EquipmentProfilesProvider(
+          storageService: storageService,
           child: const WidgetTestApplicationMock(
             child: Row(children: [Expanded(child: EquipmentProfilePicker())]),
           ),
@@ -59,7 +59,7 @@ void main() {
       testWidgets(
         'None',
         (tester) async {
-          when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn('');
+          when(() => storageService.selectedEquipmentProfileId).thenReturn('');
           await pumpApplication(tester);
           expectReadingValueContainerText(S.current.none);
           await tester.openAnimatedPicker<EquipmentProfilePicker>();
@@ -70,13 +70,25 @@ void main() {
       testWidgets(
         'Praktica + Zenitar',
         (tester) async {
-          when(() => mockIAPStorageService.selectedEquipmentProfileId).thenReturn(_mockEquipmentProfiles.first.id);
+          when(() => storageService.selectedEquipmentProfileId).thenReturn(_mockEquipmentProfiles.first.id);
           await pumpApplication(tester);
           expectReadingValueContainerText(_mockEquipmentProfiles.first.name);
           await tester.openAnimatedPicker<EquipmentProfilePicker>();
           expectRadioListTile<EquipmentProfile>(_mockEquipmentProfiles.first.name, isSelected: true);
         },
       );
+    },
+  );
+
+  testWidgets(
+    'Equipment profile picker shows only profiles in use',
+    (tester) async {
+      when(() => storageService.getProfiles())
+          .thenAnswer((_) async => _mockEquipmentProfiles.skip(1).toList().toTogglableMap());
+      await pumpApplication(tester);
+      await tester.openAnimatedPicker<EquipmentProfilePicker>();
+      expectRadioListTile<EquipmentProfile>(S.current.none, isSelected: true);
+      expectRadioListTile<EquipmentProfile>(_mockEquipmentProfiles[1].name);
     },
   );
 }

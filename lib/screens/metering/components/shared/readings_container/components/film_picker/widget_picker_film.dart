@@ -19,7 +19,7 @@ class FilmPicker extends StatelessWidget {
       selectedValue: Films.selectedOf(context),
       values: Films.inUseOf(context),
       itemTitleBuilder: (_, value) => Text(value.name.isEmpty ? S.of(context).none : value.name),
-      onChanged: FilmsProvider.of(context).setFilm,
+      onChanged: FilmsProvider.of(context).selectFilm,
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: _label(context),
@@ -30,7 +30,7 @@ class FilmPicker extends StatelessWidget {
   }
 
   String _label(BuildContext context) {
-    if (Films.selectedOf(context) == const Film.other() || Films.selectedOf(context).iso == selectedIso.value) {
+    if (Films.selectedOf(context) == const FilmStub() || Films.selectedOf(context).iso == selectedIso.value) {
       return S.of(context).film;
     }
 

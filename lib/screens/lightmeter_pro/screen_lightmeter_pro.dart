@@ -21,7 +21,7 @@ class LightmeterProScreen extends StatelessWidget {
       children: [
         Expanded(
           child: SliverScreen(
-            title: S.of(context).proFeaturesTitle,
+            title: Text(S.of(context).proFeaturesTitle),
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(

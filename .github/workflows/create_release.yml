@@ -9,7 +9,7 @@
 
 name: Create new release
 
-run-name: Release v${{ inputs.version }}
+run-name: Release v${{ inputs.version }}${{ inputs.release-track == 'beta' && '-Beta' || ''  }}
 
 on:
   workflow_dispatch:
@@ -18,11 +18,28 @@ on:
         description: "Version"
         required: true
         type: string
+      release-notes:
+        description: "Release notes"
+        required: true
+        type: string
       run-integration-tests:
         description: "Run integration tests"
         required: true
         type: boolean
         default: true
+      release-track:
+        description: "Release track"
+        type: choice
+        required: true
+        options:
+          - production
+          - beta
+        default: production
+
+env:
+  RELEASE_NOTES_ARTIFACT_NAME: release_notes_en_${{ inputs.version }}
+  RELEASE_NOTES_FILE: release_notes_en_${{ inputs.version }}.md
+  RELEASE_NOTES_PATH: "assets/release_notes"
 
 jobs:
   run-integration-tests:
@@ -31,9 +48,25 @@ jobs:
     uses: ./.github/workflows/run_integration_tests.yml
     secrets: inherit
 
+  generate-release-notes:
+    name: Generate release notes
+    needs: [run-integration-tests]
+    if: ${{ always() && !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate release notes
+        run: |
+          echo ${{ inputs.release-notes }} > ${{ env.RELEASE_NOTES_FILE }}
+          perl -i -pe 's/\s{1}(-{1})/\n$1/g' ${{ env.RELEASE_NOTES_FILE }}
+      - name: Upload merged_native_libs.zip to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
+          path: ${{ env.RELEASE_NOTES_FILE }}
+
   build-android:
     name: Build Android
-    needs: [run-integration-tests]
+    needs: [generate-release-notes]
     if: ${{ always() && !failure() && !cancelled() }}
     strategy:
       matrix:
@@ -48,7 +81,7 @@ jobs:
 
   build-ios:
     name: Build iOS
-    needs: [run-integration-tests]
+    needs: [generate-release-notes]
     if: ${{ always() && !failure() && !cancelled() }}
     uses: ./.github/workflows/build_ipa.yml
     secrets: inherit
@@ -59,6 +92,7 @@ jobs:
   create-github-release:
     name: Create Github release
     needs: [build-android, build-ios]
+    if: ${{ always() && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -67,8 +101,19 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Download apk
+        uses: actions/download-artifact@v3
+        with:
+          name: m3_lightmeter_apk
+
       - name: Increment build number & replace version number
         run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
+
+      - name: Download release notes
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
+          path: ${{ env.RELEASE_NOTES_PATH }}
 
       - name: Commit changes
         run: |
@@ -84,11 +129,6 @@ jobs:
           branch: ${{ github.ref_name }}
           unprotect_reviews: true
 
-      - name: Download apk
-        uses: actions/download-artifact@v3
-        with:
-          name: m3_lightmeter_apk
-
       - name: Rename apk
         run: mv app-prod-release.apk m3_lightmeter.apk
 
@@ -96,12 +136,14 @@ jobs:
         with:
           artifacts: "m3_lightmeter.apk"
           skipIfReleaseExists: true
-          tag: "v${{ github.event.inputs.version }}"
-          bodyFile: "assets/release_notes/release_notes_en_${{ inputs.version }}.md"
+          prerelease: ${{ inputs.release-track == 'beta' }}
+          tag: "v${{ github.event.inputs.version }}${{ inputs.release-track == 'beta' && '-beta' || ''  }}"
+          bodyFile: "${{ env.RELEASE_NOTES_PATH }}/${{ env.RELEASE_NOTES_FILE }}"
 
   create-google-play-release:
     name: Create Google Play release
     needs: [build-android, build-ios]
+    if: ${{ always() && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -118,9 +160,14 @@ jobs:
           unzip app-prod-release.aab
           (cd base/lib && zip -r "$OLDPWD/merged_native_libs.zip" .)
 
+      - name: Download release notes
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
+
       - name: Move release notes to a folder
         run: |
-          mv assets/release_notes/release_notes_en_${{ inputs.version }}.md whatsnew-en-US
+          mv ${{ env.RELEASE_NOTES_FILE }} whatsnew-en-US
           mkdir whatsnew
           mv whatsnew-en-US whatsnew
 
@@ -140,7 +187,7 @@ jobs:
           packageName: com.vodemn.lightmeter
           releaseFiles: app-prod-release.aab
           releaseName: ${{ env.release_name }}
-          track: production
+          track: ${{ inputs.release-track }}
           status: completed
           debugSymbols: merged_native_libs.zip
           whatsNewDirectory: whatsnew
@@ -148,6 +195,7 @@ jobs:
   upload-to-app-store:
     name: Upload to App Store
     needs: [build-android, build-ios]
+    if: ${{ always() && !failure() && !cancelled() }}
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
@@ -177,4 +225,4 @@ jobs:
             m3_lightmeter_apk
             m3_lightmeter_appbundle
             m3_lightmeter_ipa
-            whatsnew-en-US
+            ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}

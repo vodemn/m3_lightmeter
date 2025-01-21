@@ -10,7 +10,7 @@ class LightmeterAnalyticsFirebase implements ILightmeterAnalyticsApi {
   @override
   Future<void> logEvent(
     String eventName, {
-    Map<String, dynamic>? parameters,
+    Map<String, Object>? parameters,
   }) async {
     try {
       await FirebaseAnalytics.instance.logEvent(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shared/reading_value_container/widget_container_reading_value.dart';
 
 class LightmeterProAnimatedDialog extends StatelessWidget {
@@ -9,7 +10,7 @@ class LightmeterProAnimatedDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed("lightmeterPro");
+        Navigator.of(context).pushNamed(NavigationRoutes.proFeaturesScreen.name);
       },
       child: ReadingValueContainer(
         color: Theme.of(context).colorScheme.secondary,

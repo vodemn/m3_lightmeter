@@ -37,7 +37,7 @@ void main() {
       expect(pickerFinder, findsOneWidget);
       expect(find.descendant(of: pickerFinder, matching: find.text(S.current.fastestExposurePair)), findsOneWidget);
       expect(find.descendant(of: pickerFinder, matching: find.text(S.current.slowestExposurePair)), findsOneWidget);
-      expect(find.descendant(of: pickerFinder, matching: find.text('f/1.0 - 1/2000')), findsOneWidget);
+      expect(find.descendant(of: pickerFinder, matching: find.text('f/1.0 - 1/4000')), findsOneWidget);
       expect(find.descendant(of: pickerFinder, matching: find.text('f/45 - 1"')), findsOneWidget);
     },
   );
@@ -50,9 +50,9 @@ extension WidgetTesterActions on WidgetTester {
   }) async {
     await pumpWidget(
       Films(
-        values: const [Film.other()],
-        filmsInUse: const [Film.other()],
-        selected: const Film.other(),
+        predefinedFilms: const {},
+        customFilms: const {},
+        selected: const FilmStub(),
         child: WidgetTestApplicationMock(
           child: Row(
             children: [

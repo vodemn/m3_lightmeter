@@ -33,7 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       child: SliverScreen(
-        title: S.of(context).settings,
+        title: Text(S.of(context).settings),
         slivers: [
           SliverList(
             delegate: SliverChildListDelegate(

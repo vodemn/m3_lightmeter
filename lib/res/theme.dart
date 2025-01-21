@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/utils/color_to_int.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 
 const primaryColorsList = [
@@ -32,7 +33,7 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
       elevation: Dimens.elevationLevel0,
       scrolledUnderElevation: Dimens.elevationLevel2,
       color: scheme.surface,
-      foregroundColor: scheme.onBackground,
+      foregroundColor: scheme.onSurface,
       surfaceTintColor: scheme.surfaceTint,
     ),
     cardTheme: CardTheme(
@@ -67,22 +68,21 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
       style: ListTileStyle.list,
       iconColor: scheme.onSurface,
       textColor: scheme.onSurface,
-      subtitleTextStyle: theme.textTheme.bodyMedium!.copyWith(color: scheme.onSurfaceVariant),
+      subtitleTextStyle: theme.textTheme.bodyMedium,
+      leadingAndTrailingTextStyle: theme.textTheme.bodyMedium,
     ),
   );
 }
 
 ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
   final scheme = SchemeTonalSpot(
-    sourceColorHct: Hct.fromInt(primaryColor.value),
+    sourceColorHct: Hct.fromInt(primaryColor.toInt()),
     isDark: brightness == Brightness.dark,
     contrastLevel: 0.0,
   );
 
   return ColorScheme(
     brightness: brightness,
-    background: Color(scheme.background),
-    onBackground: Color(scheme.onBackground),
     error: Color(scheme.error),
     onError: Color(scheme.onError),
     errorContainer: Color(scheme.errorContainer),
@@ -101,7 +101,7 @@ ColorScheme _colorSchemeFromColor(Color primaryColor, Brightness brightness) {
     onTertiaryContainer: Color(scheme.onTertiaryContainer),
     surface: Color(scheme.surface),
     onSurface: Color(scheme.onSurface),
-    surfaceVariant: Color(scheme.surfaceVariant),
+    surfaceContainerHighest: Color(scheme.surfaceContainerHighest),
     onSurfaceVariant: Color(scheme.onSurfaceVariant),
     outline: Color(scheme.outline),
     outlineVariant: Color(scheme.outlineVariant),

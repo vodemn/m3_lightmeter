@@ -48,7 +48,7 @@ void main() {
     });
 
     test('Big number', () {
-      expect(exposurePairsFull(23), const []);
+      expect(exposurePairsFull(24), const []);
     });
   });
 

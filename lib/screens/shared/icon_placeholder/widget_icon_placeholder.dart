@@ -20,15 +20,12 @@ class IconPlaceholder extends StatelessWidget {
         children: [
           Icon(
             icon,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
           const SizedBox(height: Dimens.grid8),
           Text(
             text,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: Theme.of(context).colorScheme.onBackground),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
             textAlign: TextAlign.center,
           ),
         ],

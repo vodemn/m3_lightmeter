@@ -25,7 +25,7 @@ class CameraControlsPlaceholder extends StatelessWidget {
         const SizedBox(height: Dimens.grid8),
         Text(
           error.toStringLocalized(context),
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onBackground),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
           textAlign: TextAlign.center,
         ),
       ],
