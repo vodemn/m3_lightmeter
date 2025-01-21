@@ -28,12 +28,12 @@ on:
         type: boolean
         default: true
       deploy-ios:
-        description: "App Store"
+        description: "Publish to App Store"
         required: true
         type: boolean
         default: true
       deploy-android:
-        description: "Google Play"
+        description: "Publish to Google Play"
         required: true
         type: boolean
         default: true
