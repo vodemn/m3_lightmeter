@@ -64,3 +64,62 @@ jobs:
           bash ./.github/scripts/stub_iap.sh
           flutter pub get
           flutter analyze lib --fatal-infos
+
+  platform-changes:
+    name: Checks for platform changes
+    runs-on: ubuntu-latest
+    outputs:
+      android-changed: ${{ steps.platform-changes.outputs.android-changed }}
+      ios-changed: ${{ steps.platform-changes.outputs.ios-changed }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - id: platform-changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            android-changed:
+              - 'android/**'
+              - 'pubspec.yaml'
+            ios-changed:
+              - 'ios/**'
+              - 'pubspec.yaml'
+
+  build-android:
+    name: Build Android
+    needs: platform-changes
+    if: needs.platform-changes.outputs.android-changed == 'true'
+    uses: ./.github/workflows/build_apk.yml
+    secrets: inherit
+    with:
+      binary-type: apk
+      flavor: prod
+      stage-backend: false
+      version: "1.0.0"
+
+  build-ios:
+    name: Build iOS
+    needs: platform-changes
+    if: needs.platform-changes.outputs.ios-changed == 'true'
+    uses: ./.github/workflows/build_ipa.yml
+    secrets: inherit
+    with:
+      stage-backend: false
+      version: "1.0.0"
+
+  cleanup:
+    name: Cleanup
+    if: ${{ always() }}
+    needs: [build-android, build-ios]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete release artifacts
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          failOnError: false
+          name: |
+            m3_lightmeter_apk
+            m3_lightmeter_appbundle
+            m3_lightmeter_ipa
