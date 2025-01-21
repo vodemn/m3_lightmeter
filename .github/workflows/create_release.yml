@@ -101,6 +101,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Download apk
+        uses: actions/download-artifact@v3
+        with:
+          name: m3_lightmeter_apk
+
       - name: Increment build number & replace version number
         run: bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
 
@@ -123,11 +128,6 @@ jobs:
           token: ${{ secrets.PUSH_TO_MAIN_TOKEN }}
           branch: ${{ github.ref_name }}
           unprotect_reviews: true
-
-      - name: Download apk
-        uses: actions/download-artifact@v3
-        with:
-          name: m3_lightmeter_apk
 
       - name: Rename apk
         run: mv app-prod-release.apk m3_lightmeter.apk
