@@ -1,18 +1,17 @@
-import 'package:camera/camera.dart';
+import 'package:camera/camera.dart' as camera;
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/camera_feature.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/components/camera_spot_detector/widget_camera_spot_detector.dart';
-import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/components/camera_view/widget_camera_view.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/components/camera_view_placeholder/widget_placeholder_camera_view.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/components/camera_preview/components/histogram/widget_histogram.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/utils/context_utils.dart';
 
 class CameraPreview extends StatefulWidget {
-  final CameraController? controller;
+  final camera.CameraController? controller;
   final CameraErrorType? error;
   final ValueChanged<Offset?> onSpotTap;
 
@@ -53,7 +52,7 @@ class _CameraPreviewState extends State<CameraPreview> {
 }
 
 class _CameraPreviewBuilder extends StatefulWidget {
-  final CameraController controller;
+  final camera.CameraController controller;
   final ValueChanged<Offset?> onSpotTap;
 
   const _CameraPreviewBuilder({
@@ -97,29 +96,15 @@ class _CameraPreviewBuilderState extends State<_CameraPreviewBuilder> {
     }
     return ValueListenableBuilder<bool>(
       valueListenable: _initializedNotifier,
-      builder: (context, value, child) => value
-          ? Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                CameraView(controller: widget.controller),
-                if (context.isPro) ...[
-                  if (UserPreferencesProvider.cameraFeatureOf(
-                    context,
-                    CameraFeature.histogram,
-                  ))
-                    Positioned(
-                      left: Dimens.grid8,
-                      right: Dimens.grid8,
-                      bottom: Dimens.grid16,
-                      child: CameraHistogram(controller: widget.controller),
-                    ),
-                  if (UserPreferencesProvider.cameraFeatureOf(
-                    context,
-                    CameraFeature.spotMetering,
-                  ))
-                    CameraSpotDetector(onSpotTap: widget.onSpotTap),
-                ],
-              ],
+      builder: (context, value, _) => value
+          ? camera.CameraPreview(
+              widget.controller,
+              child: context.isPro
+                  ? _ProFeaturesOverlay(
+                      controller: widget.controller,
+                      onSpotTap: widget.onSpotTap,
+                    )
+                  : const SizedBox.shrink(),
             )
           : const SizedBox.shrink(),
     );
@@ -127,5 +112,40 @@ class _CameraPreviewBuilderState extends State<_CameraPreviewBuilder> {
 
   void _update() {
     _initializedNotifier.value = widget.controller.value.isInitialized;
+  }
+}
+
+class _ProFeaturesOverlay extends StatelessWidget {
+  final camera.CameraController controller;
+  final ValueChanged<Offset?> onSpotTap;
+
+  const _ProFeaturesOverlay({
+    required this.controller,
+    required this.onSpotTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool hasHistogram = UserPreferencesProvider.cameraFeatureOf(
+      context,
+      CameraFeature.histogram,
+    );
+    final bool hasSpotMetering = UserPreferencesProvider.cameraFeatureOf(
+      context,
+      CameraFeature.histogram,
+    );
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        if (hasHistogram)
+          Positioned(
+            left: Dimens.grid8,
+            right: Dimens.grid8,
+            bottom: Dimens.grid16,
+            child: CameraHistogram(controller: controller),
+          ),
+        if (hasSpotMetering) CameraSpotDetector(onSpotTap: onSpotTap),
+      ],
+    );
   }
 }
