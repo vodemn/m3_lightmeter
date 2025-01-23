@@ -108,7 +108,7 @@ jobs:
 
       - name: Download release notes
         continue-on-error: true
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
           path: ${{ env.RELEASE_NOTES_PATH }}
@@ -135,7 +135,7 @@ jobs:
             --export-options-plist=ios/Runner/ExportOptions.plist
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: m3_lightmeter_ipa
           path: build/ios/ipa/lightmeter.ipa

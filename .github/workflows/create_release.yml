@@ -69,7 +69,7 @@ jobs:
           echo ${{ inputs.release-notes }} > ${{ env.RELEASE_NOTES_FILE }}
           perl -i -pe 's/\s{1}(-{1})/\n$1/g' ${{ env.RELEASE_NOTES_FILE }}
       - name: Upload merged_native_libs.zip to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
           path: ${{ env.RELEASE_NOTES_FILE }}
@@ -112,12 +112,12 @@ jobs:
           submodules: recursive
 
       - name: Download apk
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: m3_lightmeter_apk
 
       - name: Download release notes
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
           path: ${{ env.RELEASE_NOTES_PATH }}
@@ -161,7 +161,7 @@ jobs:
           submodules: recursive
 
       - name: Download app bundle
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: m3_lightmeter_appbundle
 
@@ -171,7 +171,7 @@ jobs:
           (cd base/lib && zip -r "$OLDPWD/merged_native_libs.zip" .)
 
       - name: Download release notes
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
 
@@ -213,7 +213,7 @@ jobs:
           submodules: recursive
 
       - name: Download ipa
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: m3_lightmeter_ipa
 
