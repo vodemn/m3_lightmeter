@@ -27,8 +27,9 @@ jobs:
           bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
           bash .github/scripts/restore_from_base64.sh "${{ secrets.GOOGLE_SERVICES_JSON_IOS }}" "ios/Runner/GoogleService-Info.plist"
           bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_APP_ID_FILE }}" "ios/firebase_app_id_file.json"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
           bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_JSON }}" "firebase.json"
-
+          
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
