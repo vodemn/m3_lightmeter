@@ -36,8 +36,10 @@ jobs:
         if: steps.fetch-iap.conclusion != 'success'
         run: bash ./.github/scripts/stub_iap.sh
 
-      - name: Restore constants.dart
-        run: bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
+      - name: Restore secrets
+        run: |
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
+          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
 
       - uses: subosito/flutter-action@v2
         with:
