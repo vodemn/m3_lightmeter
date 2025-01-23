@@ -115,7 +115,7 @@ jobs:
 
       - name: Download release notes
         continue-on-error: true
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.RELEASE_NOTES_ARTIFACT_NAME }}
           path: ${{ env.RELEASE_NOTES_PATH }}
@@ -136,7 +136,7 @@ jobs:
         run: flutter build ${{ inputs.binary-type }} $BUILD_ARGS
 
       - name: Upload ${{ inputs.binary-type }} to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: m3_lightmeter_${{ inputs.binary-type }}
           path: ${{ inputs.binary-type == 'apk' && env.BUILD_APK_PATH || env.BUILD_AAB_PATH  }}
