@@ -30,7 +30,6 @@ Future<void> runLightmeterApp(Environment env) async {
                 products: [
                   IAPProduct(
                     storeId: IAPProductType.paidFeatures.storeId,
-                    status: IAPProductStatus.purchased,
                     price: '0.0\$',
                   ),
                 ],
