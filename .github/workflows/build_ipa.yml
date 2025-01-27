@@ -117,7 +117,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: "3.27.1"
+          flutter-version: "3.24.5"
 
       - name: Prepare flutter project
         run: |
