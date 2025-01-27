@@ -31,7 +31,7 @@ jobs:
     uses: ./.github/workflows/analyze_and_test.yml
     secrets: inherit
     with:
-      is-fork: ${{ needs.pr-id.outputs.pull-request-id== 'null' || github.event.pull_request.head.repo.full_name == github.repository }}
+      is-fork: ${{ needs.pr-id.outputs.pull-request-id != 'null' && github.event.pull_request.head.repo.full_name != github.repository }}
 
   platform-changes:
     name: Checks for platform changes
