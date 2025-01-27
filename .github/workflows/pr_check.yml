@@ -12,60 +12,26 @@ on:
     branches: ["main"]
 
 jobs:
-  analyze-and-test:
-    name: Analyze & test
+  pr-id:
+    name: Get PR id
     runs-on: macos-14
     timeout-minutes: 10
+    outputs:
+      pull-request-id: ${{ steps.pull-request-id-step.outputs.id }}
     steps:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR
 
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
+      - id: pull-request-id-step
+        run: echo "id=${{ steps.PR.outputs.number }}" >> "$GITHUB_OUTPUT"
 
-      - name: Connect private iap package
-        uses: webfactory/ssh-agent@v0.8.0
-        id: fetch-iap
-        if: steps.PR.outputs.number == 'null' || github.event.pull_request.head.repo.full_name == github.repository
-        with:
-          ssh-private-key: ${{ secrets.M3_LIGHTMETER_IAP_KEY }}
-
-      - name: Override iap package with stub
-        id: override-iap
-        if: steps.fetch-iap.conclusion != 'success'
-        run: bash ./.github/scripts/stub_iap.sh
-
-      - name: Restore secrets
-        run: |
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.CONSTANTS }}" "lib/constants.dart"
-          bash .github/scripts/restore_from_base64.sh "${{ secrets.FIREBASE_OPTIONS }}" "lib/firebase_options.dart"
-
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-          flutter-version: "3.27.1"
-
-      - name: Prepare flutter project
-        run: |
-          flutter --version
-          flutter pub get
-          flutter pub run intl_utils:generate
-
-      - name: Analyze project source
-        run: flutter analyze lib --fatal-infos
-
-      - name: Run tests
-        run: |
-          defaults -currentHost write -g AppleFontSmoothing -int 0
-          flutter test --dart-define cameraStubImage=assets/camera_stub_image.jpg
-
-      - name: Analyze project source with stub
-        if: steps.override-iap.conclusion != 'success'
-        run: |
-          bash ./.github/scripts/stub_iap.sh
-          flutter pub get
-          flutter analyze lib --fatal-infos
+  analyze-and-test:
+    name: Analyze & test
+    needs: [pr-id]
+    uses: ./.github/workflows/analyze_and_test.yml
+    secrets: inherit
+    with:
+      is-fork: ${{ needs.pr-id.outputs.pull-request-id== 'null' || github.event.pull_request.head.repo.full_name == github.repository }}
 
   platform-changes:
     name: Checks for platform changes
