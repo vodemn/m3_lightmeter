@@ -98,6 +98,7 @@ jobs:
     with:
       binary-type: apk
       flavor: prod
+      upload-artifact: false
       stage-backend: false
       version: "1.0.0"
 
@@ -108,20 +109,6 @@ jobs:
     uses: ./.github/workflows/build_ipa.yml
     secrets: inherit
     with:
+      upload-artifact: false
       stage-backend: false
       version: "1.0.0"
-
-  cleanup:
-    name: Cleanup
-    if: ${{ always() }}
-    needs: [build-android, build-ios]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Delete release artifacts
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          failOnError: false
-          name: |
-            m3_lightmeter_apk
-            m3_lightmeter_appbundle
-            m3_lightmeter_ipa

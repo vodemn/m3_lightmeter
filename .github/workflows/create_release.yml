@@ -86,6 +86,7 @@ jobs:
     with:
       binary-type: ${{ matrix.binary-type }}
       flavor: prod
+      upload-artifact: true
       stage-backend: false
       version: ${{ inputs.version }}
 
@@ -96,6 +97,7 @@ jobs:
     uses: ./.github/workflows/build_ipa.yml
     secrets: inherit
     with:
+      upload-artifact: true
       stage-backend: false
       version: ${{ inputs.version }}
 
