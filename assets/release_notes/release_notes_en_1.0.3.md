@@ -1,0 +1,2 @@
+- Fixed camera preview rotation.
+- Improved translations.
