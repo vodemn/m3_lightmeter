@@ -168,7 +168,7 @@ void main() {
         ev: 5,
         exposurePair: timerExposurePair,
       );
-      await tester.tap(find.text(timerExposurePair.shutterSpeed.toString()));
+      await tester.tap(find.text(_mockFilm.reciprocityFailure(timerExposurePair.shutterSpeed).toString()));
       await tester.pumpAndSettle();
       await tester.mockTimerResumedState(timerExposurePair.shutterSpeed);
       await tester.takeScreenshotLight(binding, 'timer');
