@@ -120,10 +120,6 @@ void main() {
     await tester.tap(find.byIcon(Icons.edit_outlined).first);
     await tester.pumpAndSettle();
     await tester.takeScreenshotLight(binding, 'equipment-profiles');
-
-    await tester.tap(find.byIcon(Icons.iso_outlined).first);
-    await tester.pumpAndSettle();
-    await tester.takeScreenshotLight(binding, 'equipment-profiles-iso-picker');
   });
 
   /// and the additionally the first one with the dark theme
