@@ -136,7 +136,7 @@ jobs:
 
       - name: Build .ipa
         run: |
-          flutter build ipa \
+          flutter build ipa ${{ inputs.upload-artifact && '' || '--no-codesign' }} \
             --release \
             --flavor $FLAVOR \
             --target lib/main_$FLAVOR.dart \

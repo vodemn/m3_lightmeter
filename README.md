@@ -23,11 +23,11 @@ Without further delay behold my new Lightmeter app inspired by Material You (a.k
 # Screenshots
 
 <p float="center">
-  <img src="screenshots/generated/android/android/light_metering-reflected.png" width="18.8%" />
-  <img src="screenshots/generated/android/android/light_timer.png" width="18.8%" />
-  <img src="screenshots/generated/android/android/light_settings.png" width="18.8%" />
-  <img src="screenshots/generated/android/android/light_equipment-profiles.png" width="18.8%" />
-  <img src="screenshots/generated/android/android/dark_metering-reflected.png" width="18.8%" />
+  <img src="screenshots/generated/ios/iphone65inch/light_metering-reflected.png" width="18.8%" />
+  <img src="screenshots/generated/ios/iphone65inch/light_equipment-profiles.png" width="18.8%" />
+  <img src="screenshots/generated/ios/iphone65inch/light_settings.png" width="18.8%" />
+  <img src="screenshots/generated/ios/iphone65inch/light_timer.png" width="18.8%" />
+  <img src="screenshots/generated/ios/iphone65inch/dark_metering-reflected.png" width="18.8%" />
 </p>
 
 # Development

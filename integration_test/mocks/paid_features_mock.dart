@@ -53,6 +53,7 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
       () => mockEquipmentProfilesStorageService.updateProfile(
         id: any<String>(named: 'id'),
         name: any<String>(named: 'name'),
+        isUsed: any<bool>(named: 'isUsed'),
       ),
     ).thenAnswer((_) async {});
     when(() => mockEquipmentProfilesStorageService.deleteProfile(any<String>())).thenAnswer((_) async {});
