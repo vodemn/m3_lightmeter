@@ -15,7 +15,6 @@ import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
-import 'package:lightmeter/screens/equipment_profiles/screen_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
@@ -118,13 +117,9 @@ void main() {
 
     await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
     await tester.pumpAndSettle();
-    await tester.tapDescendantTextOf<EquipmentProfilesScreen>(mockEquipmentProfiles.first.name);
+    await tester.tap(find.byIcon(Icons.edit_outlined).first);
     await tester.pumpAndSettle();
     await tester.takeScreenshotLight(binding, 'equipment-profiles');
-
-    await tester.tap(find.byIcon(Icons.iso_outlined).first);
-    await tester.pumpAndSettle();
-    await tester.takeScreenshotLight(binding, 'equipment-profiles-iso-picker');
   });
 
   /// and the additionally the first one with the dark theme
@@ -168,7 +163,7 @@ void main() {
         ev: 5,
         exposurePair: timerExposurePair,
       );
-      await tester.tap(find.text(timerExposurePair.shutterSpeed.toString()));
+      await tester.tap(find.text(_mockFilm.reciprocityFailure(timerExposurePair.shutterSpeed).toString()));
       await tester.pumpAndSettle();
       await tester.mockTimerResumedState(timerExposurePair.shutterSpeed);
       await tester.takeScreenshotLight(binding, 'timer');

@@ -6,3 +6,6 @@ for i in "${simulators_array[@]}"; do # https://www.baeldung.com/linux/shell-scr
     sh screenshots/scripts/generate_screenshots.sh "$i"
 done
 killall 'Simulator'
+
+dart run screenshots/convert_to_store_screenshots.dart -p ios -d iphone_13_pro -l iphone55inch
+dart run screenshots/convert_to_store_screenshots.dart -p ios -d iphone_13_pro -l iphone65inch
