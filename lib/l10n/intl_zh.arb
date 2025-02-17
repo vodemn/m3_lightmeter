@@ -45,6 +45,8 @@
     "cameraFeatureSpotMeteringHint": "长按相机视图可移除测光点",
     "cameraFeatureHistogram": "直方图",
     "cameraFeatureHistogramHint": "启用直方图会增加电池消耗",
+    "cameraFeaturesShowFocalLength": "显示焦距",
+    "cameraFeaturesShowFocalLengthHint": "焦距将在拍摄第一张照片后确定",
     "film": "胶片",
     "filmPush": "胶片 (push)",
     "filmPull": "胶片 (pull)",

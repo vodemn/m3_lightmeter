@@ -45,6 +45,8 @@
     "cameraFeatureSpotMeteringHint": "Long press the camera view to remove metering spot",
     "cameraFeatureHistogram": "Histogram",
     "cameraFeatureHistogramHint": "Enabling histogram can encrease battery drain",
+    "cameraFeaturesShowFocalLength": "Show Focal Length",
+    "cameraFeaturesShowFocalLengthHint": "Focal length will be determined after the first photo is taken",
     "film": "Film",
     "filmPush": "Film (push)",
     "filmPull": "Film (pull)",

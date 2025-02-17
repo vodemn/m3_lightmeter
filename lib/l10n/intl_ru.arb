@@ -45,6 +45,8 @@
     "cameraFeatureSpotMeteringHint": "Используйте долгое нажатие, чтобы удалить точку замера",
     "cameraFeatureHistogram": "Гистограмма",
     "cameraFeatureHistogramHint": "Использование гистограммы может увеличить расход аккумулятора",
+    "cameraFeaturesShowFocalLength": "Показать фокусное расстояние",
+    "cameraFeaturesShowFocalLengthHint": "Фокусное расстояние будет определено после первого снимка",
     "film": "Пленка",
     "filmPush": "Пленка (push)",
     "filmPull": "Пленка (pull)",

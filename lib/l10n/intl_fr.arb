@@ -45,6 +45,8 @@
     "cameraFeatureSpotMeteringHint": "Appuyez longuement sur la vue de l'appareil photo pour supprimer le spot de mesure",
     "cameraFeatureHistogram": "Histogramme",
     "cameraFeatureHistogramHint": "L'activation de l'histogramme peut augmenter la consommation de la batterie",
+    "cameraFeaturesShowFocalLength": "Afficher la focale",
+    "cameraFeaturesShowFocalLengthHint": "La focale sera déterminée après la première photo",
     "film": "Pellicule",
     "filmPush": "Pellicule (push)",
     "filmPull": "Pellicule (pull)",

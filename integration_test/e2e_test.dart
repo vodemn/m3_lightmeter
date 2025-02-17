@@ -305,7 +305,8 @@ Future<void> _expectMeteringState(
   await tester.scrollToTheLastExposurePair(equipmentProfile: equipmentProfile);
   expectExposurePairsListItem(tester, slowest.split(' - ')[0], slowest.split(' - ')[1]);
   expectMeasureButton(ev);
-  expect(find.text(equipmentProfile.lensZoom.toZoom()), findsOneWidget);
+  final BuildContext context = tester.element(find.byType(IsoValuePicker));
+  expect(find.text(equipmentProfile.lensZoom.toZoom(context)), findsOneWidget);
 }
 
 Future<void> _expectMeteringStateAndMeasure(

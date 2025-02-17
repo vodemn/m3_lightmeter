@@ -246,7 +246,7 @@ class _LensZoomListTileBuilder extends StatelessWidget {
         description: S.of(context).lensZoomDescription,
         value: state.lensZoom,
         range: const RangeValues(1, 7),
-        valueAdapter: (_, value) => value.toZoom(),
+        valueAdapter: (context, value) => value.toZoom(context),
         onChanged: (value) {
           context.read<EquipmentProfileEditBloc>().add(EquipmentProfileLensZoomChangedEvent(value));
         },
