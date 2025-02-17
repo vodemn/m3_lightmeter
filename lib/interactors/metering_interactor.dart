@@ -30,8 +30,7 @@ class MeteringInteractor {
     if (_userPreferencesService.caffeine) {
       _caffeineService.keepScreenOn(true);
     }
-    _volumeEventsService
-        .setVolumeHandling(_userPreferencesService.volumeAction != VolumeAction.none);
+    _volumeEventsService.setVolumeHandling(_userPreferencesService.volumeAction != VolumeAction.none);
   }
 
   double get cameraEvCalibration => _userPreferencesService.cameraEvCalibration;
@@ -62,15 +61,11 @@ class MeteringInteractor {
   }
 
   Future<bool> checkCameraPermission() async {
-    return _permissionsService
-        .checkCameraPermission()
-        .then((value) => value == PermissionStatus.granted);
+    return _permissionsService.checkCameraPermission().then((value) => value == PermissionStatus.granted);
   }
 
   Future<bool> requestCameraPermission() async {
-    return _permissionsService
-        .requestCameraPermission()
-        .then((value) => value == PermissionStatus.granted);
+    return _permissionsService.requestCameraPermission().then((value) => value == PermissionStatus.granted);
   }
 
   void openAppSettings() {
@@ -80,4 +75,6 @@ class MeteringInteractor {
   Future<bool> hasAmbientLightSensor() async => _lightSensorService.hasSensor();
 
   Stream<int> luxStream() => _lightSensorService.luxStream();
+
+  void setCameraFocalLength(int focalLength) => _userPreferencesService.cameraFocalLength = focalLength;
 }

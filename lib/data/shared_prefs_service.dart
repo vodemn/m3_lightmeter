@@ -22,6 +22,7 @@ class UserPreferencesService {
   static const lightSensorEvCalibrationKey = "lightSensorEvCalibration";
   static const meteringScreenLayoutKey = "meteringScreenLayout";
   static const cameraFeaturesKey = "cameraFeatures";
+  static const cameraFocalLengthKey = "cameraFocalLength";
 
   static const caffeineKey = "caffeine";
   static const hapticsKey = "haptics";
@@ -118,12 +119,16 @@ class UserPreferencesService {
       return {
         CameraFeature.spotMetering: false,
         CameraFeature.histogram: false,
+        CameraFeature.showFocalLength: false,
       };
     }
   }
 
   set cameraFeatures(CameraFeaturesConfig value) =>
       _sharedPreferences.setString(cameraFeaturesKey, json.encode(value.toJson()));
+
+  int? get cameraFocalLength => _sharedPreferences.getInt(cameraFocalLengthKey);
+  set cameraFocalLength(int? value) => _sharedPreferences.setInt(cameraFocalLengthKey, value!);
 
   bool get caffeine => _sharedPreferences.getBool(caffeineKey) ?? false;
   set caffeine(bool value) => _sharedPreferences.setBool(caffeineKey, value);
