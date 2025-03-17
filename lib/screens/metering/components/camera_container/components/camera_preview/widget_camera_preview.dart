@@ -132,7 +132,7 @@ class _ProFeaturesOverlay extends StatelessWidget {
     );
     final bool hasSpotMetering = UserPreferencesProvider.cameraFeatureOf(
       context,
-      CameraFeature.histogram,
+      CameraFeature.spotMetering,
     );
     return Stack(
       alignment: Alignment.bottomCenter,
