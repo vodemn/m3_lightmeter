@@ -38,40 +38,17 @@ To build this app you need to install Flutter 3.24.5 stable. [How to install](ht
 
 ### 2. Project setup
 
-#### Restore _constants.dart_ file
+#### Restore git-ignored files:
 
-Create a file _lib/constants.dart_ and paste the following content:
-
-```dart
-const String contactEmail = '';
-const String iapServerUrl = '';
-const String issuesReportUrl = '';
-const String sourceCodeUrl = '';
-```
-
-#### Stub IAP package
-
-As part of the app's functionallity is in the private repo, you have to replace these lines in _pubspec.yaml_:
-
-```yaml
-m3_lightmeter_iap:
-  git:
-    url: "https://github.com/vodemn/m3_lightmeter_iap"
-    ref: main
-```
-
-with these:
-
-```yaml
-m3_lightmeter_iap:
-  path: iap
-```
-
-You can do it simply by running the script:
+Run the following script:
 
 ```console
-sh .github/scripts/stub_iap.sh
+sh scripts/setup_fork.sh
 ```
+
+Or create the files manually using the contents from the script.
+
+#### Get dependencies
 
 > If you are using VSCode, you can open the workspace like so: _File -> Open Workspace from File -> m3_lightmeter.code-workspace_. Otherwise you have to run `flutter pub get` command from the iap folder.
 
@@ -82,11 +59,7 @@ flutter pub get
 flutter pub run intl_utils:generate
 ```
 
-### 3. (Optional) Install Firebase
-
-Out of the box Firebase Crashlytics won't work. If you want to add Crashlytics to your local build please follow [this guide](https://firebase.google.com/docs/flutter/setup).
-
-### 4. Build
+### 3. Build
 
 - Checkout [Build .apk](.github/workflows/build_apk.yml) workflow for Android
 - Checkout [Build .ipa](.github/workflows/build_ipa.yml) workflow for iOS
