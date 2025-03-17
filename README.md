@@ -40,7 +40,7 @@ To build this app you need to install Flutter 3.24.5 stable. [How to install](ht
 
 #### Restore git-ignored files:
 
-Run the following script:
+For macOS you can just run the following script:
 
 ```console
 sh scripts/setup_fork.sh
