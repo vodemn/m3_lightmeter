@@ -1,16 +1,12 @@
-constants="const String contactEmail = '';
-const String iapServerUrl = '';
-const String issuesReportUrl = 'https://github.com/vodemn/m3_lightmeter/issues/new/choose';
-const String sourceCodeUrl = 'https://github.com/vodemn/m3_lightmeter/';"
+cp "scripts/mocks/mock_constants.dart" "lib/constants.dart"
+cp "scripts/mocks/mock_firebase_options.dart" "lib/firebase_options.dart"
+cp "scripts/mocks/mock_firebase.json" "firebase.json"
 
-firebase_options="// ignore_for_file: type=lint
-import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+curl -H 'Accept: application/vnd.github.v3.raw' \
+    -o "android/app/google-services.json" \
+    -L "https://api.github.com/repos/firebase/quickstart-android/contents/mock-google-services.json"
+curl -H 'Accept: application/vnd.github.v3.raw' \
+    -o "ios/Runner/GoogleService-Info.plist" \
+    -L "https://api.github.com/repos/firebase/quickstart-ios/contents/mock-GoogleService-Info.plist"
 
-class DefaultFirebaseOptions {
-  static FirebaseOptions get currentPlatform =>
-      FirebaseOptions(apiKey: '', appId: '', messagingSenderId: '', projectId: '');
-}"
-
-echo "$constants" > "lib/constants.dart"
-echo "$firebase_options" > "lib/firebase_options.dart"
 sh .github/scripts/stub_iap.sh
