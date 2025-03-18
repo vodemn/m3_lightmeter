@@ -19,7 +19,7 @@
     "noCamerasDetected": "Scheinbar sind keine Kameras an das Gerät angeschlossen.",
     "noCameraPermission": "Kamera-Erlaubnis nicht erteilt.",
     "otherCameraError": "Beim Verbinden der Kamera ist ein Fehler aufgetreten.",
-    "none": "Keine",
+    "none": "Keiner",
     "cancel": "Abbrechen",
     "select": "Auswählen",
     "save": "Speichern",
