@@ -116,7 +116,7 @@ void testE2E(String description) {
           tester,
           equipmentProfile: mockEquipmentProfiles[0],
           film: mockFilms[0],
-          fastest: 'f/1.8 - 1/20',
+          fastest: 'f/1.8 - 1/200',
           slowest: 'f/16 - 1/2.5',
           iso: '400',
           nd: '2',
