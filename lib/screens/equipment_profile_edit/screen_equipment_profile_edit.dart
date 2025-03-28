@@ -137,6 +137,7 @@ class _NameFieldBuilder extends StatelessWidget {
           bottom: Dimens.paddingS / 2,
         ),
         child: LightmeterTextField(
+          autofocus: true,
           initialValue: state.name,
           maxLength: 48,
           hintText: S.of(context).name,
