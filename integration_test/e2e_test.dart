@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
@@ -53,110 +54,115 @@ void testE2E(String description) {
         customFilms: {},
       );
 
-      /// Create Praktica + Zenitar profile from scratch
-      await tester.openSettings();
-      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.tap(find.byIcon(Icons.add_outlined).first);
-      await tester.pumpAndSettle();
-      await tester.enterProfileName(mockEquipmentProfiles[0].name);
-      await tester.setIsoValues(mockEquipmentProfiles[0].isoValues);
-      await tester.setNdValues(mockEquipmentProfiles[0].ndValues);
-      await tester.setApertureValues(mockEquipmentProfiles[0].apertureValues);
-      await tester.setShutterSpeedValues(mockEquipmentProfiles[0].shutterSpeedValues);
-      await tester.setZoomValue(mockEquipmentProfiles[0].lensZoom);
-      expect(find.text('x1.91'), findsOneWidget);
-      expect(find.text('f/1.7 - f/16'), findsOneWidget);
-      expect(find.text('1/1000 - B'), findsOneWidget);
-      await tester.saveEdits();
+      try {
+        /// Create Praktica + Zenitar profile from scratch
+        await tester.openSettings();
+        await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
+        await tester.tap(find.byIcon(Icons.add_outlined).first);
+        await tester.pumpAndSettle();
+        await tester.enterProfileName(mockEquipmentProfiles[0].name);
+        await tester.setIsoValues(mockEquipmentProfiles[0].isoValues);
+        await tester.setNdValues(mockEquipmentProfiles[0].ndValues);
+        await tester.setApertureValues(mockEquipmentProfiles[0].apertureValues);
+        await tester.setShutterSpeedValues(mockEquipmentProfiles[0].shutterSpeedValues);
+        await tester.setZoomValue(mockEquipmentProfiles[0].lensZoom);
+        expect(find.text('x1.91'), findsOneWidget);
+        expect(find.text('f/1.7 - f/16'), findsOneWidget);
+        expect(find.text('1/1000 - B'), findsOneWidget);
+        await tester.saveEdits();
 
-      /// Create Praktica + Jupiter profile from Zenitar profile
-      await tester.tap(find.byIcon(Icons.edit_outlined));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.copy_outlined).first);
-      await tester.pumpAndSettle();
-      await tester.enterProfileName(mockEquipmentProfiles[1].name);
-      await tester.setApertureValues(mockEquipmentProfiles[1].apertureValues);
-      await tester.setZoomValue(mockEquipmentProfiles[1].lensZoom);
-      expect(find.text('x5.02'), findsOneWidget);
-      expect(find.text('f/3.5 - f/22'), findsOneWidget);
-      expect(find.text('1/1000 - B'), findsNWidgets(1));
-      await tester.saveEdits();
+        /// Create Praktica + Jupiter profile from Zenitar profile
+        await tester.tap(find.byIcon(Icons.edit_outlined));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byIcon(Icons.copy_outlined).first);
+        await tester.pumpAndSettle();
+        await tester.enterProfileName(mockEquipmentProfiles[1].name);
+        await tester.setApertureValues(mockEquipmentProfiles[1].apertureValues);
+        await tester.setZoomValue(mockEquipmentProfiles[1].lensZoom);
+        expect(find.text('x5.02'), findsOneWidget);
+        expect(find.text('f/3.5 - f/22'), findsOneWidget);
+        expect(find.text('1/1000 - B'), findsNWidgets(1));
+        await tester.saveEdits();
 
-      /// Verify that both profiles were added and leave to the main screen
-      expect(find.text(mockEquipmentProfiles[0].name), findsOneWidget);
-      expect(find.text(mockEquipmentProfiles[1].name), findsOneWidget);
-      await tester.navigatorPop();
-      await tester.navigatorPop();
+        /// Verify that both profiles were added and leave to the main screen
+        expect(find.text(mockEquipmentProfiles[0].name), findsOneWidget);
+        expect(find.text(mockEquipmentProfiles[1].name), findsOneWidget);
+        await tester.navigatorPop();
+        await tester.navigatorPop();
 
-      /// Select some initial settings according to the selected gear and film
-      /// Then take a photo and verify, that exposure pairs range and EV matches the selected settings
-      await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[0].name);
-      await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[0].name);
-      await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('400');
-      expectPickerTitle<EquipmentProfilePicker>(mockEquipmentProfiles[0].name);
-      expectPickerTitle<FilmPicker>(mockFilms[0].name);
-      expectPickerTitle<IsoValuePicker>('400');
-      await tester.takePhoto();
-      await _expectMeteringState(
-        tester,
-        equipmentProfile: mockEquipmentProfiles[0],
-        film: mockFilms[0],
-        fastest: 'f/1.8 - 1/400',
-        slowest: 'f/16 - 1/5',
-        iso: '400',
-        nd: 'None',
-        ev: mockPhotoEv100 + 2,
-      );
+        /// Select some initial settings according to the selected gear and film
+        /// Then take a photo and verify, that exposure pairs range and EV matches the selected settings
+        await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[0].name);
+        await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[0].name);
+        await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('400');
+        expectPickerTitle<EquipmentProfilePicker>(mockEquipmentProfiles[0].name);
+        expectPickerTitle<FilmPicker>(mockFilms[0].name);
+        expectPickerTitle<IsoValuePicker>('400');
+        await tester.takePhoto();
+        await _expectMeteringState(
+          tester,
+          equipmentProfile: mockEquipmentProfiles[0],
+          film: mockFilms[0],
+          fastest: 'f/1.8 - 1/400',
+          slowest: 'f/16 - 1/5',
+          iso: '400',
+          nd: 'None',
+          ev: mockPhotoEv100 + 2,
+        );
 
-      /// Add ND to shoot another scene
-      await tester.openPickerAndSelect<NdValuePicker, NdValue>('2');
-      await _expectMeteringStateAndMeasure(
-        tester,
-        equipmentProfile: mockEquipmentProfiles[0],
-        film: mockFilms[0],
-        fastest: 'f/1.8 - 1/200',
-        slowest: 'f/16 - 1/2.5',
-        iso: '400',
-        nd: '2',
-        ev: mockPhotoEv100 + 2 - 1,
-      );
+        /// Add ND to shoot another scene
+        await tester.openPickerAndSelect<NdValuePicker, NdValue>('2');
+        await _expectMeteringStateAndMeasure(
+          tester,
+          equipmentProfile: mockEquipmentProfiles[0],
+          film: mockFilms[0],
+          fastest: 'f/1.8 - 1/20',
+          slowest: 'f/16 - 1/2.5',
+          iso: '400',
+          nd: '2',
+          ev: mockPhotoEv100 + 2 - 1,
+        );
 
-      /// Select another lens without ND
-      await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[1].name);
-      await tester.openPickerAndSelect<NdValuePicker, NdValue>('None');
-      await _expectMeteringStateAndMeasure(
-        tester,
-        equipmentProfile: mockEquipmentProfiles[1],
-        film: mockFilms[0],
-        fastest: 'f/3.5 - 1/100',
-        slowest: 'f/22 - 1/2.5',
-        iso: '400',
-        nd: 'None',
-        ev: mockPhotoEv100 + 2,
-      );
+        /// Select another lens without ND
+        await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[1].name);
+        await tester.openPickerAndSelect<NdValuePicker, NdValue>('None');
+        await _expectMeteringStateAndMeasure(
+          tester,
+          equipmentProfile: mockEquipmentProfiles[1],
+          film: mockFilms[0],
+          fastest: 'f/3.5 - 1/100',
+          slowest: 'f/22 - 1/2.5',
+          iso: '400',
+          nd: 'None',
+          ev: mockPhotoEv100 + 2,
+        );
 
-      /// Set another film and another ISO
-      await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('200');
-      await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[1].name);
-      await _expectMeteringStateAndMeasure(
-        tester,
-        equipmentProfile: mockEquipmentProfiles[1],
-        film: mockFilms[1],
-        fastest: 'f/3.5 - 1/50',
-        slowest: 'f/22 - 1/1.3',
-        iso: '200',
-        nd: 'None',
-        ev: mockPhotoEv100 + 1,
-      );
+        /// Set another film and another ISO
+        await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('200');
+        await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[1].name);
+        await _expectMeteringStateAndMeasure(
+          tester,
+          equipmentProfile: mockEquipmentProfiles[1],
+          film: mockFilms[1],
+          fastest: 'f/3.5 - 1/50',
+          slowest: 'f/22 - 1/1.3',
+          iso: '200',
+          nd: 'None',
+          ev: mockPhotoEv100 + 1,
+        );
 
-      /// Delete profile
-      await tester.openSettings();
-      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.tap(find.byIcon(Icons.edit_outlined).first);
-      await tester.pumpAndSettle();
-      await tester.deleteEdits();
-      expect(find.text(mockEquipmentProfiles[0].name), findsNothing);
-      expect(find.text(mockEquipmentProfiles[1].name), findsOneWidget);
+        /// Delete profile
+        await tester.openSettings();
+        await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
+        await tester.tap(find.byIcon(Icons.edit_outlined).first);
+        await tester.pumpAndSettle();
+        await tester.deleteEdits();
+        expect(find.text(mockEquipmentProfiles[0].name), findsNothing);
+        expect(find.text(mockEquipmentProfiles[1].name), findsOneWidget);
+      } on TestFailure catch (_) {
+        await tester._takeScreenshot('screenshot_e2e');
+        rethrow;
+      }
     },
   );
 }
@@ -348,4 +354,11 @@ void expectMeasureButton(double ev) {
     of: find.byType(MeteringBottomControls),
     matching: find.text('${ev.toStringAsFixed(1)}\n${S.current.ev}'),
   );
+}
+
+extension on WidgetTester {
+  Future<void> _takeScreenshot(String name) async {
+    await IntegrationTestWidgetsFlutterBinding.instance.takeScreenshot(name);
+    await pumpAndSettle();
+  }
 }
