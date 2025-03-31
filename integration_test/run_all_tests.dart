@@ -9,10 +9,5 @@ void main() {
 
   testPurchases('Purchase & refund premium features');
   testToggleLayoutFeatures('Toggle metering screen layout features');
-  testE2E(
-    'e2e',
-    screenshotCallback: () async {
-      await IntegrationTestWidgetsFlutterBinding.instance.takeScreenshot('screenshot_e2e');
-    },
-  );
+  testE2E('e2e');
 }

@@ -27,7 +27,7 @@ import 'mocks/paid_features_mock.dart';
 import 'utils/expectations.dart';
 
 @isTest
-void testE2E(String description, {required Future<void> Function() screenshotCallback}) {
+void testE2E(String description) {
   setUp(() async {
     SharedPreferences.setMockInitialValues({
       /// Metering values
@@ -76,7 +76,6 @@ void testE2E(String description, {required Future<void> Function() screenshotCal
       await tester.pumpAndSettle();
       await tester.enterProfileName(mockEquipmentProfiles[1].name);
       await tester.setApertureValues(mockEquipmentProfiles[1].apertureValues);
-      await screenshotCallback();
       await tester.setZoomValue(mockEquipmentProfiles[1].lensZoom);
       expect(find.text('x5.02'), findsOneWidget);
       expect(find.text('f/3.5 - f/22'), findsOneWidget);
@@ -98,7 +97,6 @@ void testE2E(String description, {required Future<void> Function() screenshotCal
       expectPickerTitle<FilmPicker>(mockFilms[0].name);
       expectPickerTitle<IsoValuePicker>('400');
       await tester.takePhoto();
-      await screenshotCallback();
       await _expectMeteringState(
         tester,
         equipmentProfile: mockEquipmentProfiles[0],
@@ -112,7 +110,6 @@ void testE2E(String description, {required Future<void> Function() screenshotCal
 
       /// Add ND to shoot another scene
       await tester.openPickerAndSelect<NdValuePicker, NdValue>('2');
-      await screenshotCallback();
       await _expectMeteringStateAndMeasure(
         tester,
         equipmentProfile: mockEquipmentProfiles[0],
@@ -127,7 +124,6 @@ void testE2E(String description, {required Future<void> Function() screenshotCal
       /// Select another lens without ND
       await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[1].name);
       await tester.openPickerAndSelect<NdValuePicker, NdValue>('None');
-      await screenshotCallback();
       await _expectMeteringStateAndMeasure(
         tester,
         equipmentProfile: mockEquipmentProfiles[1],
@@ -142,7 +138,6 @@ void testE2E(String description, {required Future<void> Function() screenshotCal
       /// Set another film and another ISO
       await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('200');
       await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[1].name);
-      await screenshotCallback();
       await _expectMeteringStateAndMeasure(
         tester,
         equipmentProfile: mockEquipmentProfiles[1],
