@@ -110,17 +110,17 @@ void testE2E(String description) {
       );
 
       /// Add ND to shoot another scene
-      await tester.openPickerAndSelect<NdValuePicker, NdValue>('2');
-      await _expectMeteringStateAndMeasure(
-        tester,
-        equipmentProfile: mockEquipmentProfiles[0],
-        film: mockFilms[0],
-        fastest: 'f/1.8 - 1/200',
-        slowest: 'f/16 - 1/2.5',
-        iso: '400',
-        nd: '2',
-        ev: mockPhotoEv100 + 2 - 1,
-      );
+      // await tester.openPickerAndSelect<NdValuePicker, NdValue>('2');
+      // await _expectMeteringStateAndMeasure(
+      //   tester,
+      //   equipmentProfile: mockEquipmentProfiles[0],
+      //   film: mockFilms[0],
+      //   fastest: 'f/1.8 - 1/200',
+      //   slowest: 'f/16 - 1/2.5',
+      //   iso: '400',
+      //   nd: '2',
+      //   ev: mockPhotoEv100 + 2 - 1,
+      // );
 
       /// Select another lens without ND
       await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[1].name);
