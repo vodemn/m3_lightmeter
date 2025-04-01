@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
@@ -307,8 +306,6 @@ Future<void> _expectMeteringState(
   expectExposurePairsListItem(tester, slowest.split(' - ')[0], slowest.split(' - ')[1]);
   expectMeasureButton(ev);
   expect(find.text(equipmentProfile.lensZoom.toZoom()), findsOneWidget);
-  await IntegrationTestWidgetsFlutterBinding.instance.takeScreenshot('');
-  await tester.pumpAndSettle();
 }
 
 Future<void> _expectMeteringStateAndMeasure(
