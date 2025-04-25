@@ -86,6 +86,12 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
             }
           });
         }
+      case final communication_states.EquipmentProfileChangedState communicationState:
+        if (state is CameraActiveState) {
+          add(ZoomChangedEvent(communicationState.profile.lensZoom));
+        } else {
+          _currentZoom = communicationState.profile.lensZoom;
+        }
       case communication_states.SettingsOpenedState():
         _settingsOpened = true;
         add(const DeinitializeEvent());
@@ -139,25 +145,6 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       await _cameraController!.setFlashMode(FlashMode.off);
       await _cameraController!.lockCaptureOrientation(DeviceOrientation.portraitUp);
 
-      /// For app startup initialization this effectively isn't executed.
-      await Future.wait<void>([
-        if (_currentZoom != 1.0) _cameraController!.setZoomLevel(_currentZoom),
-        if (_currentExposureOffset != 0.0) _cameraController!.setExposureOffset(_currentExposureOffset),
-      ]);
-
-      if (_zoomRange == null) {
-        await Future.wait<double>([
-          _cameraController!.getMinZoomLevel(),
-          _cameraController!.getMaxZoomLevel(),
-        ]).then((value) {
-          _zoomRange = RangeValues(
-            math.max(1.0, value[0]),
-            math.min(_maxZoom, value[1]),
-          );
-          _currentZoom = _zoomRange!.start;
-        });
-      }
-
       if (_exposureOffsetRange == null) {
         await Future.wait<double>([
           _cameraController!.getMinExposureOffset(),
@@ -173,6 +160,27 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
         });
       }
 
+      if (_zoomRange == null) {
+        await Future.wait<double>([
+          _cameraController!.getMinZoomLevel(),
+          _cameraController!.getMaxZoomLevel(),
+        ]).then((value) {
+          _zoomRange = RangeValues(
+            math.max(1.0, value[0]),
+            math.min(_maxZoom, value[1]),
+          );
+          if (_currentZoom < _zoomRange!.start || _currentZoom > _zoomRange!.end) {
+            _currentZoom = _zoomRange!.start;
+          }
+        });
+      }
+
+      /// For app startup initialization this effectively isn't executed.
+      await Future.wait<void>([
+        if (_currentZoom != 1.0) _cameraController!.setZoomLevel(_currentZoom),
+        if (_currentExposureOffset != 0.0) _cameraController!.setExposureOffset(_currentExposureOffset),
+      ]);
+
       emit(CameraInitializedState(_cameraController!));
       _emitActiveState(emit);
     } catch (e) {
@@ -187,7 +195,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
-    if (_cameraController != null) {
+    if (_cameraController != null && _zoomRange != null) {
       final double zoom = event.value.clamp(_zoomRange!.start, _zoomRange!.end);
       _cameraController!.setZoomLevel(zoom);
       _currentZoom = zoom;
