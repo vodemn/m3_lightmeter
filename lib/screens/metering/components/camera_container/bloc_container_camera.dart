@@ -181,7 +181,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
         if (_currentExposureOffset != 0.0) cameraController.setExposureOffset(_currentExposureOffset),
       ]);
 
-      this._cameraController = cameraController;
+      _cameraController = cameraController;
       emit(CameraInitializedState(cameraController));
       _emitActiveState(emit);
     } catch (e) {
