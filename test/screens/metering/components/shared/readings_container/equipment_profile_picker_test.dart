@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -33,8 +35,11 @@ void main() {
         ],
         child: EquipmentProfilesProvider(
           storageService: storageService,
-          child: const WidgetTestApplicationMock(
-            child: Row(children: [Expanded(child: EquipmentProfilePicker())]),
+          child: WidgetTestApplicationMock(
+            child: BlocProvider(
+              create: (_) => MeteringCommunicationBloc(),
+              child: const Row(children: [Expanded(child: EquipmentProfilePicker())]),
+            ),
           ),
         ),
       ),

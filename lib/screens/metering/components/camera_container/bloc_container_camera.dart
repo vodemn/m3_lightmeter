@@ -136,20 +136,20 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
         }
       }
 
-      _cameraController = CameraController(
+      final cameraController = CameraController(
         _camera!,
         ResolutionPreset.low,
         enableAudio: false,
       );
-      await _cameraController!.initialize();
-      await _cameraController!.setFlashMode(FlashMode.off);
-      await _cameraController!.lockCaptureOrientation(DeviceOrientation.portraitUp);
+      await cameraController.initialize();
+      await cameraController.setFlashMode(FlashMode.off);
+      await cameraController.lockCaptureOrientation(DeviceOrientation.portraitUp);
 
       if (_exposureOffsetRange == null) {
         await Future.wait<double>([
-          _cameraController!.getMinExposureOffset(),
-          _cameraController!.getMaxExposureOffset(),
-          _cameraController!.getExposureOffsetStepSize(),
+          cameraController.getMinExposureOffset(),
+          cameraController.getMaxExposureOffset(),
+          cameraController.getExposureOffsetStepSize(),
         ]).then((value) {
           _exposureOffsetRange = RangeValues(
             math.max(_exposureMaxRange.start, value[0]),
@@ -162,8 +162,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
       if (_zoomRange == null) {
         await Future.wait<double>([
-          _cameraController!.getMinZoomLevel(),
-          _cameraController!.getMaxZoomLevel(),
+          cameraController.getMinZoomLevel(),
+          cameraController.getMaxZoomLevel(),
         ]).then((value) {
           _zoomRange = RangeValues(
             math.max(1.0, value[0]),
@@ -177,11 +177,12 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
 
       /// For app startup initialization this effectively isn't executed.
       await Future.wait<void>([
-        if (_currentZoom != 1.0) _cameraController!.setZoomLevel(_currentZoom),
-        if (_currentExposureOffset != 0.0) _cameraController!.setExposureOffset(_currentExposureOffset),
+        if (_currentZoom != 1.0) cameraController.setZoomLevel(_currentZoom),
+        if (_currentExposureOffset != 0.0) cameraController.setExposureOffset(_currentExposureOffset),
       ]);
 
-      emit(CameraInitializedState(_cameraController!));
+      this._cameraController = cameraController;
+      emit(CameraInitializedState(cameraController));
       _emitActiveState(emit);
     } catch (e) {
       emit(const CameraErrorState(CameraErrorType.other));
