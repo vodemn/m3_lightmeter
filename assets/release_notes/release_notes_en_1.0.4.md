@@ -1,0 +1,3 @@
+- Fixed histogram being affected by spot metering.
+- Improved text fields focus handling.
+- Added German translation.

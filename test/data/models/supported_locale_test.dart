@@ -7,6 +7,7 @@ void main() {
     expect(SupportedLocale.fr.intlName, 'fr');
     expect(SupportedLocale.ru.intlName, 'ru');
     expect(SupportedLocale.zh.intlName, 'zh');
+    expect(SupportedLocale.de.intlName, 'de');
   });
 
   test('localizedName', () {
@@ -14,5 +15,6 @@ void main() {
     expect(SupportedLocale.fr.localizedName, 'Français');
     expect(SupportedLocale.ru.localizedName, 'Русский');
     expect(SupportedLocale.zh.localizedName, '简体中文');
+    expect(SupportedLocale.de.localizedName, 'Deutsch');
   });
 }

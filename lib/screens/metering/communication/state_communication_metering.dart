@@ -1,3 +1,5 @@
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+
 sealed class MeteringCommunicationState {
   const MeteringCommunicationState();
 }
@@ -16,6 +18,12 @@ sealed class ScreenState extends MeteringCommunicationState {
 
 class MeasureState extends SourceState {
   const MeasureState();
+}
+
+class EquipmentProfileChangedState extends SourceState {
+  final EquipmentProfile profile;
+
+  const EquipmentProfileChangedState(this.profile);
 }
 
 sealed class MeasuredState extends ScreenState {

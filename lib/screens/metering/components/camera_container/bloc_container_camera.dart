@@ -27,11 +27,12 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   final LightmeterAnalytics _analytics;
   late final _WidgetsBindingObserver _observer;
 
+  CameraDescription? _camera;
   CameraController? _cameraController;
 
   static const _maxZoom = 7.0;
   RangeValues? _zoomRange;
-  double _currentZoom = 0.0;
+  double _currentZoom = 1.0;
 
   static const _exposureMaxRange = RangeValues(-4, 4);
   RangeValues? _exposureOffsetRange;
@@ -86,6 +87,12 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
             }
           });
         }
+      case final communication_states.EquipmentProfileChangedState communicationState:
+        if (state is CameraActiveState) {
+          add(ZoomChangedEvent(communicationState.profile.lensZoom));
+        } else {
+          _currentZoom = communicationState.profile.lensZoom;
+        }
       case communication_states.SettingsOpenedState():
         _settingsOpened = true;
         add(const DeinitializeEvent());
@@ -117,46 +124,66 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     }
 
     try {
-      final cameras = await availableCameras();
-      if (cameras.isEmpty) {
-        emit(const CameraErrorState(CameraErrorType.noCamerasDetected));
-        return;
+      if (_camera == null) {
+        final cameras = await availableCameras();
+        if (cameras.isEmpty) {
+          emit(const CameraErrorState(CameraErrorType.noCamerasDetected));
+          return;
+        } else {
+          _camera = cameras.firstWhere(
+            (camera) => camera.lensDirection == CameraLensDirection.back,
+            orElse: () => cameras.last,
+          );
+        }
       }
-      _cameraController = CameraController(
-        cameras.firstWhere(
-          (camera) => camera.lensDirection == CameraLensDirection.back,
-          orElse: () => cameras.last,
-        ),
+
+      final cameraController = CameraController(
+        _camera!,
         ResolutionPreset.low,
         enableAudio: false,
       );
+      await cameraController.initialize();
+      await cameraController.setFlashMode(FlashMode.off);
+      await cameraController.lockCaptureOrientation(DeviceOrientation.portraitUp);
 
-      await _cameraController!.initialize();
-      await _cameraController!.setFlashMode(FlashMode.off);
-      await _cameraController!.lockCaptureOrientation(DeviceOrientation.portraitUp);
+      if (_exposureOffsetRange == null) {
+        await Future.wait<double>([
+          cameraController.getMinExposureOffset(),
+          cameraController.getMaxExposureOffset(),
+          cameraController.getExposureOffsetStepSize(),
+        ]).then((value) {
+          _exposureOffsetRange = RangeValues(
+            math.max(_exposureMaxRange.start, value[0]),
+            math.min(_exposureMaxRange.end, value[1]),
+          );
+          _currentExposureOffset = 0.0;
+          _exposureStep = value[2] == 0 ? 0.1 : value[2];
+        });
+      }
 
-      _zoomRange = await Future.wait<double>([
-        _cameraController!.getMinZoomLevel(),
-        _cameraController!.getMaxZoomLevel(),
-      ]).then((levels) => RangeValues(math.max(1.0, levels[0]), math.min(_maxZoom, levels[1])));
-      _currentZoom = _zoomRange!.start;
+      if (_zoomRange == null) {
+        await Future.wait<double>([
+          cameraController.getMinZoomLevel(),
+          cameraController.getMaxZoomLevel(),
+        ]).then((value) {
+          _zoomRange = RangeValues(
+            math.max(1.0, value[0]),
+            math.min(_maxZoom, value[1]),
+          );
+          if (_currentZoom < _zoomRange!.start || _currentZoom > _zoomRange!.end) {
+            _currentZoom = _zoomRange!.start;
+          }
+        });
+      }
 
-      _exposureOffsetRange = await Future.wait<double>([
-        _cameraController!.getMinExposureOffset(),
-        _cameraController!.getMaxExposureOffset(),
-      ]).then(
-        (levels) => RangeValues(
-          math.max(_exposureMaxRange.start, levels[0]),
-          math.min(_exposureMaxRange.end, levels[1]),
-        ),
-      );
-      await _cameraController!.getExposureOffsetStepSize().then((value) {
-        _exposureStep = value == 0 ? 0.1 : value;
-      });
-      _currentExposureOffset = 0.0;
+      /// For app startup initialization this effectively isn't executed.
+      await Future.wait<void>([
+        if (_currentZoom != 1.0) cameraController.setZoomLevel(_currentZoom),
+        if (_currentExposureOffset != 0.0) cameraController.setExposureOffset(_currentExposureOffset),
+      ]);
 
-      emit(CameraInitializedState(_cameraController!));
-
+      _cameraController = cameraController;
+      emit(CameraInitializedState(cameraController));
       _emitActiveState(emit);
     } catch (e, stackTrace) {
       _analytics.logCrash(e, stackTrace);
@@ -171,7 +198,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   }
 
   Future<void> _onZoomChanged(ZoomChangedEvent event, Emitter emit) async {
-    if (_cameraController != null) {
+    if (_cameraController != null && _zoomRange != null) {
       final double zoom = event.value.clamp(_zoomRange!.start, _zoomRange!.end);
       _cameraController!.setZoomLevel(zoom);
       _currentZoom = zoom;

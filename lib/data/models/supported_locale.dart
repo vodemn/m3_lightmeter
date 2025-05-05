@@ -1,10 +1,12 @@
-enum SupportedLocale { en, fr, ru, zh }
+enum SupportedLocale { de, en, fr, ru, zh }
 
 extension SupportedLocaleExtension on SupportedLocale {
   String get intlName => toString().replaceAll("SupportedLocale.", "");
 
   String get localizedName {
     switch (this) {
+      case SupportedLocale.de:
+        return 'Deutsch';
       case SupportedLocale.en:
         return 'English';
       case SupportedLocale.fr:
