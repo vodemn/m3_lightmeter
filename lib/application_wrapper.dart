@@ -5,6 +5,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/data/analytics/api/analytics_firebase.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
+import 'package:lightmeter/data/camera_info_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/permissions_service.dart';
@@ -99,11 +100,13 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
     await Future.wait([
       SharedPreferences.getInstance(),
       const LightSensorService(LocalPlatform()).hasSensor(),
+      const CameraInfoService().mainCameraEfl(),
       remoteConfigService.activeAndFetchFeatures(),
       equipmentProfilesStorageService.init(),
       filmsStorageService.init(),
     ]).then((value) {
-      userPreferencesService = UserPreferencesService((value[0] as SharedPreferences?)!);
+      userPreferencesService = UserPreferencesService((value[0] as SharedPreferences?)!)
+        ..cameraFocalLength = value[2] as int?;
       hasLightSensor = value[1] as bool? ?? false;
     });
   }

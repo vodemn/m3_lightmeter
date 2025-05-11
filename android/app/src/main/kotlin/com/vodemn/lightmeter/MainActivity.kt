@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.core.view.WindowCompat
+import com.vodemn.lightmeter.PlatformChannels.CameraInfoPlatformChannel
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
@@ -17,6 +18,8 @@ class MainActivity : FlutterActivity() {
     private var volumeEventsEmitter: EventSink? = null
     private var handleVolume = false
 
+    private val cameraInfoPlatformChannel = CameraInfoPlatformChannel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -24,6 +27,8 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        cameraInfoPlatformChannel.onAttachedToEngine(flutterEngine.dartExecutor.binaryMessenger, context)
+
         keepScreenOnChannel = MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             "com.vodemn.lightmeter/keepScreenOn"
@@ -76,6 +81,7 @@ class MainActivity : FlutterActivity() {
         keepScreenOnChannel.setMethodCallHandler(null)
         volumeHandlingChannel.setMethodCallHandler(null)
         volumeEventChannel.setStreamHandler(null)
+        cameraInfoPlatformChannel.onDestroy()
         super.onDestroy()
     }
 
