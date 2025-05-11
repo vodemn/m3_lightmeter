@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:lightmeter/data/camera_info_service.dart';
 import 'package:lightmeter/data/models/camera_feature.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
@@ -95,6 +96,19 @@ void main() {
 
   setUpAll(() async {
     if (Platform.isAndroid) await binding.convertFlutterSurfaceToImage();
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      CameraInfoService.cameraInfoPlatformChannel,
+      (methodCall) async {
+        switch (methodCall.method) {
+          case "mainCameraEfl":
+            return Platform.isAndroid
+                ? 24.0 // Pixel 6
+                : 26.0; // iPhone 13 Pro
+          default:
+            return null;
+        }
+      },
+    );
   });
 
   /// Generates several screenshots with the light theme
@@ -128,6 +142,9 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.edit_outlined).first);
     await tester.pumpAndSettle();
+    await tester.tap(find.text(S.current.isoValues)); // open and close a dialog to hide keyboard
+    await tester.pumpAndSettle();
+    await tester.tapCancelButton();
     await tester.takeScreenshotLight(binding, 'equipment-profiles');
   });
 
