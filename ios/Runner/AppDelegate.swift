@@ -9,6 +9,7 @@ import Flutter
     ) -> Bool {
         let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
         let caffeinePlatformChannel = CaffeinePlatformChannel(binaryMessenger: controller.binaryMessenger)
+        let cameraInfoPlatformChannel = CameraInfoPlatformChannel(binaryMessenger: controller.binaryMessenger)
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }

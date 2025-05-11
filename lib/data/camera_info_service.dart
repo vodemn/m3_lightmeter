@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -12,9 +10,7 @@ class CameraInfoService {
   const CameraInfoService();
 
   Future<int?> mainCameraEfl() async {
-    if (Platform.isIOS) {
-      return null;
-    }
-    return (await cameraInfoPlatformChannel.invokeMethod<double?>('mainCameraEfl'))?.round();
+    final focalLength = await cameraInfoPlatformChannel.invokeMethod<double?>('mainCameraEfl');
+    return focalLength?.round();
   }
 }

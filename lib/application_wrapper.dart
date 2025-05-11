@@ -100,11 +100,13 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
     await Future.wait([
       SharedPreferences.getInstance(),
       const LightSensorService(LocalPlatform()).hasSensor(),
+      const CameraInfoService().mainCameraEfl(),
       remoteConfigService.activeAndFetchFeatures(),
       equipmentProfilesStorageService.init(),
       filmsStorageService.init(),
     ]).then((value) {
-      userPreferencesService = UserPreferencesService((value[0] as SharedPreferences?)!);
+      userPreferencesService = UserPreferencesService((value[0] as SharedPreferences?)!)
+        ..cameraFocalLength = value[2] as int?;
       hasLightSensor = value[1] as bool? ?? false;
     });
   }
