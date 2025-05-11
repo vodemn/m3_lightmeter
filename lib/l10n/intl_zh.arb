@@ -46,7 +46,7 @@
     "cameraFeatureHistogram": "直方图",
     "cameraFeatureHistogramHint": "启用直方图会增加电池消耗",
     "cameraFeaturesShowFocalLength": "显示焦距",
-    "cameraFeaturesShowFocalLengthHint": "焦距将在拍摄第一张照片后确定",
+    "cameraFeaturesShowFocalLengthHint": "显示 35mm 等效焦距而非变焦倍数",
     "film": "胶片",
     "filmPush": "胶片 (push)",
     "filmPull": "胶片 (pull)",

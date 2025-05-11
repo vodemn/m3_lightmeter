@@ -46,7 +46,7 @@
     "cameraFeatureHistogram": "Гистограмма",
     "cameraFeatureHistogramHint": "Использование гистограммы может увеличить расход аккумулятора",
     "cameraFeaturesShowFocalLength": "Показать фокусное расстояние",
-    "cameraFeaturesShowFocalLengthHint": "Фокусное расстояние будет определено после первого снимка",
+    "cameraFeaturesShowFocalLengthHint": "Показывает эквивалент фокусного расстояния (35 мм) вместо коэффициента зума",
     "film": "Пленка",
     "filmPush": "Пленка (push)",
     "filmPull": "Пленка (pull)",

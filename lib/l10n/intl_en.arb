@@ -46,7 +46,7 @@
     "cameraFeatureHistogram": "Histogram",
     "cameraFeatureHistogramHint": "Enabling histogram can encrease battery drain",
     "cameraFeaturesShowFocalLength": "Show Focal Length",
-    "cameraFeaturesShowFocalLengthHint": "Focal length will be determined after the first photo is taken",
+    "cameraFeaturesShowFocalLengthHint": "Displays 35mm equivalent focal length instead of zoom factor",
     "film": "Film",
     "filmPush": "Film (push)",
     "filmPull": "Film (pull)",

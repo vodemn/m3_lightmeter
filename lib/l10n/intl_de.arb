@@ -45,6 +45,8 @@
     "cameraFeatureSpotMeteringHint": "Halte die Kameraansicht gedrückt um den Messpunkt zu entfernen",
     "cameraFeatureHistogram": "Histogramm",
     "cameraFeatureHistogramHint": "Verwendung des Histogramms kann den Batterieverbrauch erhöhen",
+    "cameraFeaturesShowFocalLength": "Brennweite anzeigen",
+    "cameraFeaturesShowFocalLengthHint": "Zeigt die 35mm-äquivalente Brennweite statt des Zoomfaktors an",
     "film": "Film",
     "filmPush": "Film (push)",
     "filmPull": "Film (pull)",
