@@ -6,7 +6,6 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 const String _isoExifKey = 'EXIF ISOSpeedRatings';
 const String _apertureExifKey = 'EXIF FNumber';
 const String _shutterSpeedExifKey = 'EXIF ExposureTime';
-const String _focalLengthIn35mmExifKey = "EXIF FocalLengthIn35mmFilm";
 
 double evFromTags(Map<String, IfdTag> tags) {
   final iso = double.tryParse("${tags[_isoExifKey]}");
@@ -28,15 +27,4 @@ double evFromTags(Map<String, IfdTag> tags) {
   final speed = speedValueRatio.toDouble();
 
   return log2(math.pow(aperture, 2)) - log2(speed) - log2(iso / 100);
-}
-
-int focalLengthFromTags(Map<String, IfdTag> tags) {
-  final focalLengthIn35mm = int.tryParse("${tags[_focalLengthIn35mmExifKey]}");
-  if (focalLengthIn35mm == null) {
-    throw ArgumentError(
-      'Error parsing focal length',
-      ['$_focalLengthIn35mmExifKey: ${tags[_focalLengthIn35mmExifKey]}'].join(', '),
-    );
-  }
-  return focalLengthIn35mm;
 }

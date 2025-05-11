@@ -250,7 +250,6 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       final bytes = await file.readAsBytes();
       Directory(file.path).deleteSync(recursive: true);
       final tags = await readExifFromBytes(bytes);
-      _meteringInteractor.setCameraFocalLength(focalLengthFromTags(tags));
       return evFromTags(tags);
     } catch (e, stackTrace) {
       _analytics.logCrash(e, stackTrace);
