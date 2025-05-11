@@ -11,7 +11,7 @@ void main() {
       () async {
         final bytes = File('assets/camera_stub_image.jpg').readAsBytesSync();
         final tags = await readExifFromBytes(bytes);
-        expectLater(evFromTags(tags), completion(8.25230310752341));
+        expect(evFromTags(tags), 8.25230310752341);
       },
     );
 
@@ -20,7 +20,7 @@ void main() {
       () async {
         final bytes = File('assets/launcher_icon_dev_512.png').readAsBytesSync();
         final tags = await readExifFromBytes(bytes);
-        expectLater(evFromTags(tags), throwsArgumentError);
+        expect(() => evFromTags(tags), throwsArgumentError);
       },
     );
   });

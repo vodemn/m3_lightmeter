@@ -11,11 +11,13 @@ void main() {
             {
               'spotMetering': true,
               'histogram': true,
+              'showFocalLength': true,
             },
           ),
           {
             CameraFeature.spotMetering: true,
             CameraFeature.histogram: true,
+            CameraFeature.showFocalLength: true,
           },
         );
       });
@@ -26,6 +28,7 @@ void main() {
           {
             CameraFeature.spotMetering: false,
             CameraFeature.histogram: false,
+            CameraFeature.showFocalLength: false,
           },
         );
       });
