@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/films_provider.dart';
@@ -115,7 +117,9 @@ final mockEquipmentProfiles = [
       IsoValue(1600, StopType.full),
       IsoValue(3200, StopType.full),
     ],
-    lensZoom: 1.91,
+    lensZoom: Platform.isAndroid
+        ? 2.083333 // Pixel 6
+        : 1.923, // iPhone 13 Pro
   ),
   EquipmentProfile(
     id: '2',
@@ -145,7 +149,9 @@ final mockEquipmentProfiles = [
       IsoValue(1600, StopType.full),
       IsoValue(3200, StopType.full),
     ],
-    lensZoom: 5.02,
+    lensZoom: Platform.isAndroid
+        ? 5.625 // Pixel 6
+        : 5.1923, // iPhone 13 Pro
   ),
 ];
 
