@@ -27,14 +27,14 @@ void main() {
     localPlatform = _MockLocalPlatform();
     service = VolumeEventsService(localPlatform);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      VolumeEventsService.volumeHandlingChannel,
+      VolumeEventsService.volumeMethodChannel,
       methodCallSuccessHandler,
     );
   });
 
   tearDown(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      VolumeEventsService.volumeHandlingChannel,
+      VolumeEventsService.volumeMethodChannel,
       null,
     );
   });

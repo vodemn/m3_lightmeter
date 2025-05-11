@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 
 class CameraInfoService {
   @visibleForTesting
-  static const cameraInfoPlatformChannel = MethodChannel("com.vodemn.lightmeter.CameraInfoPlatformChannel");
+  static const cameraInfoPlatformChannel = MethodChannel(
+    "com.vodemn.lightmeter.CameraInfoPlatformChannel.MethodChannel",
+  );
 
   const CameraInfoService();
 
