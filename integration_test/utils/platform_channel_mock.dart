@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:light_sensor/light_sensor.dart';
+import 'package:lightmeter/data/camera_info_service.dart';
 
 void setLightSensorAvilability({required bool hasSensor}) {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -54,6 +56,29 @@ void setupLightSensorStreamHandler() {
 void resetLightSensorStreamHandler() {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
     MethodChannel(LightSensor.eventChannel.name),
+    null,
+  );
+}
+
+void mockCameraFocalLength() {
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    CameraInfoService.cameraInfoPlatformChannel,
+    (methodCall) async {
+      switch (methodCall.method) {
+        case "mainCameraEfl":
+          return Platform.isAndroid
+              ? 24.0 // Pixel 6
+              : 26.0; // iPhone 13 Pro
+        default:
+          return null;
+      }
+    },
+  );
+}
+
+void resetCameraFocalLength() {
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    CameraInfoService.cameraInfoPlatformChannel,
     null,
   );
 }
