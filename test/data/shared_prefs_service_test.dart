@@ -270,9 +270,9 @@ void main() {
       expect(
         service.cameraFeatures,
         {
-          CameraFeature.spotMetering: false,
+          CameraFeature.spotMetering: true,
           CameraFeature.histogram: false,
-          CameraFeature.showFocalLength: false,
+          CameraFeature.showFocalLength: true,
         },
       );
     });
@@ -285,7 +285,7 @@ void main() {
         {
           CameraFeature.spotMetering: false,
           CameraFeature.histogram: true,
-          CameraFeature.showFocalLength: false,
+          CameraFeature.showFocalLength: true,
         },
       );
     });

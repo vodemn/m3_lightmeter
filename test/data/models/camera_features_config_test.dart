@@ -22,13 +22,13 @@ void main() {
         );
       });
 
-      test('Legacy (no spotMetering & histogram)', () {
+      test('Legacy', () {
         expect(
           CameraFeaturesConfigJson.fromJson({}),
           {
-            CameraFeature.spotMetering: false,
+            CameraFeature.spotMetering: true,
             CameraFeature.histogram: false,
-            CameraFeature.showFocalLength: false,
+            CameraFeature.showFocalLength: true,
           },
         );
       });
@@ -40,10 +40,12 @@ void main() {
       {
         CameraFeature.spotMetering: true,
         CameraFeature.histogram: true,
+        CameraFeature.showFocalLength: true,
       }.toJson(),
       {
         'spotMetering': true,
         'histogram': true,
+        'showFocalLength': true,
       },
     );
   });
