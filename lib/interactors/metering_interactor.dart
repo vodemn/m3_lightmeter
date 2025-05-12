@@ -75,6 +75,4 @@ class MeteringInteractor {
   Future<bool> hasAmbientLightSensor() async => _lightSensorService.hasSensor();
 
   Stream<int> luxStream() => _lightSensorService.luxStream();
-
-  void setCameraFocalLength(int focalLength) => _userPreferencesService.cameraFocalLength = focalLength;
 }
