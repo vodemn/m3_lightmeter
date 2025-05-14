@@ -33,9 +33,9 @@ class ApplicationWrapper extends StatefulWidget {
 }
 
 class _ApplicationWrapperState extends State<ApplicationWrapper> {
-  late final remoteConfigService = widget.env.buildType != BuildType.dev
-      ? const RemoteConfigService(LightmeterAnalytics(api: LightmeterAnalyticsFirebase()))
-      : const MockRemoteConfigService();
+  static const analytics = LightmeterAnalytics(api: LightmeterAnalyticsFirebase());
+  late final remoteConfigService =
+      widget.env.buildType != BuildType.dev ? const RemoteConfigService(analytics) : const MockRemoteConfigService();
 
   late final UserPreferencesService userPreferencesService;
   late final bool hasLightSensor;
@@ -100,7 +100,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
     await Future.wait([
       SharedPreferences.getInstance(),
       const LightSensorService(LocalPlatform()).hasSensor(),
-      const CameraInfoService().mainCameraEfl(),
+      const CameraInfoService(analytics).mainCameraEfl(),
       remoteConfigService.activeAndFetchFeatures(),
       equipmentProfilesStorageService.init(),
       filmsStorageService.init(),
