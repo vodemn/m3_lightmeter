@@ -1,27 +1,53 @@
-**Privacy Policy**
+# Privacy Policy
 
-I, Vadim Turko, built the Material Lightmeter app as a Free app. This app is provided at no cost and is intended for use as is.
+I, Vadim Turko, built the Material Lightmeter app as a Free app with optional Pro functionality available via in-app purchase. This app is provided at no cost and is intended for use as is.
 
-**Information Collection and Use**
+## Information Collection and Use
 
-When using this app no personal data is collected. All settings such as theme, calibration values and other preferences are stored only on your device and never sent over the Internet.
+The app does **not collect any personal data** such as names, email addresses, or location.
 
-**Log Data**
+App settings, including theme preferences, calibration values, and other local preferences, are stored on the user’s device and are never transmitted.
 
-I want to inform you that whenever you use Lightmeter app, in a case of an error in the app I collect data and information (through third-party products) on your phone called Log Data. This Log Data may include information such as your device name, operating system version, the configuration of the app, the time and date of your use of the App, and other statistics.
+## Log Data
 
-**Links to Other Sites**
+In the event of a crash or unexpected error, the app collects anonymous crash logs via third-party services (such as Firebase Crashlytics). These logs may include:
 
-This app contains links to other sites. If you click on a third-party link, you will be directed to that site. I have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.
+- Device model and operating system version  
+- App configuration and usage context  
+- Date and time of the crash  
+- Diagnostic data relevant to the crash
 
-* [GitHub](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement)
+This data helps improve app stability and does not include personal information.
 
-**Changes to This Privacy Policy**
+## Third-Party Services
 
-I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
+The app uses several Firebase services, including:
 
-This policy is effective as of 2024-01-04
+- **Firebase Crashlytics** to collect crash logs.
+- **Firebase Remote Config** to deliver dynamic app settings and feature flags.
+- **Firebase Storage** to store anonymous purchase-related metadata.
 
-**Contact Us**
+These services may process technical data but do **not collect or transmit personal data**. For more information, see Firebase’s [Privacy and Security](https://firebase.google.com/support/privacy) documentation.
 
-If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at contact.vodemn@gmail.com.
+## Open Source Components
+
+Parts of the app are open-source and available for review on [GitHub](https://github.com/vodemn). This includes non-commercial components of the app's source code.
+
+## Links to Other Sites
+
+This app may contain links to third-party websites or services (e.g., GitHub). If you click on a third-party link, you will be directed to that site. These external sites are not operated by me, and I strongly advise you to review their privacy policies.
+
+- [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement)
+
+## Changes to This Privacy Policy
+
+This Privacy Policy may be updated from time to time. You are advised to check this page periodically for any changes. Updates will be posted here and take effect immediately upon posting.
+
+**Effective Date:** 2024-01-04  
+**Last Updated:** 2025-05-14
+
+## Contact
+
+If you have any questions or suggestions about this Privacy Policy, feel free to contact me at:
+
+📧 **contact.vodemn@gmail.com**
