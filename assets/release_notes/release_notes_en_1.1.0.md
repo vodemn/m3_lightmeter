@@ -1,0 +1,2 @@
+- Added the ability to display 35mm equivalent focal length instead of zoom factor.
+- Fixed camera settings reset when switching between apps.
