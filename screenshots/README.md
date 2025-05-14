@@ -52,7 +52,7 @@ Apple requires screenshots a specific list of devices, so we can implement a cus
 Can be run on Simulator.
 
 ```console
-sh screenshots/generate_ios_screenshots.sh
+sh screenshots/scripts/generate_ios_screenshots.sh
 ```
 
 ### Apply store constraints and text data

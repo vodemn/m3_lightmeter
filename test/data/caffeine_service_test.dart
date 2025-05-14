@@ -7,7 +7,6 @@ void main() {
 
   late CaffeineService service;
 
-  const methodChannel = MethodChannel('com.vodemn.lightmeter/keepScreenOn');
   Future<Object?>? methodCallSuccessHandler(MethodCall methodCall) async {
     switch (methodCall.method) {
       case "isKeepScreenOn":
@@ -21,45 +20,57 @@ void main() {
 
   setUp(() {
     service = const CaffeineService();
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(methodChannel, methodCallSuccessHandler);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      CaffeineService.caffeineMethodChannel,
+      methodCallSuccessHandler,
+    );
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(methodChannel, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      CaffeineService.caffeineMethodChannel,
+      null,
+    );
   });
 
   group(
     'isKeepScreenOn()',
     () {
       test('true', () async {
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, null);
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, (methodCall) async {
-          switch (methodCall.method) {
-            case "isKeepScreenOn":
-              return true;
-            default:
-              return null;
-          }
-        });
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+          CaffeineService.caffeineMethodChannel,
+          null,
+        );
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+          CaffeineService.caffeineMethodChannel,
+          (methodCall) async {
+            switch (methodCall.method) {
+              case "isKeepScreenOn":
+                return true;
+              default:
+                return null;
+            }
+          },
+        );
         expectLater(service.isKeepScreenOn(), completion(true));
       });
 
       test('false', () async {
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, null);
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(methodChannel, (methodCall) async {
-          switch (methodCall.method) {
-            case "isKeepScreenOn":
-              return false;
-            default:
-              return null;
-          }
-        });
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+          CaffeineService.caffeineMethodChannel,
+          null,
+        );
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+          CaffeineService.caffeineMethodChannel,
+          (methodCall) async {
+            switch (methodCall.method) {
+              case "isKeepScreenOn":
+                return false;
+              default:
+                return null;
+            }
+          },
+        );
         expectLater(service.isKeepScreenOn(), completion(false));
       });
     },

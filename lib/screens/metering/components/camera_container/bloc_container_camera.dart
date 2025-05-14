@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:camera/camera.dart';
+import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +18,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/event_co
 import 'package:lightmeter/screens/metering/components/camera_container/models/camera_error_type.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/shared/ev_source_base/bloc_base_ev_source.dart';
-import 'package:lightmeter/utils/ev_from_bytes.dart';
+import 'package:lightmeter/utils/exif_utils.dart';
 
 part 'mock_bloc_container_camera.part.dart';
 
@@ -184,7 +185,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       _cameraController = cameraController;
       emit(CameraInitializedState(cameraController));
       _emitActiveState(emit);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _analytics.logCrash(e, stackTrace);
       emit(const CameraErrorState(CameraErrorType.other));
     }
   }
@@ -247,7 +249,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       final file = await _cameraController!.takePicture();
       final bytes = await file.readAsBytes();
       Directory(file.path).deleteSync(recursive: true);
-      return await evFromImage(bytes);
+      final tags = await readExifFromBytes(bytes);
+      return evFromTags(tags);
     } catch (e, stackTrace) {
       _analytics.logCrash(e, stackTrace);
       return null;

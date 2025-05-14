@@ -270,8 +270,9 @@ void main() {
       expect(
         service.cameraFeatures,
         {
-          CameraFeature.spotMetering: false,
+          CameraFeature.spotMetering: true,
           CameraFeature.histogram: false,
+          CameraFeature.showFocalLength: true,
         },
       );
     });
@@ -284,6 +285,7 @@ void main() {
         {
           CameraFeature.spotMetering: false,
           CameraFeature.histogram: true,
+          CameraFeature.showFocalLength: true,
         },
       );
     });
@@ -292,17 +294,18 @@ void main() {
       when(
         () => sharedPreferences.setString(
           UserPreferencesService.cameraFeaturesKey,
-          """{"spotMetering":false,"histogram":true}""",
+          """{"spotMetering":false,"histogram":true,"showFocalLength":true}""",
         ),
       ).thenAnswer((_) => Future.value(true));
       service.cameraFeatures = {
         CameraFeature.spotMetering: false,
         CameraFeature.histogram: true,
+        CameraFeature.showFocalLength: true,
       };
       verify(
         () => sharedPreferences.setString(
           UserPreferencesService.cameraFeaturesKey,
-          """{"spotMetering":false,"histogram":true}""",
+          """{"spotMetering":false,"histogram":true,"showFocalLength":true}""",
         ),
       ).called(1);
     });

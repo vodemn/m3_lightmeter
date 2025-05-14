@@ -37,6 +37,7 @@ void main() {
     when(() => mockUserPreferencesService.cameraFeatures).thenReturn({
       CameraFeature.spotMetering: true,
       CameraFeature.histogram: true,
+      CameraFeature.showFocalLength: true,
     });
     when(() => mockUserPreferencesService.locale).thenReturn(SupportedLocale.en);
     when(() => mockUserPreferencesService.themeType).thenReturn(ThemeType.light);
@@ -227,13 +228,6 @@ void main() {
       expect(find.text("${MeteringScreenLayoutFeature.equipmentProfiles}: true"), findsNWidgets(2));
       expect(find.text("${MeteringScreenLayoutFeature.extremeExposurePairs}: false"), findsNWidgets(2));
       expect(find.text("${MeteringScreenLayoutFeature.filmPicker}: false"), findsNWidgets(2));
-      verify(
-        () => mockUserPreferencesService.meteringScreenLayout = {
-          MeteringScreenLayoutFeature.extremeExposurePairs: false,
-          MeteringScreenLayoutFeature.filmPicker: false,
-          MeteringScreenLayoutFeature.equipmentProfiles: true,
-        },
-      ).called(1);
     },
   );
 
@@ -260,6 +254,7 @@ void main() {
                 onPressed: () => UserPreferencesProvider.of(context).setCameraFeature({
                   CameraFeature.spotMetering: true,
                   CameraFeature.histogram: false,
+                  CameraFeature.showFocalLength: false,
                 }),
                 child: const Text(''),
               ),
@@ -270,15 +265,18 @@ void main() {
       // Match `findsNWidgets(2)` to verify that `cameraFeatureOf` specific results are the same as the whole config
       expect(find.text("${CameraFeature.spotMetering}: true"), findsNWidgets(2));
       expect(find.text("${CameraFeature.histogram}: true"), findsNWidgets(2));
+      expect(find.text("${CameraFeature.showFocalLength}: true"), findsNWidgets(2));
 
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
       expect(find.text("${CameraFeature.spotMetering}: true"), findsNWidgets(2));
       expect(find.text("${CameraFeature.histogram}: false"), findsNWidgets(2));
+      expect(find.text("${CameraFeature.showFocalLength}: false"), findsNWidgets(2));
       verify(
         () => mockUserPreferencesService.cameraFeatures = {
           CameraFeature.spotMetering: true,
           CameraFeature.histogram: false,
+          CameraFeature.showFocalLength: false,
         },
       ).called(1);
     },

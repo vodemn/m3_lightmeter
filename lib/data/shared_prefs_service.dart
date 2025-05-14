@@ -22,6 +22,7 @@ class UserPreferencesService {
   static const lightSensorEvCalibrationKey = "lightSensorEvCalibration";
   static const meteringScreenLayoutKey = "meteringScreenLayout";
   static const cameraFeaturesKey = "cameraFeatures";
+  static const cameraFocalLengthKey = "cameraFocalLength";
 
   static const caffeineKey = "caffeine";
   static const hapticsKey = "haptics";
@@ -93,37 +94,23 @@ class UserPreferencesService {
   set showEv100(bool value) => _sharedPreferences.setBool(showEv100Key, value);
 
   MeteringScreenLayoutConfig get meteringScreenLayout {
-    final configJson = _sharedPreferences.getString(meteringScreenLayoutKey);
-    if (configJson != null) {
-      return MeteringScreenLayoutConfigJson.fromJson(
-        json.decode(configJson) as Map<String, dynamic>,
-      );
-    } else {
-      return {
-        MeteringScreenLayoutFeature.equipmentProfiles: true,
-        MeteringScreenLayoutFeature.extremeExposurePairs: true,
-        MeteringScreenLayoutFeature.filmPicker: true,
-      };
-    }
+    final configJson = _sharedPreferences.getString(meteringScreenLayoutKey) ?? '{}';
+    return MeteringScreenLayoutConfigJson.fromJson(json.decode(configJson) as Map<String, dynamic>);
   }
 
   set meteringScreenLayout(MeteringScreenLayoutConfig value) =>
       _sharedPreferences.setString(meteringScreenLayoutKey, json.encode(value.toJson()));
 
   CameraFeaturesConfig get cameraFeatures {
-    final configJson = _sharedPreferences.getString(cameraFeaturesKey);
-    if (configJson != null) {
-      return CameraFeaturesConfigJson.fromJson(json.decode(configJson) as Map<String, dynamic>);
-    } else {
-      return {
-        CameraFeature.spotMetering: false,
-        CameraFeature.histogram: false,
-      };
-    }
+    final configJson = _sharedPreferences.getString(cameraFeaturesKey) ?? '{}';
+    return CameraFeaturesConfigJson.fromJson(json.decode(configJson) as Map<String, dynamic>);
   }
 
   set cameraFeatures(CameraFeaturesConfig value) =>
       _sharedPreferences.setString(cameraFeaturesKey, json.encode(value.toJson()));
+
+  int? get cameraFocalLength => _sharedPreferences.getInt(cameraFocalLengthKey);
+  set cameraFocalLength(int? value) => _sharedPreferences.setInt(cameraFocalLengthKey, value!);
 
   bool get caffeine => _sharedPreferences.getBool(caffeineKey) ?? false;
   set caffeine(bool value) => _sharedPreferences.setBool(caffeineKey, value);

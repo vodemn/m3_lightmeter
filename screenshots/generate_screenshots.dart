@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:lightmeter/data/models/camera_feature.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
@@ -27,6 +28,7 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../integration_test/mocks/paid_features_mock.dart';
+import '../integration_test/utils/platform_channel_mock.dart';
 import '../integration_test/utils/widget_tester_actions.dart';
 import 'models/screenshot_args.dart';
 
@@ -68,6 +70,14 @@ void main() {
         }.toJson(),
       ),
 
+      UserPreferencesService.cameraFeaturesKey: json.encode(
+        {
+          CameraFeature.spotMetering: false,
+          CameraFeature.histogram: false,
+          CameraFeature.showFocalLength: true,
+        }.toJson(),
+      ),
+
       /// General settings
       UserPreferencesService.autostartTimerKey: false,
       UserPreferencesService.caffeineKey: true,
@@ -86,6 +96,11 @@ void main() {
 
   setUpAll(() async {
     if (Platform.isAndroid) await binding.convertFlutterSurfaceToImage();
+    mockCameraFocalLength();
+  });
+
+  tearDownAll(() {
+    resetCameraFocalLength();
   });
 
   /// Generates several screenshots with the light theme
@@ -119,6 +134,9 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.edit_outlined).first);
     await tester.pumpAndSettle();
+    await tester.tap(find.text(S.current.isoValues)); // open and close a dialog to hide keyboard
+    await tester.pumpAndSettle();
+    await tester.tapCancelButton();
     await tester.takeScreenshotLight(binding, 'equipment-profiles');
   });
 

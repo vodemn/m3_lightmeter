@@ -72,7 +72,8 @@ class MockCameraContainerBloc extends CameraContainerBloc {
   Future<double?> _takePhoto() async {
     try {
       final bytes = (await rootBundle.load(PlatformConfig.cameraStubImage)).buffer.asUint8List();
-      return await evFromImage(bytes);
+      final tags = await readExifFromBytes(bytes);
+      return evFromTags(tags);
     } catch (e, stackTrace) {
       log(e.toString(), stackTrace: stackTrace);
       return null;

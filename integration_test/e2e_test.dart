@@ -64,7 +64,7 @@ void testE2E(String description) {
       await tester.setApertureValues(mockEquipmentProfiles[0].apertureValues);
       await tester.setShutterSpeedValues(mockEquipmentProfiles[0].shutterSpeedValues);
       await tester.setZoomValue(mockEquipmentProfiles[0].lensZoom);
-      expect(find.text('x1.91'), findsOneWidget);
+      expect(find.text('50mm'), findsOneWidget);
       expect(find.text('f/1.7 - f/16'), findsOneWidget);
       expect(find.text('1/1000 - B'), findsOneWidget);
       await tester.saveEdits();
@@ -77,7 +77,7 @@ void testE2E(String description) {
       await tester.enterProfileName(mockEquipmentProfiles[1].name);
       await tester.setApertureValues(mockEquipmentProfiles[1].apertureValues);
       await tester.setZoomValue(mockEquipmentProfiles[1].lensZoom);
-      expect(find.text('x5.02'), findsOneWidget);
+      expect(find.text('135mm'), findsOneWidget);
       expect(find.text('f/3.5 - f/22'), findsOneWidget);
       expect(find.text('1/1000 - B'), findsNWidgets(1));
       await tester.saveEdits();
@@ -305,7 +305,8 @@ Future<void> _expectMeteringState(
   await tester.scrollToTheLastExposurePair(equipmentProfile: equipmentProfile);
   expectExposurePairsListItem(tester, slowest.split(' - ')[0], slowest.split(' - ')[1]);
   expectMeasureButton(ev);
-  expect(find.text(equipmentProfile.lensZoom.toZoom()), findsOneWidget);
+  final BuildContext context = tester.element(find.byType(IsoValuePicker));
+  expect(find.text(equipmentProfile.lensZoom.toZoom(context)), findsOneWidget);
 }
 
 Future<void> _expectMeteringStateAndMeasure(

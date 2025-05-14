@@ -1,22 +1,20 @@
 import 'dart:math' as math;
 
 import 'package:exif/exif.dart';
-import 'package:flutter/foundation.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 const String _isoExifKey = 'EXIF ISOSpeedRatings';
 const String _apertureExifKey = 'EXIF FNumber';
 const String _shutterSpeedExifKey = 'EXIF ExposureTime';
 
-Future<double> evFromImage(Uint8List bytes) async {
-  final tags = await readExifFromBytes(bytes);
+double evFromTags(Map<String, IfdTag> tags) {
   final iso = double.tryParse("${tags[_isoExifKey]}");
   final apertureValueRatio = (tags[_apertureExifKey]?.values as IfdRatios?)?.ratios.first;
   final speedValueRatio = (tags[_shutterSpeedExifKey]?.values as IfdRatios?)?.ratios.first;
 
   if (iso == null || apertureValueRatio == null || speedValueRatio == null) {
     throw ArgumentError(
-      'Error parsing EXIF',
+      'Error calculating EV',
       [
         if (iso == null) '$_isoExifKey: ${tags[_isoExifKey]?.printable} ${tags[_isoExifKey]?.printable.runtimeType}',
         if (apertureValueRatio == null) '$_apertureExifKey: $apertureValueRatio',

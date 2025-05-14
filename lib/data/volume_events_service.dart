@@ -6,10 +6,10 @@ class VolumeEventsService {
   final LocalPlatform _localPlatform;
 
   @visibleForTesting
-  static const volumeHandlingChannel = MethodChannel("com.vodemn.lightmeter/volumeHandling");
+  static const volumeMethodChannel = MethodChannel("com.vodemn.lightmeter.VolumePlatformChannel.MethodChannel");
 
   @visibleForTesting
-  static const volumeEventsChannel = EventChannel("com.vodemn.lightmeter/volumeEvents");
+  static const volumeEventsChannel = EventChannel("com.vodemn.lightmeter.VolumePlatformChannel.EventChannel");
 
   const VolumeEventsService(this._localPlatform);
 
@@ -19,9 +19,7 @@ class VolumeEventsService {
     if (!_localPlatform.isAndroid) {
       return false;
     }
-    return volumeHandlingChannel
-        .invokeMethod<bool>("setVolumeHandling", enableHandling)
-        .then((value) => value!);
+    return volumeMethodChannel.invokeMethod<bool>("setVolumeHandling", enableHandling).then((value) => value!);
   }
 
   /// Emits new events on
@@ -32,9 +30,6 @@ class VolumeEventsService {
     if (!_localPlatform.isAndroid) {
       return const Stream.empty();
     }
-    return volumeEventsChannel
-        .receiveBroadcastStream()
-        .cast<int>()
-        .where((event) => event == 24 || event == 25);
+    return volumeEventsChannel.receiveBroadcastStream().cast<int>().where((event) => event == 24 || event == 25);
   }
 }
