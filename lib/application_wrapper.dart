@@ -15,6 +15,7 @@ import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/films_provider.dart';
+import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/providers/remote_config_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
@@ -45,6 +46,9 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
 
   final filmsStorageService = FilmsStorageService();
   final filmsStorageServiceCompleter = Completer<void>();
+
+  final logbookPhotosStorageService = LogbookPhotosStorageService();
+  final logbookPhotosStorageServiceCompleter = Completer<void>();
 
   late final Future<void> _initFuture;
 
@@ -80,10 +84,14 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
                 child: FilmsProvider(
                   storageService: filmsStorageService,
                   onInitialized: filmsStorageServiceCompleter.complete,
-                  child: UserPreferencesProvider(
-                    hasLightSensor: hasLightSensor,
-                    userPreferencesService: userPreferencesService,
-                    child: widget.child,
+                  child: LogbookPhotosProvider(
+                    storageService: logbookPhotosStorageService,
+                    onInitialized: logbookPhotosStorageServiceCompleter.complete,
+                    child: UserPreferencesProvider(
+                      hasLightSensor: hasLightSensor,
+                      userPreferencesService: userPreferencesService,
+                      child: widget.child,
+                    ),
                   ),
                 ),
               ),
@@ -104,6 +112,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
       remoteConfigService.activeAndFetchFeatures(),
       equipmentProfilesStorageService.init(),
       filmsStorageService.init(),
+      logbookPhotosStorageService.init(),
     ]).then((value) {
       userPreferencesService = UserPreferencesService((value[0] as SharedPreferences?)!)
         ..cameraFocalLength = value[2] as int?;
@@ -115,6 +124,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
     Future.wait([
       equipmentProfilesStorageServiceCompleter.future,
       filmsStorageServiceCompleter.future,
+      logbookPhotosStorageServiceCompleter.future,
     ]).then((_) {
       FlutterNativeSplash.remove();
     });
