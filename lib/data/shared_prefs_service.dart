@@ -110,7 +110,13 @@ class UserPreferencesService {
       _sharedPreferences.setString(cameraFeaturesKey, json.encode(value.toJson()));
 
   int? get cameraFocalLength => _sharedPreferences.getInt(cameraFocalLengthKey);
-  set cameraFocalLength(int? value) => _sharedPreferences.setInt(cameraFocalLengthKey, value!);
+  set cameraFocalLength(int? value) {
+    if (value != null) {
+      _sharedPreferences.setInt(cameraFocalLengthKey, value);
+    } else {
+      _sharedPreferences.remove(cameraFocalLengthKey);
+    }
+  }
 
   bool get caffeine => _sharedPreferences.getBool(caffeineKey) ?? false;
   set caffeine(bool value) => _sharedPreferences.setBool(caffeineKey, value);
