@@ -49,7 +49,7 @@ android {
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 34            
+        targetSdkVersion 35            
         ndk {
             debugSymbolLevel 'FULL'
             abiFilters 'armeabi-v7a', 'arm64-v8a'
