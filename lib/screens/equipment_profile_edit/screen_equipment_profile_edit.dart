@@ -267,8 +267,8 @@ class _ExposureOffsetListTileBuilder extends StatelessWidget {
     return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
       builder: (context, state) => SliderPickerListTile(
         icon: Icons.light_mode_outlined,
-        title: S.of(context).lensZoom,
-        description: S.of(context).lensZoomDescription,
+        title: S.of(context).exposureOffset,
+        description: S.of(context).exposureOffsetDescription,
         value: state.exposureOffset,
         range: CameraContainerBloc.exposureMaxRange,
         valueAdapter: (context, value) => S.of(context).evValue(value.toStringSignedAsFixed(1)),
