@@ -10,9 +10,11 @@ import 'package:lightmeter/screens/equipment_profile_edit/components/slider_pick
 import 'package:lightmeter/screens/equipment_profile_edit/event_equipment_profile_edit.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/flow_equipment_profile_edit.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/state_equipment_profile_edit.dart';
+import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/screens/shared/text_field/widget_text_field.dart';
 import 'package:lightmeter/utils/double_to_zoom.dart';
+import 'package:lightmeter/utils/to_string_signed.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfileEditScreen extends StatefulWidget {
@@ -108,6 +110,7 @@ class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen>
                           _ApertureValuesListTileBuilder(),
                           _ShutterSpeedValuesListTileBuilder(),
                           _LensZoomListTileBuilder(),
+                          _ExposureOffsetListTileBuilder(),
                         ],
                       ),
                     ),
@@ -246,10 +249,31 @@ class _LensZoomListTileBuilder extends StatelessWidget {
         title: S.of(context).lensZoom,
         description: S.of(context).lensZoomDescription,
         value: state.lensZoom,
-        range: const RangeValues(1, 7),
+        range: CameraContainerBloc.zoomMaxRange,
         valueAdapter: (context, value) => value.toZoom(context),
         onChanged: (value) {
           context.read<EquipmentProfileEditBloc>().add(EquipmentProfileLensZoomChangedEvent(value));
+        },
+      ),
+    );
+  }
+}
+
+class _ExposureOffsetListTileBuilder extends StatelessWidget {
+  const _ExposureOffsetListTileBuilder();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
+      builder: (context, state) => SliderPickerListTile(
+        icon: Icons.light_mode_outlined,
+        title: S.of(context).lensZoom,
+        description: S.of(context).lensZoomDescription,
+        value: state.exposureOffset,
+        range: CameraContainerBloc.exposureMaxRange,
+        valueAdapter: (context, value) => S.of(context).evValue(value.toStringSignedAsFixed(1)),
+        onChanged: (value) {
+          context.read<EquipmentProfileEditBloc>().add(EquipmentProfileExposureOffsetChangedEvent(value));
         },
       ),
     );
