@@ -55,10 +55,12 @@
     "equipmentProfileNameHint": "Praktica MTL5B",
     "equipmentProfileAllValues": "全部",
     "apertureValues": "光圈值",
+    "apertureValue": "光圈值",
     "apertureValuesFilterDescription": "选择要显示的光圈值范围。取决于使用的镜头。",
     "ndFilters": "ND 滤镜",
     "ndFiltersFilterDescription": "选择要显示的 ND 滤镜系数。取决于使用的 ND 滤镜",
     "shutterSpeedValues": "快门速度",
+    "shutterSpeedValue": "快门速度",
     "shutterSpeedValuesFilterDescription": "选择要显示的快门速度范围。取决于相机机身。",
     "shutterSpeedManualShort": "B门",
     "shutterSpeedManual": "手动",
@@ -151,5 +153,11 @@
     "filmFormulaExponentialRf": "Rf",
     "filmFormulaExponentialRfPlaceholder": "1.3",
     "addEquipmentProfileTitle": "添加设备",
-    "editEquipmentProfileTitle": "编辑设备"
+    "editEquipmentProfileTitle": "编辑设备",
+    "editPhotoTitle": "编辑照片",
+    "date": "日期",
+    "ndFilter": "ND 滤镜",
+    "film": "胶片",
+    "note": "备注",
+    "notSet": "未设置"
 }

@@ -7,4 +7,5 @@ enum NavigationRoutes {
   filmEditScreen,
   proFeaturesScreen,
   timerScreen,
+  logbookPhotoEditScreen,
 }

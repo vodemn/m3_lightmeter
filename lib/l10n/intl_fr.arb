@@ -55,10 +55,12 @@
     "equipmentProfileNameHint": "Praktica MTL5B",
     "equipmentProfileAllValues": "Tout",
     "apertureValues": "Valeurs Aperture",
+    "apertureValue": "Valeur Aperture",
     "apertureValuesFilterDescription": "Sélectionnez la plage de valeurs d'ouverture à afficher. Cela est généralement déterminé par l'objectif que vous utilisez.",
     "ndFilters": "Filtres ND",
     "ndFiltersFilterDescription": "Sélectionnez les filtres ND à afficher. Ce sont peut-être vos filtres ND les plus couramment utilisés ou ceux qui correspondent à votre lentille.",
     "shutterSpeedValues": "Valeurs de la vitesse d'obturation",
+    "shutterSpeedValue": "Valeur de la vitesse d'obturation",
     "shutterSpeedValuesFilterDescription": "Sélectionnez la plage de valeurs de vitesse d'obturation à afficher. Cela est généralement déterminé par le corps de l'appareil que vous utilisez.",
     "shutterSpeedManualShort": "B",
     "shutterSpeedManual": "Manuelle",
@@ -154,5 +156,11 @@
     "filmFormulaExponentialRfPlaceholder": "1.3",
     "name": "Titre",
     "addEquipmentProfileTitle": "Ajouter un profil",
-    "editEquipmentProfileTitle": "Editer le profil"
+    "editEquipmentProfileTitle": "Editer le profil",
+    "editPhotoTitle": "Modifier la photo",
+    "date": "Date",
+    "ndFilter": "Filtre ND",
+    "film": "Film",
+    "note": "Note",
+    "notSet": "Non défini"
 }

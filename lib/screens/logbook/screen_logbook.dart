@@ -36,7 +36,12 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
     );
   }
 
-  void _editProfile(LogbookPhoto photo) {}
+  void _editProfile(LogbookPhoto photo) {
+    Navigator.of(context).pushNamed(
+      NavigationRoutes.logbookPhotoEditScreen.name,
+      arguments: photo,
+    );
+  }
 }
 
 class _PicturesGridBuilder extends StatelessWidget {
@@ -62,10 +67,13 @@ class _PicturesGridBuilder extends StatelessWidget {
       ),
       delegate: SliverChildBuilderDelegate(
         (BuildContext context, int index) {
-          return Container(
-            alignment: Alignment.center,
-            color: Colors.teal[100 * (index % 9)],
-            child: Image.file(File(values[index].name)),
+          return GestureDetector(
+            onTap: () => onEdit(values[index]),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colors.teal[100 * (index % 9)],
+              child: Image.file(File(values[index].name)),
+            ),
           );
         },
         childCount: values.length,
