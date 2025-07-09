@@ -21,7 +21,7 @@ class ZoomSlider extends StatelessWidget {
       range: range,
       value: value,
       onChanged: onChanged,
-      icon: Icons.search_outlined,
+      icon: Icons.zoom_in_outlined,
       defaultValue: EquipmentProfiles.selectedOf(context).lensZoom,
       rulerValueAdapter: (value) => value.toStringAsFixed(0),
       valueAdapter: (value) => value.toZoom(context),

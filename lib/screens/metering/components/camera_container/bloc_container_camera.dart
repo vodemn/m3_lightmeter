@@ -30,11 +30,11 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
   CameraDescription? _camera;
   CameraController? _cameraController;
 
-  static const _maxZoom = 7.0;
+  static const zoomMaxRange = RangeValues(1, 7);
   RangeValues? _zoomRange;
   double _currentZoom = 1.0;
 
-  static const _exposureMaxRange = RangeValues(-4, 4);
+  static const exposureMaxRange = RangeValues(-4, 4);
   RangeValues? _exposureOffsetRange;
   double _exposureStep = 0.1;
   double _currentExposureOffset = 0.0;
@@ -90,8 +90,10 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
       case final communication_states.EquipmentProfileChangedState communicationState:
         if (state is CameraActiveState) {
           add(ZoomChangedEvent(communicationState.profile.lensZoom));
+          add(ExposureOffsetChangedEvent(communicationState.profile.exposureOffset));
         } else {
           _currentZoom = communicationState.profile.lensZoom;
+          _currentExposureOffset = communicationState.profile.exposureOffset;
         }
       case communication_states.SettingsOpenedState():
         _settingsOpened = true;
@@ -153,8 +155,8 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
           cameraController.getExposureOffsetStepSize(),
         ]).then((value) {
           _exposureOffsetRange = RangeValues(
-            math.max(_exposureMaxRange.start, value[0]),
-            math.min(_exposureMaxRange.end, value[1]),
+            math.max(exposureMaxRange.start, value[0]),
+            math.min(exposureMaxRange.end, value[1]),
           );
           _currentExposureOffset = 0.0;
           _exposureStep = value[2] == 0 ? 0.1 : value[2];
@@ -168,7 +170,7 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
         ]).then((value) {
           _zoomRange = RangeValues(
             math.max(1.0, value[0]),
-            math.min(_maxZoom, value[1]),
+            math.min(zoomMaxRange.end, value[1]),
           );
           if (_currentZoom < _zoomRange!.start || _currentZoom > _zoomRange!.end) {
             _currentZoom = _zoomRange!.start;

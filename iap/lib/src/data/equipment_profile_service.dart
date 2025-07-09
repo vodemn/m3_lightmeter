@@ -20,6 +20,7 @@ class EquipmentProfilesStorageService {
     List<ApertureValue>? apertureValues,
     List<ShutterSpeedValue>? shutterSpeedValues,
     double? lensZoom,
+    double? exposureOffset,
     bool? isUsed,
   }) async {}
 
