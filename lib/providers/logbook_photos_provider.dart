@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+import 'package:uuid/v8.dart';
 
 class LogbookPhotosProvider extends StatefulWidget {
   final LogbookPhotosStorageService storageService;
@@ -52,10 +56,29 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
     widget.onInitialized?.call();
   }
 
-  Future<void> addPhoto(LogbookPhoto photo) async {
-    await widget.storageService.addPhoto(photo);
-    _photos[photo.id] = photo;
-    setState(() {});
+  Future<void> addPhotoIfPossible(
+    String path, {
+    required double ev100,
+    required int iso,
+    required int nd,
+  }) async {
+    if (context.isPro) {
+      final photo = LogbookPhoto(
+        id: const UuidV8().generate(),
+        name: path,
+        timestamp: DateTime.timestamp(),
+        ev: ev100,
+        iso: iso,
+        nd: nd,
+        film: Films.selectedOf(context),
+        coordinates: null, // TODO
+      );
+      //await widget.storageService.addPhoto(photo);
+      _photos[photo.id] = photo;
+      setState(() {});
+    } else {
+      Directory(path).deleteSync(recursive: true);
+    }
   }
 
   Future<void> updateProfile(LogbookPhoto photo) async {
@@ -73,6 +96,7 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
   Future<void> deleteProfile(LogbookPhoto photo) async {
     await widget.storageService.deletePhoto(photo.id);
     _photos.remove(photo.id);
+    Directory(photo.name).deleteSync(recursive: true);
     setState(() {});
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:camera/camera.dart';
@@ -77,10 +76,10 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
     switch (communicationState) {
       case communication_states.MeasureState():
         if (_canTakePhoto) {
-          _takePhoto().then((ev100Raw) {
-            if (ev100Raw != null) {
-              _ev100 = ev100Raw + _meteringInteractor.cameraEvCalibration;
-              communicationBloc.add(communication_event.MeteringEndedEvent(_ev100));
+          _takePhoto().then((photo) {
+            if (photo != null) {
+              _ev100 = photo.ev + _meteringInteractor.cameraEvCalibration;
+              communicationBloc.add(communication_event.MeteringEndedEvent(_ev100, photoPath: photo.path));
             } else {
               _ev100 = null;
               communicationBloc.add(const communication_event.MeteringEndedEvent(null));
@@ -244,13 +243,12 @@ class CameraContainerBloc extends EvSourceBlocBase<CameraContainerEvent, CameraC
           !_cameraController!.value.isInitialized ||
           _cameraController!.value.isTakingPicture);
 
-  Future<double?> _takePhoto() async {
+  Future<({double ev, String path})?> _takePhoto() async {
     try {
       final file = await _cameraController!.takePicture();
       final bytes = await file.readAsBytes();
-      Directory(file.path).deleteSync(recursive: true);
       final tags = await readExifFromBytes(bytes);
-      return evFromTags(tags);
+      return (ev: evFromTags(tags), path: file.path);
     } catch (e, stackTrace) {
       _analytics.logCrash(e, stackTrace);
       return null;
