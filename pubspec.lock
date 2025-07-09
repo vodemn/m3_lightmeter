@@ -829,20 +829,20 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v2.1.3"
-      resolved-ref: "4575586ff6114b780ca651b7ac7c272a4a4801eb"
+      ref: "v2.2.0"
+      resolved-ref: f8a0ab311a696b53d7172412922ce5c69b68fd4e
       url: "https://github.com/vodemn/m3_lightmeter_iap"
     source: git
-    version: "2.1.3+30"
+    version: "2.2.0+31"
   m3_lightmeter_resources:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v2.1.0"
-      resolved-ref: "0e6eefe534adce851df639dcd28463a9089e5b92"
+      ref: "v2.2.0"
+      resolved-ref: a337627f92989d20ba9173f747255fa25262ca4e
       url: "https://github.com/vodemn/m3_lightmeter_resources"
     source: git
-    version: "2.1.0+9"
+    version: "2.2.0+10"
   macros:
     dependency: transitive
     description:
