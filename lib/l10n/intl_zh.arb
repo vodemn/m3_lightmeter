@@ -159,5 +159,7 @@
     "ndFilter": "ND 滤镜",
     "film": "胶片",
     "note": "备注",
-    "notSet": "未设置"
+    "notSet": "未设置",
+    "location": "位置",
+    "noMapsAppFound": "未找到地图应用程序。"
 }

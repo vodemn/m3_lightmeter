@@ -26,6 +26,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_native_splash: 2.4.4
+  geolocator: 13.0.1
   intl: 0.19.0
   intl_utils: 2.8.7
   light_sensor: 3.0.1
@@ -46,6 +47,7 @@ dependencies:
   url_launcher_ios: 6.3.2
   uuid: 4.5.1
   vibration: 2.0.1
+  map_launcher: 3.2.0
 
 dev_dependencies:
   args: 2.6.0
@@ -65,6 +67,11 @@ dev_dependencies:
   test: 1.25.7
 
 dependency_overrides:
+  geolocator_android: 4.6.1
+  m3_lightmeter_iap:
+    path: /Users/vodemn/Documents/GitHub/Vodemn/m3_lightmeter_iap
+  m3_lightmeter_resources:
+    path: /Users/vodemn/Documents/GitHub/Vodemn/m3_lightmeter_resources
   material_color_utilities: 0.11.1
 
 flutter:

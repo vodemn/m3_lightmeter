@@ -6,6 +6,7 @@ import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/data/analytics/api/analytics_firebase.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/camera_info_service.dart';
+import 'package:lightmeter/data/geolocation_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/permissions_service.dart';
@@ -71,6 +72,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
             analytics: const LightmeterAnalytics(api: LightmeterAnalyticsFirebase()),
             caffeineService: const CaffeineService(),
             environment: widget.env.copyWith(hasLightSensor: hasLightSensor),
+            geolocationService: const GeolocationService(),
             hapticsService: const HapticsService(),
             lightSensorService: const LightSensorService(LocalPlatform()),
             permissionsService: const PermissionsService(),

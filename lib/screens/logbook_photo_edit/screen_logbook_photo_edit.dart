@@ -6,6 +6,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/logbook_photo_edit/bloc_logbook_photo_edit.dart';
+import 'package:lightmeter/screens/logbook_photo_edit/components/coordinates_list_tile/widget_list_tile_coordinates_logbook_photo.dart';
 import 'package:lightmeter/screens/logbook_photo_edit/components/picker_list_tile/widget_list_tile_picker.dart';
 import 'package:lightmeter/screens/logbook_photo_edit/event_logbook_photo_edit.dart';
 import 'package:lightmeter/screens/logbook_photo_edit/state_logbook_photo_edit.dart';
@@ -77,6 +78,7 @@ class _LogbookPhotoEditScreenState extends State<LogbookPhotoEditScreen> {
                           child: const Column(
                             children: [
                               _DateListTile(),
+                              LogbookPhotoCoordinatesListTile(),
                               _NoteListTile(),
                               _EvListTile(),
                               _IsoListTile(),

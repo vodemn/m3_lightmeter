@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:lightmeter/providers/films_provider.dart';
+import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -63,6 +63,10 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
     required int nd,
   }) async {
     if (context.isPro) {
+      // Get coordinates from geolocation service
+      final geolocationService = ServicesProvider.of(context).geolocationService;
+      final coordinates = await geolocationService.getCurrentPosition();
+
       final photo = LogbookPhoto(
         id: const UuidV8().generate(),
         name: path,
@@ -70,9 +74,9 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
         ev: ev100,
         iso: iso,
         nd: nd,
-        coordinates: null, // TODO
+        coordinates: coordinates,
       );
-      //await widget.storageService.addPhoto(photo);
+      await widget.storageService.addPhoto(photo);
       _photos[photo.id] = photo;
       setState(() {});
     } else {

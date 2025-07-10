@@ -162,5 +162,7 @@
     "ndFilter": "Filtre ND",
     "film": "Film",
     "note": "Note",
-    "notSet": "Non défini"
+    "notSet": "Non défini",
+    "location": "Emplacement",
+    "noMapsAppFound": "Aucune application de cartes trouvée."
 }

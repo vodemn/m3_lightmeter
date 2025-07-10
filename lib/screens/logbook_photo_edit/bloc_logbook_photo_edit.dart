@@ -23,8 +23,6 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
             iso: photo.iso,
             nd: photo.nd,
             coordinates: photo.coordinates,
-            aperture: null,
-            shutterSpeed: null,
             note: photo.note,
             canSave: false,
           ),

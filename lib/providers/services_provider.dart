@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
+import 'package:lightmeter/data/geolocation_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/permissions_service.dart';
@@ -13,6 +14,7 @@ class ServicesProvider extends InheritedWidget {
   final LightmeterAnalytics analytics;
   final CaffeineService caffeineService;
   final Environment environment;
+  final GeolocationService geolocationService;
   final HapticsService hapticsService;
   final LightSensorService lightSensorService;
   final PermissionsService permissionsService;
@@ -23,6 +25,7 @@ class ServicesProvider extends InheritedWidget {
     required this.analytics,
     required this.caffeineService,
     required this.environment,
+    required this.geolocationService,
     required this.hapticsService,
     required this.lightSensorService,
     required this.permissionsService,

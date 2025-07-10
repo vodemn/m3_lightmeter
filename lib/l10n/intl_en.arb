@@ -171,5 +171,7 @@
     "ndFilter": "ND Filter",
     "film": "Film",
     "note": "Note",
-    "notSet": "Not set"
+    "notSet": "Not set",
+    "location": "Location",
+    "noMapsAppFound": "No maps application found."
 }

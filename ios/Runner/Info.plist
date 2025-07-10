@@ -53,5 +53,9 @@
 	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>Provide camera permissions in order to make measurements</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Provide location permissions to save coordinates with your photos</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Provide location permissions to save coordinates with your photos</string>
 </dict>
 </plist>

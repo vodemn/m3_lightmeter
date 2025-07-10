@@ -1,14 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/platform_config.dart';
-import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/equipment_profile_edit/flow_equipment_profile_edit.dart';
-import 'package:lightmeter/screens/shared/sliver_placeholder/widget_sliver_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
