@@ -6,6 +6,7 @@ import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/logbook/components/grid_tile/widget_grid_tile_logbook_photo.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
+import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class LogbookScreen extends StatefulWidget {
@@ -53,6 +54,17 @@ class _PicturesGridBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (values.isEmpty) {
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: IconPlaceholder(
+            icon: Icons.photo_outlined,
+            text: S.of(context).noPhotos,
+          ),
+        ),
+      );
+    }
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
       sliver: SliverGrid(

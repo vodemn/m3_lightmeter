@@ -174,5 +174,6 @@
     "notSet": "Not set",
     "location": "Location",
     "noMapsAppFound": "No maps application found.",
-    "logbook": "Logbook"
+    "logbook": "Logbook",
+    "noPhotos": "No photos"
 }

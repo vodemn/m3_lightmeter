@@ -165,5 +165,6 @@
     "notSet": "Non défini",
     "location": "Emplacement",
     "noMapsAppFound": "Aucune application de cartes trouvée.",
-    "logbook": "Carnet photo"
+    "logbook": "Carnet photo",
+    "noPhotos": "Aucune photo"
 }

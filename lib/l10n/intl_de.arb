@@ -174,5 +174,6 @@
     "notSet": "Nicht gesetzt",
     "location": "Standort",
     "noMapsAppFound": "Keine Kartenanwendung gefunden.",
-    "logbook": "Fototagebuch"
+    "logbook": "Fototagebuch",
+    "noPhotos": "Keine Fotos"
 }

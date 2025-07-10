@@ -162,5 +162,6 @@
     "notSet": "未设置",
     "location": "位置",
     "noMapsAppFound": "未找到地图应用程序。",
-    "logbook": "拍照日志"
+    "logbook": "拍照日志",
+    "noPhotos": "没有照片"
 }
