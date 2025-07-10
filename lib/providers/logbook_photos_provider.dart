@@ -122,5 +122,5 @@ class LogbookPhotos extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(LogbookPhotos oldWidget) => const DeepCollectionEquality().equals(oldWidget.photos, photos);
+  bool updateShouldNotify(LogbookPhotos oldWidget) => !const DeepCollectionEquality().equals(oldWidget.photos, photos);
 }

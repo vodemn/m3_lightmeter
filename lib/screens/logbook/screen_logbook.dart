@@ -22,7 +22,7 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
       title: Text(S.of(context).logbook),
       slivers: [
         _PicturesGridBuilder(
-          values: LogbookPhotos.of(context),
+          values: LogbookPhotos.of(context, listen: true),
           onEdit: _editProfile,
         ),
         SliverToBoxAdapter(
