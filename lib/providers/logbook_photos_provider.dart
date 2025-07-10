@@ -70,7 +70,6 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
         ev: ev100,
         iso: iso,
         nd: nd,
-        film: Films.selectedOf(context),
         coordinates: null, // TODO
       );
       //await widget.storageService.addPhoto(photo);
@@ -83,14 +82,16 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
 
   Future<void> updateProfile(LogbookPhoto photo) async {
     final oldProfile = _photos[photo.id]!;
-    if (oldProfile.note != photo.note) {
-      await widget.storageService.updatePhoto(
-        id: photo.id,
-        note: photo.note,
-      );
-      _photos[photo.id] = photo;
-      setState(() {});
-    }
+    await widget.storageService.updatePhoto(
+      id: photo.id,
+      note: oldProfile.note != photo.note ? photo.note : null,
+      apertureValue: oldProfile.apertureValue != photo.apertureValue ? photo.apertureValue : null,
+      removeApertureValue: photo.apertureValue == null,
+      shutterSpeedValue: oldProfile.shutterSpeedValue != photo.shutterSpeedValue ? photo.shutterSpeedValue : null,
+      removeShutterSpeedValue: photo.shutterSpeedValue == null,
+    );
+    _photos[photo.id] = photo;
+    setState(() {});
   }
 
   Future<void> deleteProfile(LogbookPhoto photo) async {
