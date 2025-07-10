@@ -111,11 +111,14 @@ class _PhotoPreviewBuilder extends StatelessWidget {
       buildWhen: (_, __) => false,
       builder: (context, state) => AspectRatio(
         aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
-          child: Image.file(
-            File(state.name),
-            fit: BoxFit.cover,
+        child: Hero(
+          tag: state.id,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
+            child: Image.file(
+              File(state.name),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),
