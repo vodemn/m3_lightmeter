@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/logbook_photos_provider.dart';
@@ -19,7 +20,7 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return SliverScreen(
-      title: Text("Logbook"),
+      title: Text(S.of(context).logbook),
       slivers: [
         _PicturesGridBuilder(
           values: LogbookPhotos.of(context),

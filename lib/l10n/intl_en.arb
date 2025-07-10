@@ -173,5 +173,6 @@
     "note": "Note",
     "notSet": "Not set",
     "location": "Location",
-    "noMapsAppFound": "No maps application found."
+    "noMapsAppFound": "No maps application found.",
+    "logbook": "Logbook"
 }

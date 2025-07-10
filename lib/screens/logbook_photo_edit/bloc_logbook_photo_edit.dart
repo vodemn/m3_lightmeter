@@ -46,7 +46,7 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
   }
 
   Future<void> _onApertureChanged(LogbookPhotoApertureChangedEvent event, Emitter emit) async {
-    // For now, we'll just update the state since LogbookPhoto doesn't support aperture
+    _newPhoto = _newPhoto.copyWith(apertureValue: event.aperture);
     emit(
       state.copyWith(
         aperture: event.aperture,
@@ -56,7 +56,7 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
   }
 
   Future<void> _onShutterSpeedChanged(LogbookPhotoShutterSpeedChangedEvent event, Emitter emit) async {
-    // For now, we'll just update the state since LogbookPhoto doesn't support shutterSpeed
+    _newPhoto = _newPhoto.copyWith(shutterSpeedValue: event.shutterSpeed);
     emit(
       state.copyWith(
         shutterSpeed: event.shutterSpeed,

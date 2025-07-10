@@ -32,7 +32,7 @@
     "calibration": "Calibration",
     "calibrationMessage": "La précision des lectures mesurées par cette application dépend entièrement du matériel de l'appareil. Par conséquent, envisagez de tester cette application et de configurer les valeurs d'étalonnage des EV qui vous donneront les résultats de mesure souhaités.",
     "calibrationMessageCameraOnly": "La précision des lectures mesurées par cette application dépend entièrement de la caméra arrière de l'appareil. Par conséquent, envisagez de tester cette application et de configurer une valeur d'étalonnage EV qui vous donnera les résultats de mesure souhaités.",
-    "camera": "Caméra",
+    "camera": "Appareil photo",
     "lightSensor": "Capteur de lumière",
     "showEv100": "Montrer EV\u2081\u2080\u2080",
     "meteringScreenLayout": "Disposition de l'écran de mesure",
@@ -164,5 +164,6 @@
     "note": "Note",
     "notSet": "Non défini",
     "location": "Emplacement",
-    "noMapsAppFound": "Aucune application de cartes trouvée."
+    "noMapsAppFound": "Aucune application de cartes trouvée.",
+    "logbook": "Carnet photo"
 }

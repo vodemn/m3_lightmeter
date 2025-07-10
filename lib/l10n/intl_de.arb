@@ -173,5 +173,6 @@
     "note": "Notiz",
     "notSet": "Nicht gesetzt",
     "location": "Standort",
-    "noMapsAppFound": "Keine Kartenanwendung gefunden."
+    "noMapsAppFound": "Keine Kartenanwendung gefunden.",
+    "logbook": "Fototagebuch"
 }

@@ -32,7 +32,7 @@
     "calibration": "校准",
     "calibrationMessage": "此应用测量读数的准确性取决于设备的后置摄像头。如需更精确的测量结果或测量结果存在偏差，请手动校准 EV 。",
     "calibrationMessageCameraOnly": "此应用测量读数的准确性取决于设备的后置摄像头。如需更精确的测量结果或测量结果存在偏差，请手动校准 EV 。",
-    "camera": "摄像头",
+    "camera": "相机",
     "lightSensor": "光线传感器",
     "showEv100": "显示 EV\u2081\u2080\u2080",
     "meteringScreenLayout": "布局",
@@ -161,5 +161,6 @@
     "note": "备注",
     "notSet": "未设置",
     "location": "位置",
-    "noMapsAppFound": "未找到地图应用程序。"
+    "noMapsAppFound": "未找到地图应用程序。",
+    "logbook": "拍照日志"
 }

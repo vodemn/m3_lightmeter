@@ -12,13 +12,12 @@ import 'package:lightmeter/screens/equipment_profiles/screen_equipment_profiles.
 import 'package:lightmeter/screens/film_edit/flow_film_edit.dart';
 import 'package:lightmeter/screens/films/screen_films.dart';
 import 'package:lightmeter/screens/lightmeter_pro/screen_lightmeter_pro.dart';
-import 'package:lightmeter/screens/logbook/screen_logbook.dart';
 import 'package:lightmeter/screens/logbook_photo_edit/flow_logbook_photo_edit.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
-import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
 import 'package:lightmeter/screens/shared/release_notes_dialog/flow_dialog_release_notes.dart';
 import 'package:lightmeter/screens/timer/flow_timer.dart';
+import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class Application extends StatelessWidget {
   const Application({super.key});
@@ -54,7 +53,7 @@ class Application extends StatelessWidget {
         routes: {
           NavigationRoutes.meteringScreen.name: (_) => const ReleaseNotesFlow(child: MeteringFlow()),
           NavigationRoutes.settingsScreen.name: (_) => const SettingsFlow(),
-          NavigationRoutes.equipmentProfilesListScreen.name: (_) => const LogbookScreen(),
+          NavigationRoutes.equipmentProfilesListScreen.name: (_) => const EquipmentProfilesScreen(),
           NavigationRoutes.equipmentProfileEditScreen.name: (context) =>
               EquipmentProfileEditFlow(args: context.routeArgs<EquipmentProfileEditArgs>()),
           NavigationRoutes.filmsListScreen.name: (_) => const FilmsScreen(),
