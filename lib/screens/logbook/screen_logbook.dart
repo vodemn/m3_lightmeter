@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/logbook/components/grid_tile/widget_grid_tile_logbook_photo.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -54,26 +53,24 @@ class _PicturesGridBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverGrid(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent:
-            (MediaQuery.sizeOf(context).width - Dimens.paddingS * (_crossAxisCount - 1)) / _crossAxisCount,
-        mainAxisSpacing: Dimens.paddingS,
-        crossAxisSpacing: Dimens.paddingS,
-        childAspectRatio: PlatformConfig.cameraPreviewAspectRatio,
-      ),
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return GestureDetector(
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent:
+              (MediaQuery.sizeOf(context).width - Dimens.paddingS * (_crossAxisCount - 1) - Dimens.paddingM * 2) /
+                  _crossAxisCount,
+          mainAxisSpacing: Dimens.paddingS,
+          crossAxisSpacing: Dimens.paddingS,
+          childAspectRatio: PlatformConfig.cameraPreviewAspectRatio,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (_, int index) => LogbookPhotoGridTile(
+            photo: values[index],
             onTap: () => onEdit(values[index]),
-            child: Container(
-              alignment: Alignment.center,
-              color: Colors.teal[100 * (index % 9)],
-              child: Image.file(File(values[index].name)),
-            ),
-          );
-        },
-        childCount: values.length,
+          ),
+          childCount: values.length,
+        ),
       ),
     );
   }
