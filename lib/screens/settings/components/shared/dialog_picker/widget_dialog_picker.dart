@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 
@@ -24,6 +25,24 @@ class DialogPicker<T> extends StatefulWidget {
 
 class _DialogPickerState<T> extends State<DialogPicker<T>> {
   late T _selected = widget.selectedValue;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      final selectedIndex = widget.values.indexOf(_selected);
+      if (selectedIndex >= 0) {
+        _scrollController.jumpTo((Dimens.grid56 * selectedIndex).clamp(0, _scrollController.position.maxScrollExtent));
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,24 +54,36 @@ class _DialogPickerState<T> extends State<DialogPicker<T>> {
       content: SizedBox(
         width: double.maxFinite,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
-          children: widget.values
-              .map(
-                (e) => RadioListTile(
-                  value: e,
-                  groupValue: _selected,
-                  title: Text(widget.titleAdapter(context, e)),
-                  onChanged: (T? value) {
-                    if (value != null) {
-                      setState(() {
-                        _selected = value;
-                      });
-                    }
-                  },
+          children: [
+            const Divider(),
+            Flexible(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: widget.values
+                      .map(
+                        (e) => RadioListTile(
+                          value: e,
+                          groupValue: _selected,
+                          title: Text(widget.titleAdapter(context, e)),
+                          onChanged: (T? value) {
+                            if (value != null) {
+                              setState(() {
+                                _selected = value;
+                              });
+                            }
+                          },
+                        ),
+                      )
+                      .toList(),
                 ),
-              )
-              .toList(),
+              ),
+            ),
+            const Divider(),
+          ],
         ),
       ),
       actionsPadding: Dimens.dialogActionsPadding,
