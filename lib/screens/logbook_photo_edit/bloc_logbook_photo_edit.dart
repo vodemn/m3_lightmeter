@@ -23,6 +23,8 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
             iso: photo.iso,
             nd: photo.nd,
             coordinates: photo.coordinates,
+            aperture: photo.apertureValue,
+            shutterSpeed: photo.shutterSpeedValue,
             note: photo.note,
             canSave: false,
           ),
@@ -46,7 +48,7 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
   }
 
   Future<void> _onApertureChanged(LogbookPhotoApertureChangedEvent event, Emitter emit) async {
-    _newPhoto = _newPhoto.copyWith(apertureValue: event.aperture);
+    _newPhoto = _newPhoto.copyWith(apertureValue: Optional(event.aperture));
     emit(
       state.copyWith(
         aperture: event.aperture,
@@ -56,7 +58,7 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
   }
 
   Future<void> _onShutterSpeedChanged(LogbookPhotoShutterSpeedChangedEvent event, Emitter emit) async {
-    _newPhoto = _newPhoto.copyWith(shutterSpeedValue: event.shutterSpeed);
+    _newPhoto = _newPhoto.copyWith(shutterSpeedValue: Optional(event.shutterSpeed));
     emit(
       state.copyWith(
         shutterSpeed: event.shutterSpeed,

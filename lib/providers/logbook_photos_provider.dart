@@ -83,7 +83,7 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
         nd: nd,
         coordinates: coordinates,
       );
-      //await widget.storageService.addPhoto(photo);
+      await widget.storageService.addPhoto(photo);
       _photos[photo.id] = photo;
       setState(() {});
     } else {
