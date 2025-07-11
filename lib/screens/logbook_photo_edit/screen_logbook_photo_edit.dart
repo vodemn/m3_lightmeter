@@ -155,7 +155,8 @@ class _NoteListTile extends StatelessWidget {
         ),
         child: LightmeterTextField(
           initialValue: state.note,
-          maxLength: 500,
+          maxLength: 256,
+          maxLines: null,
           hintText: S.of(context).note,
           style: Theme.of(context).listTileTheme.titleTextStyle,
           leading: const Icon(Icons.note_outlined),
