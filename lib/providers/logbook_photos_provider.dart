@@ -30,6 +30,7 @@ class LogbookPhotosProvider extends StatefulWidget {
 
 class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
   final Map<String, LogbookPhoto> _photos = {};
+  bool _isEnabled = true;
 
   @override
   void initState() {
@@ -41,8 +42,15 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
   Widget build(BuildContext context) {
     return LogbookPhotos(
       photos: context.isPro ? _photos.values.toList(growable: false) : [],
+      isEnabled: _isEnabled,
       child: widget.child,
     );
+  }
+
+  void saveLogbookPhotos(bool save) {
+    setState(() {
+      _isEnabled = save;
+    });
   }
 
   Future<void> _init() async {
@@ -62,8 +70,7 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
     required int iso,
     required int nd,
   }) async {
-    if (context.isPro) {
-      // Get coordinates from geolocation service
+    if (context.isPro && _isEnabled) {
       final geolocationService = ServicesProvider.of(context).geolocationService;
       final coordinates = await geolocationService.getCurrentPosition();
 
@@ -76,7 +83,7 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
         nd: nd,
         coordinates: coordinates,
       );
-      await widget.storageService.addPhoto(photo);
+      //await widget.storageService.addPhoto(photo);
       _photos[photo.id] = photo;
       setState(() {});
     } else {
@@ -106,21 +113,45 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
   }
 }
 
-class LogbookPhotos extends InheritedWidget {
+enum _LogbookPhotosModelAspect { photosList, isEnabled }
+
+class LogbookPhotos extends InheritedModel<_LogbookPhotosModelAspect> {
   final List<LogbookPhoto> photos;
+  final bool isEnabled;
 
   const LogbookPhotos({
     required this.photos,
+    required this.isEnabled,
     required super.child,
   });
 
-  static List<LogbookPhoto> of(BuildContext context, {bool listen = false}) {
+  static List<LogbookPhoto> of(BuildContext context, {bool listen = true}) {
     return (listen
-            ? context.dependOnInheritedWidgetOfExactType<LogbookPhotos>()
+            ? InheritedModel.inheritFrom<LogbookPhotos>(context, aspect: _LogbookPhotosModelAspect.photosList)
             : context.getInheritedWidgetOfExactType<LogbookPhotos>())!
         .photos;
   }
 
+  static bool isEnabledOf(BuildContext context, {bool listen = true}) {
+    return (listen
+            ? InheritedModel.inheritFrom<LogbookPhotos>(context, aspect: _LogbookPhotosModelAspect.isEnabled)
+            : context.getInheritedWidgetOfExactType<LogbookPhotos>())!
+        .isEnabled;
+  }
+
   @override
-  bool updateShouldNotify(LogbookPhotos oldWidget) => !const DeepCollectionEquality().equals(oldWidget.photos, photos);
+  bool updateShouldNotify(LogbookPhotos oldWidget) =>
+      !const DeepCollectionEquality().equals(oldWidget.photos, photos) || oldWidget.isEnabled != isEnabled;
+
+  @override
+  bool updateShouldNotifyDependent(LogbookPhotos oldWidget, Set<_LogbookPhotosModelAspect> aspects) {
+    if (aspects.contains(_LogbookPhotosModelAspect.photosList) &&
+        !const DeepCollectionEquality().equals(oldWidget.photos, photos)) {
+      return true;
+    }
+    if (aspects.contains(_LogbookPhotosModelAspect.isEnabled) && oldWidget.isEnabled != isEnabled) {
+      return true;
+    }
+    return false;
+  }
 }

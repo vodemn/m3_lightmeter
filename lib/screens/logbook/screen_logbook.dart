@@ -5,8 +5,8 @@ import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/logbook/components/grid_tile/widget_grid_tile_logbook_photo.dart';
-import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
+import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class LogbookScreen extends StatefulWidget {
@@ -22,8 +22,22 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
     return SliverScreen(
       title: Text(S.of(context).logbook),
       slivers: [
+        SliverToBoxAdapter(
+          child: Card(
+            margin: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
+              child: SwitchListTile(
+                secondary: const Icon(Icons.book_outlined),
+                title: Text(S.of(context).saveNewPhotos),
+                value: LogbookPhotos.isEnabledOf(context),
+                onChanged: LogbookPhotosProvider.of(context).saveLogbookPhotos,
+              ),
+            ),
+          ),
+        ),
         _PicturesGridBuilder(
-          values: LogbookPhotos.of(context, listen: true),
+          values: LogbookPhotos.of(context),
           onEdit: _editProfile,
         ),
         SliverToBoxAdapter(
@@ -66,7 +80,7 @@ class _PicturesGridBuilder extends StatelessWidget {
       );
     }
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
+      padding: const EdgeInsets.all(Dimens.paddingM),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent:
