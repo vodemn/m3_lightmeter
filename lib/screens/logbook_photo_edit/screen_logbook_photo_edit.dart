@@ -37,7 +37,6 @@ class _LogbookPhotoEditScreenState extends State<LogbookPhotoEditScreen> {
       builder: (context, state) => IgnorePointer(
         ignoring: state.isLoading,
         child: SliverScreen(
-          title: Text(S.of(context).editPhotoTitle),
           appBarActions: [
             BlocBuilder<LogbookPhotoEditBloc, LogbookPhotoEditState>(
               buildWhen: (previous, current) => previous.canSave != current.canSave,
@@ -59,34 +58,27 @@ class _LogbookPhotoEditScreenState extends State<LogbookPhotoEditScreen> {
           ],
           slivers: [
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  Dimens.paddingM,
-                  0,
-                  Dimens.paddingM,
-                  Dimens.paddingM,
-                ),
-                child: Column(
+              child: Opacity(
+                opacity: state.isLoading ? Dimens.disabledOpacity : Dimens.enabledOpacity,
+                child: const Column(
                   children: [
-                    const _PhotoPreviewBuilder(),
-                    const SizedBox(height: Dimens.grid16),
+                    _PhotoPreviewBuilder(),
                     Card(
+                      margin: EdgeInsets.all(Dimens.paddingM),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
-                        child: Opacity(
-                          opacity: state.isLoading ? Dimens.disabledOpacity : Dimens.enabledOpacity,
-                          child: const Column(
-                            children: [
-                              _DateListTile(),
-                              LogbookPhotoCoordinatesListTile(),
-                              _NoteListTile(),
-                              _EvListTile(),
-                              _IsoListTile(),
-                              _NdFilterListTile(),
-                              _AperturePickerListTile(),
-                              _ShutterSpeedPickerListTile(),
-                            ],
-                          ),
+                        padding: EdgeInsets.symmetric(vertical: Dimens.paddingM),
+                        child: Column(
+                          children: [
+                            _DateListTile(),
+                            //TODO: maybe make it edge to edge and add InterActiveViewer
+                            LogbookPhotoCoordinatesListTile(),
+                            _NoteListTile(),
+                            _EvListTile(),
+                            _IsoListTile(),
+                            _NdFilterListTile(),
+                            _AperturePickerListTile(),
+                            _ShutterSpeedPickerListTile(),
+                          ],
                         ),
                       ),
                     ),
@@ -113,12 +105,9 @@ class _PhotoPreviewBuilder extends StatelessWidget {
         aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
         child: Hero(
           tag: state.id,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
-            child: Image.file(
-              File(state.name),
-              fit: BoxFit.cover,
-            ),
+          child: Image.file(
+            File(state.name),
+            fit: BoxFit.cover,
           ),
         ),
       ),

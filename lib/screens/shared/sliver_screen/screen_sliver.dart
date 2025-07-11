@@ -4,13 +4,13 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/utils/text_height.dart';
 
 class SliverScreen extends StatelessWidget {
-  final Widget title;
+  final Widget? title;
   final List<Widget> appBarActions;
   final PreferredSizeWidget? bottom;
   final List<Widget> slivers;
 
   const SliverScreen({
-    required this.title,
+    this.title,
     this.appBarActions = const [],
     this.bottom,
     required this.slivers,
@@ -39,12 +39,12 @@ class SliverScreen extends StatelessWidget {
 }
 
 class _AppBar extends StatelessWidget {
-  final Widget title;
+  final Widget? title;
   final List<Widget> appBarActions;
   final PreferredSizeWidget? bottom;
 
   const _AppBar({
-    required this.title,
+    this.title,
     this.appBarActions = const [],
     this.bottom,
   });
@@ -53,20 +53,23 @@ class _AppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar.large(
       automaticallyImplyLeading: false,
-      expandedHeight: Dimens.sliverAppBarExpandedHeight + (bottom?.preferredSize.height ?? 0.0),
+      expandedHeight: (title != null ? Dimens.sliverAppBarExpandedHeight : 0.0) + (bottom?.preferredSize.height ?? 0.0),
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: false,
         titlePadding: const EdgeInsets.symmetric(horizontal: Dimens.paddingM),
-        title: DefaultTextStyle(
-          style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          child: _Title(
-            actionsCount: appBarActions.length + (Navigator.of(context).canPop() ? 1 : 0),
-            bottomSize: bottom?.preferredSize.height ?? 0.0,
-            child: title,
-          ),
-        ),
+        title: title != null
+            ? DefaultTextStyle(
+                style:
+                    Theme.of(context).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                child: _Title(
+                  actionsCount: appBarActions.length + (Navigator.of(context).canPop() ? 1 : 0),
+                  bottomSize: bottom?.preferredSize.height ?? 0.0,
+                  child: title!,
+                ),
+              )
+            : null,
       ),
       bottom: bottom,
       actions: [
