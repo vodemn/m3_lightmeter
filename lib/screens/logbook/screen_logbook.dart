@@ -55,7 +55,7 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
   }
 }
 
-class _PicturesGridBuilder extends StatelessWidget {
+class _PicturesGridBuilder extends StatefulWidget {
   final List<LogbookPhoto> values;
   final void Function(LogbookPhoto photo) onEdit;
 
@@ -67,8 +67,21 @@ class _PicturesGridBuilder extends StatelessWidget {
   });
 
   @override
+  State<_PicturesGridBuilder> createState() => _PicturesGridBuilderState();
+}
+
+class _PicturesGridBuilderState extends State<_PicturesGridBuilder> {
+  late Map<String, GlobalKey> _keys = _generateKeys();
+
+  @override
+  void didUpdateWidget(_PicturesGridBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _keys = _generateKeys();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (values.isEmpty) {
+    if (widget.values.isEmpty) {
       return SliverFillRemaining(
         hasScrollBody: false,
         child: Center(
@@ -83,19 +96,33 @@ class _PicturesGridBuilder extends StatelessWidget {
       padding: const EdgeInsets.all(Dimens.paddingM),
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent:
-              (MediaQuery.sizeOf(context).width - Dimens.paddingS * (_crossAxisCount - 1) - Dimens.paddingM * 2) /
-                  _crossAxisCount,
+          maxCrossAxisExtent: (MediaQuery.sizeOf(context).width -
+                  Dimens.paddingS * (_PicturesGridBuilder._crossAxisCount - 1) -
+                  Dimens.paddingM * 2) /
+              _PicturesGridBuilder._crossAxisCount,
           mainAxisSpacing: Dimens.paddingS,
           crossAxisSpacing: Dimens.paddingS,
           childAspectRatio: PlatformConfig.cameraPreviewAspectRatio,
         ),
         delegate: SliverChildBuilderDelegate(
+          //TODO: fix jumping after the photo is edited
           (_, int index) => LogbookPhotoGridTile(
-            photo: values[index],
-            onTap: () => onEdit(values[index]),
+            key: _keys[widget.values[index].id],
+            photo: widget.values[index],
+            onTap: () => widget.onEdit(widget.values[index]),
           ),
-          childCount: values.length,
+          childCount: widget.values.length,
+        ),
+      ),
+    );
+  }
+
+  Map<String, GlobalKey> _generateKeys() {
+    return Map.fromEntries(
+      widget.values.map(
+        (photo) => MapEntry(
+          photo.id,
+          GlobalKey(debugLabel: photo.id),
         ),
       ),
     );

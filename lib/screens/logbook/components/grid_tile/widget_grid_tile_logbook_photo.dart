@@ -12,6 +12,7 @@ class LogbookPhotoGridTile extends StatelessWidget {
   const LogbookPhotoGridTile({
     required this.photo,
     required this.onTap,
+    super.key,
   });
 
   @override
