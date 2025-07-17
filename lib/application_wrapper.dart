@@ -84,6 +84,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
                   onInitialized: filmsStorageServiceCompleter.complete,
                   child: LogbookPhotosProvider(
                     storageService: iapStorageService,
+                    geolocationService: const GeolocationService(),
                     onInitialized: logbookPhotosStorageServiceCompleter.complete,
                     child: UserPreferencesProvider(
                       hasLightSensor: hasLightSensor,

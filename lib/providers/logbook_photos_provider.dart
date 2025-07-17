@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:lightmeter/providers/services_provider.dart';
+import 'package:lightmeter/data/geolocation_service.dart';
+import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -10,11 +11,13 @@ import 'package:uuid/v8.dart';
 
 class LogbookPhotosProvider extends StatefulWidget {
   final IapStorageService storageService;
+  final GeolocationService geolocationService;
   final VoidCallback? onInitialized;
   final Widget child;
 
   const LogbookPhotosProvider({
     required this.storageService,
+    required this.geolocationService,
     this.onInitialized,
     required this.child,
     super.key,
@@ -64,15 +67,14 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
     widget.onInitialized?.call();
   }
 
-  Future<void> addPhotoIfPossible(
+  Future<LogbookPhoto?> addPhotoIfPossible(
     String path, {
     required double ev100,
     required int iso,
     required int nd,
   }) async {
     if (context.isPro && _isEnabled) {
-      final geolocationService = ServicesProvider.of(context).geolocationService;
-      final coordinates = await geolocationService.getCurrentPosition();
+      final coordinates = await widget.geolocationService.getCurrentPosition();
 
       final photo = LogbookPhoto(
         id: const UuidV8().generate(),
@@ -86,12 +88,14 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
       await widget.storageService.addPhoto(photo);
       _photos[photo.id] = photo;
       setState(() {});
+      return photo;
     } else {
-      Directory(path).deleteSync(recursive: true);
+      _deletePhoto(path);
+      return null;
     }
   }
 
-  Future<void> updateProfile(LogbookPhoto photo) async {
+  Future<void> updateLogbookPhoto(LogbookPhoto photo) async {
     final oldProfile = _photos[photo.id]!;
     await widget.storageService.updatePhoto(
       id: photo.id,
@@ -105,11 +109,21 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
     setState(() {});
   }
 
-  Future<void> deleteProfile(LogbookPhoto photo) async {
+  Future<void> deleteLogbookPhoto(LogbookPhoto photo) async {
     await widget.storageService.deletePhoto(photo.id);
     _photos.remove(photo.id);
-    Directory(photo.name).deleteSync(recursive: true);
+    _deletePhoto(photo.name);
     setState(() {});
+  }
+
+  Future<void> _deletePhoto(String path) async {
+    if (PlatformConfig.cameraStubImage.isEmpty) {
+      try {
+        Directory(path).deleteSync(recursive: true);
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
   }
 }
 

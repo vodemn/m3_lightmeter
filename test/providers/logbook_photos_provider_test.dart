@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lightmeter/data/geolocation_service.dart';
 import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -7,16 +8,22 @@ import 'package:mocktail/mocktail.dart';
 
 class _MockLogbookPhotosStorageService extends Mock implements IapStorageService {}
 
+class _MockGeolocationService extends Mock implements GeolocationService {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late _MockLogbookPhotosStorageService storageService;
+  late _MockGeolocationService geolocationService;
 
   setUpAll(() {
     storageService = _MockLogbookPhotosStorageService();
+    geolocationService = _MockGeolocationService();
+    registerFallbackValue(ApertureValue.values.first);
+    registerFallbackValue(_customPhotos.first);
+    registerFallbackValue(ShutterSpeedValue.values.first);
   });
 
   setUp(() {
-    registerFallbackValue(_customPhotos.first);
     when(() => storageService.addPhoto(any<LogbookPhoto>())).thenAnswer((_) async {});
     when(
       () => storageService.updatePhoto(
@@ -30,6 +37,8 @@ void main() {
     ).thenAnswer((_) async {});
     when(() => storageService.deletePhoto(any<String>())).thenAnswer((_) async {});
     when(() => storageService.getPhotos()).thenAnswer((_) => Future.value(_customPhotos));
+
+    when(() => geolocationService.getCurrentPosition()).thenAnswer((_) => Future.value());
   });
 
   tearDown(() {
@@ -48,6 +57,7 @@ void main() {
         ],
         child: LogbookPhotosProvider(
           storageService: storageService,
+          geolocationService: geolocationService,
           child: const _Application(),
         ),
       ),
@@ -128,11 +138,19 @@ void main() {
       expectLogbookPhotosCount(0);
       expectLogbookPhotosEnabled(true);
 
+      /// Create a photo
+      final photo = await tester.logbookPhotosProvider.addPhotoIfPossible(
+        _customPhotos.first.name,
+        ev100: _customPhotos.first.ev,
+        iso: _customPhotos.first.iso,
+        nd: _customPhotos.first.nd,
+      );
+
       /// Update a photo
-      final updatedPhoto = _customPhotos.first.copyWith(note: 'Updated note');
-      await tester.logbookPhotosProvider.updateProfile(updatedPhoto);
+      final updatedPhoto = photo!.copyWith(note: 'Updated note');
+      await tester.logbookPhotosProvider.updateLogbookPhoto(updatedPhoto);
       await tester.pump();
-      expectLogbookPhotosCount(0); // No photos loaded initially
+      expectLogbookPhotosCount(1); // No photos loaded initially
       verify(
         () => storageService.updatePhoto(
           id: updatedPhoto.id,
@@ -143,10 +161,10 @@ void main() {
       ).called(1);
 
       /// Delete a photo
-      await tester.logbookPhotosProvider.deleteProfile(_customPhotos.first);
+      await tester.logbookPhotosProvider.deleteLogbookPhoto(updatedPhoto);
       await tester.pump();
       expectLogbookPhotosCount(0);
-      verify(() => storageService.deletePhoto(_customPhotos.first.id)).called(1);
+      verify(() => storageService.deletePhoto(updatedPhoto.id)).called(1);
     },
   );
 
@@ -162,7 +180,7 @@ void main() {
 
       // Try to add photo when disabled
       await tester.logbookPhotosProvider.addPhotoIfPossible(
-        'test_path.jpg',
+        'assets/camera_stub_image.jpg',
         ev100: 12.0,
         iso: 100,
         nd: 0,
@@ -228,7 +246,7 @@ class _LogbookPhotosEnabled extends StatelessWidget {
 final List<LogbookPhoto> _customPhotos = [
   LogbookPhoto(
     id: '1',
-    name: 'test_photo_1.jpg',
+    name: 'assets/camera_stub_image.jpg',
     timestamp: DateTime(2024, 1, 1, 12),
     ev: 12.0,
     iso: 100,
@@ -237,7 +255,7 @@ final List<LogbookPhoto> _customPhotos = [
   ),
   LogbookPhoto(
     id: '2',
-    name: 'test_photo_2.jpg',
+    name: 'assets/camera_stub_image.jpg',
     timestamp: DateTime(2024, 1, 2, 12),
     ev: 13.0,
     iso: 200,

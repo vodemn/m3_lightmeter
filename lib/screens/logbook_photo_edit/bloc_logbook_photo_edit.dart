@@ -79,13 +79,13 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
 
   Future<void> _onSave(LogbookPhotoSaveEvent _, Emitter emit) async {
     emit(state.copyWith(isLoading: true));
-    await photosProvider.updateProfile(_newPhoto);
+    await photosProvider.updateLogbookPhoto(_newPhoto);
     emit(state.copyWith(isLoading: false));
   }
 
   Future<void> _onDelete(LogbookPhotoDeleteEvent _, Emitter emit) async {
     emit(state.copyWith(isLoading: true));
-    await photosProvider.deleteProfile(_newPhoto);
+    await photosProvider.deleteLogbookPhoto(_newPhoto);
     emit(state.copyWith(isLoading: false));
   }
 
