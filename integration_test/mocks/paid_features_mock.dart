@@ -7,9 +7,7 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
-class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProfilesStorageService {}
-
-class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
+class _MockIapStorageService extends Mock implements IapStorageService {}
 
 class MockIAPProviders extends StatefulWidget {
   final TogglableMap<EquipmentProfile> equipmentProfiles;
@@ -37,42 +35,38 @@ class MockIAPProviders extends StatefulWidget {
 }
 
 class _MockIAPProvidersState extends State<MockIAPProviders> {
-  late final _MockEquipmentProfilesStorageService mockEquipmentProfilesStorageService;
-  late final _MockFilmsStorageService mockFilmsStorageService;
+  late final _MockIapStorageService mockIapStorageService;
 
   @override
   void initState() {
     super.initState();
     registerFallbackValue(defaultEquipmentProfile);
-    mockEquipmentProfilesStorageService = _MockEquipmentProfilesStorageService();
-    when(() => mockEquipmentProfilesStorageService.init()).thenAnswer((_) async {});
-    when(() => mockEquipmentProfilesStorageService.getProfiles())
-        .thenAnswer((_) => Future.value(widget.equipmentProfiles));
-    when(() => mockEquipmentProfilesStorageService.selectedEquipmentProfileId)
-        .thenReturn(widget.selectedEquipmentProfileId);
-    when(() => mockEquipmentProfilesStorageService.addProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
+    mockIapStorageService = _MockIapStorageService();
+    when(() => mockIapStorageService.init()).thenAnswer((_) async {});
+
+    when(() => mockIapStorageService.getEquipmentProfiles()).thenAnswer((_) => Future.value(widget.equipmentProfiles));
+    when(() => mockIapStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
+    when(() => mockIapStorageService.addEquipmentProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
     when(
-      () => mockEquipmentProfilesStorageService.updateProfile(
+      () => mockIapStorageService.updateEquipmentProfile(
         id: any<String>(named: 'id'),
         name: any<String>(named: 'name'),
         isUsed: any<bool>(named: 'isUsed'),
       ),
     ).thenAnswer((_) async {});
-    when(() => mockEquipmentProfilesStorageService.deleteProfile(any<String>())).thenAnswer((_) async {});
+    when(() => mockIapStorageService.deleteEquipmentProfile(any<String>())).thenAnswer((_) async {});
 
-    mockFilmsStorageService = _MockFilmsStorageService();
-    when(() => mockFilmsStorageService.init()).thenAnswer((_) async {});
-    when(() => mockFilmsStorageService.getPredefinedFilms()).thenAnswer((_) => Future.value(widget.predefinedFilms));
-    when(() => mockFilmsStorageService.getCustomFilms()).thenAnswer((_) => Future.value(widget.customFilms));
-    when(() => mockFilmsStorageService.selectedFilmId).thenReturn(widget.selectedFilmId);
+    when(() => mockIapStorageService.getPredefinedFilms()).thenAnswer((_) => Future.value(widget.predefinedFilms));
+    when(() => mockIapStorageService.getCustomFilms()).thenAnswer((_) => Future.value(widget.customFilms));
+    when(() => mockIapStorageService.selectedFilmId).thenReturn(widget.selectedFilmId);
   }
 
   @override
   Widget build(BuildContext context) {
     return EquipmentProfilesProvider(
-      storageService: mockEquipmentProfilesStorageService,
+      storageService: mockIapStorageService,
       child: FilmsProvider(
-        storageService: mockFilmsStorageService,
+        storageService: mockIapStorageService,
         child: widget.child,
       ),
     );

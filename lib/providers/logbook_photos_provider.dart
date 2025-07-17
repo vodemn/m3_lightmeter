@@ -9,7 +9,7 @@ import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:uuid/v8.dart';
 
 class LogbookPhotosProvider extends StatefulWidget {
-  final LogbookPhotosStorageService storageService;
+  final IapStorageService storageService;
   final VoidCallback? onInitialized;
   final Widget child;
 

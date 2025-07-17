@@ -5,7 +5,7 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
-class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProfilesStorageService {}
+class _MockEquipmentProfilesStorageService extends Mock implements IapStorageService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -17,16 +17,16 @@ void main() {
 
   setUp(() {
     registerFallbackValue(_customProfiles.first);
-    when(() => storageService.addProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
+    when(() => storageService.addEquipmentProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
     when(
-      () => storageService.updateProfile(
+      () => storageService.updateEquipmentProfile(
         id: any<String>(named: 'id'),
         name: any<String>(named: 'name'),
         isUsed: any<bool>(named: 'isUsed'),
       ),
     ).thenAnswer((_) async {});
-    when(() => storageService.deleteProfile(any<String>())).thenAnswer((_) async {});
-    when(() => storageService.getProfiles()).thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
+    when(() => storageService.deleteEquipmentProfile(any<String>())).thenAnswer((_) async {});
+    when(() => storageService.getEquipmentProfiles()).thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
   });
 
   tearDown(() {
@@ -69,7 +69,7 @@ void main() {
     () {
       setUp(() {
         when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles.first.id);
-        when(() => storageService.getProfiles()).thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
+        when(() => storageService.getEquipmentProfiles()).thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
       });
 
       testWidgets(
@@ -116,7 +116,7 @@ void main() {
       expectEquipmentProfilesInUseCount(_customProfiles.length + 1 - 1);
       expectSelectedEquipmentProfileName('');
 
-      verify(() => storageService.updateProfile(id: _customProfiles.first.id, isUsed: false)).called(1);
+      verify(() => storageService.updateEquipmentProfile(id: _customProfiles.first.id, isUsed: false)).called(1);
       verify(() => storageService.selectedEquipmentProfileId = '').called(1);
     },
   );
@@ -124,7 +124,7 @@ void main() {
   testWidgets(
     'EquipmentProfilesProvider CRUD',
     (tester) async {
-      when(() => storageService.getProfiles()).thenAnswer((_) async => {});
+      when(() => storageService.getEquipmentProfiles()).thenAnswer((_) async => {});
       when(() => storageService.selectedEquipmentProfileId).thenReturn('');
 
       await pumpTestWidget(tester, IAPProductStatus.purchased);
@@ -136,7 +136,7 @@ void main() {
       await tester.pump();
       expectEquipmentProfilesCount(2);
       expectSelectedEquipmentProfileName('');
-      verify(() => storageService.addProfile(any<EquipmentProfile>())).called(1);
+      verify(() => storageService.addEquipmentProfile(any<EquipmentProfile>())).called(1);
 
       /// Add the other profiles and select the 1st one
       for (final profile in _customProfiles.skip(1)) {
@@ -153,7 +153,7 @@ void main() {
       await tester.pump();
       expectEquipmentProfilesCount(1 + _customProfiles.length);
       expectSelectedEquipmentProfileName(updatedName);
-      verify(() => storageService.updateProfile(id: _customProfiles.first.id, name: updatedName)).called(1);
+      verify(() => storageService.updateEquipmentProfile(id: _customProfiles.first.id, name: updatedName)).called(1);
 
       /// Delete a non-selected profile
       await tester.equipmentProfilesProvider.deleteProfile(_customProfiles.last);
@@ -161,7 +161,7 @@ void main() {
       expectEquipmentProfilesCount(1 + _customProfiles.length - 1);
       expectSelectedEquipmentProfileName(updatedName);
       verifyNever(() => storageService.selectedEquipmentProfileId = '');
-      verify(() => storageService.deleteProfile(_customProfiles.last.id)).called(1);
+      verify(() => storageService.deleteEquipmentProfile(_customProfiles.last.id)).called(1);
 
       /// Delete the selected profile
       await tester.equipmentProfilesProvider.deleteProfile(_customProfiles.first);
@@ -169,7 +169,7 @@ void main() {
       expectEquipmentProfilesCount(1 + _customProfiles.length - 2);
       expectSelectedEquipmentProfileName('');
       verify(() => storageService.selectedEquipmentProfileId = '').called(1);
-      verify(() => storageService.deleteProfile(_customProfiles.first.id)).called(1);
+      verify(() => storageService.deleteEquipmentProfile(_customProfiles.first.id)).called(1);
     },
   );
 }

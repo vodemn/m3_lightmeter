@@ -42,13 +42,9 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
   late final UserPreferencesService userPreferencesService;
   late final bool hasLightSensor;
 
-  final equipmentProfilesStorageService = EquipmentProfilesStorageService();
+  final iapStorageService = IapStorageService();
   final equipmentProfilesStorageServiceCompleter = Completer<void>();
-
-  final filmsStorageService = FilmsStorageService();
   final filmsStorageServiceCompleter = Completer<void>();
-
-  final logbookPhotosStorageService = LogbookPhotosStorageService();
   final logbookPhotosStorageServiceCompleter = Completer<void>();
 
   late final Future<void> _initFuture;
@@ -81,13 +77,13 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
             child: RemoteConfigProvider(
               remoteConfigService: remoteConfigService,
               child: EquipmentProfilesProvider(
-                storageService: equipmentProfilesStorageService,
+                storageService: iapStorageService,
                 onInitialized: equipmentProfilesStorageServiceCompleter.complete,
                 child: FilmsProvider(
-                  storageService: filmsStorageService,
+                  storageService: iapStorageService,
                   onInitialized: filmsStorageServiceCompleter.complete,
                   child: LogbookPhotosProvider(
-                    storageService: logbookPhotosStorageService,
+                    storageService: iapStorageService,
                     onInitialized: logbookPhotosStorageServiceCompleter.complete,
                     child: UserPreferencesProvider(
                       hasLightSensor: hasLightSensor,
@@ -112,9 +108,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
       const LightSensorService(LocalPlatform()).hasSensor(),
       const CameraInfoService(analytics).mainCameraEfl(),
       remoteConfigService.activeAndFetchFeatures(),
-      equipmentProfilesStorageService.init(),
-      filmsStorageService.init(),
-      logbookPhotosStorageService.init(),
+      iapStorageService.init(),
     ]).then((value) {
       userPreferencesService = UserPreferencesService((value[0] as SharedPreferences?)!)
         ..cameraFocalLength = value[2] as int?;

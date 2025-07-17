@@ -14,7 +14,7 @@ class EquipmentProfilesProvider extends StatefulWidget {
     isoValues: IsoValue.values,
   );
 
-  final EquipmentProfilesStorageService storageService;
+  final IapStorageService storageService;
   final VoidCallback? onInitialized;
   final Widget child;
 
@@ -57,21 +57,21 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
 
   Future<void> _init() async {
     _selectedId = widget.storageService.selectedEquipmentProfileId;
-    _customProfiles.addAll(await widget.storageService.getProfiles());
+    _customProfiles.addAll(await widget.storageService.getEquipmentProfiles());
     _discardSelectedIfNotIncluded();
     if (mounted) setState(() {});
     widget.onInitialized?.call();
   }
 
   Future<void> addProfile(EquipmentProfile profile) async {
-    await widget.storageService.addProfile(profile);
+    await widget.storageService.addEquipmentProfile(profile);
     _customProfiles[profile.id] = (value: profile, isUsed: true);
     setState(() {});
   }
 
   Future<void> updateProfile(EquipmentProfile profile) async {
     final oldProfile = _customProfiles[profile.id]!.value;
-    await widget.storageService.updateProfile(
+    await widget.storageService.updateEquipmentProfile(
       id: profile.id,
       name: oldProfile.name != profile.name ? profile.name : null,
       apertureValues: oldProfile.apertureValues != profile.apertureValues ? profile.apertureValues : null,
@@ -86,7 +86,7 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
   }
 
   Future<void> deleteProfile(EquipmentProfile profile) async {
-    await widget.storageService.deleteProfile(profile.id);
+    await widget.storageService.deleteEquipmentProfile(profile.id);
     if (profile.id == _selectedId) {
       _selectedId = EquipmentProfilesProvider.defaultProfile.id;
       widget.storageService.selectedEquipmentProfileId = EquipmentProfilesProvider.defaultProfile.id;
@@ -111,7 +111,7 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
     } else {
       return;
     }
-    await widget.storageService.updateProfile(id: profile.id, isUsed: enabled);
+    await widget.storageService.updateEquipmentProfile(id: profile.id, isUsed: enabled);
     _discardSelectedIfNotIncluded();
     setState(() {});
   }
