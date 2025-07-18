@@ -42,6 +42,7 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
             isoValues: profile.isoValues,
             ndValues: profile.ndValues,
             lensZoom: profile.lensZoom,
+            exposureOffset: profile.exposureOffset,
             canSave: false,
           ),
         ) {
@@ -60,6 +61,8 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
             await _onNdValuesChanged(e, emit);
           case final EquipmentProfileLensZoomChangedEvent e:
             await _onLensZoomChanged(e, emit);
+          case final EquipmentProfileExposureOffsetChangedEvent e:
+            await _onExposureOffsetChanged(e, emit);
           case EquipmentProfileSaveEvent():
             await _onSave(event, emit);
           case EquipmentProfileCopyEvent():
@@ -131,6 +134,16 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
     );
   }
 
+  Future<void> _onExposureOffsetChanged(EquipmentProfileExposureOffsetChangedEvent event, Emitter emit) async {
+    _newEquipmentProfile = _newEquipmentProfile.copyWith(exposureOffset: event.exposureOffset);
+    emit(
+      state.copyWith(
+        exposureOffset: event.exposureOffset,
+        canSave: _canSave(state.name, event.exposureOffset),
+      ),
+    );
+  }
+
   Future<void> _onSave(EquipmentProfileSaveEvent _, Emitter emit) async {
     emit(state.copyWith(isLoading: true));
     if (_isEdit) {
@@ -143,6 +156,7 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
           shutterSpeedValues: state.shutterSpeedValues,
           isoValues: state.isoValues,
           lensZoom: state.lensZoom,
+          exposureOffset: state.exposureOffset,
         ),
       );
     } else {
@@ -155,6 +169,7 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
           shutterSpeedValues: state.shutterSpeedValues,
           isoValues: state.isoValues,
           lensZoom: state.lensZoom,
+          exposureOffset: state.exposureOffset,
         ),
       );
     }
@@ -173,6 +188,6 @@ class EquipmentProfileEditBloc extends Bloc<EquipmentProfileEditEvent, Equipment
   }
 
   bool _canSave(String name, double? lensZoom) {
-    return name.isNotEmpty && lensZoom != null && _newEquipmentProfile != _originalEquipmentProfile;
+    return name.isNotEmpty && _newEquipmentProfile != _originalEquipmentProfile;
   }
 }

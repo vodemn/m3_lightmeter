@@ -40,6 +40,12 @@ class EquipmentProfileLensZoomChangedEvent extends EquipmentProfileEditEvent {
   const EquipmentProfileLensZoomChangedEvent(this.lensZoom);
 }
 
+class EquipmentProfileExposureOffsetChangedEvent extends EquipmentProfileEditEvent {
+  final double exposureOffset;
+
+  const EquipmentProfileExposureOffsetChangedEvent(this.exposureOffset);
+}
+
 class EquipmentProfileSaveEvent extends EquipmentProfileEditEvent {
   const EquipmentProfileSaveEvent();
 }

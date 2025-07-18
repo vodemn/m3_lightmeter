@@ -73,13 +73,13 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
     final oldProfile = _customProfiles[profile.id]!.value;
     await widget.storageService.updateEquipmentProfile(
       id: profile.id,
-      name: oldProfile.name != profile.name ? profile.name : null,
-      apertureValues: oldProfile.apertureValues != profile.apertureValues ? profile.apertureValues : null,
-      shutterSpeedValues:
-          oldProfile.shutterSpeedValues != profile.shutterSpeedValues ? profile.shutterSpeedValues : null,
-      isoValues: oldProfile.isoValues != profile.isoValues ? profile.isoValues : null,
-      ndValues: oldProfile.ndValues != profile.ndValues ? profile.ndValues : null,
-      lensZoom: oldProfile.lensZoom != profile.lensZoom ? profile.lensZoom : null,
+      name: oldProfile.name.changedOrNull(profile.name),
+      apertureValues: oldProfile.apertureValues.changedOrNull(profile.apertureValues),
+      shutterSpeedValues: oldProfile.shutterSpeedValues.changedOrNull(profile.shutterSpeedValues),
+      isoValues: oldProfile.isoValues.changedOrNull(profile.isoValues),
+      ndValues: oldProfile.ndValues.changedOrNull(profile.ndValues),
+      lensZoom: oldProfile.lensZoom.changedOrNull(profile.lensZoom),
+      exposureOffset: oldProfile.exposureOffset.changedOrNull(profile.exposureOffset),
     );
     _customProfiles[profile.id] = (value: profile, isUsed: _customProfiles[profile.id]!.isUsed);
     setState(() {});
@@ -181,5 +181,11 @@ class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
         ((dependencies.contains(_EquipmentProfilesModelAspect.profiles) ||
                 dependencies.contains(_EquipmentProfilesModelAspect.profilesInUse)) &&
             const DeepCollectionEquality().equals(oldWidget.profiles, profiles));
+  }
+}
+
+extension on Object {
+  T? changedOrNull<T>(T newValue) {
+    return this != newValue ? newValue : null;
   }
 }
