@@ -232,7 +232,7 @@ extension on WidgetTester {
   }
 
   Future<void> mockTimerResumedState(ShutterSpeedValue shutterSpeedValue) async {
-    await tap(find.byType(AnimatedCircluarButton));
+    await tap(find.byType(AnimatedCircularButton));
     await pump(Dimens.durationS);
 
     late final skipTimerDuration =
