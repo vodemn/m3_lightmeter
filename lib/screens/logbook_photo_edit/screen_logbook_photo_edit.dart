@@ -37,6 +37,7 @@ class _LogbookPhotoEditScreenState extends State<LogbookPhotoEditScreen> {
       builder: (context, state) => IgnorePointer(
         ignoring: state.isLoading,
         child: SliverScreen(
+          title: Text(_formatDate(state.timestamp)),
           appBarActions: [
             BlocBuilder<LogbookPhotoEditBloc, LogbookPhotoEditState>(
               buildWhen: (previous, current) => previous.canSave != current.canSave,
@@ -60,29 +61,30 @@ class _LogbookPhotoEditScreenState extends State<LogbookPhotoEditScreen> {
             SliverToBoxAdapter(
               child: Opacity(
                 opacity: state.isLoading ? Dimens.disabledOpacity : Dimens.enabledOpacity,
-                child: const Column(
-                  children: [
-                    _PhotoPreviewBuilder(),
-                    Card(
-                      margin: EdgeInsets.all(Dimens.paddingM),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: Dimens.paddingM),
-                        child: Column(
-                          children: [
-                            _DateListTile(),
-                            //TODO: maybe make it edge to edge and add InterActiveViewer
-                            LogbookPhotoCoordinatesListTile(),
-                            _NoteListTile(),
-                            _EvListTile(),
-                            _IsoListTile(),
-                            _NdFilterListTile(),
-                            _AperturePickerListTile(),
-                            _ShutterSpeedPickerListTile(),
-                          ],
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimens.paddingM),
+                  child: Column(
+                    children: [
+                      _PhotoPreviewBuilder(),
+                      SizedBox(height: Dimens.grid16),
+                      Card(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: Dimens.paddingM),
+                          child: Column(
+                            children: [
+                              LogbookPhotoCoordinatesListTile(),
+                              _NoteListTile(),
+                              _EvListTile(),
+                              _IsoListTile(),
+                              _NdFilterListTile(),
+                              _AperturePickerListTile(),
+                              _ShutterSpeedPickerListTile(),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -91,6 +93,15 @@ class _LogbookPhotoEditScreenState extends State<LogbookPhotoEditScreen> {
         ),
       ),
     );
+  }
+
+  String _formatDate(DateTime dateTime) {
+    final day = dateTime.day.toString().padLeft(2, '0');
+    final month = dateTime.month.toString().padLeft(2, '0');
+    final year = dateTime.year.toString();
+    final hour = dateTime.hour.toString().padLeft(2, '0');
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    return '$day.$month.$year $hour:$minute';
   }
 }
 
@@ -105,41 +116,19 @@ class _PhotoPreviewBuilder extends StatelessWidget {
         aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
         child: Hero(
           tag: state.id,
-          child: PlatformConfig.cameraStubImage.isNotEmpty
-              ? Image.asset(
-                  PlatformConfig.cameraStubImage,
-                  fit: BoxFit.cover,
-                )
-              : Image.file(
-                  File(state.name),
-                  fit: BoxFit.cover,
-                ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
+            child: PlatformConfig.cameraStubImage.isNotEmpty
+                ? Image.asset(
+                    PlatformConfig.cameraStubImage,
+                    fit: BoxFit.cover,
+                  )
+                : Image.file(
+                    File(state.name),
+                    fit: BoxFit.cover,
+                  ),
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class _DateListTile extends StatelessWidget {
-  const _DateListTile();
-
-  String _formatDate(DateTime dateTime) {
-    final day = dateTime.day.toString().padLeft(2, '0');
-    final month = dateTime.month.toString().padLeft(2, '0');
-    final year = dateTime.year.toString();
-    final hour = dateTime.hour.toString().padLeft(2, '0');
-    final minute = dateTime.minute.toString().padLeft(2, '0');
-    return '$day.$month.$year $hour:$minute';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LogbookPhotoEditBloc, LogbookPhotoEditState>(
-      buildWhen: (_, __) => false,
-      builder: (context, state) => ListTile(
-        leading: const Icon(Icons.access_time),
-        title: Text(S.of(context).date),
-        trailing: Text(_formatDate(state.timestamp)),
       ),
     );
   }
