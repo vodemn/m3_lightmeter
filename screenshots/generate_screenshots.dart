@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_visible_for_testing_member
+// ignore_for_file: invalid_use_of_visible_for_testing_member, use_build_context_synchronously
 
 import 'dart:convert';
 import 'dart:io';
@@ -14,8 +14,10 @@ import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/screens/logbook/components/grid_tile/widget_grid_tile_logbook_photo.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
@@ -134,10 +136,38 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.edit_outlined).first);
     await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.copy_outlined).first);
+    await tester.pumpAndSettle();
     await tester.tap(find.text(S.current.isoValues)); // open and close a dialog to hide keyboard
     await tester.pumpAndSettle();
     await tester.tapCancelButton();
     await tester.takeScreenshotLight(binding, 'equipment-profiles');
+
+    await tester.navigatorPop();
+    await tester.navigatorPop();
+    final context = tester.element(find.byType(SettingsScreen)) as BuildContext;
+    final photo = LogbookPhotos.of(context).first;
+    await LogbookPhotosProvider.of(context).updateLogbookPhoto(
+      LogbookPhoto(
+        id: photo.id,
+        name: photo.name,
+        timestamp: DateTime(2025, 06, 22, 20, 15),
+        coordinates: const Coordinates(52.241921, 21.034328),
+        note: photo.note,
+        ev: photo.ev,
+        iso: photo.iso,
+        nd: photo.nd,
+        apertureValue: const ApertureValue(2.0, StopType.full),
+        shutterSpeedValue: photo.shutterSpeedValue,
+      ),
+    );
+    await tester.tapDescendantTextOf<SettingsScreen>(S.current.logbook);
+    expect(find.byType(LogbookPhotoGridTile), findsOneWidget);
+    await tester.tap(find.byType(LogbookPhotoGridTile).first);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text(S.current.shutterSpeedValue));
+    await tester.pumpAndSettle();
+    await tester.takeScreenshotLight(binding, 'logbook-edit');
   });
 
   /// and the additionally the first one with the dark theme
