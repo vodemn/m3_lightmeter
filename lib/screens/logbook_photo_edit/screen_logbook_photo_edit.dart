@@ -105,10 +105,15 @@ class _PhotoPreviewBuilder extends StatelessWidget {
         aspectRatio: PlatformConfig.cameraPreviewAspectRatio,
         child: Hero(
           tag: state.id,
-          child: Image.file(
-            File(state.name),
-            fit: BoxFit.cover,
-          ),
+          child: PlatformConfig.cameraStubImage.isNotEmpty
+              ? Image.asset(
+                  PlatformConfig.cameraStubImage,
+                  fit: BoxFit.cover,
+                )
+              : Image.file(
+                  File(state.name),
+                  fit: BoxFit.cover,
+                ),
         ),
       ),
     );

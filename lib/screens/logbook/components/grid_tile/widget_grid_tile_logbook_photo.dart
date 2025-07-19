@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -23,15 +24,20 @@ class LogbookPhotoGridTile extends StatelessWidget {
         tag: photo.id,
         child: Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimens.borderRadiusM)),
-          child: FadeInImage(
-            placeholder: MemoryImage(Uint8List(0)), // Will be replaced by placeholder widget
-            image: FileImage(File(photo.name)),
-            fit: BoxFit.cover,
-            fadeInDuration: Dimens.durationS,
-            fadeOutDuration: Dimens.durationS,
-            imageErrorBuilder: (_, __, ___) => const Center(child: Icon(Icons.error_outline)),
-            placeholderErrorBuilder: (_, __, ___) => const SizedBox.shrink(),
-          ),
+          child: PlatformConfig.cameraStubImage.isNotEmpty
+              ? Image.asset(
+                  PlatformConfig.cameraStubImage,
+                  fit: BoxFit.cover,
+                )
+              : FadeInImage(
+                  placeholder: MemoryImage(Uint8List(0)), // Will be replaced by placeholder widget
+                  image: FileImage(File(photo.name)),
+                  fit: BoxFit.cover,
+                  fadeInDuration: Dimens.durationS,
+                  fadeOutDuration: Dimens.durationS,
+                  imageErrorBuilder: (_, __, ___) => const Center(child: Icon(Icons.error_outline)),
+                  placeholderErrorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                ),
         ),
       ),
     );
