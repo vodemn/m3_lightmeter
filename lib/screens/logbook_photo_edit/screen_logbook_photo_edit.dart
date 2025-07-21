@@ -83,6 +83,7 @@ class _LogbookPhotoEditScreenState extends State<LogbookPhotoEditScreen> {
                           ),
                         ),
                       ),
+                      SizedBox(height: Dimens.grid16),
                     ],
                   ),
                 ),
