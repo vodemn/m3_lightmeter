@@ -12,18 +12,13 @@ dependencies:
   m3_lightmeter_resources:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_resources"
-      ref: v2.2.0
+      ref: v2.3.0
   shared_preferences:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-
-
-dependency_overrides:
-  m3_lightmeter_resources:
-    path: /Users/vodemn/Documents/GitHub/Vodemn/m3_lightmeter_resources
 
 flutter:
   uses-material-design: true

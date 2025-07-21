@@ -1,11 +1,16 @@
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-class IAPStorageService {
-  const IAPStorageService(Object _);
+part 'equipment_profiles_storage_service.dart';
+part 'films_storage_service.dart';
+part 'logbook_photos_storage_service.dart';
 
-  String get selectedEquipmentProfileId => '';
-  set selectedEquipmentProfileId(String id) {}
+class IapStorageService extends IapStorageServiceBase
+    with EquipmentProfilesStorageService, FilmsStorageService, LogbookPhotosStorageService {
+  IapStorageService(); // coverage:ignore-line
+}
 
-  List<EquipmentProfile> get equipmentProfiles => [];
-  set equipmentProfiles(List<EquipmentProfile> profiles) {}
+abstract class IapStorageServiceBase {
+  IapStorageServiceBase();
+
+  Future<void> init() async {}
 }
