@@ -153,8 +153,6 @@ void main() {
         () => storageService.updatePhoto(
           id: updatedPhoto.id,
           note: 'Updated note',
-          apertureValue: const Optional(null),
-          shutterSpeedValue: const Optional(null),
         ),
       ).called(1);
 

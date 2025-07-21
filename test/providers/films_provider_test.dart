@@ -18,7 +18,8 @@ void main() {
   setUp(() {
     registerFallbackValue(mockCustomFilms.first);
     when(() => storageService.toggleFilm(any<Film>(), any<bool>())).thenAnswer((_) async {});
-    when(() => storageService.addFilm(any<FilmExponential>())).thenAnswer((_) async {});
+    // ignore: avoid_redundant_argument_values
+    when(() => storageService.addFilm(any<FilmExponential>(), isUsed: true)).thenAnswer((_) async {});
     when(() => storageService.updateFilm(any<FilmExponential>())).thenAnswer((_) async {});
     when(() => storageService.deleteFilm(any<FilmExponential>())).thenAnswer((_) async {});
     when(() => storageService.getPredefinedFilms()).thenAnswer((_) => Future.value(mockPredefinedFilms.toFilmsMap()));
