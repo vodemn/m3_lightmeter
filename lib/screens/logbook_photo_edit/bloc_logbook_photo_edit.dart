@@ -51,7 +51,7 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
     _newPhoto = _newPhoto.copyWith(apertureValue: Optional(event.aperture));
     emit(
       state.copyWith(
-        aperture: event.aperture,
+        aperture: Optional(event.aperture),
         canSave: _canSave(),
       ),
     );
@@ -61,7 +61,7 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
     _newPhoto = _newPhoto.copyWith(shutterSpeedValue: Optional(event.shutterSpeed));
     emit(
       state.copyWith(
-        shutterSpeed: event.shutterSpeed,
+        shutterSpeed: Optional(event.shutterSpeed),
         canSave: _canSave(),
       ),
     );

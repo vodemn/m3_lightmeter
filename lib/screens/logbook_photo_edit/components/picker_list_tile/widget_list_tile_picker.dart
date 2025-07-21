@@ -8,7 +8,7 @@ class PickerListTile<T extends PhotographyValue> extends StatelessWidget {
   final String title;
   final T? selectedValue;
   final List<T> values;
-  final ValueChanged<T?> onChanged;
+  final ValueChanged<Optional<T>> onChanged;
 
   const PickerListTile({
     required this.icon,
@@ -26,14 +26,17 @@ class PickerListTile<T extends PhotographyValue> extends StatelessWidget {
       title: Text(title),
       trailing: Text(selectedValue?.toString() ?? S.of(context).notSet),
       onTap: () {
-        showDialog<T?>(
+        showDialog<Optional<T>>(
           context: context,
-          builder: (_) => DialogPicker<T?>(
+          builder: (_) => DialogPicker<Optional<T>>(
             icon: icon,
             title: title,
-            selectedValue: selectedValue,
-            values: [null, ...values],
-            titleAdapter: (context, value) => value?.toString() ?? S.of(context).notSet,
+            selectedValue: Optional(selectedValue),
+            values: [
+              const Optional(null),
+              ...values.toSet().map((e) => Optional(e)),
+            ],
+            titleAdapter: (context, value) => value.value?.toString() ?? S.of(context).notSet,
           ),
         ).then((value) {
           if (value != null) {

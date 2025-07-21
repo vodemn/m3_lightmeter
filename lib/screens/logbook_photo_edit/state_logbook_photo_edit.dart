@@ -31,8 +31,8 @@ class LogbookPhotoEditState {
 
   LogbookPhotoEditState copyWith({
     String? name,
-    ApertureValue? aperture,
-    ShutterSpeedValue? shutterSpeed,
+    Optional<ApertureValue>? aperture,
+    Optional<ShutterSpeedValue>? shutterSpeed,
     String? note,
     bool? canSave,
     bool? isLoading,
@@ -44,8 +44,8 @@ class LogbookPhotoEditState {
         ev: ev,
         iso: iso,
         nd: nd,
-        aperture: aperture ?? this.aperture,
-        shutterSpeed: shutterSpeed ?? this.shutterSpeed,
+        aperture: aperture != null ? aperture.value : this.aperture,
+        shutterSpeed: shutterSpeed != null ? shutterSpeed.value : this.shutterSpeed,
         note: note ?? this.note,
         canSave: canSave ?? this.canSave,
         isLoading: isLoading ?? this.isLoading,

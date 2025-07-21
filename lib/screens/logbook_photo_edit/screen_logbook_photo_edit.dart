@@ -224,7 +224,7 @@ class _AperturePickerListTile extends StatelessWidget {
         values: ApertureValue.values,
         selectedValue: state.aperture,
         onChanged: (value) {
-          context.read<LogbookPhotoEditBloc>().add(LogbookPhotoApertureChangedEvent(value));
+          context.read<LogbookPhotoEditBloc>().add(LogbookPhotoApertureChangedEvent(value.value));
         },
       ),
     );
@@ -244,7 +244,7 @@ class _ShutterSpeedPickerListTile extends StatelessWidget {
         values: ShutterSpeedValue.values,
         selectedValue: state.shutterSpeed,
         onChanged: (value) {
-          context.read<LogbookPhotoEditBloc>().add(LogbookPhotoShutterSpeedChangedEvent(value));
+          context.read<LogbookPhotoEditBloc>().add(LogbookPhotoShutterSpeedChangedEvent(value.value));
         },
       ),
     );

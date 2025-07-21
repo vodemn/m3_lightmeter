@@ -894,11 +894,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v2.3.0"
-      resolved-ref: a8c419f21fcda06d76d26cc2416de459f0d51a60
+      ref: "v2.3.1"
+      resolved-ref: "8b39ac1927b791652618509abe0391f844229b93"
       url: "https://github.com/vodemn/m3_lightmeter_resources"
     source: git
-    version: "2.3.0+11"
+    version: "2.3.1+12"
   macros:
     dependency: transitive
     description:
