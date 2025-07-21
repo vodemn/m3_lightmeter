@@ -31,7 +31,6 @@ Future<void> runLightmeterApp(Environment env) async {
                   IAPProduct(
                     storeId: IAPProductType.paidFeatures.storeId,
                     price: '0.0\$',
-                    status: IAPProductStatus.purchased,
                   ),
                 ],
                 child: application,
