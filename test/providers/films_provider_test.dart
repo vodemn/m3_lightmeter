@@ -198,7 +198,8 @@ void main() {
       expectCustomFilmsCount(1);
       expectFilmsInUseCount(mockPredefinedFilms.length + 1 + 1);
       expectSelectedFilmName(mockCustomFilms.first.name);
-      verify(() => storageService.addFilm(mockCustomFilms.first)).called(1);
+      // ignore: avoid_redundant_argument_values
+      verify(() => storageService.addFilm(mockCustomFilms.first, isUsed: true)).called(1);
       verify(() => storageService.toggleFilm(mockCustomFilms.first, true)).called(1);
       verify(() => storageService.selectedFilmId = mockCustomFilms.first.id).called(1);
 
