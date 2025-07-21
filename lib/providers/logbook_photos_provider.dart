@@ -100,10 +100,9 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
     await widget.storageService.updatePhoto(
       id: photo.id,
       note: oldProfile.note != photo.note ? photo.note : null,
-      apertureValue: oldProfile.apertureValue != photo.apertureValue ? photo.apertureValue : null,
-      removeApertureValue: photo.apertureValue == null,
-      shutterSpeedValue: oldProfile.shutterSpeedValue != photo.shutterSpeedValue ? photo.shutterSpeedValue : null,
-      removeShutterSpeedValue: photo.shutterSpeedValue == null,
+      apertureValue: oldProfile.apertureValue != photo.apertureValue ? Optional(photo.apertureValue) : null,
+      shutterSpeedValue:
+          oldProfile.shutterSpeedValue != photo.shutterSpeedValue ? Optional(photo.shutterSpeedValue) : null,
     );
     _photos[photo.id] = photo;
     setState(() {});

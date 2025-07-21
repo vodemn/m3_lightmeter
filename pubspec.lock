@@ -884,17 +884,21 @@ packages:
   m3_lightmeter_iap:
     dependency: "direct main"
     description:
-      path: "/Users/vodemn/Documents/GitHub/Vodemn/m3_lightmeter_iap"
-      relative: false
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "32e053b7d14009c6d61daf56f1556de3365297cb"
+      url: "https://github.com/vodemn/m3_lightmeter_iap"
+    source: git
     version: "2.2.0+31"
   m3_lightmeter_resources:
     dependency: "direct main"
     description:
-      path: "/Users/vodemn/Documents/GitHub/Vodemn/m3_lightmeter_resources"
-      relative: false
-    source: path
-    version: "2.2.0+10"
+      path: "."
+      ref: "v2.3.0"
+      resolved-ref: a8c419f21fcda06d76d26cc2416de459f0d51a60
+      url: "https://github.com/vodemn/m3_lightmeter_resources"
+    source: git
+    version: "2.3.0+11"
   macros:
     dependency: transitive
     description:

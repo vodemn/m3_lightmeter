@@ -29,10 +29,8 @@ void main() {
       () => storageService.updatePhoto(
         id: any<String>(named: 'id'),
         note: any<String>(named: 'note'),
-        apertureValue: any<ApertureValue>(named: 'apertureValue'),
-        removeApertureValue: any<bool>(named: 'removeApertureValue'),
-        shutterSpeedValue: any<ShutterSpeedValue>(named: 'shutterSpeedValue'),
-        removeShutterSpeedValue: any<bool>(named: 'removeShutterSpeedValue'),
+        apertureValue: any<Optional<ApertureValue>?>(named: 'apertureValue'),
+        shutterSpeedValue: any<Optional<ShutterSpeedValue>?>(named: 'shutterSpeedValue'),
       ),
     ).thenAnswer((_) async {});
     when(() => storageService.deletePhoto(any<String>())).thenAnswer((_) async {});
@@ -155,8 +153,8 @@ void main() {
         () => storageService.updatePhoto(
           id: updatedPhoto.id,
           note: 'Updated note',
-          removeApertureValue: true,
-          removeShutterSpeedValue: true,
+          apertureValue: const Optional(null),
+          shutterSpeedValue: const Optional(null),
         ),
       ).called(1);
 

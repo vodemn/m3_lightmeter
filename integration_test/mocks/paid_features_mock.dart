@@ -75,9 +75,7 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
         id: any(named: 'id'),
         note: any(named: 'note'),
         apertureValue: any(named: 'apertureValue'),
-        removeApertureValue: any(named: 'removeApertureValue'),
         shutterSpeedValue: any(named: 'shutterSpeedValue'),
-        removeShutterSpeedValue: any(named: 'removeShutterSpeedValue'),
       ),
     ).thenAnswer((_) async {});
     when(() => mockIapStorageService.deletePhoto(any())).thenAnswer((_) async {});

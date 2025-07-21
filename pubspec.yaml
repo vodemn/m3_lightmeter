@@ -33,11 +33,12 @@ dependencies:
   m3_lightmeter_iap:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_iap"
-      ref: v2.2.0
+      branch: main
   m3_lightmeter_resources:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_resources"
-      ref: v2.2.0
+      ref: v2.3.0
+  map_launcher: 3.2.0
   material_color_utilities: 0.12.0
   package_info_plus: 8.1.3
   permission_handler: 11.3.1
@@ -47,7 +48,6 @@ dependencies:
   url_launcher_ios: 6.3.2
   uuid: 4.5.1
   vibration: 2.0.1
-  map_launcher: 3.2.0
 
 dev_dependencies:
   args: 2.6.0
@@ -68,10 +68,6 @@ dev_dependencies:
 
 dependency_overrides:
   geolocator_android: 4.6.1
-  m3_lightmeter_iap:
-    path: /Users/vodemn/Documents/GitHub/Vodemn/m3_lightmeter_iap
-  m3_lightmeter_resources:
-    path: /Users/vodemn/Documents/GitHub/Vodemn/m3_lightmeter_resources
   material_color_utilities: 0.11.1
 
 flutter:
