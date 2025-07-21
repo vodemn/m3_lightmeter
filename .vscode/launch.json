@@ -74,5 +74,18 @@
             ],
             "program": "${workspaceFolder}/integration_test/run_all_tests.dart",
         },
+        {
+            "name": "screenshots",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "--flavor",
+                "dev",
+                "--dart-define",
+                "cameraStubImage=assets/camera_stub_image.jpg"
+            ],
+            "program": "${workspaceFolder}/screenshots/generate_screenshots.dart",
+        },
     ],
 }
