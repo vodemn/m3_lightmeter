@@ -29,8 +29,13 @@ class MeasureEvent extends MeteringEvent {
 class MeasuredEvent extends MeteringEvent {
   final double ev100;
   final bool isMetering;
+  final String? photoPath;
 
-  const MeasuredEvent(this.ev100, {required this.isMetering});
+  const MeasuredEvent(
+    this.ev100, {
+    required this.isMetering,
+    this.photoPath,
+  });
 }
 
 class MeasureErrorEvent extends MeteringEvent {

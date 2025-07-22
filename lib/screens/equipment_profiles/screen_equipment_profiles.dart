@@ -60,8 +60,8 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
 
 class _EquipmentProfilesListBuilder extends StatelessWidget {
   final List<EquipmentProfile> values;
-  final void Function(EquipmentProfile film) onEdit;
-  final void Function(EquipmentProfile film, bool value) onCheckbox;
+  final void Function(EquipmentProfile profile) onEdit;
+  final void Function(EquipmentProfile profile, bool value) onCheckbox;
 
   const _EquipmentProfilesListBuilder({
     required this.values,

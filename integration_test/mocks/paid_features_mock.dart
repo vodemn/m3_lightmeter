@@ -1,15 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:lightmeter/data/geolocation_service.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/films_provider.dart';
+import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
-class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProfilesStorageService {}
+class _MockIapStorageService extends Mock implements IapStorageService {}
 
-class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
+class _MockGeolocationService extends Mock implements GeolocationService {}
 
 class MockIAPProviders extends StatefulWidget {
   final TogglableMap<EquipmentProfile> equipmentProfiles;
@@ -37,43 +39,61 @@ class MockIAPProviders extends StatefulWidget {
 }
 
 class _MockIAPProvidersState extends State<MockIAPProviders> {
-  late final _MockEquipmentProfilesStorageService mockEquipmentProfilesStorageService;
-  late final _MockFilmsStorageService mockFilmsStorageService;
+  late final _MockIapStorageService mockIapStorageService;
+  late final mockGeolocationService = _MockGeolocationService();
 
   @override
   void initState() {
     super.initState();
     registerFallbackValue(defaultEquipmentProfile);
-    mockEquipmentProfilesStorageService = _MockEquipmentProfilesStorageService();
-    when(() => mockEquipmentProfilesStorageService.init()).thenAnswer((_) async {});
-    when(() => mockEquipmentProfilesStorageService.getProfiles())
-        .thenAnswer((_) => Future.value(widget.equipmentProfiles));
-    when(() => mockEquipmentProfilesStorageService.selectedEquipmentProfileId)
-        .thenReturn(widget.selectedEquipmentProfileId);
-    when(() => mockEquipmentProfilesStorageService.addProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
+    registerFallbackValue(defaultCustomPhotos.first);
+    registerFallbackValue(ApertureValue.values.first);
+    registerFallbackValue(ShutterSpeedValue.values.first);
+    mockIapStorageService = _MockIapStorageService();
+    when(() => mockIapStorageService.init()).thenAnswer((_) async {});
+
+    when(() => mockIapStorageService.getEquipmentProfiles()).thenAnswer((_) => Future.value(widget.equipmentProfiles));
+    when(() => mockIapStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
+    when(() => mockIapStorageService.addEquipmentProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
     when(
-      () => mockEquipmentProfilesStorageService.updateProfile(
+      () => mockIapStorageService.updateEquipmentProfile(
         id: any<String>(named: 'id'),
         name: any<String>(named: 'name'),
         isUsed: any<bool>(named: 'isUsed'),
       ),
     ).thenAnswer((_) async {});
-    when(() => mockEquipmentProfilesStorageService.deleteProfile(any<String>())).thenAnswer((_) async {});
+    when(() => mockIapStorageService.deleteEquipmentProfile(any<String>())).thenAnswer((_) async {});
 
-    mockFilmsStorageService = _MockFilmsStorageService();
-    when(() => mockFilmsStorageService.init()).thenAnswer((_) async {});
-    when(() => mockFilmsStorageService.getPredefinedFilms()).thenAnswer((_) => Future.value(widget.predefinedFilms));
-    when(() => mockFilmsStorageService.getCustomFilms()).thenAnswer((_) => Future.value(widget.customFilms));
-    when(() => mockFilmsStorageService.selectedFilmId).thenReturn(widget.selectedFilmId);
+    when(() => mockIapStorageService.getPredefinedFilms()).thenAnswer((_) => Future.value(widget.predefinedFilms));
+    when(() => mockIapStorageService.getCustomFilms()).thenAnswer((_) => Future.value(widget.customFilms));
+    when(() => mockIapStorageService.selectedFilmId).thenReturn(widget.selectedFilmId);
+
+    when(() => mockIapStorageService.getPhotos()).thenAnswer((_) async => []);
+    when(() => mockIapStorageService.addPhoto(any())).thenAnswer((_) async {});
+    when(
+      () => mockIapStorageService.updatePhoto(
+        id: any(named: 'id'),
+        note: any(named: 'note'),
+        apertureValue: any(named: 'apertureValue'),
+        shutterSpeedValue: any(named: 'shutterSpeedValue'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => mockIapStorageService.deletePhoto(any())).thenAnswer((_) async {});
+
+    when(() => mockGeolocationService.getCurrentPosition()).thenAnswer((_) => Future.value());
   }
 
   @override
   Widget build(BuildContext context) {
     return EquipmentProfilesProvider(
-      storageService: mockEquipmentProfilesStorageService,
+      storageService: mockIapStorageService,
       child: FilmsProvider(
-        storageService: mockFilmsStorageService,
-        child: widget.child,
+        storageService: mockIapStorageService,
+        child: LogbookPhotosProvider(
+          storageService: mockIapStorageService,
+          geolocationService: mockGeolocationService,
+          child: widget.child,
+        ),
       ),
     );
   }
@@ -199,3 +219,24 @@ class _FilmMultiplying extends FilmExponential {
   @override
   int get hashCode => Object.hash(id, name, iso, reciprocityMultiplier, runtimeType);
 }
+
+final List<LogbookPhoto> defaultCustomPhotos = [
+  LogbookPhoto(
+    id: '1',
+    name: 'test_photo_1.jpg',
+    timestamp: DateTime(2024, 1, 1, 12),
+    ev: 12.0,
+    iso: 100,
+    nd: 0,
+    note: 'Test photo 1',
+  ),
+  LogbookPhoto(
+    id: '2',
+    name: 'test_photo_2.jpg',
+    timestamp: DateTime(2024, 1, 2, 12),
+    ev: 13.0,
+    iso: 200,
+    nd: 1,
+    note: 'Test photo 2',
+  ),
+];

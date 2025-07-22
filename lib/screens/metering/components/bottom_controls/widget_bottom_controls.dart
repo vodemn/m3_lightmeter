@@ -40,7 +40,7 @@ class MeteringBottomControls extends StatelessWidget {
                   : S.of(context).tooltipUseLightSensor,
             )
           : null,
-      center: AnimatedCircluarButton(
+      center: AnimatedCircularButton(
         progress: isMetering ? null : 1.0,
         isPressed: isMetering,
         onPressed: onMeasure,

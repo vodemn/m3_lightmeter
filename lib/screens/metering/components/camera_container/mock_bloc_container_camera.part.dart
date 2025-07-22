@@ -69,11 +69,11 @@ class MockCameraContainerBloc extends CameraContainerBloc {
   bool get _canTakePhoto => PlatformConfig.cameraStubImage.isNotEmpty;
 
   @override
-  Future<double?> _takePhoto() async {
+  Future<({double ev, String path})?> _takePhoto() async {
     try {
       final bytes = (await rootBundle.load(PlatformConfig.cameraStubImage)).buffer.asUint8List();
       final tags = await readExifFromBytes(bytes);
-      return evFromTags(tags);
+      return (ev: evFromTags(tags), path: PlatformConfig.cameraStubImage);
     } catch (e, stackTrace) {
       log(e.toString(), stackTrace: stackTrace);
       return null;

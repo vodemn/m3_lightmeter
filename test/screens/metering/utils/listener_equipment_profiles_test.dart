@@ -8,7 +8,7 @@ import 'package:mocktail/mocktail.dart';
 
 import '../../../function_mock.dart';
 
-class _MockEquipmentProfilesStorageService extends Mock implements EquipmentProfilesStorageService {}
+class _MockEquipmentProfilesStorageService extends Mock implements IapStorageService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -17,15 +17,15 @@ void main() {
 
   setUp(() {
     registerFallbackValue(_customProfiles.first);
-    when(() => storageService.addProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
+    when(() => storageService.addEquipmentProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
     when(
-      () => storageService.updateProfile(
+      () => storageService.updateEquipmentProfile(
         id: any<String>(named: 'id'),
         name: any<String>(named: 'name'),
       ),
     ).thenAnswer((_) async {});
-    when(() => storageService.deleteProfile(any<String>())).thenAnswer((_) async {});
-    when(() => storageService.getProfiles()).thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
+    when(() => storageService.deleteEquipmentProfile(any<String>())).thenAnswer((_) async {});
+    when(() => storageService.getEquipmentProfiles()).thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
   });
 
   tearDown(() {

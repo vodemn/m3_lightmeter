@@ -105,7 +105,7 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
                   icon: const Icon(Icons.restore),
                 ),
                 center: BlocBuilder<TimerBloc, TimerState>(
-                  builder: (_, state) => AnimatedCircluarButton(
+                  builder: (_, state) => AnimatedCircularButton(
                     isPressed: state is TimerResumedState,
                     onPressed: () {
                       if (timelineAnimation.value == 0) {

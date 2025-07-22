@@ -10,7 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import '../../../../../application_mock.dart';
 import 'utils.dart';
 
-class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
+class _MockFilmsStorageService extends Mock implements IapStorageService {}
 
 void main() {
   late final _MockFilmsStorageService mockFilmsStorageService;

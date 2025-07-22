@@ -47,17 +47,22 @@ class MeteringInProgressState extends MeasuredState {
 }
 
 class MeteringEndedState extends MeasuredState {
-  const MeteringEndedState(super.ev100);
+  const MeteringEndedState(
+    super.ev100, {
+    this.photoPath,
+  });
+
+  final String? photoPath;
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
-    return other is MeteringEndedState && other.ev100 == ev100;
+    return other is MeteringEndedState && other.ev100 == ev100 && other.photoPath == photoPath;
   }
 
   @override
-  int get hashCode => Object.hash(ev100, runtimeType);
+  int get hashCode => Object.hash(runtimeType, ev100, photoPath);
 }
 
 class SettingsOpenedState extends SourceState {

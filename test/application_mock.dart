@@ -5,6 +5,7 @@ import 'package:light_sensor/light_sensor.dart';
 import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/data/analytics/api/analytics_firebase.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
+import 'package:lightmeter/data/geolocation_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/models/supported_locale.dart';
@@ -153,6 +154,7 @@ class _MockApplicationWrapper extends StatelessWidget {
             analytics: const LightmeterAnalytics(api: LightmeterAnalyticsFirebase()),
             caffeineService: const CaffeineService(),
             environment: const Environment.dev().copyWith(hasLightSensor: true),
+            geolocationService: const GeolocationService(),
             hapticsService: const HapticsService(),
             lightSensorService: const LightSensorService(LocalPlatform()),
             permissionsService: const PermissionsService(),

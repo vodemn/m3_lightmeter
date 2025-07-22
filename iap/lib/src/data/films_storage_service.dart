@@ -1,10 +1,6 @@
-import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+part of 'package:m3_lightmeter_iap/src/data/iap_storage_service.dart';
 
-class FilmsStorageService {
-  FilmsStorageService();
-
-  Future<void> init() async {}
-
+mixin FilmsStorageService on IapStorageServiceBase {
   String get selectedFilmId => '';
   set selectedFilmId(String id) {}
 
@@ -16,11 +12,7 @@ class FilmsStorageService {
 
   Future<void> deleteFilm(FilmExponential _) async {}
 
-  Future<TogglableMap<Film>> getPredefinedFilms() async {
-    return const {};
-  }
+  Future<TogglableMap<Film>> getPredefinedFilms() async => {};
 
-  Future<TogglableMap<FilmExponential>> getCustomFilms() async {
-    return const {};
-  }
+  Future<TogglableMap<FilmExponential>> getCustomFilms() async => {};
 }

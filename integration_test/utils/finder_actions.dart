@@ -5,6 +5,6 @@ import 'package:lightmeter/screens/shared/animated_circular_button/widget_button
 extension CommonFindersExtension on CommonFinders {
   Finder measureButton() => find.descendant(
         of: find.byType(MeteringBottomControls),
-        matching: find.byType(AnimatedCircluarButton),
+        matching: find.byType(AnimatedCircularButton),
       );
 }
