@@ -13,6 +13,7 @@ import 'package:lightmeter/screens/film_edit/flow_film_edit.dart';
 import 'package:lightmeter/screens/films/screen_films.dart';
 import 'package:lightmeter/screens/lightmeter_pro/screen_lightmeter_pro.dart';
 import 'package:lightmeter/screens/logbook_photo_edit/flow_logbook_photo_edit.dart';
+import 'package:lightmeter/screens/logbook_photos/screen_logbook_photos.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
 import 'package:lightmeter/screens/shared/release_notes_dialog/flow_dialog_release_notes.dart';
@@ -60,6 +61,7 @@ class Application extends StatelessWidget {
           NavigationRoutes.filmEditScreen.name: (context) => FilmEditFlow(args: context.routeArgs<FilmEditArgs>()),
           NavigationRoutes.proFeaturesScreen.name: (_) => LightmeterProScreen(),
           NavigationRoutes.timerScreen.name: (context) => TimerFlow(args: context.routeArgs<TimerFlowArgs>()),
+          NavigationRoutes.logbookPhotosListScreen.name: (_) => const LogbookPhotosScreen(),
           NavigationRoutes.logbookPhotoEditScreen.name: (context) =>
               LogbookPhotoEditFlow(args: LogbookPhotoEditArgs(photo: context.routeArgs<LogbookPhoto>())),
         },

@@ -17,7 +17,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
-import 'package:lightmeter/screens/logbook/components/grid_tile/widget_grid_tile_logbook_photo.dart';
+import 'package:lightmeter/screens/logbook_photos/components/grid_tile/widget_grid_tile_logbook_photo.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';

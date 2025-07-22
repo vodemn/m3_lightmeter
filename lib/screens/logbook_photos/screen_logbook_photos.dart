@@ -4,19 +4,19 @@ import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/platform_config.dart';
 import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/logbook/components/grid_tile/widget_grid_tile_logbook_photo.dart';
+import 'package:lightmeter/screens/logbook_photos/components/grid_tile/widget_grid_tile_logbook_photo.dart';
 import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-class LogbookScreen extends StatefulWidget {
-  const LogbookScreen({super.key});
+class LogbookPhotosScreen extends StatefulWidget {
+  const LogbookPhotosScreen({super.key});
 
   @override
-  State<LogbookScreen> createState() => _LogbookScreenState();
+  State<LogbookPhotosScreen> createState() => _LogbookPhotosScreenState();
 }
 
-class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderStateMixin {
+class _LogbookPhotosScreenState extends State<LogbookPhotosScreen> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return SliverScreen(

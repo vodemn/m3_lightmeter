@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/screens/logbook/screen_logbook.dart';
+import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/screens/settings/components/shared/iap_list_tile/widget_list_tile_iap.dart';
 
 class LogbookListTile extends StatelessWidget {
@@ -12,9 +12,7 @@ class LogbookListTile extends StatelessWidget {
       leading: const Icon(Icons.book_outlined),
       title: Text(S.of(context).logbook),
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const LogbookScreen()),
-        );
+        Navigator.of(context).pushNamed(NavigationRoutes.logbookPhotosListScreen.name);
       },
     );
   }
