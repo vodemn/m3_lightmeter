@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_events;
 import 'package:lightmeter/screens/metering/communication/state_communication_metering.dart' as communication_states;
@@ -17,12 +18,14 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   final MeteringInteractor _meteringInteractor;
   final VolumeKeysNotifier _volumeKeysNotifier;
   final MeteringCommunicationBloc _communicationBloc;
+  final LogbookPhotosProviderState _logbookPhotosProvider;
   late final StreamSubscription<communication_states.ScreenState> _communicationSubscription;
 
   MeteringBloc(
     this._meteringInteractor,
     this._volumeKeysNotifier,
     this._communicationBloc,
+    this._logbookPhotosProvider,
   ) : super(
           MeteringDataState(
             ev100: null,
@@ -74,9 +77,14 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
   @visibleForTesting
   void onCommunicationState(communication_states.ScreenState communicationState) {
     if (communicationState is communication_states.MeasuredState) {
+      String? photoPath;
+      if (communicationState case final communication_states.MeteringEndedState state) {
+        photoPath = state.photoPath;
+      }
       _handleEv100(
         communicationState.ev100,
         isMetering: communicationState is communication_states.MeteringInProgressState,
+        photoPath: photoPath,
       );
     }
   }
@@ -152,15 +160,29 @@ class MeteringBloc extends Bloc<MeteringEvent, MeteringState> {
     );
   }
 
-  void _handleEv100(double? ev100, {required bool isMetering}) {
+  void _handleEv100(double? ev100, {required bool isMetering, String? photoPath}) {
     if (ev100 == null || ev100.isNaN || ev100.isInfinite) {
       add(MeasureErrorEvent(isMetering: isMetering));
     } else {
-      add(MeasuredEvent(ev100, isMetering: isMetering));
+      add(
+        MeasuredEvent(
+          ev100,
+          isMetering: isMetering,
+          photoPath: photoPath,
+        ),
+      );
     }
   }
 
   void _onMeasured(MeasuredEvent event, Emitter emit) {
+    if (event.photoPath case final path?) {
+      _logbookPhotosProvider.addPhotoIfPossible(
+        path,
+        ev100: event.ev100,
+        iso: state.iso.value,
+        nd: state.nd.value,
+      );
+    }
     emit(
       MeteringDataState(
         ev100: event.ev100,

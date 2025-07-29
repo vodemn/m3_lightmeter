@@ -5,7 +5,7 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class FilmsProvider extends StatefulWidget {
-  final FilmsStorageService storageService;
+  final IapStorageService storageService;
   final VoidCallback? onInitialized;
   final Widget child;
 

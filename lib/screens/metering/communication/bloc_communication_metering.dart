@@ -10,7 +10,7 @@ class MeteringCommunicationBloc extends Bloc<MeteringCommunicationEvent, Meterin
     on<MeasureEvent>((_, emit) => emit(MeasureState()));
     on<EquipmentProfileChangedEvent>((event, emit) => emit(EquipmentProfileChangedState(event.profile)));
     on<MeteringInProgressEvent>((event, emit) => emit(MeteringInProgressState(event.ev100)));
-    on<MeteringEndedEvent>((event, emit) => emit(MeteringEndedState(event.ev100)));
+    on<MeteringEndedEvent>((event, emit) => emit(MeteringEndedState(event.ev100, photoPath: event.photoPath)));
     on<ScreenOnTopOpenedEvent>((_, emit) => emit(const SettingsOpenedState()));
     on<ScreenOnTopClosedEvent>((_, emit) => emit(const SettingsClosedState()));
   }

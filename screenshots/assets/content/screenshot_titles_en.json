@@ -34,6 +34,11 @@
             "screenshotName": "dark_metering-reflected",
             "title": "Match your style",
             "subtitle": "with various theme types and colors"
+        },
+        {
+            "screenshotName": "light_logbook-edit",
+            "title": "Keep track",
+            "subtitle": "of all your photos\nand all the details"
         }
     ]
 }

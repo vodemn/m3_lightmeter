@@ -55,7 +55,7 @@ void main() {
   Future<void> toggleTimer(WidgetTester tester, Key scenarioWidgetKey) async {
     final button = find.descendant(
       of: find.byKey(scenarioWidgetKey),
-      matching: find.byType(AnimatedCircluarButton),
+      matching: find.byType(AnimatedCircularButton),
     );
     await tester.tap(button);
     await tester.pump(Dimens.durationS);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
@@ -34,6 +35,7 @@ class _MeteringFlowState extends State<MeteringFlow> {
               MeteringInteractorProvider.of(context),
               VolumeKeysNotifier(ServicesProvider.of(context).volumeEventsService),
               context.read<MeteringCommunicationBloc>(),
+              LogbookPhotosProvider.of(context),
             ),
           ),
         ],

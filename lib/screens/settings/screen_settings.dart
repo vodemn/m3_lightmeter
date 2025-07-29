@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/screens/settings/components/about/widget_settings_section_about.dart';
+import 'package:lightmeter/screens/settings/components/camera/widget_settings_section_camera.dart';
 import 'package:lightmeter/screens/settings/components/general/widget_settings_section_general.dart';
 import 'package:lightmeter/screens/settings/components/lightmeter_pro/widget_settings_section_lightmeter_pro.dart';
 import 'package:lightmeter/screens/settings/components/metering/widget_settings_section_metering.dart';
@@ -40,6 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               <Widget>[
                 if (!context.isPro) const LightmeterProSettingsSection(),
                 const MeteringSettingsSection(),
+                const CameraSettingsSection(),
                 const GeneralSettingsSection(),
                 const ThemeSettingsSection(),
                 const AboutSettingsSection(),
@@ -47,7 +49,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
           ),
-          SliverToBoxAdapter(child: SizedBox(height: MediaQuery.paddingOf(context).bottom)),
         ],
       ),
     );

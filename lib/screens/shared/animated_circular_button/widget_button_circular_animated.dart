@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/shared/filled_circle/widget_circle_filled.dart';
 
-class AnimatedCircluarButton extends StatefulWidget {
+class AnimatedCircularButton extends StatefulWidget {
   final double? progress;
   final bool isPressed;
   final VoidCallback onPressed;
   final Widget? child;
 
-  const AnimatedCircluarButton({
+  const AnimatedCircularButton({
     this.progress = 1.0,
     required this.isPressed,
     required this.onPressed,
@@ -17,14 +17,14 @@ class AnimatedCircluarButton extends StatefulWidget {
   });
 
   @override
-  State<AnimatedCircluarButton> createState() => _AnimatedCircluarButtonState();
+  State<AnimatedCircularButton> createState() => _AnimatedCircularButtonState();
 }
 
-class _AnimatedCircluarButtonState extends State<AnimatedCircluarButton> {
+class _AnimatedCircularButtonState extends State<AnimatedCircularButton> {
   bool _isPressed = false;
 
   @override
-  void didUpdateWidget(covariant AnimatedCircluarButton oldWidget) {
+  void didUpdateWidget(covariant AnimatedCircularButton oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.isPressed != widget.isPressed) {
       _isPressed = widget.isPressed;

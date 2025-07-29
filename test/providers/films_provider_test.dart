@@ -5,7 +5,7 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
-class _MockFilmsStorageService extends Mock implements FilmsStorageService {}
+class _MockFilmsStorageService extends Mock implements IapStorageService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +18,8 @@ void main() {
   setUp(() {
     registerFallbackValue(mockCustomFilms.first);
     when(() => storageService.toggleFilm(any<Film>(), any<bool>())).thenAnswer((_) async {});
-    when(() => storageService.addFilm(any<FilmExponential>())).thenAnswer((_) async {});
+    // ignore: avoid_redundant_argument_values
+    when(() => storageService.addFilm(any<FilmExponential>(), isUsed: true)).thenAnswer((_) async {});
     when(() => storageService.updateFilm(any<FilmExponential>())).thenAnswer((_) async {});
     when(() => storageService.deleteFilm(any<FilmExponential>())).thenAnswer((_) async {});
     when(() => storageService.getPredefinedFilms()).thenAnswer((_) => Future.value(mockPredefinedFilms.toFilmsMap()));
@@ -197,7 +198,8 @@ void main() {
       expectCustomFilmsCount(1);
       expectFilmsInUseCount(mockPredefinedFilms.length + 1 + 1);
       expectSelectedFilmName(mockCustomFilms.first.name);
-      verify(() => storageService.addFilm(mockCustomFilms.first)).called(1);
+      // ignore: avoid_redundant_argument_values
+      verify(() => storageService.addFilm(mockCustomFilms.first, isUsed: true)).called(1);
       verify(() => storageService.toggleFilm(mockCustomFilms.first, true)).called(1);
       verify(() => storageService.selectedFilmId = mockCustomFilms.first.id).called(1);
 

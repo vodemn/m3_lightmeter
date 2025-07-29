@@ -1,6 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter/foundation.dart';
 import 'package:lightmeter/data/models/volume_action.dart';
 import 'package:lightmeter/interactors/metering_interactor.dart';
+import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
 import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
 import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_events;
@@ -20,11 +22,17 @@ class _MockMeteringCommunicationBloc
     extends MockBloc<communication_events.MeteringCommunicationEvent, communication_states.MeteringCommunicationState>
     implements MeteringCommunicationBloc {}
 
+class _MockLogbookPhotosProviderState extends Mock implements LogbookPhotosProviderState {
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) => '_MockLogbookPhotosProviderState';
+}
+
 void main() {
   late _MockMeteringInteractor meteringInteractor;
   late _MockVolumeKeysNotifier volumeKeysNotifier;
   late _MockMeteringCommunicationBloc communicationBloc;
   late MeteringBloc bloc;
+  late _MockLogbookPhotosProviderState logbookPhotosProvider;
   const iso100 = IsoValue(100, StopType.full);
 
   setUp(() {
@@ -37,11 +45,13 @@ void main() {
 
     volumeKeysNotifier = _MockVolumeKeysNotifier();
     communicationBloc = _MockMeteringCommunicationBloc();
+    logbookPhotosProvider = _MockLogbookPhotosProviderState();
 
     bloc = MeteringBloc(
       meteringInteractor,
       volumeKeysNotifier,
       communicationBloc,
+      logbookPhotosProvider,
     );
   });
 

@@ -10,6 +10,7 @@ class LightmeterTextField extends StatefulWidget {
     this.inputFormatters,
     this.leading,
     this.maxLength,
+    this.maxLines = 1,
     this.onChanged,
     this.style,
     this.textAlign = TextAlign.start,
@@ -22,6 +23,7 @@ class LightmeterTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final Widget? leading;
   final int? maxLength;
+  final int? maxLines;
   final void Function(String)? onChanged;
   final TextStyle? style;
   final TextAlign textAlign;
@@ -43,6 +45,7 @@ class _LightmeterTextFieldState extends State<LightmeterTextField> {
       initialValue: widget.initialValue,
       inputFormatters: widget.inputFormatters,
       maxLength: widget.maxLength,
+      maxLines: widget.maxLines,
       onChanged: widget.onChanged,
       style: widget.style,
       textAlign: widget.textAlign,

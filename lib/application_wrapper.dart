@@ -6,6 +6,7 @@ import 'package:lightmeter/data/analytics/analytics.dart';
 import 'package:lightmeter/data/analytics/api/analytics_firebase.dart';
 import 'package:lightmeter/data/caffeine_service.dart';
 import 'package:lightmeter/data/camera_info_service.dart';
+import 'package:lightmeter/data/geolocation_service.dart';
 import 'package:lightmeter/data/haptics_service.dart';
 import 'package:lightmeter/data/light_sensor_service.dart';
 import 'package:lightmeter/data/permissions_service.dart';
@@ -15,6 +16,7 @@ import 'package:lightmeter/data/volume_events_service.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/films_provider.dart';
+import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:lightmeter/providers/remote_config_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
@@ -40,11 +42,10 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
   late final UserPreferencesService userPreferencesService;
   late final bool hasLightSensor;
 
-  final equipmentProfilesStorageService = EquipmentProfilesStorageService();
+  final iapStorageService = IapStorageService();
   final equipmentProfilesStorageServiceCompleter = Completer<void>();
-
-  final filmsStorageService = FilmsStorageService();
   final filmsStorageServiceCompleter = Completer<void>();
+  final logbookPhotosStorageServiceCompleter = Completer<void>();
 
   late final Future<void> _initFuture;
 
@@ -67,6 +68,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
             analytics: const LightmeterAnalytics(api: LightmeterAnalyticsFirebase()),
             caffeineService: const CaffeineService(),
             environment: widget.env.copyWith(hasLightSensor: hasLightSensor),
+            geolocationService: const GeolocationService(),
             hapticsService: const HapticsService(),
             lightSensorService: const LightSensorService(LocalPlatform()),
             permissionsService: const PermissionsService(),
@@ -75,15 +77,20 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
             child: RemoteConfigProvider(
               remoteConfigService: remoteConfigService,
               child: EquipmentProfilesProvider(
-                storageService: equipmentProfilesStorageService,
+                storageService: iapStorageService,
                 onInitialized: equipmentProfilesStorageServiceCompleter.complete,
                 child: FilmsProvider(
-                  storageService: filmsStorageService,
+                  storageService: iapStorageService,
                   onInitialized: filmsStorageServiceCompleter.complete,
-                  child: UserPreferencesProvider(
-                    hasLightSensor: hasLightSensor,
-                    userPreferencesService: userPreferencesService,
-                    child: widget.child,
+                  child: LogbookPhotosProvider(
+                    storageService: iapStorageService,
+                    geolocationService: const GeolocationService(),
+                    onInitialized: logbookPhotosStorageServiceCompleter.complete,
+                    child: UserPreferencesProvider(
+                      hasLightSensor: hasLightSensor,
+                      userPreferencesService: userPreferencesService,
+                      child: widget.child,
+                    ),
                   ),
                 ),
               ),
@@ -102,8 +109,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
       const LightSensorService(LocalPlatform()).hasSensor(),
       const CameraInfoService(analytics).mainCameraEfl(),
       remoteConfigService.activeAndFetchFeatures(),
-      equipmentProfilesStorageService.init(),
-      filmsStorageService.init(),
+      iapStorageService.init(),
     ]).then((value) {
       userPreferencesService = UserPreferencesService((value[0] as SharedPreferences?)!)
         ..cameraFocalLength = value[2] as int?;
@@ -115,6 +121,7 @@ class _ApplicationWrapperState extends State<ApplicationWrapper> {
     Future.wait([
       equipmentProfilesStorageServiceCompleter.future,
       filmsStorageServiceCompleter.future,
+      logbookPhotosStorageServiceCompleter.future,
     ]).then((_) {
       FlutterNativeSplash.remove();
     });
