@@ -140,19 +140,18 @@ jobs:
 
       - name: Build .ipa
         run: |
-          echo "$(cat ios/Runner/ExportOptions.plist)"
-      #     flutter build ipa \
-      #       --release \
-      #       --flavor $FLAVOR \
-      #       --target lib/main_$FLAVOR.dart \
-      #       --export-options-plist=ios/Runner/ExportOptions.plist
+          flutter build ipa \
+            --release \
+            --flavor $FLAVOR \
+            --target lib/main_$FLAVOR.dart \
+            --export-options-plist=ios/Runner/ExportOptions.plist
 
-      # - name: Upload artifact
-      #   if: ${{ inputs.upload-artifact }}
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: m3_lightmeter_ipa
-      #     path: build/ios/ipa/lightmeter.ipa
+      - name: Upload artifact
+        if: ${{ inputs.upload-artifact }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: m3_lightmeter_ipa
+          path: build/ios/ipa/lightmeter.ipa
 
       - name: Clean up keychain and provisioning profile
         if: ${{ always() }}
