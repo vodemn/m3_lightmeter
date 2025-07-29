@@ -7,6 +7,7 @@ enum AppFeature {
   isoAndNdValues,
   themeEngine,
   spotMeteringAndHistogram,
+  logbook,
   focalLength,
   listOfFilms,
   customFilms,
@@ -30,6 +31,8 @@ enum AppFeature {
         return S.of(context).featureTheme;
       case AppFeature.spotMeteringAndHistogram:
         return S.of(context).featureSpotMeteringAndHistorgram;
+      case AppFeature.logbook:
+        return S.of(context).logbook;
       case AppFeature.focalLength:
         return S.of(context).featureFocalLength35mm;
       case AppFeature.listOfFilms:
