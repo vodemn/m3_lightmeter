@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:m3_lightmeter_iap/src/data/models/iap_product.dart';
 
 class IAPProductsProvider extends StatefulWidget {
-  final String apiUrl;
   final Widget child;
 
-  const IAPProductsProvider({required this.apiUrl, required this.child, super.key});
+  const IAPProductsProvider({required this.child, super.key});
 
   static IAPProductsProviderState of(BuildContext context) => IAPProductsProvider.maybeOf(context)!;
 
@@ -21,13 +20,7 @@ class IAPProductsProviderState extends State<IAPProductsProvider> {
   @override
   Widget build(BuildContext context) {
     return IAPProducts(
-      products: [
-        IAPProduct(
-          storeId: IAPProductType.paidFeatures.storeId,
-          status: IAPProductStatus.purchased,
-          price: '0.0\$',
-        )
-      ],
+      isPro: true,
       child: widget.child,
     );
   }

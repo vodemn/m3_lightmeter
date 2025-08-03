@@ -8,5 +8,5 @@ extension BuildContextUtils on BuildContext {
     return UserPreferencesProvider.meteringScreenFeatureOf(this, feature);
   }
 
-  bool get isPro => IAPProducts.isPurchased(this, IAPProductType.paidFeatures);
+  bool get isPro => IAPProducts.isPro(this);
 }

@@ -2,12 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/models/app_feature.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/screens/lightmeter_pro/components/offering/widget_offering_lightmeter_pro.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/utils/text_height.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class LightmeterProScreen extends StatelessWidget {
   final features =
@@ -64,26 +62,7 @@ class LightmeterProScreen extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          color: Theme.of(context).colorScheme.surfaceElevated1,
-          width: MediaQuery.sizeOf(context).width,
-          padding: EdgeInsets.fromLTRB(
-            Dimens.paddingM,
-            Dimens.paddingM,
-            Dimens.paddingM,
-            Dimens.paddingM + MediaQuery.paddingOf(context).bottom,
-          ),
-          child: FilledButton(
-            onPressed: () {
-              ServicesProvider.maybeOf(context)
-                  ?.analytics
-                  .setCustomKey('iap_product_type', IAPProductType.paidFeatures.storeId);
-              IAPProductsProvider.maybeOf(context)?.buy(IAPProductType.paidFeatures);
-              Navigator.of(context).pop();
-            },
-            child: Text(S.of(context).getNowFor(IAPProducts.productOf(context, IAPProductType.paidFeatures)!.price)),
-          ),
-        ),
+        const LightmeterProBottomControls(),
       ],
     );
   }
