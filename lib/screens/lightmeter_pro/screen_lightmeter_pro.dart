@@ -6,6 +6,7 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/lightmeter_pro/components/offering/widget_offering_lightmeter_pro.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/utils/text_height.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class LightmeterProScreen extends StatelessWidget {
   final features =
@@ -15,55 +16,56 @@ class LightmeterProScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: SliverScreen(
-            title: Text(S.of(context).proFeaturesTitle),
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(Dimens.paddingM),
-                  child: Text(
-                    S.of(context).proFeaturesPromoText,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    Dimens.paddingM,
-                    0,
-                    Dimens.paddingM,
-                    Dimens.paddingS,
-                  ),
-                  child: Text(
-                    S.of(context).proFeaturesWhatsIncluded,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
-              ),
-              const SliverToBoxAdapter(child: _FeaturesHeader()),
-              SliverList.separated(
-                itemCount: features.length,
-                itemBuilder: (_, index) => _FeatureItem(feature: features[index]),
-                separatorBuilder: (_, __) => const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Dimens.paddingM),
-                  child: Divider(),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(Dimens.paddingM),
-                  child: Text(S.of(context).proFeaturesSupportText),
-                ),
-              ),
-            ],
+    return SliverScreen(
+      title: Text(S.of(context).proFeaturesTitle),
+      appBarActions: [
+        IconButton(
+          onPressed: IAPProductsProvider.of(context).restorePurchases,
+          icon: const Icon(Icons.restore),
+          tooltip: S.of(context).restorePurchases,
+        ),
+      ],
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(Dimens.paddingM),
+            child: Text(
+              S.of(context).proFeaturesPromoText,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
           ),
         ),
-        const LightmeterProBottomControls(),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              Dimens.paddingM,
+              0,
+              Dimens.paddingM,
+              Dimens.paddingS,
+            ),
+            child: Text(
+              S.of(context).proFeaturesWhatsIncluded,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(child: _FeaturesHeader()),
+        SliverList.separated(
+          itemCount: features.length,
+          itemBuilder: (_, index) => _FeatureItem(feature: features[index]),
+          separatorBuilder: (_, __) => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Dimens.paddingM),
+            child: Divider(),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(Dimens.paddingM),
+            child: Text(S.of(context).proFeaturesSupportText),
+          ),
+        ),
       ],
+      bottomNavigationBar: const LightmeterProOffering(),
     );
   }
 }

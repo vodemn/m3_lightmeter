@@ -1,19 +1,19 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/screens/shared/button/widget_button_filled_large.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
-class LightmeterProBottomControls extends StatefulWidget {
-  const LightmeterProBottomControls({super.key});
+class LightmeterProOffering extends StatefulWidget {
+  const LightmeterProOffering({super.key});
 
   @override
-  State<LightmeterProBottomControls> createState() => _LightmeterProBottomControlsState();
+  State<LightmeterProOffering> createState() => _LightmeterProOfferingState();
 }
 
-class _LightmeterProBottomControlsState extends State<LightmeterProBottomControls> {
+class _LightmeterProOfferingState extends State<LightmeterProOffering> {
   late final Future<List<IAPProduct>> productsFuture;
   bool _isLoading = true;
   IAPProduct? monthly;
@@ -37,9 +37,23 @@ class _LightmeterProBottomControlsState extends State<LightmeterProBottomControl
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (IAPProducts.isPro(context)) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.surfaceElevated1,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(Dimens.borderRadiusL),
+          topRight: Radius.circular(Dimens.borderRadiusL),
+        ),
+        color: Theme.of(context).colorScheme.surfaceElevated1,
+      ),
       width: MediaQuery.sizeOf(context).width,
       padding: EdgeInsets.fromLTRB(
         Dimens.paddingM,
@@ -49,6 +63,7 @@ class _LightmeterProBottomControlsState extends State<LightmeterProBottomControl
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           AnimatedSwitcher(
             duration: Dimens.durationM,
@@ -65,24 +80,18 @@ class _LightmeterProBottomControlsState extends State<LightmeterProBottomControl
                     },
                   ),
           ),
-          const SizedBox(height: Dimens.grid16),
-          FilledButton(
+          const SizedBox(height: Dimens.grid8),
+          FilledButtonLarge(
+            title: S.of(context).continuePurchase,
             onPressed: selected != null
                 ? () {
                     IAPProductsProvider.of(context).buyPro(selected!);
                   }
                 : null,
-            child: Text("Continue"),
           ),
-          const _RestorePurchasesButton(),
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 
@@ -102,17 +111,20 @@ class _Products extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (monthly case final monthly?)
-          _OfferingItems(
-            product: monthly,
+          _ProductItem(
+            title: S.of(context).monthly,
+            price: S.of(context).pricePerMonth(monthly.price),
             isSelected: selected == monthly,
             onPressed: () => onProductSelected(monthly),
           ),
         const SizedBox(height: Dimens.grid8),
         if (lifetime case final lifetime?)
-          _OfferingItems(
-            product: lifetime,
+          _ProductItem(
+            title: S.of(context).lifetime,
+            price: lifetime.price,
             isSelected: selected == lifetime,
             onPressed: () => onProductSelected(lifetime),
           ),
@@ -121,45 +133,66 @@ class _Products extends StatelessWidget {
   }
 }
 
-class _OfferingItems extends StatelessWidget {
-  const _OfferingItems({
-    required this.product,
+class _ProductItem extends StatelessWidget {
+  const _ProductItem({
+    required this.title,
+    required this.price,
     required this.isSelected,
     required this.onPressed,
   });
 
-  final IAPProduct product;
+  final String title;
+  final String price;
   final bool isSelected;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.primaryContainer,
-      shape: isSelected
-          ? RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Dimens.borderRadiusL),
-              side: BorderSide(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
+
+        /// TODO: fix color alteration. It is a bit darker here for some reason
+        /// than reading containers
+        color: isSelected
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).colorScheme.primaryContainer,
+        border: isSelected
+            ? Border.all(
                 color: Theme.of(context).colorScheme.primary,
-                width: 3,
-              ),
-            )
-          : null,
+                width: 2,
+              )
+            : null,
+      ),
       child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: onPressed,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Dimens.paddingS),
-          child: ListTile(
-            title: AnimatedDefaultTextStyle(
-              duration: Dimens.durationM,
-              style: Theme.of(context).textTheme.bodyLarge!.boldIfSelected(isSelected),
-              child: Text(product.type.name),
-            ),
-            trailing: AnimatedDefaultTextStyle(
-              duration: Dimens.durationM,
-              style: Theme.of(context).textTheme.bodyMedium!.boldIfSelected(isSelected),
-              child: Text(product.price),
-            ),
+          /// [Radio] has 12pt paddings around the button.
+          /// [Dimens.paddingM] - 12pt = 4pt
+          padding: const EdgeInsets.fromLTRB(
+            Dimens.grid4,
+            Dimens.grid4,
+            Dimens.paddingM,
+            Dimens.grid4,
+          ),
+          child: Row(
+            children: [
+              Radio(
+                value: isSelected,
+                groupValue: true,
+                onChanged: (_) => onPressed(),
+              ),
+              _ProductAnimatedText(
+                title,
+                isSelected: isSelected,
+              ),
+              const Spacer(),
+              _ProductAnimatedText(
+                price,
+                isSelected: isSelected,
+              ),
+            ],
           ),
         ),
       ),
@@ -167,18 +200,25 @@ class _OfferingItems extends StatelessWidget {
   }
 }
 
-class _RestorePurchasesButton extends StatelessWidget {
-  const _RestorePurchasesButton();
+class _ProductAnimatedText extends StatelessWidget {
+  const _ProductAnimatedText(this.text, {required this.isSelected});
+
+  final String text;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {},
-      child: Text(S.of(context).restorePurchases),
+    return AnimatedDefaultTextStyle(
+      duration: Dimens.durationM,
+      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+            fontWeight: FontWeight.w500,
+            color:
+                isSelected ? Theme.of(context).colorScheme.onPrimaryContainer : Theme.of(context).colorScheme.onSurface,
+          ),
+      child: Text(text),
     );
   }
 }
 
-extension on TextStyle {
-  TextStyle boldIfSelected(bool isSelected) => copyWith(fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal);
-}
+/// rgba(212,227,252,255) #d4e3fc
+/// 

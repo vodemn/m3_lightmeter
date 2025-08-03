@@ -8,12 +8,14 @@ class SliverScreen extends StatelessWidget {
   final List<Widget> appBarActions;
   final PreferredSizeWidget? bottom;
   final List<Widget> slivers;
+  final Widget? bottomNavigationBar;
 
   const SliverScreen({
     this.title,
     this.appBarActions = const [],
     this.bottom,
     required this.slivers,
+    this.bottomNavigationBar,
     super.key,
   });
 
@@ -34,6 +36,7 @@ class SliverScreen extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: bottomNavigationBar,
     );
   }
 }
