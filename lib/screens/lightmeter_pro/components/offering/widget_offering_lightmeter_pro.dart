@@ -148,21 +148,18 @@ class _ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
+    return Material(
+      color: isSelected
+          ? Theme.of(context).colorScheme.primaryContainer
+          : Theme.of(context).colorScheme.surfaceElevated2,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
-
-        /// TODO: fix color alteration. It is a bit darker here for some reason
-        /// than reading containers
-        color: isSelected
-            ? Theme.of(context).colorScheme.primaryContainer
-            : Theme.of(context).colorScheme.primaryContainer,
-        border: isSelected
-            ? Border.all(
+        side: isSelected
+            ? BorderSide(
                 color: Theme.of(context).colorScheme.primary,
                 width: 2,
               )
-            : null,
+            : BorderSide.none,
       ),
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
