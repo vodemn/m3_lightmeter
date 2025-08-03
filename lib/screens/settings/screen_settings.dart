@@ -9,6 +9,7 @@ import 'package:lightmeter/screens/settings/components/theme/widget_settings_sec
 import 'package:lightmeter/screens/settings/flow_settings.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/utils/context_utils.dart';
+import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -22,6 +23,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     SettingsInteractorProvider.of(context).disableVolumeHandling();
+    IAPProductsProvider.of(context).checkIsPro();
   }
 
   @override
