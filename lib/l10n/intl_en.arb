@@ -176,5 +176,16 @@
   "location": "Location",
   "noMapsAppFound": "No maps application found.",
   "logbook": "Logbook",
-  "noPhotos": "No photos"
+  "noPhotos": "No photos",
+  "continuePurchase": "Continue",
+  "monthly": "Monthly",
+  "lifetime": "Lifetime",
+  "pricePerMonth": "{price}/month",
+  "@pricePerMonth": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }

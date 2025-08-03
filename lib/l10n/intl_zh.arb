@@ -164,5 +164,16 @@
   "location": "位置",
   "noMapsAppFound": "未找到地图应用程序。",
   "logbook": "拍照日志",
-  "noPhotos": "没有照片"
+  "noPhotos": "没有照片",
+  "continuePurchase": "继续",
+  "monthly": "月付",
+  "lifetime": "永久",
+  "pricePerMonth": "{price}/月",
+  "@pricePerMonth": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }

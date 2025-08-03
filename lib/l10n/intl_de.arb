@@ -176,5 +176,16 @@
   "location": "Standort",
   "noMapsAppFound": "Keine Kartenanwendung gefunden.",
   "logbook": "Fototagebuch",
-  "noPhotos": "Keine Fotos"
+  "noPhotos": "Keine Fotos",
+  "continuePurchase": "Weiter",
+  "monthly": "Monatlich",
+  "lifetime": "Für immer",
+  "pricePerMonth": "{price}/Monat",
+  "@pricePerMonth": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }
