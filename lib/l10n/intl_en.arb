@@ -179,8 +179,10 @@
   "noPhotos": "No photos",
   "continuePurchase": "Continue",
   "monthly": "Monthly",
+  "yearly": "Yearly",
   "lifetime": "Lifetime",
   "pricePerMonth": "{price}/month",
+  "pricePerYear": "{price}/year",
   "@pricePerMonth": {
     "placeholders": {
       "price": {

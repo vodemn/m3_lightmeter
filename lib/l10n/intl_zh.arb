@@ -167,8 +167,10 @@
   "noPhotos": "没有照片",
   "continuePurchase": "继续",
   "monthly": "月付",
+  "yearly": "年付",
   "lifetime": "永久",
   "pricePerMonth": "{price}/月",
+  "pricePerYear": "{price}/年",
   "@pricePerMonth": {
     "placeholders": {
       "price": {

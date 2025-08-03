@@ -179,8 +179,10 @@
   "noPhotos": "Keine Fotos",
   "continuePurchase": "Weiter",
   "monthly": "Monatlich",
+  "yearly": "Jährlich",
   "lifetime": "Für immer",
   "pricePerMonth": "{price}/Monat",
+  "pricePerYear": "{price}/Jahr",
   "@pricePerMonth": {
     "placeholders": {
       "price": {

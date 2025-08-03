@@ -169,8 +169,10 @@
   "noPhotos": "Нет фотографий",
   "continuePurchase": "Продолжить",
   "monthly": "Ежемесячно",
+  "yearly": "Ежегодно",
   "lifetime": "Навсегда",
   "pricePerMonth": "{price}/месяц",
+  "pricePerYear": "{price}/год",
   "@pricePerMonth": {
     "placeholders": {
       "price": {

@@ -17,6 +17,7 @@ class _LightmeterProOfferingState extends State<LightmeterProOffering> {
   late final Future<List<IAPProduct>> productsFuture;
   bool _isLoading = true;
   IAPProduct? monthly;
+  IAPProduct? yearly;
   IAPProduct? lifetime;
   IAPProduct? selected;
 
@@ -24,8 +25,9 @@ class _LightmeterProOfferingState extends State<LightmeterProOffering> {
   void initState() {
     super.initState();
     productsFuture = IAPProductsProvider.of(context).fetchProducts();
-    productsFuture.then((products) {
+    productsFuture.then((products) async {
       monthly = products.firstWhereOrNull((p) => p.type == PurchaseType.monthly);
+      yearly = products.firstWhereOrNull((p) => p.type == PurchaseType.yearly);
       lifetime = products.firstWhereOrNull((p) => p.type == PurchaseType.lifetime);
       selected = monthly ?? lifetime;
     }).onError((_, __) {
@@ -68,9 +70,13 @@ class _LightmeterProOfferingState extends State<LightmeterProOffering> {
           AnimatedSwitcher(
             duration: Dimens.durationM,
             child: _isLoading
-                ? const CircularProgressIndicator()
+                ? const SizedBox(
+                    height: 120,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 : _Products(
                     monthly: monthly,
+                    yearly: yearly,
                     lifetime: lifetime,
                     selected: selected,
                     onProductSelected: (value) {
@@ -98,12 +104,14 @@ class _LightmeterProOfferingState extends State<LightmeterProOffering> {
 class _Products extends StatelessWidget {
   const _Products({
     this.monthly,
+    this.yearly,
     this.lifetime,
     required this.selected,
     required this.onProductSelected,
   });
 
   final IAPProduct? monthly;
+  final IAPProduct? yearly;
   final IAPProduct? lifetime;
   final IAPProduct? selected;
   final ValueChanged<IAPProduct> onProductSelected;
@@ -114,13 +122,25 @@ class _Products extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (monthly case final monthly?)
-          _ProductItem(
-            title: S.of(context).monthly,
-            price: S.of(context).pricePerMonth(monthly.price),
-            isSelected: selected == monthly,
-            onPressed: () => onProductSelected(monthly),
+          Padding(
+            padding: const EdgeInsets.only(bottom: Dimens.paddingS),
+            child: _ProductItem(
+              title: S.of(context).monthly,
+              price: S.of(context).pricePerMonth(monthly.price),
+              isSelected: selected == monthly,
+              onPressed: () => onProductSelected(monthly),
+            ),
           ),
-        const SizedBox(height: Dimens.grid8),
+        if (yearly case final yearly?)
+          Padding(
+            padding: const EdgeInsets.only(bottom: Dimens.paddingS),
+            child: _ProductItem(
+              title: S.of(context).yearly,
+              price: S.of(context).pricePerYear(yearly.price),
+              isSelected: selected == yearly,
+              onPressed: () => onProductSelected(yearly),
+            ),
+          ),
         if (lifetime case final lifetime?)
           _ProductItem(
             title: S.of(context).lifetime,
@@ -149,9 +169,8 @@ class _ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: isSelected
-          ? Theme.of(context).colorScheme.primaryContainer
-          : Theme.of(context).colorScheme.surfaceElevated2,
+      color:
+          isSelected ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.surfaceElevated2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
         side: isSelected
@@ -216,6 +235,3 @@ class _ProductAnimatedText extends StatelessWidget {
     );
   }
 }
-
-/// rgba(212,227,252,255) #d4e3fc
-/// 
