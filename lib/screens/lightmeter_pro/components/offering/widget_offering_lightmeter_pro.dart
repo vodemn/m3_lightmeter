@@ -63,28 +63,31 @@ class _LightmeterProOfferingState extends State<LightmeterProOffering> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              AnimatedOpacity(
-                duration: Dimens.durationM,
-                opacity: _isLoading ? Dimens.disabledOpacity : Dimens.enabledOpacity,
-                child: _Products(
-                  monthly: monthly,
-                  yearly: yearly,
-                  lifetime: lifetime,
-                  selected: selected,
-                  onProductSelected: _selectProduct,
-                ),
+          if (!_isLifetimeOnly)
+            Padding(
+              padding: const EdgeInsets.only(bottom: Dimens.paddingS),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedOpacity(
+                    duration: Dimens.durationM,
+                    opacity: _isLoading ? Dimens.disabledOpacity : Dimens.enabledOpacity,
+                    child: _Products(
+                      monthly: monthly,
+                      yearly: yearly,
+                      lifetime: lifetime,
+                      selected: selected,
+                      onProductSelected: _selectProduct,
+                    ),
+                  ),
+                  if (_isLoading)
+                    const SizedBox(
+                      height: 120,
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                ],
               ),
-              if (_isLoading)
-                const SizedBox(
-                  height: 120,
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-            ],
-          ),
-          const SizedBox(height: Dimens.grid8),
+            ),
           FilledButtonLarge(
             title: S.of(context).continuePurchase,
             onPressed: _isLoading || selected != null ? _buyPro : null,
@@ -93,6 +96,8 @@ class _LightmeterProOfferingState extends State<LightmeterProOffering> {
       ),
     );
   }
+
+  bool get _isLifetimeOnly => lifetime != null && yearly == null && monthly == null;
 
   void _selectProduct(IAPProduct product) {
     if (!_isLoading) {
