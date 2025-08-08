@@ -25,18 +25,24 @@ class SliverScreen extends StatelessWidget {
       body: SafeArea(
         top: false,
         bottom: false,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            _AppBar(
-              title: title,
-              appBarActions: appBarActions,
-              bottom: bottom,
+        child: Column(
+          children: [
+            Expanded(
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  _AppBar(
+                    title: title,
+                    appBarActions: appBarActions,
+                    bottom: bottom,
+                  ),
+                  ...slivers,
+                ],
+              ),
             ),
-            ...slivers,
+            if (bottomNavigationBar != null) bottomNavigationBar!,
           ],
         ),
       ),
-      bottomNavigationBar: bottomNavigationBar,
     );
   }
 }
