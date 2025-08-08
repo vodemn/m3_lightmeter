@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
@@ -30,20 +32,14 @@ class _LightmeterProOfferingState extends State<LightmeterProOffering> {
       yearly = products.firstWhereOrNull((p) => p.type == PurchaseType.yearly);
       lifetime = products.firstWhereOrNull((p) => p.type == PurchaseType.lifetime);
       selected = monthly ?? lifetime;
-    }).onError((_, __) {
-      ///
+    }).onError((e, __) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _showSnackbar(e.toString());
+      });
     }).whenComplete(() {
       _isLoading = false;
       if (mounted) setState(() {});
     });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (IAPProducts.isPro(context)) {
-      Navigator.of(context).pop();
-    }
   }
 
   @override
@@ -67,37 +63,76 @@ class _LightmeterProOfferingState extends State<LightmeterProOffering> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          AnimatedSwitcher(
-            duration: Dimens.durationM,
-            child: _isLoading
-                ? const SizedBox(
-                    height: 120,
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                : _Products(
-                    monthly: monthly,
-                    yearly: yearly,
-                    lifetime: lifetime,
-                    selected: selected,
-                    onProductSelected: (value) {
-                      setState(() {
-                        selected = value;
-                      });
-                    },
-                  ),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              AnimatedOpacity(
+                duration: Dimens.durationM,
+                opacity: _isLoading ? Dimens.disabledOpacity : Dimens.enabledOpacity,
+                child: _Products(
+                  monthly: monthly,
+                  yearly: yearly,
+                  lifetime: lifetime,
+                  selected: selected,
+                  onProductSelected: _selectProduct,
+                ),
+              ),
+              if (_isLoading)
+                const SizedBox(
+                  height: 120,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+            ],
           ),
           const SizedBox(height: Dimens.grid8),
           FilledButtonLarge(
             title: S.of(context).continuePurchase,
-            onPressed: selected != null
-                ? () {
-                    IAPProductsProvider.of(context).buyPro(selected!);
-                  }
-                : null,
+            onPressed: _isLoading || selected != null ? _buyPro : null,
           ),
         ],
       ),
     );
+  }
+
+  void _selectProduct(IAPProduct product) {
+    if (!_isLoading) {
+      setState(() {
+        selected = product;
+      });
+    }
+  }
+
+  Future<void> _buyPro() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final isPro = await IAPProductsProvider.of(context).buyPro(selected!);
+      if (mounted && isPro) {
+        Navigator.of(context).pop();
+      }
+    } on PlatformException catch (e) {
+      _showSnackbar(e.message ?? '');
+    } catch (e) {
+      _showSnackbar(e.toString());
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _showSnackbar(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 }
 
