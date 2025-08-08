@@ -8,9 +8,11 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 class LightmeterProOffering extends StatefulWidget {
   const LightmeterProOffering({
     super.key,
+    required this.isEnabled,
     required this.onBuyProduct,
   });
 
+  final bool isEnabled;
   final ValueChanged<IAPProduct> onBuyProduct;
 
   @override
@@ -49,19 +51,26 @@ class _LightmeterProOfferingState extends State<LightmeterProOffering> {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (!_isLifetimeOnly)
-            Padding(
-              padding: const EdgeInsets.only(bottom: Dimens.paddingS),
-              child: _Products(
-                monthly: IAPProducts.of(context).monthly,
-                yearly: IAPProducts.of(context).yearly,
-                lifetime: IAPProducts.of(context).lifetime,
-                selected: selected,
-                onProductSelected: _selectProduct,
+            AnimatedOpacity(
+              duration: Dimens.durationM,
+              opacity: widget.isEnabled ? Dimens.enabledOpacity : Dimens.disabledOpacity,
+              child: IgnorePointer(
+                ignoring: !widget.isEnabled,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: Dimens.paddingS),
+                  child: _Products(
+                    monthly: IAPProducts.of(context).monthly,
+                    yearly: IAPProducts.of(context).yearly,
+                    lifetime: IAPProducts.of(context).lifetime,
+                    selected: selected,
+                    onProductSelected: _selectProduct,
+                  ),
+                ),
               ),
             ),
           FilledButtonLarge(
             title: S.of(context).continuePurchase,
-            onPressed: selected != null ? () => widget.onBuyProduct(selected!) : null,
+            onPressed: widget.isEnabled && selected != null ? () => widget.onBuyProduct(selected!) : null,
           ),
         ],
       ),

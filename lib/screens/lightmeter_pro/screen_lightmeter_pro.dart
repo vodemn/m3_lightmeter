@@ -9,6 +9,8 @@ import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/utils/text_height.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
+typedef PurchasesState = ({bool isPurchasingProduct, bool isRestoringPurchases});
+
 class LightmeterProScreen extends StatefulWidget {
   const LightmeterProScreen({super.key});
 
@@ -20,19 +22,34 @@ class _LightmeterProScreenState extends State<LightmeterProScreen> {
   final features =
       defaultTargetPlatform == TargetPlatform.android ? AppFeature.androidFeatures : AppFeature.iosFeatures;
 
-  final _isRestoringPurchases = ValueNotifier(false);
-  final _isPurchasingProduct = ValueNotifier(false);
+  final _purchasesNotifier = ValueNotifier<PurchasesState>(
+    (
+      isPurchasingProduct: false,
+      isRestoringPurchases: false,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     return SliverScreen(
       title: Text(S.of(context).proFeaturesTitle),
       appBarActions: [
-        /// Restoration is working, but it does not trigger pop
-        /// add await of didChangeDependencies
-        _RestorePurchasesButton(
-          valueListenable: _isRestoringPurchases,
-          onPressed: _restorePurchases,
+        ValueListenableBuilder(
+          valueListenable: _purchasesNotifier,
+          builder: (context, value, _) {
+            if (value.isRestoringPurchases) {
+              return const SizedBox.square(
+                dimension: Dimens.grid24 - Dimens.grid4,
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return IconButton(
+                onPressed: value.isPurchasingProduct ? null : _restorePurchases,
+                icon: const Icon(Icons.restore),
+                tooltip: S.of(context).restorePurchases,
+              );
+            }
+          },
         ),
       ],
       slivers: [
@@ -75,12 +92,26 @@ class _LightmeterProScreenState extends State<LightmeterProScreen> {
           ),
         ),
       ],
-      bottomNavigationBar: LightmeterProOffering(onBuyProduct: _buyPro),
+      bottomNavigationBar: ValueListenableBuilder(
+        valueListenable: _purchasesNotifier,
+        builder: (context, value, _) {
+          return LightmeterProOffering(
+            isEnabled: !value.isRestoringPurchases && !value.isPurchasingProduct,
+            onBuyProduct: _buyPro,
+          );
+        },
+      ),
     );
   }
 
+  @override
+  void dispose() {
+    _purchasesNotifier.dispose();
+    super.dispose();
+  }
+
   Future<void> _restorePurchases() async {
-    _isRestoringPurchases.value = true;
+    _purchasesNotifier.isRestoringPurchases = true;
     try {
       final isPro = await IAPProductsProvider.of(context).restorePurchases();
       if (mounted && isPro) {
@@ -91,12 +122,12 @@ class _LightmeterProScreenState extends State<LightmeterProScreen> {
     } catch (e) {
       _showSnackbar(e.toString());
     } finally {
-      _isRestoringPurchases.value = true;
+      _purchasesNotifier.isRestoringPurchases = false;
     }
   }
 
   Future<void> _buyPro(IAPProduct product) async {
-    _isPurchasingProduct.value = true;
+    _purchasesNotifier.isPurchasingProduct = true;
     try {
       final isPro = await IAPProductsProvider.of(context).buyPro(product);
       if (mounted && isPro) {
@@ -107,7 +138,7 @@ class _LightmeterProScreenState extends State<LightmeterProScreen> {
     } catch (e) {
       _showSnackbar(e.toString());
     } finally {
-      _isPurchasingProduct.value = false;
+      _purchasesNotifier.isPurchasingProduct = false;
     }
   }
 
@@ -120,37 +151,6 @@ class _LightmeterProScreenState extends State<LightmeterProScreen> {
         ),
       );
     }
-  }
-}
-
-class _RestorePurchasesButton extends StatelessWidget {
-  const _RestorePurchasesButton({
-    required this.valueListenable,
-    required this.onPressed,
-  });
-
-  final ValueNotifier<bool> valueListenable;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: valueListenable,
-      builder: (context, value, _) {
-        if (value) {
-          return const SizedBox.square(
-            dimension: Dimens.grid24 - Dimens.grid4,
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          return IconButton(
-            onPressed: onPressed,
-            icon: const Icon(Icons.restore),
-            tooltip: S.of(context).restorePurchases,
-          );
-        }
-      },
-    );
   }
 }
 
@@ -290,5 +290,15 @@ class _CheckBox extends StatelessWidget {
       Icons.check_outlined,
       color: highlight ? Theme.of(context).colorScheme.onSecondaryContainer : null,
     );
+  }
+}
+
+extension on ValueNotifier<PurchasesState> {
+  set isPurchasingProduct(bool isPurchasingProduct) {
+    value = (isPurchasingProduct: isPurchasingProduct, isRestoringPurchases: value.isRestoringPurchases);
+  }
+
+  set isRestoringPurchases(bool isRestoringPurchases) {
+    value = (isPurchasingProduct: value.isPurchasingProduct, isRestoringPurchases: isRestoringPurchases);
   }
 }
