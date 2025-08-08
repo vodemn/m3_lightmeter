@@ -21,45 +21,71 @@ class IAPProductsProviderState extends State<IAPProductsProvider> {
   Widget build(BuildContext context) {
     return IAPProducts(
       isPro: true,
+      lifetime: IAPProduct(
+        storeId: '',
+        type: PurchaseType.lifetime,
+        price: '0.0\$',
+      ),
+      yearly: IAPProduct(
+        storeId: '',
+        type: PurchaseType.yearly,
+        price: '0.0\$',
+      ),
+      monthly: IAPProduct(
+        storeId: '',
+        type: PurchaseType.monthly,
+        price: '0.0\$',
+      ),
       child: widget.child,
     );
   }
 
-  Future<void> buy(IAPProductType type) async {}
+  Future<List<IAPProduct>> fetchProducts() async {
+    return [];
+  }
 
-  Future<void> restorePurchases() async {}
+  Future<bool> buyPro(IAPProduct product) async {
+    return false;
+  }
+
+  Future<bool> restorePurchases() async {
+    return false;
+  }
+
+  Future<bool> checkIsPro() async {
+    return false;
+  }
 }
 
-class IAPProducts extends InheritedModel<IAPProductType> {
-  final List<IAPProduct> products;
+class IAPProducts extends InheritedWidget {
+  final IAPProduct? lifetime;
+  final IAPProduct? yearly;
+  final IAPProduct? monthly;
+  final bool _isPro;
 
   const IAPProducts({
-    required this.products,
+    this.lifetime,
+    this.yearly,
+    this.monthly,
+    required bool isPro,
     required super.child,
     super.key,
-  });
+  }) : _isPro = isPro;
 
-  static IAPProduct? productOf(BuildContext context, IAPProductType type) {
-    final IAPProducts? result = InheritedModel.inheritFrom<IAPProducts>(context, aspect: type);
-    return result!._findProduct(type);
+  static IAPProducts of(BuildContext context) {
+    return context.getInheritedWidgetOfExactType<IAPProducts>()!;
   }
 
-  static bool isPurchased(BuildContext context, IAPProductType type) {
-    final IAPProducts? result = InheritedModel.inheritFrom<IAPProducts>(context, aspect: type);
-    return result!._findProduct(type)?.status == IAPProductStatus.purchased;
+  static bool isPro(BuildContext context, {bool listen = true}) {
+    return (listen
+                ? context.dependOnInheritedWidgetOfExactType<IAPProducts>()
+                : context.getInheritedWidgetOfExactType<IAPProducts>())
+            ?._isPro ==
+        true;
   }
+
+  bool get hasSubscriptions => yearly != null || monthly != null;
 
   @override
-  bool updateShouldNotify(IAPProducts oldWidget) => true;
-
-  @override
-  bool updateShouldNotifyDependent(IAPProducts oldWidget, Set<IAPProductType> dependencies) => true;
-
-  IAPProduct? _findProduct(IAPProductType type) {
-    try {
-      return products.firstWhere((element) => element.storeId == type.storeId);
-    } catch (_) {
-      return null;
-    }
-  }
+  bool updateShouldNotify(IAPProducts oldWidget) => oldWidget._isPro != _isPro;
 }

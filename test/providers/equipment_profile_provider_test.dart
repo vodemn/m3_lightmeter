@@ -5,6 +5,8 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../application_mock.dart';
+
 class _MockEquipmentProfilesStorageService extends Mock implements IapStorageService {}
 
 void main() {
@@ -33,16 +35,10 @@ void main() {
     reset(storageService);
   });
 
-  Future<void> pumpTestWidget(WidgetTester tester, IAPProductStatus productStatus) async {
+  Future<void> pumpTestWidget(WidgetTester tester, bool isPro) async {
     await tester.pumpWidget(
-      IAPProducts(
-        products: [
-          IAPProduct(
-            storeId: IAPProductType.paidFeatures.storeId,
-            status: productStatus,
-            price: '0.0\$',
-          ),
-        ],
+      MockIapProducts(
+        isPro: isPro,
         child: EquipmentProfilesProvider(
           storageService: storageService,
           child: const _Application(),
@@ -69,31 +65,23 @@ void main() {
     () {
       setUp(() {
         when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles.first.id);
-        when(() => storageService.getEquipmentProfiles()).thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
+        when(() => storageService.getEquipmentProfiles())
+            .thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
       });
 
       testWidgets(
-        'IAPProductStatus.purchased - show all saved profiles',
+        'Pro - show all saved profiles',
         (tester) async {
-          await pumpTestWidget(tester, IAPProductStatus.purchased);
+          await pumpTestWidget(tester, true);
           expectEquipmentProfilesCount(_customProfiles.length + 1);
           expectSelectedEquipmentProfileName(_customProfiles.first.name);
         },
       );
 
       testWidgets(
-        'IAPProductStatus.purchasable - show only default',
+        'Not Pro - show only default',
         (tester) async {
-          await pumpTestWidget(tester, IAPProductStatus.purchasable);
-          expectEquipmentProfilesCount(1);
-          expectSelectedEquipmentProfileName('');
-        },
-      );
-
-      testWidgets(
-        'IAPProductStatus.pending - show only default',
-        (tester) async {
-          await pumpTestWidget(tester, IAPProductStatus.pending);
+          await pumpTestWidget(tester, false);
           expectEquipmentProfilesCount(1);
           expectSelectedEquipmentProfileName('');
         },
@@ -105,7 +93,7 @@ void main() {
     'toggleProfile',
     (tester) async {
       when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles.first.id);
-      await pumpTestWidget(tester, IAPProductStatus.purchased);
+      await pumpTestWidget(tester, true);
       expectEquipmentProfilesCount(_customProfiles.length + 1);
       expectEquipmentProfilesInUseCount(_customProfiles.length + 1);
       expectSelectedEquipmentProfileName(_customProfiles.first.name);
@@ -127,7 +115,7 @@ void main() {
       when(() => storageService.getEquipmentProfiles()).thenAnswer((_) async => {});
       when(() => storageService.selectedEquipmentProfileId).thenReturn('');
 
-      await pumpTestWidget(tester, IAPProductStatus.purchased);
+      await pumpTestWidget(tester, true);
       expectEquipmentProfilesCount(1);
       expectSelectedEquipmentProfileName('');
 

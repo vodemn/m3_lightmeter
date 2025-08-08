@@ -5,6 +5,8 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../application_mock.dart';
+
 class _MockFilmsStorageService extends Mock implements IapStorageService {}
 
 void main() {
@@ -30,16 +32,10 @@ void main() {
     reset(storageService);
   });
 
-  Future<void> pumpTestWidget(WidgetTester tester, IAPProductStatus productStatus) async {
+  Future<void> pumpTestWidget(WidgetTester tester, bool isPro) async {
     await tester.pumpWidget(
-      IAPProducts(
-        products: [
-          IAPProduct(
-            storeId: IAPProductType.paidFeatures.storeId,
-            status: productStatus,
-            price: '0.0\$',
-          ),
-        ],
+      MockIapProducts(
+        isPro: isPro,
         child: FilmsProvider(
           storageService: storageService,
           child: const _Application(),
@@ -76,9 +72,9 @@ void main() {
       });
 
       testWidgets(
-        'IAPProductStatus.purchased - show all saved films',
+        'Pro - show all saved films',
         (tester) async {
-          await pumpTestWidget(tester, IAPProductStatus.purchased);
+          await pumpTestWidget(tester, true);
           expectPredefinedFilmsCount(mockPredefinedFilms.length);
           expectCustomFilmsCount(mockCustomFilms.length);
           expectFilmsInUseCount(mockPredefinedFilms.length + mockCustomFilms.length + 1);
@@ -87,20 +83,9 @@ void main() {
       );
 
       testWidgets(
-        'IAPProductStatus.purchasable - show only default',
+        'Not Pro - show only default',
         (tester) async {
-          await pumpTestWidget(tester, IAPProductStatus.purchasable);
-          expectPredefinedFilmsCount(0);
-          expectCustomFilmsCount(0);
-          expectFilmsInUseCount(1);
-          expectSelectedFilmName('');
-        },
-      );
-
-      testWidgets(
-        'IAPProductStatus.pending - show only default',
-        (tester) async {
-          await pumpTestWidget(tester, IAPProductStatus.pending);
+          await pumpTestWidget(tester, false);
           expectPredefinedFilmsCount(0);
           expectCustomFilmsCount(0);
           expectFilmsInUseCount(1);
@@ -117,7 +102,7 @@ void main() {
         'toggle predefined film',
         (tester) async {
           when(() => storageService.selectedFilmId).thenReturn(mockPredefinedFilms.first.id);
-          await pumpTestWidget(tester, IAPProductStatus.purchased);
+          await pumpTestWidget(tester, true);
           expectPredefinedFilmsCount(mockPredefinedFilms.length);
           expectCustomFilmsCount(mockCustomFilms.length);
           expectFilmsInUseCount(mockPredefinedFilms.length + mockCustomFilms.length + 1);
@@ -139,7 +124,7 @@ void main() {
         'toggle custom film',
         (tester) async {
           when(() => storageService.selectedFilmId).thenReturn(mockCustomFilms.first.id);
-          await pumpTestWidget(tester, IAPProductStatus.purchased);
+          await pumpTestWidget(tester, true);
           expectPredefinedFilmsCount(mockPredefinedFilms.length);
           expectCustomFilmsCount(mockCustomFilms.length);
           expectFilmsInUseCount(mockPredefinedFilms.length + mockCustomFilms.length + 1);
@@ -163,7 +148,7 @@ void main() {
     'selectFilm',
     (tester) async {
       when(() => storageService.selectedFilmId).thenReturn('');
-      await pumpTestWidget(tester, IAPProductStatus.purchased);
+      await pumpTestWidget(tester, true);
       expectSelectedFilmName('');
 
       tester.filmsProvider.selectFilm(mockPredefinedFilms.first);
@@ -184,7 +169,7 @@ void main() {
     (tester) async {
       when(() => storageService.selectedFilmId).thenReturn('');
       when(() => storageService.getCustomFilms()).thenAnswer((_) => Future.value({}));
-      await pumpTestWidget(tester, IAPProductStatus.purchased);
+      await pumpTestWidget(tester, true);
       expectPredefinedFilmsCount(mockPredefinedFilms.length);
       expectCustomFilmsCount(0);
       expectFilmsInUseCount(mockPredefinedFilms.length + 0 + 1);
