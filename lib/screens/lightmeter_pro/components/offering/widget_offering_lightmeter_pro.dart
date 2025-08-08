@@ -1,7 +1,4 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/res/theme.dart';
@@ -9,7 +6,12 @@ import 'package:lightmeter/screens/shared/button/widget_button_filled_large.dart
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
 class LightmeterProOffering extends StatefulWidget {
-  const LightmeterProOffering({super.key});
+  const LightmeterProOffering({
+    super.key,
+    required this.onBuyProduct,
+  });
+
+  final ValueChanged<IAPProduct> onBuyProduct;
 
   @override
   State<LightmeterProOffering> createState() => _LightmeterProOfferingState();
@@ -17,29 +19,12 @@ class LightmeterProOffering extends StatefulWidget {
 
 class _LightmeterProOfferingState extends State<LightmeterProOffering> {
   late final Future<List<IAPProduct>> productsFuture;
-  bool _isLoading = true;
-  IAPProduct? monthly;
-  IAPProduct? yearly;
-  IAPProduct? lifetime;
   IAPProduct? selected;
 
   @override
-  void initState() {
-    super.initState();
-    productsFuture = IAPProductsProvider.of(context).fetchProducts();
-    productsFuture.then((products) async {
-      monthly = products.firstWhereOrNull((p) => p.type == PurchaseType.monthly);
-      yearly = products.firstWhereOrNull((p) => p.type == PurchaseType.yearly);
-      lifetime = products.firstWhereOrNull((p) => p.type == PurchaseType.lifetime);
-      selected = monthly ?? lifetime;
-    }).onError((e, __) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        _showSnackbar(e.toString());
-      });
-    }).whenComplete(() {
-      _isLoading = false;
-      if (mounted) setState(() {});
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    selected = IAPProducts.of(context).monthly ?? IAPProducts.of(context).lifetime;
   }
 
   @override
@@ -66,78 +51,29 @@ class _LightmeterProOfferingState extends State<LightmeterProOffering> {
           if (!_isLifetimeOnly)
             Padding(
               padding: const EdgeInsets.only(bottom: Dimens.paddingS),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  AnimatedOpacity(
-                    duration: Dimens.durationM,
-                    opacity: _isLoading ? Dimens.disabledOpacity : Dimens.enabledOpacity,
-                    child: _Products(
-                      monthly: monthly,
-                      yearly: yearly,
-                      lifetime: lifetime,
-                      selected: selected,
-                      onProductSelected: _selectProduct,
-                    ),
-                  ),
-                  if (_isLoading)
-                    const SizedBox(
-                      height: 120,
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                ],
+              child: _Products(
+                monthly: IAPProducts.of(context).monthly,
+                yearly: IAPProducts.of(context).yearly,
+                lifetime: IAPProducts.of(context).lifetime,
+                selected: selected,
+                onProductSelected: _selectProduct,
               ),
             ),
           FilledButtonLarge(
             title: S.of(context).continuePurchase,
-            onPressed: _isLoading || selected != null ? _buyPro : null,
+            onPressed: selected != null ? () => widget.onBuyProduct(selected!) : null,
           ),
         ],
       ),
     );
   }
 
-  bool get _isLifetimeOnly => lifetime != null && yearly == null && monthly == null;
+  bool get _isLifetimeOnly => !IAPProducts.of(context).hasSubscriptions;
 
   void _selectProduct(IAPProduct product) {
-    if (!_isLoading) {
-      setState(() {
-        selected = product;
-      });
-    }
-  }
-
-  Future<void> _buyPro() async {
     setState(() {
-      _isLoading = true;
+      selected = product;
     });
-    try {
-      final isPro = await IAPProductsProvider.of(context).buyPro(selected!);
-      if (mounted && isPro) {
-        Navigator.of(context).pop();
-      }
-    } on PlatformException catch (e) {
-      _showSnackbar(e.message ?? '');
-    } catch (e) {
-      _showSnackbar(e.toString());
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  void _showSnackbar(String message) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
   }
 }
 

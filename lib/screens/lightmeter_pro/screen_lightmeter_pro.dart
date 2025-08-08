@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lightmeter/data/models/app_feature.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
@@ -8,21 +9,30 @@ import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/utils/text_height.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
-class LightmeterProScreen extends StatelessWidget {
+class LightmeterProScreen extends StatefulWidget {
+  const LightmeterProScreen({super.key});
+
+  @override
+  State<LightmeterProScreen> createState() => _LightmeterProScreenState();
+}
+
+class _LightmeterProScreenState extends State<LightmeterProScreen> {
   final features =
       defaultTargetPlatform == TargetPlatform.android ? AppFeature.androidFeatures : AppFeature.iosFeatures;
 
-  LightmeterProScreen({super.key});
+  final _isRestoringPurchases = ValueNotifier(false);
+  final _isPurchasingProduct = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
     return SliverScreen(
       title: Text(S.of(context).proFeaturesTitle),
       appBarActions: [
-        IconButton(
-          onPressed: IAPProductsProvider.of(context).restorePurchases,
-          icon: const Icon(Icons.restore),
-          tooltip: S.of(context).restorePurchases,
+        /// Restoration is working, but it does not trigger pop
+        /// add await of didChangeDependencies
+        _RestorePurchasesButton(
+          valueListenable: _isRestoringPurchases,
+          onPressed: _restorePurchases,
         ),
       ],
       slivers: [
@@ -65,7 +75,81 @@ class LightmeterProScreen extends StatelessWidget {
           ),
         ),
       ],
-      bottomNavigationBar: const LightmeterProOffering(),
+      bottomNavigationBar: LightmeterProOffering(onBuyProduct: _buyPro),
+    );
+  }
+
+  Future<void> _restorePurchases() async {
+    _isRestoringPurchases.value = true;
+    try {
+      final isPro = await IAPProductsProvider.of(context).restorePurchases();
+      if (mounted && isPro) {
+        Navigator.of(context).pop();
+      }
+    } on PlatformException catch (e) {
+      _showSnackbar(e.message ?? '');
+    } catch (e) {
+      _showSnackbar(e.toString());
+    } finally {
+      _isRestoringPurchases.value = true;
+    }
+  }
+
+  Future<void> _buyPro(IAPProduct product) async {
+    _isPurchasingProduct.value = true;
+    try {
+      final isPro = await IAPProductsProvider.of(context).buyPro(product);
+      if (mounted && isPro) {
+        Navigator.of(context).pop();
+      }
+    } on PlatformException catch (e) {
+      _showSnackbar(e.message ?? '');
+    } catch (e) {
+      _showSnackbar(e.toString());
+    } finally {
+      _isPurchasingProduct.value = false;
+    }
+  }
+
+  void _showSnackbar(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+}
+
+class _RestorePurchasesButton extends StatelessWidget {
+  const _RestorePurchasesButton({
+    required this.valueListenable,
+    required this.onPressed,
+  });
+
+  final ValueNotifier<bool> valueListenable;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: valueListenable,
+      builder: (context, value, _) {
+        if (value) {
+          return const SizedBox.square(
+            dimension: Dimens.grid24 - Dimens.grid4,
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return IconButton(
+            onPressed: onPressed,
+            icon: const Icon(Icons.restore),
+            tooltip: S.of(context).restorePurchases,
+          );
+        }
+      },
     );
   }
 }
