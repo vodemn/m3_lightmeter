@@ -100,7 +100,7 @@ extension on WidgetTester {
   Future<void> openPickerAndSelect<V>(String title, String valueToSelect) async {
     await tap(find.text(title));
     await pumpAndSettle();
-    final dialogFinder = find.byType(DialogPicker<V?>);
+    final dialogFinder = find.byType(DialogPicker<Optional<V>>);
     final listTileFinder = find.text(valueToSelect);
     await scrollUntilVisible(
       listTileFinder,
