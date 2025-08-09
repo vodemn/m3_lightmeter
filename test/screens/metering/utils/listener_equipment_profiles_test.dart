@@ -6,7 +6,6 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../../application_mock.dart';
 import '../../../function_mock.dart';
 
 class _MockEquipmentProfilesStorageService extends Mock implements IapStorageService {}
@@ -36,7 +35,7 @@ void main() {
 
   Future<void> pumpTestWidget(WidgetTester tester) async {
     await tester.pumpWidget(
-      MockIapProducts(
+      IAPProducts(
         isPro: true,
         child: EquipmentProfilesProvider(
           storageService: storageService,

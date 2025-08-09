@@ -5,8 +5,6 @@ import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../application_mock.dart';
-
 class _MockFilmsStorageService extends Mock implements IapStorageService {}
 
 void main() {
@@ -34,7 +32,7 @@ void main() {
 
   Future<void> pumpTestWidget(WidgetTester tester, bool isPro) async {
     await tester.pumpWidget(
-      MockIapProducts(
+      IAPProducts(
         isPro: isPro,
         child: FilmsProvider(
           storageService: storageService,

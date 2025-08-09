@@ -99,8 +99,23 @@ class _GoldenTestApplicationMockState extends State<GoldenTestApplicationMock> {
 
   @override
   Widget build(BuildContext context) {
-    return MockIapProducts(
+    return IAPProducts(
       isPro: widget.isPro,
+      lifetime: const IAPProduct(
+        storeId: '',
+        type: PurchaseType.lifetime,
+        price: '0.0\$',
+      ),
+      yearly: const IAPProduct(
+        storeId: '',
+        type: PurchaseType.yearly,
+        price: '0.0\$',
+      ),
+      monthly: const IAPProduct(
+        storeId: '',
+        type: PurchaseType.monthly,
+        price: '0.0\$',
+      ),
       child: _MockApplicationWrapper(
         child: MockIAPProviders(
           selectedEquipmentProfileId: mockEquipmentProfiles.first.id,
@@ -168,27 +183,4 @@ class _MockApplicationWrapper extends StatelessWidget {
       },
     );
   }
-}
-
-class MockIapProducts extends IAPProducts {
-  MockIapProducts({
-    required super.isPro,
-    required super.child,
-  }) : super(
-          lifetime: IAPProduct(
-            storeId: '',
-            type: PurchaseType.lifetime,
-            price: '0.0\$',
-          ),
-          yearly: IAPProduct(
-            storeId: '',
-            type: PurchaseType.yearly,
-            price: '0.0\$',
-          ),
-          monthly: IAPProduct(
-            storeId: '',
-            type: PurchaseType.monthly,
-            price: '0.0\$',
-          ),
-        );
 }

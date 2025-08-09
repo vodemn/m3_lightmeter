@@ -23,7 +23,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     SettingsInteractorProvider.of(context).disableVolumeHandling();
-    IAPProductsProvider.of(context).checkIsPro();
+    IAPProductsProvider.maybeOf(context)?.checkIsPro();
   }
 
   @override

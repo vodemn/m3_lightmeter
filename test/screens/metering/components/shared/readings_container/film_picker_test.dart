@@ -27,7 +27,7 @@ void main() {
 
   Future<void> pumpApplication(WidgetTester tester) async {
     await tester.pumpWidget(
-      MockIapProducts(
+      IAPProducts(
         isPro: true,
         child: FilmsProvider(
           storageService: mockFilmsStorageService,
