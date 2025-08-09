@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/screens/settings/components/shared/disable/widget_disable.dart';
 
 typedef StringAdapter<T> = String Function(BuildContext context, T value);
 
