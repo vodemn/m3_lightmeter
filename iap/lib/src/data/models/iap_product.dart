@@ -3,7 +3,7 @@ class IAPProduct {
   final PurchaseType type;
   final String price;
 
-  IAPProduct({
+  const IAPProduct({
     required this.storeId,
     required this.type,
     required this.price,

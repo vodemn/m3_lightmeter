@@ -21,17 +21,17 @@ class IAPProductsProviderState extends State<IAPProductsProvider> {
   Widget build(BuildContext context) {
     return IAPProducts(
       isPro: true,
-      lifetime: IAPProduct(
+      lifetime: const IAPProduct(
         storeId: '',
         type: PurchaseType.lifetime,
         price: '0.0\$',
       ),
-      yearly: IAPProduct(
+      yearly: const IAPProduct(
         storeId: '',
         type: PurchaseType.yearly,
         price: '0.0\$',
       ),
-      monthly: IAPProduct(
+      monthly: const IAPProduct(
         storeId: '',
         type: PurchaseType.monthly,
         price: '0.0\$',
