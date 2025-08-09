@@ -41,7 +41,7 @@ class ReadingsContainer extends StatelessWidget {
           const LightmeterProAnimatedDialog(),
           const _InnerPadding(),
         ],
-        if (context.isPro && context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) ...[
+        if (context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) ...[
           const EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
@@ -52,7 +52,7 @@ class ReadingsContainer extends StatelessWidget {
           ),
           const _InnerPadding(),
         ],
-        if (context.isPro && context.meteringFeature(MeteringScreenLayoutFeature.filmPicker)) ...[
+        if (context.meteringFeature(MeteringScreenLayoutFeature.filmPicker)) ...[
           FilmPicker(selectedIso: iso),
           const _InnerPadding(),
         ],

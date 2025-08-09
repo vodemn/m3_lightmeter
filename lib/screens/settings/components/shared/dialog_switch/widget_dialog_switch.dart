@@ -12,7 +12,6 @@ class DialogSwitch<T> extends StatefulWidget {
   final Map<T, bool> values;
   final StringAdapter<T> titleAdapter;
   final StringAdapter<T>? subtitleAdapter;
-  final bool Function(T value)? enabledAdapter;
   final ValueChanged<Map<T, bool>> onSave;
 
   const DialogSwitch({
@@ -22,7 +21,6 @@ class DialogSwitch<T> extends StatefulWidget {
     required this.values,
     required this.titleAdapter,
     this.subtitleAdapter,
-    this.enabledAdapter,
     required this.onSave,
     super.key,
   });
@@ -57,25 +55,21 @@ class _DialogSwitchState<T> extends State<DialogSwitch<T>> {
               shrinkWrap: true,
               children: _features.entries.map(
                 (entry) {
-                  final isEnabled = widget.enabledAdapter?.call(entry.key) ?? true;
-                  return Disable(
-                    disable: !isEnabled,
-                    child: SwitchListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: Dimens.dialogTitlePadding.left),
-                      title: Text(widget.titleAdapter(context, entry.key)),
-                      subtitle: widget.subtitleAdapter != null
-                          ? Text(
-                              widget.subtitleAdapter!.call(context, entry.key),
-                              style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                            )
-                          : null,
-                      value: isEnabled && _features[entry.key]!,
-                      onChanged: (value) {
-                        setState(() {
-                          _features.update(entry.key, (_) => value);
-                        });
-                      },
-                    ),
+                  return SwitchListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: Dimens.dialogTitlePadding.left),
+                    title: Text(widget.titleAdapter(context, entry.key)),
+                    subtitle: widget.subtitleAdapter != null
+                        ? Text(
+                            widget.subtitleAdapter!.call(context, entry.key),
+                            style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                          )
+                        : null,
+                    value: _features[entry.key]!,
+                    onChanged: (value) {
+                      setState(() {
+                        _features.update(entry.key, (_) => value);
+                      });
+                    },
                   );
                 },
               ).toList(),

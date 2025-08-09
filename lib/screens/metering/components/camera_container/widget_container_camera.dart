@@ -112,20 +112,17 @@ class CameraContainer extends StatelessWidget {
 
   double _meteringContainerHeight(BuildContext context) {
     double enabledFeaturesHeight = 0;
-    if (!context.isPro) {
-      if (RemoteConfig.isEnabled(context, Feature.showUnlockProOnMainScreen)) {
-        enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
-        enabledFeaturesHeight += Dimens.paddingS;
-      }
-    } else {
-      if (context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) {
-        enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
-        enabledFeaturesHeight += Dimens.paddingS;
-      }
-      if (context.meteringFeature(MeteringScreenLayoutFeature.filmPicker)) {
-        enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
-        enabledFeaturesHeight += Dimens.paddingS;
-      }
+    if (!context.isPro && RemoteConfig.isEnabled(context, Feature.showUnlockProOnMainScreen)) {
+      enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+      enabledFeaturesHeight += Dimens.paddingS;
+    }
+    if (context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) {
+      enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+      enabledFeaturesHeight += Dimens.paddingS;
+    }
+    if (context.meteringFeature(MeteringScreenLayoutFeature.filmPicker)) {
+      enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+      enabledFeaturesHeight += Dimens.paddingS;
     }
     if (context.meteringFeature(MeteringScreenLayoutFeature.extremeExposurePairs)) {
       enabledFeaturesHeight += Dimens.readingContainerDoubleValueHeight;
