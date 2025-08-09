@@ -623,6 +623,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.4"
   frontend_server_client:
     dependency: transitive
     description:
@@ -756,38 +764,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.3.0"
-  in_app_purchase:
-    dependency: transitive
-    description:
-      name: in_app_purchase
-      sha256: "960f26a08d9351fb8f89f08901f8a829d41b04d45a694b8f776121d9e41dcad6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.0"
-  in_app_purchase_android:
-    dependency: transitive
-    description:
-      name: in_app_purchase_android
-      sha256: b7cc194f183a97d71e6da1edb4a4095466ca0c22533615ecad021bdf95a5ecdc
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.6+13"
-  in_app_purchase_platform_interface:
-    dependency: transitive
-    description:
-      name: in_app_purchase_platform_interface
-      sha256: "1d353d38251da5b9fea6635c0ebfc6bb17a2d28d0e86ea5e083bf64244f1fb4c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.0"
-  in_app_purchase_storekit:
-    dependency: transitive
-    description:
-      name: in_app_purchase_storekit
-      sha256: "6ce1361278cacc0481508989ba419b2c9f46a2b0dc54b3fe54f5ee63c2718fef"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.22+1"
   integration_test:
     dependency: "direct dev"
     description: flutter
@@ -885,11 +861,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: "32e053b7d14009c6d61daf56f1556de3365297cb"
+      ref: "v4.0.0"
+      resolved-ref: e951b5349fb8d1ff8fe476a9f6bd42f20e07f4e9
       url: "https://github.com/vodemn/m3_lightmeter_iap"
     source: git
-    version: "2.2.0+31"
+    version: "4.0.0+33"
   m3_lightmeter_resources:
     dependency: "direct main"
     description:
@@ -1163,6 +1139,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  purchases_flutter:
+    dependency: transitive
+    description:
+      name: purchases_flutter
+      sha256: "0d64050d8620740c67cbcd8697bd7447bfb39ec0b04c09dc12977b6ec4a2ad50"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.0-beta.2"
   shared_preferences:
     dependency: "direct main"
     description:
