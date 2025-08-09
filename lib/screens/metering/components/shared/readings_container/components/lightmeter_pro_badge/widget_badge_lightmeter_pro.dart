@@ -17,7 +17,6 @@ class LightmeterProBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(Dimens.paddingS * 2 + (Theme.of(context).textTheme.titleMedium?.lineHeight ?? 0.0));
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed(NavigationRoutes.proFeaturesScreen.name);
