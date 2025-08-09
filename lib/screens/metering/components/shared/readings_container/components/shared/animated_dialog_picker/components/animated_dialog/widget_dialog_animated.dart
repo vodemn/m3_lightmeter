@@ -128,7 +128,7 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       key: _key,
       onTap: _openDialog,
       child: Opacity(

@@ -167,5 +167,18 @@
   "location": "Emplacement",
   "noMapsAppFound": "Aucune application de cartes trouvée.",
   "logbook": "Carnet photo",
-  "noPhotos": "Aucune photo"
+  "noPhotos": "Aucune photo",
+  "continuePurchase": "Continuer",
+  "monthly": "Mensuel",
+  "yearly": "Annuel",
+  "lifetime": "Pour toujours",
+  "pricePerMonth": "{price}/mois",
+  "pricePerYear": "{price}/an",
+  "@pricePerMonth": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }

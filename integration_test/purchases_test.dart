@@ -15,7 +15,6 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/settings/components/shared/disable/widget_disable.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
 import 'package:lightmeter/utils/platform_utils.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,7 +41,7 @@ void testPurchases(String description) {
         UserPreferencesService.seenChangelogVersionKey: await const PlatformUtils().version,
       });
 
-      await tester.pumpApplication(productStatus: IAPProductStatus.purchasable);
+      await tester.pumpApplication(isPro: false);
       await tester.takePhoto();
 
       /// Expect the bare minimum free functionallity

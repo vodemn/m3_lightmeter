@@ -9,7 +9,6 @@ import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/metering/flow_metering.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../integration_test/utils/finder_actions.dart';
@@ -18,27 +17,27 @@ import '../../application_mock.dart';
 import '../../utils/golden_test_set_theme.dart';
 
 class _MeteringScreenConfig {
-  final IAPProductStatus iapProductStatus;
+  final bool isPro;
   final EvSourceType evSourceType;
 
   _MeteringScreenConfig(
-    this.iapProductStatus,
+    this.isPro,
     this.evSourceType,
   );
 
   @override
   String toString() {
     final buffer = StringBuffer();
-    buffer.write(iapProductStatus.toString().split('.')[1]);
+    buffer.write(isPro ? 'purchased' : 'purchasable');
     buffer.write(' - ');
     buffer.write(evSourceType.toString().split('.')[1]);
     return buffer.toString();
   }
 }
 
-final _testScenarios = [IAPProductStatus.purchased, IAPProductStatus.purchasable].expand(
-  (iapProductStatus) => EvSourceType.values.map(
-    (evSourceType) => _MeteringScreenConfig(iapProductStatus, evSourceType),
+final _testScenarios = [true, false].expand(
+  (isPro) => EvSourceType.values.map(
+    (evSourceType) => _MeteringScreenConfig(isPro, evSourceType),
   ),
 );
 
@@ -97,7 +96,7 @@ void main() {
       for (final scenario in _testScenarios) {
         builder.addScenario(
           name: scenario.toString(),
-          widget: _MockMeteringFlow(productStatus: scenario.iapProductStatus),
+          widget: _MockMeteringFlow(isPro: scenario.isPro),
           onCreate: (scenarioWidgetKey) async {
             await setEvSource(tester, scenarioWidgetKey, scenario.evSourceType);
             if (scenarioWidgetKey.toString().contains('Dark')) {
@@ -121,14 +120,14 @@ void main() {
 }
 
 class _MockMeteringFlow extends StatelessWidget {
-  final IAPProductStatus productStatus;
+  final bool isPro;
 
-  const _MockMeteringFlow({required this.productStatus});
+  const _MockMeteringFlow({required this.isPro});
 
   @override
   Widget build(BuildContext context) {
     return GoldenTestApplicationMock(
-      productStatus: productStatus,
+      isPro: isPro,
       child: const MeteringFlow(),
     );
   }

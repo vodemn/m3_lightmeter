@@ -7,7 +7,6 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 import '../mocks/iap_products_mock.dart';
@@ -19,7 +18,7 @@ const mockPhotoEv100 = 8.3;
 
 extension WidgetTesterCommonActions on WidgetTester {
   Future<void> pumpApplication({
-    IAPProductStatus productStatus = IAPProductStatus.purchased,
+    bool isPro = true,
     TogglableMap<EquipmentProfile>? equipmentProfiles,
     String selectedEquipmentProfileId = '',
     TogglableMap<Film>? predefinedFilms,
@@ -28,7 +27,7 @@ extension WidgetTesterCommonActions on WidgetTester {
   }) async {
     await pumpWidget(
       MockIAPProductsProvider(
-        initialyPurchased: productStatus == IAPProductStatus.purchased,
+        initialyPurchased: isPro,
         child: ApplicationWrapper(
           const Environment.dev(),
           child: MockIAPProviders(

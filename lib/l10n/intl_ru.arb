@@ -166,5 +166,18 @@
   "location": "Местоположение",
   "noMapsAppFound": "Приложение карт не найдено.",
   "logbook": "Фотожурнал",
-  "noPhotos": "Нет фотографий"
+  "noPhotos": "Нет фотографий",
+  "continuePurchase": "Продолжить",
+  "monthly": "Ежемесячно",
+  "yearly": "Ежегодно",
+  "lifetime": "Навсегда",
+  "pricePerMonth": "{price}/месяц",
+  "pricePerYear": "{price}/год",
+  "@pricePerMonth": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }

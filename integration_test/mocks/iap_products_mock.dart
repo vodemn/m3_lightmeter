@@ -20,16 +20,11 @@ class MockIAPProductsProvider extends StatefulWidget {
 
 class MockIAPProductsProviderState extends State<MockIAPProductsProvider> {
   late bool _purchased = widget.initialyPurchased;
+
   @override
   Widget build(BuildContext context) {
     return IAPProducts(
-      products: List.from([
-        IAPProduct(
-          storeId: IAPProductType.paidFeatures.storeId,
-          status: _purchased ? IAPProductStatus.purchased : IAPProductStatus.purchasable,
-          price: '0.0\$',
-        ),
-      ]),
+      isPro: _purchased,
       child: widget.child,
     );
   }

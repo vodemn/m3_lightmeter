@@ -26,13 +26,7 @@ void main() {
   Future<void> pumpApplication(WidgetTester tester) async {
     await tester.pumpWidget(
       IAPProducts(
-        products: [
-          IAPProduct(
-            storeId: IAPProductType.paidFeatures.storeId,
-            status: IAPProductStatus.purchased,
-            price: '0.0\$',
-          ),
-        ],
+        isPro: true,
         child: EquipmentProfilesProvider(
           storageService: storageService,
           child: WidgetTestApplicationMock(

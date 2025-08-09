@@ -8,7 +8,6 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/screens/settings/flow_settings.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,21 +15,19 @@ import '../../application_mock.dart';
 import '../../utils/golden_test_set_theme.dart';
 
 class _SettingsScreenConfig {
-  final IAPProductStatus iapProductStatus;
+  final bool isPro;
 
-  _SettingsScreenConfig(this.iapProductStatus);
+  _SettingsScreenConfig(this.isPro);
 
   @override
   String toString() {
     final buffer = StringBuffer();
-    buffer.write(iapProductStatus.toString().split('.')[1]);
+    buffer.write(isPro ? 'purchased' : 'purchasable');
     return buffer.toString();
   }
 }
 
-final _testScenarios = [IAPProductStatus.purchased, IAPProductStatus.purchasable].map(
-  (iapProductStatus) => _SettingsScreenConfig(iapProductStatus),
-);
+final _testScenarios = [true, false].map((isPro) => _SettingsScreenConfig(isPro));
 
 void main() {
   setUpAll(() {
@@ -60,7 +57,7 @@ void main() {
       for (final scenario in _testScenarios) {
         builder.addScenario(
           name: scenario.toString(),
-          widget: _MockSettingsFlow(productStatus: scenario.iapProductStatus),
+          widget: _MockSettingsFlow(isPro: scenario.isPro),
           onCreate: (scenarioWidgetKey) async {
             if (scenarioWidgetKey.toString().contains('Dark')) {
               await setTheme<SettingsFlow>(tester, scenarioWidgetKey, ThemeType.dark);
@@ -78,14 +75,14 @@ void main() {
 }
 
 class _MockSettingsFlow extends StatelessWidget {
-  final IAPProductStatus productStatus;
+  final bool isPro;
 
-  const _MockSettingsFlow({required this.productStatus});
+  const _MockSettingsFlow({required this.isPro});
 
   @override
   Widget build(BuildContext context) {
     return GoldenTestApplicationMock(
-      productStatus: productStatus,
+      isPro: isPro,
       child: const SettingsFlow(),
     );
   }

@@ -57,11 +57,11 @@ class WidgetTestApplicationMock extends StatelessWidget {
 }
 
 class GoldenTestApplicationMock extends StatefulWidget {
-  final IAPProductStatus productStatus;
+  final bool isPro;
   final Widget child;
 
   const GoldenTestApplicationMock({
-    this.productStatus = IAPProductStatus.purchased,
+    this.isPro = true,
     required this.child,
     super.key,
   });
@@ -100,13 +100,22 @@ class _GoldenTestApplicationMockState extends State<GoldenTestApplicationMock> {
   @override
   Widget build(BuildContext context) {
     return IAPProducts(
-      products: [
-        IAPProduct(
-          storeId: IAPProductType.paidFeatures.storeId,
-          status: widget.productStatus,
-          price: '0.0\$',
-        ),
-      ],
+      isPro: widget.isPro,
+      lifetime: const IAPProduct(
+        storeId: '',
+        type: PurchaseType.lifetime,
+        price: '0.0\$',
+      ),
+      yearly: const IAPProduct(
+        storeId: '',
+        type: PurchaseType.yearly,
+        price: '0.0\$',
+      ),
+      monthly: const IAPProduct(
+        storeId: '',
+        type: PurchaseType.monthly,
+        price: '0.0\$',
+      ),
       child: _MockApplicationWrapper(
         child: MockIAPProviders(
           selectedEquipmentProfileId: mockEquipmentProfiles.first.id,

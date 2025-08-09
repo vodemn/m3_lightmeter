@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:lightmeter/data/models/theme_type.dart';
 import 'package:lightmeter/screens/lightmeter_pro/screen_lightmeter_pro.dart';
-import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../application_mock.dart';
@@ -41,8 +40,8 @@ class _MockLightmeterProFlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GoldenTestApplicationMock(
-      productStatus: IAPProductStatus.purchasable,
+    return const GoldenTestApplicationMock(
+      isPro: false,
       child: LightmeterProScreen(),
     );
   }

@@ -59,7 +59,7 @@ class Application extends StatelessWidget {
               EquipmentProfileEditFlow(args: context.routeArgs<EquipmentProfileEditArgs>()),
           NavigationRoutes.filmsListScreen.name: (_) => const FilmsScreen(),
           NavigationRoutes.filmEditScreen.name: (context) => FilmEditFlow(args: context.routeArgs<FilmEditArgs>()),
-          NavigationRoutes.proFeaturesScreen.name: (_) => LightmeterProScreen(),
+          NavigationRoutes.proFeaturesScreen.name: (_) => const LightmeterProScreen(),
           NavigationRoutes.timerScreen.name: (context) => TimerFlow(args: context.routeArgs<TimerFlowArgs>()),
           NavigationRoutes.logbookPhotosListScreen.name: (_) => const LogbookPhotosScreen(),
           NavigationRoutes.logbookPhotoEditScreen.name: (context) =>

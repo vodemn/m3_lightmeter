@@ -43,16 +43,10 @@ void main() {
     reset(storageService);
   });
 
-  Future<void> pumpTestWidget(WidgetTester tester, IAPProductStatus productStatus) async {
+  Future<void> pumpTestWidget(WidgetTester tester, bool isPro) async {
     await tester.pumpWidget(
       IAPProducts(
-        products: [
-          IAPProduct(
-            storeId: IAPProductType.paidFeatures.storeId,
-            status: productStatus,
-            price: '0.0\$',
-          ),
-        ],
+        isPro: isPro,
         child: LogbookPhotosProvider(
           storageService: storageService,
           geolocationService: geolocationService,
@@ -79,27 +73,18 @@ void main() {
       });
 
       testWidgets(
-        'IAPProductStatus.purchased - show all saved photos',
+        'Pro - show all saved photos',
         (tester) async {
-          await pumpTestWidget(tester, IAPProductStatus.purchased);
+          await pumpTestWidget(tester, true);
           expectLogbookPhotosCount(_customPhotos.length);
           expectLogbookPhotosEnabled(true);
         },
       );
 
       testWidgets(
-        'IAPProductStatus.purchasable - show empty list',
+        'Not Pro - show empty list',
         (tester) async {
-          await pumpTestWidget(tester, IAPProductStatus.purchasable);
-          expectLogbookPhotosCount(0);
-          expectLogbookPhotosEnabled(true);
-        },
-      );
-
-      testWidgets(
-        'IAPProductStatus.pending - show empty list',
-        (tester) async {
-          await pumpTestWidget(tester, IAPProductStatus.pending);
+          await pumpTestWidget(tester, false);
           expectLogbookPhotosCount(0);
           expectLogbookPhotosEnabled(true);
         },
@@ -111,7 +96,7 @@ void main() {
     'saveLogbookPhotos',
     (tester) async {
       when(() => storageService.getPhotos()).thenAnswer((_) => Future.value(_customPhotos));
-      await pumpTestWidget(tester, IAPProductStatus.purchased);
+      await pumpTestWidget(tester, true);
       expectLogbookPhotosCount(_customPhotos.length);
       expectLogbookPhotosEnabled(true);
 
@@ -132,7 +117,7 @@ void main() {
     (tester) async {
       when(() => storageService.getPhotos()).thenAnswer((_) async => []);
 
-      await pumpTestWidget(tester, IAPProductStatus.purchased);
+      await pumpTestWidget(tester, true);
       expectLogbookPhotosCount(0);
       expectLogbookPhotosEnabled(true);
 
@@ -168,7 +153,7 @@ void main() {
     'addPhotoIfPossible when disabled',
     (tester) async {
       when(() => storageService.getPhotos()).thenAnswer((_) async => []);
-      await pumpTestWidget(tester, IAPProductStatus.purchased);
+      await pumpTestWidget(tester, true);
 
       // Disable logbook photos
       tester.logbookPhotosProvider.saveLogbookPhotos(false);

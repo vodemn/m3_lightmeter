@@ -1,91 +1,156 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lightmeter/data/models/app_feature.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
-import 'package:lightmeter/res/theme.dart';
+import 'package:lightmeter/screens/lightmeter_pro/components/offering/widget_offering_lightmeter_pro.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/utils/text_height.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 
-class LightmeterProScreen extends StatelessWidget {
+typedef PurchasesState = ({bool isPurchasingProduct, bool isRestoringPurchases});
+
+class LightmeterProScreen extends StatefulWidget {
+  const LightmeterProScreen({super.key});
+
+  @override
+  State<LightmeterProScreen> createState() => _LightmeterProScreenState();
+}
+
+class _LightmeterProScreenState extends State<LightmeterProScreen> {
   final features =
       defaultTargetPlatform == TargetPlatform.android ? AppFeature.androidFeatures : AppFeature.iosFeatures;
 
-  LightmeterProScreen({super.key});
+  final _purchasesNotifier = ValueNotifier<PurchasesState>(
+    (
+      isPurchasingProduct: false,
+      isRestoringPurchases: false,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: SliverScreen(
-            title: Text(S.of(context).proFeaturesTitle),
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(Dimens.paddingM),
-                  child: Text(
-                    S.of(context).proFeaturesPromoText,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    Dimens.paddingM,
-                    0,
-                    Dimens.paddingM,
-                    Dimens.paddingS,
-                  ),
-                  child: Text(
-                    S.of(context).proFeaturesWhatsIncluded,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
-              ),
-              const SliverToBoxAdapter(child: _FeaturesHeader()),
-              SliverList.separated(
-                itemCount: features.length,
-                itemBuilder: (_, index) => _FeatureItem(feature: features[index]),
-                separatorBuilder: (_, __) => const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Dimens.paddingM),
-                  child: Divider(),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(Dimens.paddingM),
-                  child: Text(S.of(context).proFeaturesSupportText),
-                ),
-              ),
-            ],
+    return SliverScreen(
+      title: Text(S.of(context).proFeaturesTitle),
+      appBarActions: [
+        ValueListenableBuilder(
+          valueListenable: _purchasesNotifier,
+          builder: (context, value, _) {
+            if (value.isRestoringPurchases) {
+              return const SizedBox.square(
+                dimension: Dimens.grid24 - Dimens.grid4,
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return IconButton(
+                onPressed: value.isPurchasingProduct ? null : _restorePurchases,
+                icon: const Icon(Icons.restore),
+                tooltip: S.of(context).restorePurchases,
+              );
+            }
+          },
+        ),
+      ],
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(Dimens.paddingM),
+            child: Text(
+              S.of(context).proFeaturesPromoText,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
           ),
         ),
-        Container(
-          color: Theme.of(context).colorScheme.surfaceElevated1,
-          width: MediaQuery.sizeOf(context).width,
-          padding: EdgeInsets.fromLTRB(
-            Dimens.paddingM,
-            Dimens.paddingM,
-            Dimens.paddingM,
-            Dimens.paddingM + MediaQuery.paddingOf(context).bottom,
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              Dimens.paddingM,
+              0,
+              Dimens.paddingM,
+              Dimens.paddingS,
+            ),
+            child: Text(
+              S.of(context).proFeaturesWhatsIncluded,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
           ),
-          child: FilledButton(
-            onPressed: () {
-              ServicesProvider.maybeOf(context)
-                  ?.analytics
-                  .setCustomKey('iap_product_type', IAPProductType.paidFeatures.storeId);
-              IAPProductsProvider.maybeOf(context)?.buy(IAPProductType.paidFeatures);
-              Navigator.of(context).pop();
-            },
-            child: Text(S.of(context).getNowFor(IAPProducts.productOf(context, IAPProductType.paidFeatures)!.price)),
+        ),
+        const SliverToBoxAdapter(child: _FeaturesHeader()),
+        SliverList.separated(
+          itemCount: features.length,
+          itemBuilder: (_, index) => _FeatureItem(feature: features[index]),
+          separatorBuilder: (_, __) => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Dimens.paddingM),
+            child: Divider(),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(Dimens.paddingM),
+            child: Text(S.of(context).proFeaturesSupportText),
           ),
         ),
       ],
+      bottomNavigationBar: ValueListenableBuilder(
+        valueListenable: _purchasesNotifier,
+        builder: (context, value, _) {
+          return LightmeterProOffering(
+            isEnabled: !value.isRestoringPurchases && !value.isPurchasingProduct,
+            onBuyProduct: _buyPro,
+          );
+        },
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _purchasesNotifier.dispose();
+    super.dispose();
+  }
+
+  Future<void> _restorePurchases() async {
+    _purchasesNotifier.isRestoringPurchases = true;
+    try {
+      final isPro = await IAPProductsProvider.of(context).restorePurchases();
+      if (mounted && isPro) {
+        Navigator.of(context).pop();
+      }
+    } on PlatformException catch (e) {
+      _showSnackbar(e.message ?? '');
+    } catch (e) {
+      _showSnackbar(e.toString());
+    } finally {
+      _purchasesNotifier.isRestoringPurchases = false;
+    }
+  }
+
+  Future<void> _buyPro(IAPProduct product) async {
+    _purchasesNotifier.isPurchasingProduct = true;
+    try {
+      final isPro = await IAPProductsProvider.of(context).buyPro(product);
+      if (mounted && isPro) {
+        Navigator.of(context).pop();
+      }
+    } on PlatformException catch (e) {
+      _showSnackbar(e.message ?? '');
+    } catch (e) {
+      _showSnackbar(e.toString());
+    } finally {
+      _purchasesNotifier.isPurchasingProduct = false;
+    }
+  }
+
+  void _showSnackbar(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 }
 
@@ -225,5 +290,15 @@ class _CheckBox extends StatelessWidget {
       Icons.check_outlined,
       color: highlight ? Theme.of(context).colorScheme.onSecondaryContainer : null,
     );
+  }
+}
+
+extension on ValueNotifier<PurchasesState> {
+  set isPurchasingProduct(bool isPurchasingProduct) {
+    value = (isPurchasingProduct: isPurchasingProduct, isRestoringPurchases: value.isRestoringPurchases);
+  }
+
+  set isRestoringPurchases(bool isRestoringPurchases) {
+    value = (isPurchasingProduct: value.isPurchasingProduct, isRestoringPurchases: isRestoringPurchases);
   }
 }

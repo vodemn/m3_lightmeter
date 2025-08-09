@@ -64,6 +64,16 @@ ThemeData themeFrom(Color primaryColor, Brightness brightness) {
     scaffoldBackgroundColor: scheme.surface,
   );
   return theme.copyWith(
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        minimumSize: const Size.square(Dimens.grid56),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Dimens.borderRadiusM),
+        ),
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: theme.colorScheme.onPrimary,
+      ),
+    ),
     listTileTheme: ListTileThemeData(
       style: ListTileStyle.list,
       iconColor: scheme.onSurface,
