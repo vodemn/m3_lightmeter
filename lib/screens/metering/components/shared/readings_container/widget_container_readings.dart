@@ -9,7 +9,7 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/extreme_exposure_pairs_container/widget_container_extreme_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
-import 'package:lightmeter/screens/metering/components/shared/readings_container/components/lightmeter_pro/widget_lightmeter_pro.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/lightmeter_pro_badge/widget_badge_lightmeter_pro.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/nd_picker/widget_picker_nd.dart';
 import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -38,7 +38,7 @@ class ReadingsContainer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (!context.isPro && RemoteConfig.isEnabled(context, Feature.showUnlockProOnMainScreen)) ...[
-          const LightmeterProAnimatedDialog(),
+          const LightmeterProBadge(),
           const _InnerPadding(),
         ],
         if (context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) ...[

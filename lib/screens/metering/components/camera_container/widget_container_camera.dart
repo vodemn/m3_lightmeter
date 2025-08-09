@@ -17,6 +17,7 @@ import 'package:lightmeter/screens/metering/components/camera_container/models/c
 import 'package:lightmeter/screens/metering/components/camera_container/state_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/components/shared/metering_top_bar/widget_top_bar_metering.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/lightmeter_pro_badge/widget_badge_lightmeter_pro.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/widget_container_readings.dart';
 import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -113,7 +114,7 @@ class CameraContainer extends StatelessWidget {
   double _meteringContainerHeight(BuildContext context) {
     double enabledFeaturesHeight = 0;
     if (!context.isPro && RemoteConfig.isEnabled(context, Feature.showUnlockProOnMainScreen)) {
-      enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+      enabledFeaturesHeight += LightmeterProBadge.height(context);
       enabledFeaturesHeight += Dimens.paddingS;
     }
     if (context.meteringFeature(MeteringScreenLayoutFeature.equipmentProfiles)) {
