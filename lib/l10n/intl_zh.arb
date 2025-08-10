@@ -146,6 +146,16 @@
   "tooltipUseCamera": "使用摄像头",
   "tooltipOpenSettings": "打开设置",
   "exposurePair": "曝光对",
+  "whatsnew": "有什么新功能？",
+  "changesInVersion": "版本 {version} 的更改：",
+  "@changesInVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "close": "关闭",
   "films": "胶片",
   "filmsInUse": "使用的胶片",
   "filmsCustom": "自定义胶片",
@@ -155,6 +165,7 @@
   "filmFormulaExponential": "T=t^Rf",
   "filmFormulaExponentialRf": "Rf",
   "filmFormulaExponentialRfPlaceholder": "1.3",
+  "name": "名称",
   "addEquipmentProfileTitle": "添加设备",
   "editEquipmentProfileTitle": "编辑设备",
   "editPhotoTitle": "编辑照片",

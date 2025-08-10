@@ -148,6 +148,16 @@
   "tooltipUseCamera": "Utiliser la caméra",
   "tooltipOpenSettings": "Ouvrir les paramètres",
   "exposurePair": "Paire d'exposition",
+  "whatsnew": "Quoi de neuf ?",
+  "changesInVersion": "Changements dans la version {version} :",
+  "@changesInVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "close": "Fermer",
   "films": "Films",
   "filmsInUse": "Films en usage",
   "filmsCustom": "Films personnalisés",
@@ -157,7 +167,7 @@
   "filmFormulaExponential": "T=t^Rf",
   "filmFormulaExponentialRf": "Rf",
   "filmFormulaExponentialRfPlaceholder": "1.3",
-  "name": "Titre",
+  "name": "Nom",
   "addEquipmentProfileTitle": "Ajouter un profil",
   "editEquipmentProfileTitle": "Editer le profil",
   "editPhotoTitle": "Modifier la photo",

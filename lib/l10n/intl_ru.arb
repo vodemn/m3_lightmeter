@@ -147,6 +147,16 @@
   "tooltipUseCamera": "Использовать камеру",
   "tooltipOpenSettings": "Открыть настройки",
   "exposurePair": "Пара экспозиции",
+  "whatsnew": "Что нового?",
+  "changesInVersion": "Изменения в версии {version}:",
+  "@changesInVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "close": "Закрыть",
   "films": "Плёнки",
   "filmsInUse": "Используемые плёнки",
   "filmsCustom": "Пользовательские плёнки",
