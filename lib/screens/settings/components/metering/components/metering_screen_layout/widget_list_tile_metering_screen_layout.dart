@@ -22,8 +22,16 @@ class MeteringScreenLayoutListTile extends StatelessWidget {
             icon: Icons.layers_outlined,
             title: S.of(context).meteringScreenLayout,
             description: S.of(context).meteringScreenLayoutHint,
-            values: UserPreferencesProvider.meteringScreenConfigOf(context),
-            titleAdapter: _toStringLocalized,
+            items: UserPreferencesProvider.meteringScreenConfigOf(context)
+                .entries
+                .map(
+                  (entry) => DialogSwitchListItem(
+                    value: entry.key,
+                    title: _toStringLocalized(context, entry.key),
+                    initialValue: UserPreferencesProvider.meteringScreenFeatureOf(context, entry.key),
+                  ),
+                )
+                .toList(growable: false),
             onSave: (value) {
               if (!value[MeteringScreenLayoutFeature.equipmentProfiles]!) {
                 EquipmentProfilesProvider.of(context).selectProfile(EquipmentProfiles.of(context).first);

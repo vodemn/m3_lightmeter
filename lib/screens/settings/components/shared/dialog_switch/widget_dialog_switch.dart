@@ -1,27 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/utils/context_utils.dart';
+import 'package:lightmeter/utils/guard_pro_tap.dart';
 
 typedef StringAdapter<T> = String Function(BuildContext context, T value);
+
+class DialogSwitchListItem<T> {
+  final T value;
+  final String title;
+  final String? subtitle;
+  final bool initialValue;
+  final bool isEnabled;
+  final bool isProRequired;
+
+  const DialogSwitchListItem({
+    required this.value,
+    required this.title,
+    this.subtitle,
+    required this.initialValue,
+    this.isEnabled = true,
+    this.isProRequired = false,
+  });
+}
 
 class DialogSwitch<T> extends StatefulWidget {
   final IconData icon;
   final String title;
   final String? description;
-  final Map<T, bool> values;
-  final StringAdapter<T> titleAdapter;
-  final StringAdapter<T>? subtitleAdapter;
-  final bool Function(T value)? enabledAdapter;
+  final List<DialogSwitchListItem<T>> items;
   final ValueChanged<Map<T, bool>> onSave;
 
   const DialogSwitch({
     required this.icon,
     required this.title,
     this.description,
-    required this.values,
-    required this.titleAdapter,
-    this.subtitleAdapter,
-    this.enabledAdapter,
+    required this.items,
     required this.onSave,
     super.key,
   });
@@ -31,7 +45,11 @@ class DialogSwitch<T> extends StatefulWidget {
 }
 
 class _DialogSwitchState<T> extends State<DialogSwitch<T>> {
-  late final Map<T, bool> _features = Map.from(widget.values);
+  late final Map<T, bool> _features = Map.fromEntries(
+    widget.items.map(
+      (item) => MapEntry(item.value, item.initialValue),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -54,22 +72,15 @@ class _DialogSwitchState<T> extends State<DialogSwitch<T>> {
             ],
             ListView(
               shrinkWrap: true,
-              children: _features.entries.map(
-                (entry) {
-                  final isEnabled = widget.enabledAdapter?.call(entry.key) ?? true;
+              children: widget.items.map(
+                (item) {
+                  final value = _features[item.value]!;
                   return SwitchListTile(
                     contentPadding: EdgeInsets.symmetric(horizontal: Dimens.dialogTitlePadding.left),
-                    title: Text(widget.titleAdapter(context, entry.key)),
-                    subtitle:
-                        widget.subtitleAdapter != null ? Text(widget.subtitleAdapter!.call(context, entry.key)) : null,
-                    value: _features[entry.key]!,
-                    onChanged: isEnabled
-                        ? (value) {
-                            setState(() {
-                              _features.update(entry.key, (_) => value);
-                            });
-                          }
-                        : null,
+                    title: Text(item.title),
+                    subtitle: item.subtitle != null ? Text(item.subtitle!) : null,
+                    value: item.isProRequired ? context.isPro && value : value,
+                    onChanged: item.isEnabled ? (value) => _setItem(item, value) : null,
                   );
                 },
               ).toList(),
@@ -92,5 +103,19 @@ class _DialogSwitchState<T> extends State<DialogSwitch<T>> {
         ),
       ],
     );
+  }
+
+  void _setItem(DialogSwitchListItem<T> item, bool value) {
+    void setItemState() {
+      setState(() {
+        _features.update(item.value, (_) => value);
+      });
+    }
+
+    if (item.isProRequired) {
+      guardProTap(context, setItemState);
+    } else {
+      setItemState();
+    }
   }
 }

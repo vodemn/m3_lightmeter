@@ -4,7 +4,6 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_switch/widget_dialog_switch.dart';
-import 'package:lightmeter/screens/settings/components/shared/iap_list_tile/widget_list_tile_iap.dart';
 
 class CameraFeaturesListTile extends StatelessWidget {
   const CameraFeaturesListTile({super.key});
@@ -15,28 +14,43 @@ class CameraFeaturesListTile extends StatelessWidget {
       leading: const Icon(Icons.camera_alt_outlined),
       title: Text(S.of(context).cameraFeatures),
       onTap: () {
+        UserPreferencesProvider.cameraConfigOf(context).entries.map(
+              (entry) => DialogSwitchListItem(
+                value: CameraFeature.spotMetering,
+                title: S.of(context).cameraFeatureSpotMetering,
+                subtitle: S.of(context).cameraFeatureSpotMeteringHint,
+                initialValue: UserPreferencesProvider.cameraFeatureOf(context, CameraFeature.spotMetering),
+                isProRequired: true,
+              ),
+            );
         showDialog(
           context: context,
           builder: (_) => DialogSwitch<CameraFeature>(
             icon: Icons.camera_alt_outlined,
             title: S.of(context).cameraFeatures,
-            values: UserPreferencesProvider.cameraConfigOf(context),
-            enabledAdapter: (feature) => switch (feature) {
-              CameraFeature.spotMetering => true,
-              CameraFeature.histogram => true,
-              CameraFeature.showFocalLength =>
-                ServicesProvider.of(context).userPreferencesService.cameraFocalLength != null,
-            },
-            titleAdapter: (context, feature) => switch (feature) {
-              CameraFeature.spotMetering => S.of(context).cameraFeatureSpotMetering,
-              CameraFeature.histogram => S.of(context).cameraFeatureHistogram,
-              CameraFeature.showFocalLength => S.of(context).cameraFeaturesShowFocalLength,
-            },
-            subtitleAdapter: (context, feature) => switch (feature) {
-              CameraFeature.spotMetering => S.of(context).cameraFeatureSpotMeteringHint,
-              CameraFeature.histogram => S.of(context).cameraFeatureHistogramHint,
-              CameraFeature.showFocalLength => S.of(context).cameraFeaturesShowFocalLengthHint,
-            },
+            items: [
+              DialogSwitchListItem(
+                value: CameraFeature.showFocalLength,
+                title: S.of(context).cameraFeaturesShowFocalLength,
+                subtitle: S.of(context).cameraFeaturesShowFocalLengthHint,
+                initialValue: UserPreferencesProvider.cameraFeatureOf(context, CameraFeature.showFocalLength),
+                isEnabled: ServicesProvider.of(context).userPreferencesService.cameraFocalLength != null,
+              ),
+              DialogSwitchListItem(
+                value: CameraFeature.spotMetering,
+                title: S.of(context).cameraFeatureSpotMetering,
+                subtitle: S.of(context).cameraFeatureSpotMeteringHint,
+                initialValue: UserPreferencesProvider.cameraFeatureOf(context, CameraFeature.spotMetering),
+                isProRequired: true,
+              ),
+              DialogSwitchListItem(
+                value: CameraFeature.histogram,
+                title: S.of(context).cameraFeatureHistogram,
+                subtitle: S.of(context).cameraFeatureHistogramHint,
+                initialValue: UserPreferencesProvider.cameraFeatureOf(context, CameraFeature.histogram),
+                isProRequired: true,
+              ),
+            ],
             onSave: UserPreferencesProvider.of(context).setCameraFeature,
           ),
         );
