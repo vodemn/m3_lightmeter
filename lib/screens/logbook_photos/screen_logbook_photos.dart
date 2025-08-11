@@ -37,7 +37,7 @@ class _LogbookPhotosScreenState extends State<LogbookPhotosScreen> with SingleTi
                   guardProTap(
                     context,
                     () {
-                      Navigator.of(context).pushNamed(NavigationRoutes.proFeaturesScreen.name);
+                      LogbookPhotosProvider.of(context).saveLogbookPhotos(value);
                     },
                   );
                 },
