@@ -256,10 +256,7 @@ class _FeatureHighlight extends StatelessWidget {
             ).width +
             Dimens.paddingM * 2,
       ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: Dimens.paddingM,
-        vertical: Dimens.paddingS,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: Dimens.paddingS),
       decoration: BoxDecoration(
         color: highlight ? Theme.of(context).colorScheme.secondaryContainer : null,
         borderRadius: roundedTop
@@ -274,7 +271,7 @@ class _FeatureHighlight extends StatelessWidget {
                   )
                 : null,
       ),
-      child: child,
+      child: Center(child: child),
     );
   }
 }
