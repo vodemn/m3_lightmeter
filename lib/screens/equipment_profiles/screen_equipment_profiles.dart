@@ -6,6 +6,7 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/flow_equipment_profile_edit.dart';
 import 'package:lightmeter/screens/shared/sliver_placeholder/widget_sliver_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
+import 'package:lightmeter/utils/guard_pro_tap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfilesScreen extends StatefulWidget {
@@ -41,9 +42,14 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
   }
 
   void _addProfile() {
-    Navigator.of(context).pushNamed(
-      NavigationRoutes.equipmentProfileEditScreen.name,
-      arguments: const EquipmentProfileEditArgs(editType: EquipmentProfileEditType.add),
+    guardProTap(
+      context,
+      () {
+        Navigator.of(context).pushNamed(
+          NavigationRoutes.equipmentProfileEditScreen.name,
+          arguments: const EquipmentProfileEditArgs(editType: EquipmentProfileEditType.add),
+        );
+      },
     );
   }
 

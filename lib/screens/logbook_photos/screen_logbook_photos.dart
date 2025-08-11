@@ -7,6 +7,8 @@ import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/logbook_photos/components/grid_tile/widget_grid_tile_logbook_photo.dart';
 import 'package:lightmeter/screens/shared/icon_placeholder/widget_icon_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
+import 'package:lightmeter/utils/context_utils.dart';
+import 'package:lightmeter/utils/guard_pro_tap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class LogbookPhotosScreen extends StatefulWidget {
@@ -30,8 +32,15 @@ class _LogbookPhotosScreenState extends State<LogbookPhotosScreen> with SingleTi
               child: SwitchListTile(
                 secondary: const Icon(Icons.book_outlined),
                 title: Text(S.of(context).saveNewPhotos),
-                value: LogbookPhotos.isEnabledOf(context),
-                onChanged: LogbookPhotosProvider.of(context).saveLogbookPhotos,
+                value: LogbookPhotos.isEnabledOf(context) && context.isPro,
+                onChanged: (value) {
+                  guardProTap(
+                    context,
+                    () {
+                      Navigator.of(context).pushNamed(NavigationRoutes.proFeaturesScreen.name);
+                    },
+                  );
+                },
               ),
             ),
           ),

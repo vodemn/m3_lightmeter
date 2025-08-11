@@ -4,7 +4,6 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/shared/animated_circular_button/widget_button_circular_animated.dart';
 import 'package:lightmeter/screens/shared/bottom_controls_bar/widget_bottom_controls_bar.dart';
-import 'package:lightmeter/utils/context_utils.dart';
 
 class MeteringBottomControls extends StatelessWidget {
   final double? ev;
@@ -76,7 +75,7 @@ class _EvValueText extends StatelessWidget {
   }
 
   String _text(BuildContext context) {
-    final bool showEv100 = context.isPro && UserPreferencesProvider.showEv100Of(context);
+    final bool showEv100 = UserPreferencesProvider.showEv100Of(context);
     final StringBuffer buffer = StringBuffer()
       ..writeAll([
         (showEv100 ? ev100 : ev).toStringAsFixed(1),
