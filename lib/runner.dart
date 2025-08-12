@@ -26,7 +26,7 @@ Future<void> runLightmeterApp(Environment env) async {
       runApp(
         env.buildType == BuildType.dev
             ? IAPProducts(
-                isPro: true,
+                isPro: false,
                 child: application,
               )
             : IAPProductsProvider(child: application),

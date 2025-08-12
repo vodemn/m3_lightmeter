@@ -5,7 +5,6 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_switch/widget_dialog_switch.dart';
-import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class MeteringScreenLayoutListTile extends StatelessWidget {
@@ -23,17 +22,16 @@ class MeteringScreenLayoutListTile extends StatelessWidget {
             icon: Icons.layers_outlined,
             title: S.of(context).meteringScreenLayout,
             description: S.of(context).meteringScreenLayoutHint,
-            values: UserPreferencesProvider.meteringScreenConfigOf(context),
-            titleAdapter: _toStringLocalized,
-            enabledAdapter: (value) {
-              switch (value) {
-                case MeteringScreenLayoutFeature.equipmentProfiles:
-                case MeteringScreenLayoutFeature.filmPicker:
-                  return context.isPro;
-                default:
-                  return true;
-              }
-            },
+            items: UserPreferencesProvider.meteringScreenConfigOf(context)
+                .entries
+                .map(
+                  (entry) => DialogSwitchListItem(
+                    value: entry.key,
+                    title: _toStringLocalized(context, entry.key),
+                    initialValue: UserPreferencesProvider.meteringScreenFeatureOf(context, entry.key),
+                  ),
+                )
+                .toList(growable: false),
             onSave: (value) {
               if (!value[MeteringScreenLayoutFeature.equipmentProfiles]!) {
                 EquipmentProfilesProvider.of(context).selectProfile(EquipmentProfiles.of(context).first);

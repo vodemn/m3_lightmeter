@@ -107,24 +107,18 @@ class _Products extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (monthly case final monthly?)
-          Padding(
-            padding: const EdgeInsets.only(bottom: Dimens.paddingS),
-            child: _ProductItem(
-              title: S.of(context).monthly,
-              price: S.of(context).pricePerMonth(monthly.price),
-              isSelected: selected == monthly,
-              onPressed: () => onProductSelected(monthly),
-            ),
+          _ProductItem(
+            title: S.of(context).monthly,
+            price: S.of(context).pricePerMonth(monthly.price),
+            isSelected: selected == monthly,
+            onPressed: () => onProductSelected(monthly),
           ),
         if (yearly case final yearly?)
-          Padding(
-            padding: const EdgeInsets.only(bottom: Dimens.paddingS),
-            child: _ProductItem(
-              title: S.of(context).yearly,
-              price: S.of(context).pricePerYear(yearly.price),
-              isSelected: selected == yearly,
-              onPressed: () => onProductSelected(yearly),
-            ),
+          _ProductItem(
+            title: S.of(context).yearly,
+            price: S.of(context).pricePerYear(yearly.price),
+            isSelected: selected == yearly,
+            onPressed: () => onProductSelected(yearly),
           ),
         if (lifetime case final lifetime?)
           _ProductItem(
@@ -133,7 +127,7 @@ class _Products extends StatelessWidget {
             isSelected: selected == lifetime,
             onPressed: () => onProductSelected(lifetime),
           ),
-      ],
+      ].intersperse(const SizedBox(height: Dimens.grid8)).toList(growable: false),
     );
   }
 }
@@ -218,5 +212,18 @@ class _ProductAnimatedText extends StatelessWidget {
           ),
       child: Text(text),
     );
+  }
+}
+
+extension on List<Widget> {
+  Iterable<Widget> intersperse(Widget element) sync* {
+    final iterator = this.iterator;
+    if (iterator.moveNext()) {
+      yield iterator.current;
+      while (iterator.moveNext()) {
+        yield element;
+        yield iterator.current;
+      }
+    }
   }
 }
