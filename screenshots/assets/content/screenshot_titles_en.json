@@ -2,43 +2,43 @@
     "screenshots": [
         {
             "screenshotName": "light_metering-reflected",
-            "title": "Quick & easy to use",
-            "subtitle": "with all the necessary controls\nunder your thumb"
+            "title": "Perfect exposure",
+            "subtitle": "in seconds with\nintuitive controls"
         },
         {
             "screenshotName": "light_metering-incident",
-            "title": "Incident light metering",
-            "subtitle": "using the light sensor\nof your device"
+            "title": "Professional metering",
+            "subtitle": "using your device's\nlight sensor"
         },
         {
             "screenshotName": "light_metering-iso-picker",
-            "title": "Lots of ISO values",
-            "subtitle": "from 3 and up to 6400"
+            "title": "Complete ISO range",
+            "subtitle": "from 3 to 6400\nfor any situation"
         },
         {
             "screenshotName": "light_timer",
-            "title": "In-built timer",
-            "subtitle": "for the ease of shooting\nlong exposures"
+            "title": "Built-in timer",
+            "subtitle": "perfect for\nlong exposures"
         },
         {
             "screenshotName": "light_settings",
-            "title": "Useful settings",
-            "subtitle": "to get the most accurate\nmetering results"
+            "title": "Precise calibration",
+            "subtitle": "for accurate\nmetering results"
         },
         {
             "screenshotName": "light_equipment-profiles",
-            "title": "Create multiple profiles",
-            "subtitle": "to match your\ncamera & lens setups"
+            "title": "Equipment profiles",
+            "subtitle": "save your camera\n& lens setups"
         },
         {
             "screenshotName": "dark_metering-reflected",
-            "title": "Match your style",
-            "subtitle": "with various theme types and colors"
+            "title": "Dark mode",
+            "subtitle": "easy on the eyes\nin any light"
         },
         {
             "screenshotName": "light_logbook-edit",
-            "title": "Keep track",
-            "subtitle": "of all your photos\nand all the details"
+            "title": "Photo logbook",
+            "subtitle": "track every shot\nwith details"
         }
     ]
 }
