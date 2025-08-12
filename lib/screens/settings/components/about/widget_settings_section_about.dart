@@ -20,7 +20,7 @@ class AboutSettingsSection extends StatelessWidget {
         const ReportIssueListTile(),
         const WriteEmailListTile(),
         const VersionListTile(),
-        if (context.isPro) const RestorePurchasesListTile(),
+        if (!context.isPro) const RestorePurchasesListTile(),
       ],
     );
   }
