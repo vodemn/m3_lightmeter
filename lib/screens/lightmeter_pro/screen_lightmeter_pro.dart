@@ -115,7 +115,7 @@ class _LightmeterProScreenState extends State<LightmeterProScreen> {
     try {
       final isPro = await IAPProductsProvider.of(context).restorePurchases();
       if (mounted && isPro) {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       }
     } on PlatformException catch (e) {
       _showSnackbar(e.message ?? '');
@@ -131,7 +131,7 @@ class _LightmeterProScreenState extends State<LightmeterProScreen> {
     try {
       final isPro = await IAPProductsProvider.of(context).buyPro(product);
       if (mounted && isPro) {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       }
     } on PlatformException catch (e) {
       _showSnackbar(e.message ?? '');

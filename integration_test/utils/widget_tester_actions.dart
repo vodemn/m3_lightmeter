@@ -68,8 +68,8 @@ extension WidgetTesterCommonActions on WidgetTester {
     await pumpAndSettle();
   }
 
-  Future<void> navigatorPop() async {
-    (state(find.byType(Navigator)) as NavigatorState).pop();
+  Future<void> navigatorPop([Object? result]) async {
+    (state(find.byType(Navigator)) as NavigatorState).pop(result);
     await pumpAndSettle(Dimens.durationML);
   }
 }
