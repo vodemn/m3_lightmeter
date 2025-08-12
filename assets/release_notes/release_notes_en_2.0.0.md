@@ -1,0 +1,4 @@
+- Equipment Profiles: Added exposure offset calibration for different camera setups
+- Photo Logbook: Track your shots with detailed metadata and notes
+- Polish Language: Full Polish translation added
+- Better Translations: Improved accuracy across all languages
