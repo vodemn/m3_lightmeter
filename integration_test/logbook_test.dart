@@ -28,8 +28,8 @@ void testLogbook(String description) {
     description,
     (tester) async {
       await tester.pumpApplication(
-        equipmentProfiles: {},
-        predefinedFilms: mockFilms.toTogglableMap(),
+        selectedEquipmentProfileId: mockEquipmentProfiles.first.id,
+        selectedFilmId: mockFilms.first.id,
         customFilms: {},
       );
       await tester.takePhoto();
@@ -45,6 +45,9 @@ void testLogbook(String description) {
       await tester.tap(find.byType(LogbookPhotoGridTile).first);
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.text(mockEquipmentProfiles.first.name));
+      await tester.ensureVisible(find.text(mockFilms.first.name));
+
       /// Add a note, select aperture value and shutter speed value
       await tester.enterText(
         find.descendant(
@@ -58,6 +61,9 @@ void testLogbook(String description) {
       await tester.pumpAndSettle();
       await tester.openPickerAndSelect<ApertureValue>(S.current.apertureValue, 'f/5.6');
       await tester.openPickerAndSelect<ShutterSpeedValue>(S.current.shutterSpeedValue, '1/125');
+      await tester.openPickerAndSelect<EquipmentProfile>(S.current.equipmentProfile, S.current.notSet);
+      await tester.openPickerAndSelect<Film>(S.current.film, S.current.notSet);
+      await tester.pumpAndSettle();
 
       /// Save the edits
       await tester.tap(find.byIcon(Icons.save_outlined));
@@ -101,7 +107,7 @@ extension on WidgetTester {
     await tap(find.text(title));
     await pumpAndSettle();
     final dialogFinder = find.byType(DialogPicker<Optional<V>>);
-    final listTileFinder = find.text(valueToSelect);
+    final listTileFinder = find.descendant(of: dialogFinder, matching: find.text(valueToSelect));
     await scrollUntilVisible(
       listTileFinder,
       56,

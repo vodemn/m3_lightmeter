@@ -269,7 +269,7 @@ class _EquipmentProfilePickerListTile extends StatelessWidget {
       builder: (context, state) => PickerListTile(
         icon: Icons.camera_alt_outlined,
         title: S.of(context).equipmentProfile,
-        values: EquipmentProfiles.of(context),
+        values: EquipmentProfiles.of(context).skip(1).toList(growable: false),
         selectedValue: EquipmentProfiles.of(context).firstWhereOrNull((e) => e.id == state.equipmentProfileId),
         titleAdapter: (value) => value.name,
         onChanged: (value) {
