@@ -12,7 +12,7 @@ dependencies:
   m3_lightmeter_resources:
     git:
       url: "https://github.com/vodemn/m3_lightmeter_resources"
-      ref: v2.3.0
+      ref: v2.4.0
   shared_preferences:
 
 dev_dependencies:
