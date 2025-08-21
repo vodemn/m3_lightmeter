@@ -72,6 +72,15 @@ void testLogbook(String description) {
         ),
         findsOneWidget,
       );
+      expect(
+        find.descendant(
+          of: find.byWidgetPredicate(
+            (widget) => widget is PickerListTile && widget.title == S.current.film,
+          ),
+          matching: find.text(mockFilms.first.name),
+        ),
+        findsOneWidget,
+      );
       await tester.openPickerAndSelect<Film>(S.current.film, S.current.notSet);
       await tester.pumpAndSettle();
 
