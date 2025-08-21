@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/platform_config.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/logbook_photo_edit/bloc_logbook_photo_edit.dart';
 import 'package:lightmeter/screens/logbook_photo_edit/components/coordinates_list_tile/widget_list_tile_coordinates_logbook_photo.dart';
@@ -73,6 +76,8 @@ class _LogbookPhotoEditScreenState extends State<LogbookPhotoEditScreen> {
                           child: Column(
                             children: [
                               LogbookPhotoCoordinatesListTile(),
+                              _EquipmentProfilePickerListTile(),
+                              _FilmPickerListTile(),
                               _NoteListTile(),
                               _EvListTile(),
                               _IsoListTile(),
@@ -224,6 +229,7 @@ class _AperturePickerListTile extends StatelessWidget {
         title: S.of(context).apertureValue,
         values: ApertureValue.values,
         selectedValue: state.aperture,
+        titleAdapter: (value) => value.toString(),
         onChanged: (value) {
           context.read<LogbookPhotoEditBloc>().add(LogbookPhotoApertureChangedEvent(value.value));
         },
@@ -244,8 +250,51 @@ class _ShutterSpeedPickerListTile extends StatelessWidget {
         title: S.of(context).shutterSpeedValue,
         values: ShutterSpeedValue.values,
         selectedValue: state.shutterSpeed,
+        titleAdapter: (value) => value.toString(),
         onChanged: (value) {
           context.read<LogbookPhotoEditBloc>().add(LogbookPhotoShutterSpeedChangedEvent(value.value));
+        },
+      ),
+    );
+  }
+}
+
+class _EquipmentProfilePickerListTile extends StatelessWidget {
+  const _EquipmentProfilePickerListTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LogbookPhotoEditBloc, LogbookPhotoEditState>(
+      buildWhen: (previous, current) => previous.equipmentProfileId != current.equipmentProfileId,
+      builder: (context, state) => PickerListTile(
+        icon: Icons.camera_alt_outlined,
+        title: S.of(context).equipmentProfile,
+        values: EquipmentProfiles.of(context),
+        selectedValue: EquipmentProfiles.of(context).firstWhereOrNull((e) => e.id == state.equipmentProfileId),
+        titleAdapter: (value) => value.name,
+        onChanged: (value) {
+          context.read<LogbookPhotoEditBloc>().add(LogbookPhotoEquipmentProfileChangedEvent(value.value));
+        },
+      ),
+    );
+  }
+}
+
+class _FilmPickerListTile extends StatelessWidget {
+  const _FilmPickerListTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LogbookPhotoEditBloc, LogbookPhotoEditState>(
+      buildWhen: (previous, current) => previous.filmId != current.filmId,
+      builder: (context, state) => PickerListTile(
+        icon: Icons.camera_roll_outlined,
+        title: S.of(context).film,
+        values: Films.of(context),
+        selectedValue: Films.of(context).firstWhereOrNull((e) => e.id == state.filmId),
+        titleAdapter: (value) => value.name,
+        onChanged: (value) {
+          context.read<LogbookPhotoEditBloc>().add(LogbookPhotoFilmChangedEvent(value.value));
         },
       ),
     );
