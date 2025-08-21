@@ -36,6 +36,30 @@ import 'models/screenshot_args.dart';
 
 //https://stackoverflow.com/a/67186625/13167574
 
+final _mockEquipmentProfile = EquipmentProfile(
+  id: '1',
+  name: 'Praktica + Zenitar',
+  apertureValues: ApertureValue.values.sublist(
+    ApertureValue.values.indexOf(const ApertureValue(1.7, StopType.half)),
+    ApertureValue.values.indexOf(const ApertureValue(16, StopType.full)) + 1,
+  ),
+  ndValues: NdValue.values.sublist(0, 3),
+  shutterSpeedValues: ShutterSpeedValue.values.sublist(
+    ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1000, true, StopType.full)),
+    ShutterSpeedValue.values.indexOf(const ShutterSpeedValue(1, false, StopType.full)) + 1,
+  ),
+  isoValues: const [
+    IsoValue(50, StopType.full),
+    IsoValue(100, StopType.full),
+    IsoValue(200, StopType.full),
+    IsoValue(250, StopType.third),
+    IsoValue(400, StopType.full),
+    IsoValue(500, StopType.third),
+    IsoValue(800, StopType.full),
+    IsoValue(1600, StopType.full),
+    IsoValue(3200, StopType.full),
+  ],
+);
 const _mockFilm = FilmExponential(id: '1', name: 'Ilford HP5+', iso: 400, exponent: 1.34);
 final Color _lightThemeColor = primaryColorsList[5];
 final Color _darkThemeColor = primaryColorsList[3];
@@ -109,6 +133,8 @@ void main() {
   testWidgets('Generate light theme screenshots', (tester) async {
     await mockSharedPrefs(theme: ThemeType.light, color: _lightThemeColor);
     await tester.pumpApplication(
+      equipmentProfiles: [_mockEquipmentProfile].toTogglableMap(),
+      selectedEquipmentProfileId: _mockEquipmentProfile.id,
       predefinedFilms: [_mockFilm].toTogglableMap(),
       customFilms: {},
       selectedFilmId: _mockFilm.id,
@@ -159,6 +185,8 @@ void main() {
         nd: photo.nd,
         apertureValue: const ApertureValue(2.0, StopType.full),
         shutterSpeedValue: photo.shutterSpeedValue,
+        equipmentProfileId: _mockEquipmentProfile.id,
+        filmId: _mockFilm.id,
       ),
     );
     await tester.tapDescendantTextOf<SettingsScreen>(S.current.logbook);
