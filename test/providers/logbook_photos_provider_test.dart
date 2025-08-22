@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/data/geolocation_service.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/providers/logbook_photos_provider.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -36,6 +38,13 @@ void main() {
     when(() => storageService.deletePhoto(any<String>())).thenAnswer((_) async {});
     when(() => storageService.getPhotos()).thenAnswer((_) => Future.value(_customPhotos));
 
+    when(() => storageService.selectedEquipmentProfileId).thenReturn('');
+    when(() => storageService.getEquipmentProfiles()).thenAnswer((_) => Future.value({}));
+
+    when(() => storageService.selectedFilmId).thenReturn(const FilmStub().id);
+    when(() => storageService.getPredefinedFilms()).thenAnswer((_) => Future.value({}));
+    when(() => storageService.getCustomFilms()).thenAnswer((_) => Future.value({}));
+
     when(() => geolocationService.getCurrentPosition()).thenAnswer((_) => Future.value());
   });
 
@@ -47,10 +56,16 @@ void main() {
     await tester.pumpWidget(
       IAPProducts(
         isPro: isPro,
-        child: LogbookPhotosProvider(
+        child: EquipmentProfilesProvider(
           storageService: storageService,
-          geolocationService: geolocationService,
-          child: const _Application(),
+          child: FilmsProvider(
+            storageService: storageService,
+            child: LogbookPhotosProvider(
+              storageService: storageService,
+              geolocationService: geolocationService,
+              child: const _Application(),
+            ),
+          ),
         ),
       ),
     );

@@ -11,7 +11,7 @@ class CameraFeaturesListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.camera_alt_outlined),
+      leading: const Icon(Icons.camera_enhance_outlined),
       title: Text(S.of(context).cameraFeatures),
       onTap: () {
         UserPreferencesProvider.cameraConfigOf(context).entries.map(
@@ -26,7 +26,7 @@ class CameraFeaturesListTile extends StatelessWidget {
         showDialog(
           context: context,
           builder: (_) => DialogSwitch<CameraFeature>(
-            icon: Icons.camera_alt_outlined,
+            icon: Icons.camera_enhance_outlined,
             title: S.of(context).cameraFeatures,
             items: [
               DialogSwitchListItem(

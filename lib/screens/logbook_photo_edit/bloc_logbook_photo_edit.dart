@@ -25,6 +25,8 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
             coordinates: photo.coordinates,
             aperture: photo.apertureValue,
             shutterSpeed: photo.shutterSpeedValue,
+            equipmentProfileId: photo.equipmentProfileId,
+            filmId: photo.filmId,
             note: photo.note,
             canSave: false,
           ),
@@ -36,6 +38,10 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
             await _onApertureChanged(e, emit);
           case final LogbookPhotoShutterSpeedChangedEvent e:
             await _onShutterSpeedChanged(e, emit);
+          case final LogbookPhotoEquipmentProfileChangedEvent e:
+            await _onEquipmentProfileChanged(e, emit);
+          case final LogbookPhotoFilmChangedEvent e:
+            await _onFilmChanged(e, emit);
           case final LogbookPhotoNoteChangedEvent e:
             await _onNoteChanged(e, emit);
           case LogbookPhotoSaveEvent():
@@ -62,6 +68,26 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
     emit(
       state.copyWith(
         shutterSpeed: Optional(event.shutterSpeed),
+        canSave: _canSave(),
+      ),
+    );
+  }
+
+  Future<void> _onEquipmentProfileChanged(LogbookPhotoEquipmentProfileChangedEvent event, Emitter emit) async {
+    _newPhoto = _newPhoto.copyWith(equipmentProfileId: Optional(event.equipmentProfile?.id));
+    emit(
+      state.copyWith(
+        equipmentProfileId: Optional(event.equipmentProfile?.id),
+        canSave: _canSave(),
+      ),
+    );
+  }
+
+  Future<void> _onFilmChanged(LogbookPhotoFilmChangedEvent event, Emitter emit) async {
+    _newPhoto = _newPhoto.copyWith(filmId: Optional(event.film?.id));
+    emit(
+      state.copyWith(
+        filmId: Optional(event.film?.id),
         canSave: _canSave(),
       ),
     );

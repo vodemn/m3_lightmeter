@@ -47,7 +47,7 @@ void main() {
       await pumpApplication(tester);
       expectReadingValueContainerText(S.current.equipmentProfile);
       await tester.openAnimatedPicker<EquipmentProfilePicker>();
-      expect(find.byIcon(Icons.camera_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.camera_alt_outlined), findsOneWidget);
       expectDialogPickerText<EquipmentProfile>(S.current.equipmentProfile);
     },
   );

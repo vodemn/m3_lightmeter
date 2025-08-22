@@ -4,6 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:lightmeter/data/geolocation_service.dart';
 import 'package:lightmeter/platform_config.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
+import 'package:lightmeter/providers/films_provider.dart';
 import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_iap/m3_lightmeter_iap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -74,6 +76,13 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
     required int nd,
   }) async {
     if (context.isPro && _isEnabled) {
+      final equipmentProfile = EquipmentProfiles.selectedOf(context);
+      final equipmentProfileId =
+          equipmentProfile == EquipmentProfilesProvider.defaultProfile ? null : equipmentProfile.id;
+          
+      final selectedFilm = Films.selectedOf(context);
+      final filmId = selectedFilm == const FilmStub() ? null : selectedFilm.id;
+
       final coordinates = await widget.geolocationService.getCurrentPosition();
 
       final photo = LogbookPhoto(
@@ -84,6 +93,8 @@ class LogbookPhotosProviderState extends State<LogbookPhotosProvider> {
         iso: iso,
         nd: nd,
         coordinates: coordinates,
+        equipmentProfileId: equipmentProfileId,
+        filmId: filmId,
       );
       await widget.storageService.addPhoto(photo);
       _photos[photo.id] = photo;

@@ -8,7 +8,7 @@ class EquipmentProfilesListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.camera_outlined),
+      leading: const Icon(Icons.camera_alt_outlined),
       title: Text(S.of(context).equipmentProfiles),
       onTap: () {
         Navigator.of(context).pushNamed(NavigationRoutes.equipmentProfilesListScreen.name);

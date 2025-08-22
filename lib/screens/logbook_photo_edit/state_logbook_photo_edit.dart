@@ -10,6 +10,8 @@ class LogbookPhotoEditState {
   final Coordinates? coordinates;
   final ApertureValue? aperture;
   final ShutterSpeedValue? shutterSpeed;
+  final String? equipmentProfileId;
+  final String? filmId;
   final String? note;
   final bool canSave;
   final bool isLoading;
@@ -24,6 +26,8 @@ class LogbookPhotoEditState {
     this.coordinates,
     this.aperture,
     this.shutterSpeed,
+    this.equipmentProfileId,
+    this.filmId,
     this.note,
     required this.canSave,
     this.isLoading = false,
@@ -33,6 +37,8 @@ class LogbookPhotoEditState {
     String? name,
     Optional<ApertureValue>? aperture,
     Optional<ShutterSpeedValue>? shutterSpeed,
+    Optional<String>? equipmentProfileId,
+    Optional<String>? filmId,
     String? note,
     bool? canSave,
     bool? isLoading,
@@ -46,6 +52,8 @@ class LogbookPhotoEditState {
         nd: nd,
         aperture: aperture != null ? aperture.value : this.aperture,
         shutterSpeed: shutterSpeed != null ? shutterSpeed.value : this.shutterSpeed,
+        equipmentProfileId: equipmentProfileId != null ? equipmentProfileId.value : this.equipmentProfileId,
+        filmId: filmId != null ? filmId.value : this.filmId,
         note: note ?? this.note,
         canSave: canSave ?? this.canSave,
         isLoading: isLoading ?? this.isLoading,
