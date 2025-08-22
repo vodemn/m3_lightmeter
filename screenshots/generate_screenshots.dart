@@ -59,6 +59,7 @@ final _mockEquipmentProfile = EquipmentProfile(
     IsoValue(1600, StopType.full),
     IsoValue(3200, StopType.full),
   ],
+  lensZoom: 50 / (Platform.isAndroid ? 24 : 26),
 );
 const _mockFilm = FilmExponential(id: '1', name: 'Ilford HP5+', iso: 400, exponent: 1.34);
 final Color _lightThemeColor = primaryColorsList[5];
