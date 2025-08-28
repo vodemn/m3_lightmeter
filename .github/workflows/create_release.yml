@@ -188,6 +188,7 @@ jobs:
       - name: Create Google Play release name
         id: release-name
         run: |
+          bash ./.github/scripts/increment_build_number.sh ${{ github.event.inputs.version }}
           RELEASE_NAME=$(echo "$(cat pubspec.yaml)" | sed -n -r "s/^version:\s{1}(.*)[+](.*)$/700\2 (\1)/p")
           echo "release_name=$RELEASE_NAME" >> $GITHUB_ENV
 
