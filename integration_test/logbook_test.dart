@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
+import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/logbook_photo_edit/components/picker_list_tile/widget_list_tile_picker.dart';
 import 'package:lightmeter/screens/logbook_photo_edit/screen_logbook_photo_edit.dart';
 import 'package:lightmeter/screens/logbook_photos/components/grid_tile/widget_grid_tile_logbook_photo.dart';
 import 'package:lightmeter/screens/settings/components/shared/dialog_picker/widget_dialog_picker.dart';
@@ -28,8 +30,8 @@ void testLogbook(String description) {
     description,
     (tester) async {
       await tester.pumpApplication(
-        equipmentProfiles: {},
-        predefinedFilms: mockFilms.toTogglableMap(),
+        selectedEquipmentProfileId: mockEquipmentProfiles.first.id,
+        selectedFilmId: mockFilms.first.id,
         customFilms: {},
       );
       await tester.takePhoto();
@@ -45,6 +47,9 @@ void testLogbook(String description) {
       await tester.tap(find.byType(LogbookPhotoGridTile).first);
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.text(mockEquipmentProfiles.first.name));
+      await tester.ensureVisible(find.text(mockFilms.first.name));
+
       /// Add a note, select aperture value and shutter speed value
       await tester.enterText(
         find.descendant(
@@ -58,6 +63,26 @@ void testLogbook(String description) {
       await tester.pumpAndSettle();
       await tester.openPickerAndSelect<ApertureValue>(S.current.apertureValue, 'f/5.6');
       await tester.openPickerAndSelect<ShutterSpeedValue>(S.current.shutterSpeedValue, '1/125');
+      expect(
+        find.descendant(
+          of: find.byWidgetPredicate(
+            (widget) => widget is PickerListTile && widget.title == S.current.equipmentProfile,
+          ),
+          matching: find.text(mockEquipmentProfiles.first.name),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byWidgetPredicate(
+            (widget) => widget is PickerListTile && widget.title == S.current.film,
+          ),
+          matching: find.text(mockFilms.first.name),
+        ),
+        findsOneWidget,
+      );
+      await tester.openPickerAndSelect<Film>(S.current.film, S.current.notSet);
+      await tester.pumpAndSettle();
 
       /// Save the edits
       await tester.tap(find.byIcon(Icons.save_outlined));
@@ -76,11 +101,32 @@ void testLogbook(String description) {
       /// Verify that only one photo is present
       expect(find.byType(LogbookPhotoGridTile), findsOneWidget);
 
+      /// Got back and delete the equipment profile used to take the first picture
+      await tester.navigatorPop();
+      await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
+      await tester.tap(find.byIcon(Icons.edit_outlined).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.delete_outlined));
+      await tester.pumpAndSettle(Dimens.durationML);
+      expect(find.text(mockEquipmentProfiles[0].name), findsNothing);
+      expect(find.text(mockEquipmentProfiles[1].name), findsOneWidget);
+      await tester.navigatorPop();
+
       /// Open photo again
+      await tester.tapDescendantTextOf<SettingsScreen>(S.current.logbook);
       await tester.tap(find.byType(LogbookPhotoGridTile).first);
       await tester.pumpAndSettle();
 
       /// Verify the edits were saved
+      expect(
+        find.descendant(
+          of: find.byWidgetPredicate(
+            (widget) => widget is PickerListTile && widget.title == S.current.equipmentProfile,
+          ),
+          matching: find.text(S.current.notSet),
+        ),
+        findsOneWidget,
+      );
       expect(find.text('Test note'), findsOneWidget);
       expect(find.text('f/5.6'), findsOneWidget);
       expect(find.text('1/125'), findsOneWidget);
@@ -101,7 +147,7 @@ extension on WidgetTester {
     await tap(find.text(title));
     await pumpAndSettle();
     final dialogFinder = find.byType(DialogPicker<Optional<V>>);
-    final listTileFinder = find.text(valueToSelect);
+    final listTileFinder = find.descendant(of: dialogFinder, matching: find.text(valueToSelect));
     await scrollUntilVisible(
       listTileFinder,
       56,

@@ -114,6 +114,7 @@ class FilmsProviderState extends State<FilmsProvider> {
 }
 
 enum _FilmsModelAspect {
+  all,
   customFilms,
   predefinedFilms,
   filmsInUse,
@@ -133,6 +134,14 @@ class Films extends InheritedModel<_FilmsModelAspect> {
     required this.selected,
     required super.child,
   });
+
+  static List<Film> of<T>(BuildContext context) {
+    final model = InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.all)!;
+    return [
+      ...model.customFilms.values.map((e) => e.value),
+      ...model.predefinedFilms.values.map((e) => e.value),
+    ];
+  }
 
   static List<Film> predefinedFilmsOf<T>(BuildContext context) {
     return InheritedModel.inheritFrom<Films>(context, aspect: _FilmsModelAspect.predefinedFilms)!
@@ -171,10 +180,12 @@ class Films extends InheritedModel<_FilmsModelAspect> {
   bool updateShouldNotifyDependent(Films oldWidget, Set<_FilmsModelAspect> dependencies) {
     return (dependencies.contains(_FilmsModelAspect.selected) && oldWidget.selected != selected) ||
         ((dependencies.contains(_FilmsModelAspect.predefinedFilms) ||
-                dependencies.contains(_FilmsModelAspect.filmsInUse)) &&
+                dependencies.contains(_FilmsModelAspect.filmsInUse) ||
+                dependencies.contains(_FilmsModelAspect.all)) &&
             const DeepCollectionEquality().equals(oldWidget.predefinedFilms, predefinedFilms)) ||
         ((dependencies.contains(_FilmsModelAspect.customFilms) ||
-                dependencies.contains(_FilmsModelAspect.filmsInUse)) &&
+                dependencies.contains(_FilmsModelAspect.filmsInUse) ||
+                dependencies.contains(_FilmsModelAspect.all)) &&
             const DeepCollectionEquality().equals(oldWidget.customFilms, customFilms));
   }
 }

@@ -26,7 +26,7 @@ class _EquipmentProfilePickerState extends State<EquipmentProfilePicker> {
   @override
   Widget build(BuildContext context) {
     return AnimatedDialogPicker<EquipmentProfile>(
-      icon: Icons.camera_outlined,
+      icon: Icons.camera_alt_outlined,
       title: S.of(context).equipmentProfile,
       selectedValue: EquipmentProfiles.selectedOf(context),
       values: EquipmentProfiles.inUseOf(context),
