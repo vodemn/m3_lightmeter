@@ -861,11 +861,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v4.1.0"
-      resolved-ref: "15adfa4f6fea06a6c62c58f5171a41813058040c"
+      ref: "v4.1.1"
+      resolved-ref: "2317ef3a1e93e06505a033ecbd5cee3758b2dbc0"
       url: "https://github.com/vodemn/m3_lightmeter_iap"
     source: git
-    version: "4.1.0+35"
+    version: "4.1.1+36"
   m3_lightmeter_resources:
     dependency: "direct main"
     description:
