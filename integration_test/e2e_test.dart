@@ -136,8 +136,8 @@ void testE2E(String description) {
       );
 
       /// Set another film and another ISO
-      await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('200');
       await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[1].name);
+      await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('200');
       await _expectMeteringStateAndMeasure(
         tester,
         equipmentProfile: mockEquipmentProfiles[1],

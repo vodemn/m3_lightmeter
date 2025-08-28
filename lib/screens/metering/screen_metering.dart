@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightmeter/data/models/ev_source_type.dart';
@@ -9,12 +10,15 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/services_provider.dart';
 import 'package:lightmeter/providers/user_preferences_provider.dart';
 import 'package:lightmeter/screens/metering/bloc_metering.dart';
+import 'package:lightmeter/screens/metering/communication/bloc_communication_metering.dart';
+import 'package:lightmeter/screens/metering/communication/event_communication_metering.dart' as communication_event;
 import 'package:lightmeter/screens/metering/components/bottom_controls/widget_bottom_controls.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/provider_container_camera.dart';
 import 'package:lightmeter/screens/metering/components/light_sensor_container/provider_container_light_sensor.dart';
 import 'package:lightmeter/screens/metering/event_metering.dart';
 import 'package:lightmeter/screens/metering/state_metering.dart';
 import 'package:lightmeter/screens/metering/utils/listener_equipment_profiles.dart';
+import 'package:lightmeter/screens/metering/utils/listener_films.dart';
 import 'package:lightmeter/screens/timer/flow_timer.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -91,8 +95,20 @@ class _InheritedListeners extends StatelessWidget {
     return EquipmentProfileListener(
       onDidChangeDependencies: (value) {
         context.read<MeteringBloc>().add(EquipmentProfileChangedEvent(value));
+        context.read<MeteringCommunicationBloc>().add(communication_event.EquipmentProfileChangedEvent(value));
       },
-      child: child,
+      child: FilmListener(
+        onDidChangeDependencies: (value) {
+          /// Do nothing if no film selected
+          if (value != const FilmStub()) {
+            final isoValue = IsoValue.values.firstWhereOrNull((e) => e.rawValue == value.iso);
+            if (isoValue case final isoValue?) {
+              context.read<MeteringBloc>().add(IsoChangedEvent(isoValue));
+            }
+          }
+        },
+        child: child,
+      ),
     );
   }
 }
