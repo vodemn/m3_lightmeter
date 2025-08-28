@@ -35,7 +35,9 @@ class PickerListTile<T> extends StatelessWidget {
             title: title,
             selectedValue: Optional(selectedValue),
             values: [
-              const Optional(null),
+              /// `const Optional(null)` for some reason is not equal to a non-const `Optional(null)`
+              // ignore: prefer_const_constructors
+              Optional(null),
               ...values.toSet().map((e) => Optional(e)),
             ],
             titleAdapter: (context, value) => _titleAdapter(context, value.value),
