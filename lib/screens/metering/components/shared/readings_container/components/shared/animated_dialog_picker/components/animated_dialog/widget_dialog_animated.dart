@@ -154,11 +154,15 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
 
         final globalOffset = renderBox.localToGlobal(Offset.zero);
-        _closedOffset = Offset(
-          //TODO: when updating layout or changing one of selected picker values, X offset is negative for some reason
-          globalOffset.dx > 0 ? globalOffset.dx : _closedOffset.dx,
-          globalOffset.dy,
-        );
+        try {
+          _closedOffset = Offset(
+            //TODO: when updating layout or changing one of selected picker values, X offset is negative for some reason
+            globalOffset.dx > 0 ? globalOffset.dx : _closedOffset.dx,
+            globalOffset.dy,
+          );
+        } catch (_) {
+          _closedOffset = globalOffset;
+        }
         _offsetAnimation = SizeTween(
           begin: Size(
             _closedOffset.dx + _closedSize.width / 2,
