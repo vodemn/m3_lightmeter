@@ -29,8 +29,6 @@ class AnimatedDialog extends StatefulWidget {
 }
 
 class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProviderStateMixin {
-  final GlobalKey _key = GlobalKey();
-
   late Size _closedSize;
   late Offset _closedOffset;
 
@@ -129,7 +127,6 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      key: _key,
       onTap: _openDialog,
       child: Opacity(
         opacity: _isDialogShown ? 0 : 1,
@@ -140,13 +137,13 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
 
   void _setClosedOffset() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final renderBox = _key.currentContext?.findRenderObject()! as RenderBox?;
+      final renderBox = context.findRenderObject()! as RenderBox?;
       if (renderBox != null) {
         final size = MediaQuery.sizeOf(context);
         final padding = MediaQuery.paddingOf(context);
         final maxWidth = size.width - padding.horizontal - Dimens.dialogMargin.horizontal;
         final maxHeight = size.height - padding.vertical - Dimens.dialogMargin.vertical;
-        _closedSize = _key.currentContext!.size!;
+        _closedSize = context.size!;
         _sizeTween = SizeTween(
           begin: _closedSize,
           end: Size(
@@ -156,7 +153,12 @@ class AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvide
         );
         _sizeAnimation = _sizeTween.animate(_defaultCurvedAnimation);
 
-        _closedOffset = renderBox.localToGlobal(Offset.zero);
+        final globalOffset = renderBox.localToGlobal(Offset.zero);
+        _closedOffset = Offset(
+          //TODO: when updating layout or changing one of selected picker values, X offset is negative for some reason
+          globalOffset.dx > 0 ? globalOffset.dx : _closedOffset.dx,
+          globalOffset.dy,
+        );
         _offsetAnimation = SizeTween(
           begin: Size(
             _closedOffset.dx + _closedSize.width / 2,
