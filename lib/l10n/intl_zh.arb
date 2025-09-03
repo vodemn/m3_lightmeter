@@ -34,6 +34,8 @@
   "calibrationMessage": "测量精度取决于设备硬件。请测试并校准 EV 值以获得最佳结果。",
   "calibrationMessageCameraOnly": "测量精度取决于设备摄像头。请测试并校准 EV 值以获得最佳结果。",
   "camera": "相机",
+  "pinholeCamera": "针孔相机",
+  "equipmentProfileType": "设备配置类型",
   "lightSensor": "光线传感器",
   "showEv100": "显示 EV\u2081\u2080\u2080",
   "meteringScreenLayout": "布局",

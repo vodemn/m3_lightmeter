@@ -34,6 +34,8 @@
   "calibrationMessage": "Die Messgenauigkeit hängt von der Gerätehardware ab. Testen Sie die App und kalibrieren Sie EV-Werte für beste Ergebnisse",
   "calibrationMessageCameraOnly": "Die Messgenauigkeit hängt von der Kamera ab. Testen Sie die App und kalibrieren Sie EV-Werte für beste Ergebnisse",
   "camera": "Kamera",
+  "pinholeCamera": "Lochkamera",
+  "equipmentProfileType": "Ausrüstungsprofiltyp",
   "lightSensor": "Lichtsensor",
   "showEv100": "EV\u2081\u2080\u2080 anzeigen",
   "meteringScreenLayout": "Messansicht Layout",

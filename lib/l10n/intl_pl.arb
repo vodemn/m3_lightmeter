@@ -34,6 +34,8 @@
   "calibrationMessage": "Dokładność pomiaru zależy od sprzętu urządzenia. Przetestuj aplikację i skalibruj wartości EV dla optymalnych wyników",
   "calibrationMessageCameraOnly": "Dokładność pomiaru zależy od kamery urządzenia. Przetestuj aplikację i skalibruj wartości EV dla optymalnych wyników",
   "camera": "Kamera",
+  "pinholeCamera": "Kamera otworkowa",
+  "equipmentProfileType": "Typ profilu sprzętu",
   "lightSensor": "Czujnik światła",
   "showEv100": "Pokaż EV\u2081\u2080\u2080",
   "meteringScreenLayout": "Układ ekranu pomiaru",

@@ -34,6 +34,8 @@
   "calibrationMessage": "Measurement accuracy depends on your device's hardware. Test the app and calibrate EV values for optimal results",
   "calibrationMessageCameraOnly": "Measurement accuracy depends on your device's camera. Test the app and calibrate EV values for optimal results",
   "camera": "Camera",
+  "pinholeCamera": "Pinhole Camera",
+  "equipmentProfileType": "Equipment profile type",
   "lightSensor": "Light sensor",
   "showEv100": "Show EV\u2081\u2080\u2080",
   "meteringScreenLayout": "Metering screen layout",

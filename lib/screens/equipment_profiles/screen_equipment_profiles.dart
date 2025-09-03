@@ -4,10 +4,13 @@ import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/flow_equipment_profile_edit.dart';
+import 'package:lightmeter/screens/settings/components/shared/dialog_picker/widget_dialog_picker.dart';
 import 'package:lightmeter/screens/shared/sliver_placeholder/widget_sliver_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/utils/guard_pro_tap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
+
+enum _EquipmentProfileType { regular, pinhole }
 
 class EquipmentProfilesScreen extends StatefulWidget {
   const EquipmentProfilesScreen({super.key});
@@ -45,15 +48,45 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
     guardProTap(
       context,
       () {
-        Navigator.of(context).pushNamed(
-          NavigationRoutes.equipmentProfileEditScreen.name,
-          arguments: const EquipmentProfileEditArgs(editType: EquipmentProfileEditType.add),
-        );
+        showDialog<_EquipmentProfileType>(
+          context: context,
+          builder: (_) => DialogPicker<_EquipmentProfileType>(
+            icon: Icons.camera_alt_outlined,
+            title: S.of(context).equipmentProfileType,
+            selectedValue: _EquipmentProfileType.regular,
+            values: _EquipmentProfileType.values,
+            titleAdapter: (context, value) => switch (value) {
+              _EquipmentProfileType.regular => S.of(context).camera,
+              _EquipmentProfileType.pinhole => S.of(context).pinholeCamera,
+            },
+          ),
+        ).then((value) {
+          if (value != null && mounted) {
+            Navigator.of(context).pushNamed(
+              NavigationRoutes.equipmentProfileEditScreen.name,
+              arguments: switch (value) {
+                _EquipmentProfileType.regular => const EquipmentProfileEditArgs(
+                    editType: EquipmentProfileEditType.add,
+                    profile: EquipmentProfilesProvider.defaultProfile,
+                  ),
+                _EquipmentProfileType.pinhole => EquipmentProfileEditArgs(
+                    editType: EquipmentProfileEditType.add,
+                    profile: PinholeEquipmentProfile(
+                      id: EquipmentProfilesProvider.defaultProfile.id,
+                      name: EquipmentProfilesProvider.defaultProfile.name,
+                      aperture: 22,
+                      isoValues: EquipmentProfilesProvider.defaultProfile.isoValues,
+                    ),
+                  ),
+              },
+            );
+          }
+        });
       },
     );
   }
 
-  void _editProfile(EquipmentProfile profile) {
+  void _editProfile(IEquipmentProfile profile) {
     Navigator.of(context).pushNamed(
       NavigationRoutes.equipmentProfileEditScreen.name,
       arguments: EquipmentProfileEditArgs(
@@ -65,9 +98,9 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
 }
 
 class _EquipmentProfilesListBuilder extends StatelessWidget {
-  final List<EquipmentProfile> values;
-  final void Function(EquipmentProfile profile) onEdit;
-  final void Function(EquipmentProfile profile, bool value) onCheckbox;
+  final List<IEquipmentProfile> values;
+  final void Function(IEquipmentProfile profile) onEdit;
+  final void Function(String id, bool value) onCheckbox;
 
   const _EquipmentProfilesListBuilder({
     required this.values,
@@ -102,7 +135,7 @@ class _EquipmentProfilesListBuilder extends StatelessWidget {
               title: Text(values[index].name),
               controlAffinity: ListTileControlAffinity.leading,
               value: EquipmentProfiles.inUseOf(context).contains(values[index]),
-              onChanged: (value) => onCheckbox(values[index], value ?? false),
+              onChanged: (value) => onCheckbox(values[index].id, value ?? false),
               secondary: IconButton(
                 onPressed: () => onEdit(values[index]),
                 icon: const Icon(Icons.edit_outlined),

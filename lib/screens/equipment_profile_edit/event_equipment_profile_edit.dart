@@ -1,59 +1,59 @@
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-sealed class EquipmentProfileEditEvent {
-  const EquipmentProfileEditEvent();
+sealed class IEquipmentProfileEditEvent<T extends IEquipmentProfile> {
+  const IEquipmentProfileEditEvent();
 }
 
-class EquipmentProfileNameChangedEvent extends EquipmentProfileEditEvent {
+class EquipmentProfileNameChangedEvent<T extends IEquipmentProfile> extends IEquipmentProfileEditEvent<T> {
   final String name;
 
   const EquipmentProfileNameChangedEvent(this.name);
 }
 
-class EquipmentProfileIsoValuesChangedEvent extends EquipmentProfileEditEvent {
+class EquipmentProfileIsoValuesChangedEvent<T extends IEquipmentProfile> extends IEquipmentProfileEditEvent<T> {
   final List<IsoValue> isoValues;
 
   const EquipmentProfileIsoValuesChangedEvent(this.isoValues);
 }
 
-class EquipmentProfileNdValuesChangedEvent extends EquipmentProfileEditEvent {
+class EquipmentProfileNdValuesChangedEvent extends IEquipmentProfileEditEvent<EquipmentProfile> {
   final List<NdValue> ndValues;
 
   const EquipmentProfileNdValuesChangedEvent(this.ndValues);
 }
 
-class EquipmentProfileApertureValuesChangedEvent extends EquipmentProfileEditEvent {
+class EquipmentProfileApertureValuesChangedEvent extends IEquipmentProfileEditEvent<EquipmentProfile> {
   final List<ApertureValue> apertureValues;
 
   const EquipmentProfileApertureValuesChangedEvent(this.apertureValues);
 }
 
-class EquipmentProfileShutterSpeedValuesChangedEvent extends EquipmentProfileEditEvent {
+class EquipmentProfileShutterSpeedValuesChangedEvent extends IEquipmentProfileEditEvent<EquipmentProfile> {
   final List<ShutterSpeedValue> shutterSpeedValues;
 
   const EquipmentProfileShutterSpeedValuesChangedEvent(this.shutterSpeedValues);
 }
 
-class EquipmentProfileLensZoomChangedEvent extends EquipmentProfileEditEvent {
+class EquipmentProfileLensZoomChangedEvent<T extends IEquipmentProfile> extends IEquipmentProfileEditEvent<T> {
   final double lensZoom;
 
   const EquipmentProfileLensZoomChangedEvent(this.lensZoom);
 }
 
-class EquipmentProfileExposureOffsetChangedEvent extends EquipmentProfileEditEvent {
+class EquipmentProfileExposureOffsetChangedEvent<T extends IEquipmentProfile> extends IEquipmentProfileEditEvent<T> {
   final double exposureOffset;
 
   const EquipmentProfileExposureOffsetChangedEvent(this.exposureOffset);
 }
 
-class EquipmentProfileSaveEvent extends EquipmentProfileEditEvent {
+class EquipmentProfileSaveEvent<T extends IEquipmentProfile> extends IEquipmentProfileEditEvent<T> {
   const EquipmentProfileSaveEvent();
 }
 
-class EquipmentProfileCopyEvent extends EquipmentProfileEditEvent {
+class EquipmentProfileCopyEvent<T extends IEquipmentProfile> extends IEquipmentProfileEditEvent<T> {
   const EquipmentProfileCopyEvent();
 }
 
-class EquipmentProfileDeleteEvent extends EquipmentProfileEditEvent {
+class EquipmentProfileDeleteEvent<T extends IEquipmentProfile> extends IEquipmentProfileEditEvent<T> {
   const EquipmentProfileDeleteEvent();
 }

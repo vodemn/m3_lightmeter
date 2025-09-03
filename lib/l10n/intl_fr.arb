@@ -34,6 +34,8 @@
   "calibrationMessage": "La précision dépend du matériel de l'appareil. Testez l'app et calibrez les valeurs EV pour de meilleurs résultats",
   "calibrationMessageCameraOnly": "La précision dépend de la caméra de l'appareil. Testez l'app et calibrez les valeurs EV pour de meilleurs résultats",
   "camera": "Caméra",
+  "pinholeCamera": "Sténopé",
+  "equipmentProfileType": "Type de profil d'équipement",
   "lightSensor": "Capteur de lumière",
   "showEv100": "Montrer EV\u2081\u2080\u2080",
   "meteringScreenLayout": "Disposition de l'écran de mesure",
