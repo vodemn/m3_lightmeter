@@ -165,6 +165,10 @@ class PinholeEquipmentProfileEditBloc extends IEquipmentProfileEditBloc<PinholeE
         await _onNameChanged(e, emit);
       case final EquipmentProfileApertureValuesChangedEvent e:
         await _onApertureValuesChanged(e, emit);
+      case final EquipmentProfileIsoValuesChangedEvent e:
+        await _onIsoValuesChanged(e, emit);
+      case final EquipmentProfileNdValuesChangedEvent e:
+        await _onNdValuesChanged(e, emit);
       case final EquipmentProfileLensZoomChangedEvent e:
         await _onLensZoomChanged(e, emit);
       case final EquipmentProfileExposureOffsetChangedEvent e:
@@ -181,6 +185,7 @@ class PinholeEquipmentProfileEditBloc extends IEquipmentProfileEditBloc<PinholeE
       name: state.profile.name,
       aperture: state.profile.aperture,
       isoValues: state.profile.isoValues,
+      ndValues: state.profile.ndValues,
       lensZoom: state.profile.lensZoom,
       exposureOffset: state.profile.exposureOffset,
     );
@@ -192,6 +197,13 @@ class PinholeEquipmentProfileEditBloc extends IEquipmentProfileEditBloc<PinholeE
 
   Future<void> _onApertureValuesChanged(EquipmentProfileApertureValuesChangedEvent event, Emitter emit) async {
     //emitProfile(state.profile.copyWith(apertureValues: event.apertureValues), emit);
+  }
+  Future<void> _onIsoValuesChanged(EquipmentProfileIsoValuesChangedEvent event, Emitter emit) async {
+    emitProfile(state.profile.copyWith(isoValues: event.isoValues), emit);
+  }
+
+  Future<void> _onNdValuesChanged(EquipmentProfileNdValuesChangedEvent event, Emitter emit) async {
+    emitProfile(state.profile.copyWith(ndValues: event.ndValues), emit);
   }
 
   Future<void> _onLensZoomChanged(EquipmentProfileLensZoomChangedEvent event, Emitter emit) async {

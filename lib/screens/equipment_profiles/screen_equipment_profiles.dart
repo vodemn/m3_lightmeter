@@ -76,6 +76,7 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
                       name: EquipmentProfilesProvider.defaultProfile.name,
                       aperture: 22,
                       isoValues: EquipmentProfilesProvider.defaultProfile.isoValues,
+                      ndValues: EquipmentProfilesProvider.defaultProfile.ndValues,
                     ),
                   ),
               },

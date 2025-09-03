@@ -74,10 +74,10 @@ class LogbookPhotoEditBloc extends Bloc<LogbookPhotoEditEvent, LogbookPhotoEditS
   }
 
   Future<void> _onEquipmentProfileChanged(LogbookPhotoEquipmentProfileChangedEvent event, Emitter emit) async {
-    _newPhoto = _newPhoto.copyWith(equipmentProfileId: Optional(event.equipmentProfile?.id));
+    _newPhoto = _newPhoto.copyWith(equipmentProfileId: Optional(event.equipmentProfileId));
     emit(
       state.copyWith(
-        equipmentProfileId: Optional(event.equipmentProfile?.id),
+        equipmentProfileId: Optional(event.equipmentProfileId),
         canSave: _canSave(),
       ),
     );

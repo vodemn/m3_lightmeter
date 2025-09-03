@@ -21,7 +21,7 @@ class MeasureState extends SourceState {
 }
 
 class EquipmentProfileChangedState extends SourceState {
-  final EquipmentProfile profile;
+  final IEquipmentProfile profile;
 
   const EquipmentProfileChangedState(this.profile);
 }

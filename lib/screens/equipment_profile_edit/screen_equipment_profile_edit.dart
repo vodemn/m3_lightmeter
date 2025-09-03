@@ -103,24 +103,19 @@ class _EquipmentProfileEditScreenState<T extends IEquipmentProfile> extends Stat
                     child: Opacity(
                       opacity: state.isLoading ? Dimens.disabledOpacity : Dimens.enabledOpacity,
                       child: Column(
-                        children: switch (state.profile) {
-                          EquipmentProfile() => [
-                              _NameFieldBuilder<T>(),
-                              _ApertureValuesListTileBuilder(),
-                              _ShutterSpeedValuesListTileBuilder(),
-                              _IsoValuesListTileBuilder<T>(),
-                              _NdValuesListTileBuilder(),
-                              _LensZoomListTileBuilder<T>(),
-                              _ExposureOffsetListTileBuilder<T>(),
-                            ],
-                          PinholeEquipmentProfile() => [
-                              _NameFieldBuilder<T>(),
-                              // TODO: Add aperture value list tile for pinhole equipment profile
-                              _IsoValuesListTileBuilder<T>(),
-                              _LensZoomListTileBuilder<T>(),
-                              _ExposureOffsetListTileBuilder<T>(),
-                            ],
-                        },
+                        children: [
+                          _NameFieldBuilder<T>(),
+                          if (state.profile is PinholeEquipmentProfile)
+                            const SizedBox.shrink()
+                          else ...[
+                            const _ApertureValuesListTileBuilder(),
+                            const _ShutterSpeedValuesListTileBuilder(),
+                          ],
+                          _IsoValuesListTileBuilder<T>(),
+                          _NdValuesListTileBuilder<T>(),
+                          _LensZoomListTileBuilder<T>(),
+                          _ExposureOffsetListTileBuilder<T>(),
+                        ],
                       ),
                     ),
                   ),
@@ -185,12 +180,12 @@ class _IsoValuesListTileBuilder<T extends IEquipmentProfile> extends StatelessWi
   }
 }
 
-class _NdValuesListTileBuilder extends StatelessWidget {
+class _NdValuesListTileBuilder<T extends IEquipmentProfile> extends StatelessWidget {
   const _NdValuesListTileBuilder();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState<EquipmentProfile>>(
+    return BlocBuilder<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
       builder: (context, state) => FilterListTile<NdValue>(
         icon: Icons.filter_b_and_w_outlined,
         title: S.of(context).ndFilters,
@@ -198,7 +193,7 @@ class _NdValuesListTileBuilder extends StatelessWidget {
         values: NdValue.values,
         selectedValues: state.profile.ndValues,
         onChanged: (value) {
-          context.read<EquipmentProfileEditBloc>().add(EquipmentProfileNdValuesChangedEvent(value));
+          context.read<IEquipmentProfileEditBloc<T>>().add(EquipmentProfileNdValuesChangedEvent<T>(value));
         },
       ),
     );

@@ -16,7 +16,7 @@ class EquipmentProfileIsoValuesChangedEvent<T extends IEquipmentProfile> extends
   const EquipmentProfileIsoValuesChangedEvent(this.isoValues);
 }
 
-class EquipmentProfileNdValuesChangedEvent extends IEquipmentProfileEditEvent<EquipmentProfile> {
+class EquipmentProfileNdValuesChangedEvent<T extends IEquipmentProfile> extends IEquipmentProfileEditEvent<T> {
   final List<NdValue> ndValues;
 
   const EquipmentProfileNdValuesChangedEvent(this.ndValues);

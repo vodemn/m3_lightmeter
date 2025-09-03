@@ -19,7 +19,7 @@ class MeasureEvent extends ScreenEvent {
 }
 
 class EquipmentProfileChangedEvent extends ScreenEvent {
-  final EquipmentProfile profile;
+  final IEquipmentProfile profile;
 
   const EquipmentProfileChangedEvent(this.profile);
 }
