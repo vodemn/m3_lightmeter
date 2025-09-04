@@ -34,14 +34,10 @@ class EquipmentProfilesProvider extends StatefulWidget {
 }
 
 class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
-  final TogglableMap<EquipmentProfile> _customProfiles = {};
-  final TogglableMap<PinholeEquipmentProfile> _pinholeCustomProfiles = {};
+  final TogglableMap<IEquipmentProfile> _profiles = {};
   String _selectedId = '';
 
-  IEquipmentProfile get _selectedProfile =>
-      _customProfiles[_selectedId]?.value ??
-      _pinholeCustomProfiles[_selectedId]?.value ??
-      EquipmentProfilesProvider.defaultProfile;
+  IEquipmentProfile get _selectedProfile => _profiles[_selectedId]?.value ?? EquipmentProfilesProvider.defaultProfile;
 
   @override
   void initState() {
@@ -52,8 +48,7 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
   @override
   Widget build(BuildContext context) {
     return EquipmentProfiles(
-      profiles: context.isPro ? _customProfiles : {},
-      pinholeProfiles: context.isPro ? _pinholeCustomProfiles : {},
+      profiles: context.isPro ? _profiles : {},
       selected: context.isPro ? _selectedProfile : EquipmentProfilesProvider.defaultProfile,
       child: widget.child,
     );
@@ -61,8 +56,10 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
 
   Future<void> _init() async {
     _selectedId = widget.storageService.selectedEquipmentProfileId;
-    _customProfiles.addAll(await widget.storageService.getEquipmentProfiles());
-    _pinholeCustomProfiles.addAll(await widget.storageService.getPinholeEquipmentProfiles());
+    _profiles
+      ..addAll(await widget.storageService.getEquipmentProfiles())
+      ..addAll(await widget.storageService.getPinholeEquipmentProfiles());
+    _sortProfiles();
     _discardSelectedIfNotIncluded();
     if (mounted) setState(() {});
     widget.onInitialized?.call();
@@ -72,18 +69,18 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
     switch (profile) {
       case final PinholeEquipmentProfile profile:
         await widget.storageService.addPinholeEquipmentProfile(profile);
-        _pinholeCustomProfiles[profile.id] = (value: profile, isUsed: true);
       case final EquipmentProfile profile:
         await widget.storageService.addEquipmentProfile(profile);
-        _customProfiles[profile.id] = (value: profile, isUsed: true);
     }
+    _profiles[profile.id] = (value: profile, isUsed: true);
+    _sortProfiles();
     setState(() {});
   }
 
   Future<void> updateProfile(IEquipmentProfile profile) async {
     switch (profile) {
       case final PinholeEquipmentProfile profile:
-        final oldProfile = _pinholeCustomProfiles[profile.id]!.value;
+        final oldProfile = _profiles[profile.id]!.value as PinholeEquipmentProfile;
         await widget.storageService.updatePinholeEquipmentProfile(
           id: profile.id,
           name: profile.name,
@@ -93,9 +90,8 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
           lensZoom: oldProfile.lensZoom.changedOrNull(profile.lensZoom),
           exposureOffset: oldProfile.exposureOffset.changedOrNull(profile.exposureOffset),
         );
-        _pinholeCustomProfiles[profile.id] = (value: profile, isUsed: _pinholeCustomProfiles[profile.id]!.isUsed);
       case final EquipmentProfile profile:
-        final oldProfile = _customProfiles[profile.id]!.value;
+        final oldProfile = _profiles[profile.id]!.value as EquipmentProfile;
         await widget.storageService.updateEquipmentProfile(
           id: profile.id,
           name: oldProfile.name.changedOrNull(profile.name),
@@ -106,8 +102,10 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
           lensZoom: oldProfile.lensZoom.changedOrNull(profile.lensZoom),
           exposureOffset: oldProfile.exposureOffset.changedOrNull(profile.exposureOffset),
         );
-        _customProfiles[profile.id] = (value: profile, isUsed: _customProfiles[profile.id]!.isUsed);
     }
+    final bool shouldSort = _profiles[profile.id]!.value.name != profile.name;
+    _profiles[profile.id] = (value: profile, isUsed: _profiles[profile.id]!.isUsed);
+    if (shouldSort) _sortProfiles();
     setState(() {});
   }
 
@@ -119,11 +117,10 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
     switch (profile) {
       case final PinholeEquipmentProfile profile:
         await widget.storageService.deletePinholeEquipmentProfile(profile.id);
-        _pinholeCustomProfiles.remove(profile.id);
       case final EquipmentProfile profile:
         await widget.storageService.deleteEquipmentProfile(profile.id);
-        _customProfiles.remove(profile.id);
     }
+    _profiles.remove(profile.id);
     _discardSelectedIfNotIncluded();
     setState(() {});
   }
@@ -138,12 +135,9 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
   }
 
   Future<void> toggleProfile(String id, bool enabled) async {
-    if (_customProfiles.containsKey(id)) {
-      _customProfiles[id] = (value: _customProfiles[id]!.value, isUsed: enabled);
+    if (_profiles.containsKey(id)) {
+      _profiles[id] = (value: _profiles[id]!.value, isUsed: enabled);
       await widget.storageService.updateEquipmentProfile(id: id, isUsed: enabled);
-    } else if (_pinholeCustomProfiles.containsKey(id)) {
-      _pinholeCustomProfiles[id] = (value: _pinholeCustomProfiles[id]!.value, isUsed: enabled);
-      await widget.storageService.updatePinholeEquipmentProfile(id: id, isUsed: enabled);
     } else {
       return;
     }
@@ -155,11 +149,18 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
     if (_selectedId == EquipmentProfilesProvider.defaultProfile.id) {
       return;
     }
-    final isSelectedUsed = _customProfiles[_selectedId]?.isUsed ?? _pinholeCustomProfiles[_selectedId]?.isUsed ?? false;
+    final isSelectedUsed = _profiles[_selectedId]?.isUsed ?? false;
     if (!isSelectedUsed) {
       _selectedId = EquipmentProfilesProvider.defaultProfile.id;
       widget.storageService.selectedEquipmentProfileId = _selectedId;
     }
+  }
+
+  void _sortProfiles() {
+    final sortedByName = _profiles.values.toList(growable: false)
+      ..sort((a, b) => a.value.name.toLowerCase().compareTo(b.value.name.toLowerCase()));
+    _profiles.clear();
+    _profiles.addEntries(sortedByName.map((e) => MapEntry(e.value.id, e)));
   }
 }
 
@@ -170,13 +171,11 @@ enum _EquipmentProfilesModelAspect {
 }
 
 class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
-  final TogglableMap<EquipmentProfile> profiles;
-  final TogglableMap<PinholeEquipmentProfile> pinholeProfiles;
+  final TogglableMap<IEquipmentProfile> profiles;
   final IEquipmentProfile selected;
 
   const EquipmentProfiles({
     required this.profiles,
-    required this.pinholeProfiles,
     required this.selected,
     required super.child,
   });
@@ -189,7 +188,6 @@ class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
       [
         EquipmentProfilesProvider.defaultProfile,
         ...model.profiles.values.map((p) => p.value),
-        ...model.pinholeProfiles.values.map((p) => p.value),
       ],
     );
   }
@@ -201,7 +199,6 @@ class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
       [
         EquipmentProfilesProvider.defaultProfile,
         ...model.profiles.values.where((p) => p.isUsed).map((p) => p.value),
-        ...model.pinholeProfiles.values.where((p) => p.isUsed).map((p) => p.value),
       ],
     );
   }
@@ -219,8 +216,7 @@ class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
     return (dependencies.contains(_EquipmentProfilesModelAspect.selected) && oldWidget.selected != selected) ||
         ((dependencies.contains(_EquipmentProfilesModelAspect.profiles) ||
                 dependencies.contains(_EquipmentProfilesModelAspect.profilesInUse)) &&
-            (const DeepCollectionEquality().equals(oldWidget.profiles, profiles) ||
-                const DeepCollectionEquality().equals(oldWidget.pinholeProfiles, pinholeProfiles)));
+            const DeepCollectionEquality().equals(oldWidget.profiles, profiles));
   }
 }
 
