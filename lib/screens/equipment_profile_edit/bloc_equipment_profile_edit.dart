@@ -60,10 +60,22 @@ sealed class IEquipmentProfileEditBloc<T extends IEquipmentProfile>
 
   Future<void> _onSave(EquipmentProfileSaveEvent<T> _, Emitter emit) async {
     emit(state.copyWith(isLoading: true));
-    final profileId = isEdit ? originalEquipmentProfile.id : const Uuid().v1();
-    final newProfile = await createProfile(profileId);
-    assert(newProfile.id == profileId, 'The new profile id must be the same as the original profile id');
-    await profilesProvider.addProfile(newProfile);
+    if (isEdit) {
+      final newProfile = await createProfile(originalEquipmentProfile.id);
+      assert(
+        newProfile.id == originalEquipmentProfile.id,
+        'The edited profile id must be the same as the original profile id',
+      );
+      await profilesProvider.updateProfile(newProfile);
+    } else {
+      final newId = const Uuid().v1();
+      final newProfile = await createProfile(newId);
+      assert(
+        newProfile.id == newId,
+        'A profile to be added must have a unique id.',
+      );
+      await profilesProvider.addProfile(newProfile);
+    }
     emit(state.copyWith(isLoading: false));
   }
 
