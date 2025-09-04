@@ -89,6 +89,7 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
           name: profile.name,
           aperture: oldProfile.aperture.changedOrNull(profile.aperture),
           isoValues: oldProfile.isoValues.changedOrNull(profile.isoValues),
+          ndValues: oldProfile.ndValues.changedOrNull(profile.ndValues),
           lensZoom: oldProfile.lensZoom.changedOrNull(profile.lensZoom),
           exposureOffset: oldProfile.exposureOffset.changedOrNull(profile.exposureOffset),
         );
