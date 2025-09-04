@@ -62,6 +62,7 @@
   "apertureValuesFilterDescription": "Wybierz zakres przysłony dla swojego obiektywu",
   "ndFilters": "Filtry ND",
   "ndFiltersFilterDescription": "Wybierz dostępne filtry ND",
+  "shutterSpeed": "Czas naświetlania",
   "shutterSpeedValues": "Czasy naświetlania",
   "shutterSpeedValue": "Czas naświetlania",
   "shutterSpeedValuesFilterDescription": "Wybierz zakres czasów naświetlania dla swojej kamery",

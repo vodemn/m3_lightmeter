@@ -6,6 +6,7 @@ import 'package:lightmeter/data/models/exposure_pair.dart';
 import 'package:lightmeter/data/models/feature.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/platform_config.dart';
+import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/providers/remote_config_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/metering/components/camera_container/bloc_container_camera.dart';
@@ -125,7 +126,10 @@ class CameraContainer extends StatelessWidget {
       enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
       enabledFeaturesHeight += Dimens.paddingS;
     }
-    if (context.meteringFeature(MeteringScreenLayoutFeature.extremeExposurePairs)) {
+    if (EquipmentProfiles.selectedOf(context) is PinholeEquipmentProfile) {
+      enabledFeaturesHeight += Dimens.readingContainerSingleValueHeight;
+      enabledFeaturesHeight += Dimens.paddingS;
+    } else if (context.meteringFeature(MeteringScreenLayoutFeature.extremeExposurePairs)) {
       enabledFeaturesHeight += Dimens.readingContainerDoubleValueHeight;
       enabledFeaturesHeight += Dimens.paddingS;
     }

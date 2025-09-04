@@ -62,6 +62,7 @@
   "apertureValuesFilterDescription": "Выберите диапазон диафрагмы для вашего объектива",
   "ndFilters": "ND фильтры",
   "ndFiltersFilterDescription": "Выберите доступные ND фильтры",
+  "shutterSpeed": "Выдержка",
   "shutterSpeedValues": "Значения выдержки",
   "shutterSpeedValue": "Значение выдержки",
   "shutterSpeedValuesFilterDescription": "Выберите диапазон выдержек для вашей камеры",

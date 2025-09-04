@@ -62,6 +62,7 @@
   "apertureValuesFilterDescription": "Sélectionnez la plage d'ouverture pour votre objectif",
   "ndFilters": "Filtres ND",
   "ndFiltersFilterDescription": "Sélectionnez les filtres ND disponibles",
+  "shutterSpeed": "Vitesse d'obturation",
   "shutterSpeedValues": "Valeurs de la vitesse d'obturation",
   "shutterSpeedValue": "Valeur de la vitesse d'obturation",
   "shutterSpeedValuesFilterDescription": "Sélectionnez la plage de vitesses pour votre appareil",

@@ -169,10 +169,20 @@ class MeteringContainerBuidler extends StatelessWidget {
   static List<ExposurePair> buildExposureValues(
     double ev,
     StopType stopType,
-    EquipmentProfile equipmentProfile,
+    IEquipmentProfile equipmentProfile,
   ) {
     if (ev.isNaN || ev.isInfinite) {
       return List.empty();
+    }
+
+    if (equipmentProfile.id != "" && equipmentProfile is PinholeEquipmentProfile) {
+      final t = pow(equipmentProfile.aperture, 2) / pow(2, ev);
+      return [
+        ExposurePair(
+          ApertureValue(equipmentProfile.aperture, StopType.full),
+          ShutterSpeedValue(t, false, StopType.full),
+        ),
+      ];
     }
 
     /// Depending on the `stopType` the exposure pairs list length is multiplied by 1,2 or 3
@@ -236,31 +246,31 @@ class MeteringContainerBuidler extends StatelessWidget {
     );
 
     /// Full equipment profile, nothing to cut
-    if (equipmentProfile.id == "") {
-      return exposurePairs;
+    if (equipmentProfile.id != "" && equipmentProfile is EquipmentProfile) {
+      final equipmentApertureValues = equipmentProfile.apertureValues.whereStopType(stopType);
+      final equipmentShutterSpeedValues = equipmentProfile.shutterSpeedValues.whereStopType(stopType);
+
+      final startCutEV = max(
+        exposurePairs.first.aperture.difference(equipmentApertureValues.first),
+        exposurePairs.first.shutterSpeed.difference(equipmentShutterSpeedValues.first),
+      );
+      final endCutEV = max(
+        equipmentApertureValues.last.difference(exposurePairs.last.aperture),
+        equipmentShutterSpeedValues.last != ShutterSpeedValue.values.last
+            ? equipmentShutterSpeedValues.last.difference(exposurePairs.last.shutterSpeed)
+            : double.negativeInfinity,
+      );
+
+      final startCut = (startCutEV * (stopType.index + 1)).round().clamp(0, itemsCount);
+      final endCut = (endCutEV * (stopType.index + 1)).round().clamp(0, itemsCount);
+
+      if (startCut > itemsCount - endCut) {
+        return const [];
+      }
+      return exposurePairs.sublist(startCut, itemsCount - endCut);
     }
 
-    final equipmentApertureValues = equipmentProfile.apertureValues.whereStopType(stopType);
-    final equipmentShutterSpeedValues = equipmentProfile.shutterSpeedValues.whereStopType(stopType);
-
-    final startCutEV = max(
-      exposurePairs.first.aperture.difference(equipmentApertureValues.first),
-      exposurePairs.first.shutterSpeed.difference(equipmentShutterSpeedValues.first),
-    );
-    final endCutEV = max(
-      equipmentApertureValues.last.difference(exposurePairs.last.aperture),
-      equipmentShutterSpeedValues.last != ShutterSpeedValue.values.last
-          ? equipmentShutterSpeedValues.last.difference(exposurePairs.last.shutterSpeed)
-          : double.negativeInfinity,
-    );
-
-    final startCut = (startCutEV * (stopType.index + 1)).round().clamp(0, itemsCount);
-    final endCut = (endCutEV * (stopType.index + 1)).round().clamp(0, itemsCount);
-
-    if (startCut > itemsCount - endCut) {
-      return const [];
-    }
-    return exposurePairs.sublist(startCut, itemsCount - endCut);
+    return exposurePairs;
   }
 }
 
