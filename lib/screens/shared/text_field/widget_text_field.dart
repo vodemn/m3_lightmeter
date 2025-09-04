@@ -8,6 +8,7 @@ class LightmeterTextField extends StatefulWidget {
     this.hintText,
     this.initialValue,
     this.inputFormatters,
+    this.validator,
     this.leading,
     this.maxLength,
     this.maxLines = 1,
@@ -21,6 +22,7 @@ class LightmeterTextField extends StatefulWidget {
   final String? hintText;
   final String? initialValue;
   final List<TextInputFormatter>? inputFormatters;
+  final String? Function(String)? validator;
   final Widget? leading;
   final int? maxLength;
   final int? maxLines;
@@ -62,6 +64,8 @@ class _LightmeterTextFieldState extends State<LightmeterTextField> {
       validator: (value) {
         if (value == null || value.isEmpty) {
           return '';
+        } else if (widget.validator != null) {
+          return widget.validator!(value);
         } else {
           return null;
         }

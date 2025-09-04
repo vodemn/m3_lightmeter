@@ -23,7 +23,8 @@ sealed class IEquipmentProfileEditBloc<T extends IEquipmentProfile>
         super(
           EquipmentProfileEditState<T>(
             profile: profile,
-            canSave: false,
+            hasChanges: false,
+            isValid: true,
           ),
         ) {
     on<IEquipmentProfileEditEvent<T>>(mapEventToState);
@@ -51,7 +52,8 @@ sealed class IEquipmentProfileEditBloc<T extends IEquipmentProfile>
     emit(
       state.copyWith(
         profile: profile,
-        canSave: _canSave(profile),
+        hasChanges: _hasChanges(profile),
+        isValid: _isValid(profile),
       ),
     );
   }
@@ -76,7 +78,9 @@ sealed class IEquipmentProfileEditBloc<T extends IEquipmentProfile>
     emit(state.copyWith(isLoading: false));
   }
 
-  bool _canSave(T profile) => profile != originalEquipmentProfile;
+  bool _hasChanges(T profile) => profile != originalEquipmentProfile;
+
+  bool _isValid(T profile) => profile.name.isNotEmpty;
 }
 
 class EquipmentProfileEditBloc extends IEquipmentProfileEditBloc<EquipmentProfile> {
@@ -163,7 +167,7 @@ class PinholeEquipmentProfileEditBloc extends IEquipmentProfileEditBloc<PinholeE
     switch (event) {
       case final EquipmentProfileNameChangedEvent e:
         await _onNameChanged(e, emit);
-      case final EquipmentProfileApertureValuesChangedEvent e:
+      case final EquipmentProfileApertureValueChangedEvent e:
         await _onApertureValuesChanged(e, emit);
       case final EquipmentProfileIsoValuesChangedEvent e:
         await _onIsoValuesChanged(e, emit);
@@ -195,9 +199,19 @@ class PinholeEquipmentProfileEditBloc extends IEquipmentProfileEditBloc<PinholeE
     emitProfile(state.profile.copyWith(name: event.name), emit);
   }
 
-  Future<void> _onApertureValuesChanged(EquipmentProfileApertureValuesChangedEvent event, Emitter emit) async {
-    //emitProfile(state.profile.copyWith(apertureValues: event.apertureValues), emit);
+  Future<void> _onApertureValuesChanged(EquipmentProfileApertureValueChangedEvent event, Emitter emit) async {
+    emitProfile(state.profile.copyWith(aperture: event.aperture ?? 0), emit);
+
+    final profile = state.profile.copyWith(aperture: event.aperture);
+    emit(
+      state.copyWith(
+        profile: profile,
+        hasChanges: _hasChanges(profile),
+        isValid: _isValid(profile) && event.aperture != null,
+      ),
+    );
   }
+
   Future<void> _onIsoValuesChanged(EquipmentProfileIsoValuesChangedEvent event, Emitter emit) async {
     emitProfile(state.profile.copyWith(isoValues: event.isoValues), emit);
   }

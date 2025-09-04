@@ -4,6 +4,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/bloc_equipment_profile_edit.dart';
+import 'package:lightmeter/screens/equipment_profile_edit/components/aperture_input/widget_input_aperture_equipment_profile.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/components/filter_list_tile/widget_list_tile_filter.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/components/range_picker_list_tile/widget_list_tile_range_picker.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/components/slider_picker_list_tile/widget_list_tile_slider_picker.dart';
@@ -58,9 +59,10 @@ class _EquipmentProfileEditScreenState<T extends IEquipmentProfile> extends Stat
           title: Text(widget.isEdit ? S.of(context).editEquipmentProfileTitle : S.of(context).addEquipmentProfileTitle),
           appBarActions: [
             BlocBuilder<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
-              buildWhen: (previous, current) => previous.canSave != current.canSave,
+              buildWhen: (previous, current) =>
+                  previous.hasChanges != current.hasChanges || previous.isValid != current.isValid,
               builder: (context, state) => IconButton(
-                onPressed: state.canSave
+                onPressed: state.hasChanges && state.isValid
                     ? () {
                         context.read<IEquipmentProfileEditBloc<T>>().add(const EquipmentProfileSaveEvent());
                       }
@@ -70,13 +72,13 @@ class _EquipmentProfileEditScreenState<T extends IEquipmentProfile> extends Stat
             ),
             if (widget.isEdit)
               BlocBuilder<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
-                buildWhen: (previous, current) => previous.canSave != current.canSave,
+                buildWhen: (previous, current) => previous.isValid != current.isValid,
                 builder: (context, state) => IconButton(
-                  onPressed: state.canSave
-                      ? null
-                      : () {
+                  onPressed: state.isValid
+                      ? () {
                           context.read<IEquipmentProfileEditBloc<T>>().add(const EquipmentProfileCopyEvent());
-                        },
+                        }
+                      : null,
                   icon: const Icon(Icons.copy_outlined),
                 ),
               ),
@@ -106,7 +108,7 @@ class _EquipmentProfileEditScreenState<T extends IEquipmentProfile> extends Stat
                         children: [
                           _NameFieldBuilder<T>(),
                           if (state.profile is PinholeEquipmentProfile)
-                            const SizedBox.shrink()
+                            const _ApertureValueListTileBuilder()
                           else ...[
                             const _ApertureValuesListTileBuilder(),
                             const _ShutterSpeedValuesListTileBuilder(),
@@ -214,6 +216,22 @@ class _ApertureValuesListTileBuilder extends StatelessWidget {
         selectedValues: state.profile.apertureValues,
         onChanged: (value) {
           context.read<EquipmentProfileEditBloc>().add(EquipmentProfileApertureValuesChangedEvent(value));
+        },
+      ),
+    );
+  }
+}
+
+class _ApertureValueListTileBuilder extends StatelessWidget {
+  const _ApertureValueListTileBuilder();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PinholeEquipmentProfileEditBloc, EquipmentProfileEditState<PinholeEquipmentProfile>>(
+      builder: (context, state) => EquipmentProfileApertureInput(
+        value: state.profile.aperture,
+        onChanged: (value) {
+          context.read<PinholeEquipmentProfileEditBloc>().add(EquipmentProfileApertureValueChangedEvent(value));
         },
       ),
     );

@@ -28,6 +28,12 @@ class EquipmentProfileApertureValuesChangedEvent extends IEquipmentProfileEditEv
   const EquipmentProfileApertureValuesChangedEvent(this.apertureValues);
 }
 
+class EquipmentProfileApertureValueChangedEvent extends IEquipmentProfileEditEvent<PinholeEquipmentProfile> {
+  final double? aperture;
+
+  const EquipmentProfileApertureValueChangedEvent(this.aperture);
+}
+
 class EquipmentProfileShutterSpeedValuesChangedEvent extends IEquipmentProfileEditEvent<EquipmentProfile> {
   final List<ShutterSpeedValue> shutterSpeedValues;
 
