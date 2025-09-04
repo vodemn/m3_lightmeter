@@ -38,8 +38,10 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
   final TogglableMap<PinholeEquipmentProfile> _pinholeCustomProfiles = {};
   String _selectedId = '';
 
-  EquipmentProfile get _selectedProfile =>
-      _customProfiles[_selectedId]?.value ?? EquipmentProfilesProvider.defaultProfile;
+  IEquipmentProfile get _selectedProfile =>
+      _customProfiles[_selectedId]?.value ??
+      _pinholeCustomProfiles[_selectedId]?.value ??
+      EquipmentProfilesProvider.defaultProfile;
 
   @override
   void initState() {
