@@ -15,6 +15,7 @@ class _MockGeolocationService extends Mock implements GeolocationService {}
 
 class MockIAPProviders extends StatefulWidget {
   final TogglableMap<EquipmentProfile> equipmentProfiles;
+  final TogglableMap<PinholeEquipmentProfile> pinholeEquipmentProfiles;
   final String selectedEquipmentProfileId;
   final TogglableMap<Film> predefinedFilms;
   final TogglableMap<FilmExponential> customFilms;
@@ -23,6 +24,7 @@ class MockIAPProviders extends StatefulWidget {
 
   MockIAPProviders({
     TogglableMap<EquipmentProfile>? equipmentProfiles,
+    TogglableMap<PinholeEquipmentProfile>? pinholeEquipmentProfiles,
     this.selectedEquipmentProfileId = '',
     TogglableMap<Film>? predefinedFilms,
     TogglableMap<FilmExponential>? customFilms,
@@ -30,6 +32,7 @@ class MockIAPProviders extends StatefulWidget {
     required this.child,
     super.key,
   })  : equipmentProfiles = equipmentProfiles ?? mockEquipmentProfiles.toTogglableMap(),
+        pinholeEquipmentProfiles = pinholeEquipmentProfiles ?? mockPinholeEquipmentProfiles.toTogglableMap(),
         predefinedFilms = predefinedFilms ?? mockFilms.toTogglableMap(),
         customFilms = customFilms ?? mockFilms.toTogglableMap(),
         selectedFilmId = selectedFilmId ?? const FilmStub().id;
@@ -46,15 +49,20 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
   void initState() {
     super.initState();
     registerFallbackValue(defaultEquipmentProfile);
+    registerFallbackValue(mockPinholeEquipmentProfiles.first);
     registerFallbackValue(defaultCustomPhotos.first);
     registerFallbackValue(ApertureValue.values.first);
     registerFallbackValue(ShutterSpeedValue.values.first);
     mockIapStorageService = _MockIapStorageService();
     when(() => mockIapStorageService.init()).thenAnswer((_) async {});
 
-    when(() => mockIapStorageService.getEquipmentProfiles()).thenAnswer((_) => Future.value(widget.equipmentProfiles));
     when(() => mockIapStorageService.selectedEquipmentProfileId).thenReturn(widget.selectedEquipmentProfileId);
+    when(() => mockIapStorageService.getEquipmentProfiles()).thenAnswer((_) => Future.value(widget.equipmentProfiles));
+    when(() => mockIapStorageService.getPinholeEquipmentProfiles())
+        .thenAnswer((_) => Future.value(widget.pinholeEquipmentProfiles));
     when(() => mockIapStorageService.addEquipmentProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
+    when(() => mockIapStorageService.addPinholeEquipmentProfile(any<PinholeEquipmentProfile>()))
+        .thenAnswer((_) async {});
     when(
       () => mockIapStorageService.updateEquipmentProfile(
         id: any<String>(named: 'id'),
@@ -62,7 +70,14 @@ class _MockIAPProvidersState extends State<MockIAPProviders> {
         isUsed: any<bool>(named: 'isUsed'),
       ),
     ).thenAnswer((_) async {});
+    when(
+      () => mockIapStorageService.updatePinholeEquipmentProfile(
+        id: any<String>(named: 'id'),
+        name: any<String>(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
     when(() => mockIapStorageService.deleteEquipmentProfile(any<String>())).thenAnswer((_) async {});
+    when(() => mockIapStorageService.deletePinholeEquipmentProfile(any<String>())).thenAnswer((_) async {});
 
     when(() => mockIapStorageService.getPredefinedFilms()).thenAnswer((_) => Future.value(widget.predefinedFilms));
     when(() => mockIapStorageService.getCustomFilms()).thenAnswer((_) => Future.value(widget.customFilms));
@@ -172,6 +187,31 @@ final mockEquipmentProfiles = [
     lensZoom: Platform.isAndroid
         ? 5.625 // Pixel 6
         : 5.1923, // iPhone 13 Pro
+  ),
+];
+
+final mockPinholeEquipmentProfiles = [
+  PinholeEquipmentProfile(
+    id: '3',
+    name: 'Pinhole Camera f/64',
+    aperture: 64.0,
+    isoValues: [
+      IsoValue.values[1],
+      IsoValue.values[2],
+      IsoValue.values[3],
+    ],
+    ndValues: const [NdValue(0)],
+  ),
+  PinholeEquipmentProfile(
+    id: '4',
+    name: 'Pinhole Camera f/128',
+    aperture: 128.0,
+    isoValues: [
+      IsoValue.values[1],
+      IsoValue.values[2],
+      IsoValue.values[3],
+    ],
+    ndValues: const [NdValue(0)],
   ),
 ];
 

@@ -16,7 +16,7 @@ void main() {
   });
 
   setUp(() {
-    registerFallbackValue(_customProfiles.first);
+    registerFallbackValue(_mockEquipmentProfiles.first);
     when(() => storageService.addEquipmentProfile(any<EquipmentProfile>())).thenAnswer((_) async {});
     when(
       () => storageService.updateEquipmentProfile(
@@ -26,7 +26,10 @@ void main() {
       ),
     ).thenAnswer((_) async {});
     when(() => storageService.deleteEquipmentProfile(any<String>())).thenAnswer((_) async {});
-    when(() => storageService.getEquipmentProfiles()).thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
+    when(() => storageService.getEquipmentProfiles())
+        .thenAnswer((_) => Future.value(_mockEquipmentProfiles.toTogglableMap()));
+    when(() => storageService.getPinholeEquipmentProfiles())
+        .thenAnswer((_) => Future.value(_mockPinholeEquipmentProfiles.toTogglableMap()));
   });
 
   tearDown(() {
@@ -62,17 +65,15 @@ void main() {
     'EquipmentProfilesProvider dependency on IAPProductStatus',
     () {
       setUp(() {
-        when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles.first.id);
-        when(() => storageService.getEquipmentProfiles())
-            .thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
+        when(() => storageService.selectedEquipmentProfileId).thenReturn(_mockProfiles.first.id);
       });
 
       testWidgets(
         'Pro - show all saved profiles',
         (tester) async {
           await pumpTestWidget(tester, true);
-          expectEquipmentProfilesCount(_customProfiles.length + 1);
-          expectSelectedEquipmentProfileName(_customProfiles.first.name);
+          expectEquipmentProfilesCount(_mockProfiles.length + 1);
+          expectSelectedEquipmentProfileName(_mockProfiles.first.name);
         },
       );
 
@@ -90,19 +91,19 @@ void main() {
   testWidgets(
     'toggleProfile',
     (tester) async {
-      when(() => storageService.selectedEquipmentProfileId).thenReturn(_customProfiles.first.id);
+      when(() => storageService.selectedEquipmentProfileId).thenReturn(_mockEquipmentProfiles.first.id);
       await pumpTestWidget(tester, true);
-      expectEquipmentProfilesCount(_customProfiles.length + 1);
-      expectEquipmentProfilesInUseCount(_customProfiles.length + 1);
-      expectSelectedEquipmentProfileName(_customProfiles.first.name);
+      expectEquipmentProfilesCount(_mockProfiles.length + 1);
+      expectEquipmentProfilesInUseCount(_mockProfiles.length + 1);
+      expectSelectedEquipmentProfileName(_mockEquipmentProfiles.first.name);
 
-      await tester.equipmentProfilesProvider.toggleProfile(_customProfiles.first, false);
+      await tester.equipmentProfilesProvider.toggleProfile(_mockEquipmentProfiles.first.id, false);
       await tester.pump();
-      expectEquipmentProfilesCount(_customProfiles.length + 1);
-      expectEquipmentProfilesInUseCount(_customProfiles.length + 1 - 1);
+      expectEquipmentProfilesCount(_mockProfiles.length + 1);
+      expectEquipmentProfilesInUseCount(_mockProfiles.length + 1 - 1);
       expectSelectedEquipmentProfileName('');
 
-      verify(() => storageService.updateEquipmentProfile(id: _customProfiles.first.id, isUsed: false)).called(1);
+      verify(() => storageService.updateEquipmentProfile(id: _mockEquipmentProfiles.first.id, isUsed: false)).called(1);
       verify(() => storageService.selectedEquipmentProfileId = '').called(1);
     },
   );
@@ -111,6 +112,7 @@ void main() {
     'EquipmentProfilesProvider CRUD',
     (tester) async {
       when(() => storageService.getEquipmentProfiles()).thenAnswer((_) async => {});
+      when(() => storageService.getPinholeEquipmentProfiles()).thenAnswer((_) async => {});
       when(() => storageService.selectedEquipmentProfileId).thenReturn('');
 
       await pumpTestWidget(tester, true);
@@ -118,44 +120,45 @@ void main() {
       expectSelectedEquipmentProfileName('');
 
       /// Add first profile and verify
-      await tester.equipmentProfilesProvider.addProfile(_customProfiles.first);
+      await tester.equipmentProfilesProvider.addProfile(_mockEquipmentProfiles.first);
       await tester.pump();
       expectEquipmentProfilesCount(2);
       expectSelectedEquipmentProfileName('');
       verify(() => storageService.addEquipmentProfile(any<EquipmentProfile>())).called(1);
 
       /// Add the other profiles and select the 1st one
-      for (final profile in _customProfiles.skip(1)) {
+      for (final profile in _mockEquipmentProfiles.skip(1)) {
         await tester.equipmentProfilesProvider.addProfile(profile);
       }
-      tester.equipmentProfilesProvider.selectProfile(_customProfiles.first);
+      tester.equipmentProfilesProvider.selectProfile(_mockEquipmentProfiles.first.id);
       await tester.pump();
-      expectEquipmentProfilesCount(1 + _customProfiles.length);
-      expectSelectedEquipmentProfileName(_customProfiles.first.name);
+      expectEquipmentProfilesCount(1 + _mockEquipmentProfiles.length);
+      expectSelectedEquipmentProfileName(_mockEquipmentProfiles.first.name);
 
       /// Edit the selected profile
-      final updatedName = "${_customProfiles.first} updated";
-      await tester.equipmentProfilesProvider.updateProfile(_customProfiles.first.copyWith(name: updatedName));
+      final updatedName = "${_mockEquipmentProfiles.first} updated";
+      await tester.equipmentProfilesProvider.updateProfile(_mockEquipmentProfiles.first.copyWith(name: updatedName));
       await tester.pump();
-      expectEquipmentProfilesCount(1 + _customProfiles.length);
+      expectEquipmentProfilesCount(1 + _mockEquipmentProfiles.length);
       expectSelectedEquipmentProfileName(updatedName);
-      verify(() => storageService.updateEquipmentProfile(id: _customProfiles.first.id, name: updatedName)).called(1);
+      verify(() => storageService.updateEquipmentProfile(id: _mockEquipmentProfiles.first.id, name: updatedName))
+          .called(1);
 
       /// Delete a non-selected profile
-      await tester.equipmentProfilesProvider.deleteProfile(_customProfiles.last);
+      await tester.equipmentProfilesProvider.deleteProfile(_mockEquipmentProfiles.last);
       await tester.pump();
-      expectEquipmentProfilesCount(1 + _customProfiles.length - 1);
+      expectEquipmentProfilesCount(1 + _mockEquipmentProfiles.length - 1);
       expectSelectedEquipmentProfileName(updatedName);
       verifyNever(() => storageService.selectedEquipmentProfileId = '');
-      verify(() => storageService.deleteEquipmentProfile(_customProfiles.last.id)).called(1);
+      verify(() => storageService.deleteEquipmentProfile(_mockEquipmentProfiles.last.id)).called(1);
 
       /// Delete the selected profile
-      await tester.equipmentProfilesProvider.deleteProfile(_customProfiles.first);
+      await tester.equipmentProfilesProvider.deleteProfile(_mockEquipmentProfiles.first);
       await tester.pump();
-      expectEquipmentProfilesCount(1 + _customProfiles.length - 2);
+      expectEquipmentProfilesCount(1 + _mockEquipmentProfiles.length - 2);
       expectSelectedEquipmentProfileName('');
       verify(() => storageService.selectedEquipmentProfileId = '').called(1);
-      verify(() => storageService.deleteEquipmentProfile(_customProfiles.first.id)).called(1);
+      verify(() => storageService.deleteEquipmentProfile(_mockEquipmentProfiles.first.id)).called(1);
     },
   );
 }
@@ -221,7 +224,9 @@ class _SelectedEquipmentProfile extends StatelessWidget {
   }
 }
 
-final List<EquipmentProfile> _customProfiles = [
+final List<IEquipmentProfile> _mockProfiles = [..._mockEquipmentProfiles, ..._mockPinholeEquipmentProfiles];
+
+final List<EquipmentProfile> _mockEquipmentProfiles = [
   const EquipmentProfile(
     id: '1',
     name: 'Test 1',
@@ -288,6 +293,45 @@ final List<EquipmentProfile> _customProfiles = [
       IsoValue(250, StopType.third),
       IsoValue(320, StopType.third),
       IsoValue(400, StopType.full),
+    ],
+  ),
+];
+
+final _mockPinholeEquipmentProfiles = [
+  const PinholeEquipmentProfile(
+    id: '3',
+    name: 'Pinhole Camera f/64',
+    aperture: 64.0,
+    isoValues: [
+      IsoValue(100, StopType.full),
+      IsoValue(200, StopType.full),
+      IsoValue(400, StopType.full),
+      IsoValue(800, StopType.full),
+    ],
+    ndValues: [
+      NdValue(0),
+      NdValue(2),
+      NdValue(4),
+    ],
+  ),
+  const PinholeEquipmentProfile(
+    id: '4',
+    name: 'Pinhole Camera f/128',
+    aperture: 128.0,
+    isoValues: [
+      IsoValue(50, StopType.full),
+      IsoValue(100, StopType.full),
+      IsoValue(200, StopType.full),
+      IsoValue(400, StopType.full),
+      IsoValue(800, StopType.full),
+      IsoValue(1600, StopType.full),
+    ],
+    ndValues: [
+      NdValue(0),
+      NdValue(1),
+      NdValue(2),
+      NdValue(4),
+      NdValue(8),
     ],
   ),
 ];

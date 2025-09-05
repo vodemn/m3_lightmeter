@@ -13,7 +13,7 @@ class _MockEquipmentProfilesStorageService extends Mock implements IapStorageSer
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final storageService = _MockEquipmentProfilesStorageService();
-  final onDidChangeDependencies = MockValueChanged<EquipmentProfile>();
+  final onDidChangeDependencies = MockValueChanged<IEquipmentProfile>();
 
   setUp(() {
     registerFallbackValue(_customProfiles.first);
@@ -26,6 +26,7 @@ void main() {
     ).thenAnswer((_) async {});
     when(() => storageService.deleteEquipmentProfile(any<String>())).thenAnswer((_) async {});
     when(() => storageService.getEquipmentProfiles()).thenAnswer((_) => Future.value(_customProfiles.toTogglableMap()));
+    when(() => storageService.getPinholeEquipmentProfiles()).thenAnswer((_) => Future.value({}));
   });
 
   tearDown(() {
@@ -56,7 +57,7 @@ void main() {
       when(() => storageService.selectedEquipmentProfileId).thenReturn('');
       await pumpTestWidget(tester);
 
-      tester.equipmentProfilesProvider.selectProfile(_customProfiles[0]);
+      tester.equipmentProfilesProvider.selectProfile(_customProfiles[0].id);
       await tester.pump();
       verify(() => onDidChangeDependencies.onChanged(_customProfiles[0])).called(1);
     },
