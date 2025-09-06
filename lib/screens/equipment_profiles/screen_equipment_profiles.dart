@@ -4,13 +4,11 @@ import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/flow_equipment_profile_edit.dart';
-import 'package:lightmeter/screens/settings/components/shared/dialog_picker/widget_dialog_picker.dart';
+import 'package:lightmeter/screens/equipment_profiles/components/equipment_profile_type_picker/widget_picker_equipment_profile_type.dart';
 import 'package:lightmeter/screens/shared/sliver_placeholder/widget_sliver_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/utils/guard_pro_tap.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
-
-enum _EquipmentProfileType { regular, pinhole }
 
 class EquipmentProfilesScreen extends StatefulWidget {
   const EquipmentProfilesScreen({super.key});
@@ -48,28 +46,16 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
     guardProTap(
       context,
       () {
-        showDialog<_EquipmentProfileType>(
-          context: context,
-          builder: (_) => DialogPicker<_EquipmentProfileType>(
-            icon: Icons.camera_alt_outlined,
-            title: S.of(context).equipmentProfileType,
-            selectedValue: _EquipmentProfileType.regular,
-            values: _EquipmentProfileType.values,
-            titleAdapter: (context, value) => switch (value) {
-              _EquipmentProfileType.regular => S.of(context).camera,
-              _EquipmentProfileType.pinhole => S.of(context).pinholeCamera,
-            },
-          ),
-        ).then((value) {
+        EquipmentProfilesTypePicker.show(context).then((value) {
           if (value != null && mounted) {
             Navigator.of(context).pushNamed(
               NavigationRoutes.equipmentProfileEditScreen.name,
               arguments: switch (value) {
-                _EquipmentProfileType.regular => const EquipmentProfileEditArgs(
+                EquipmentProfileType.regular => const EquipmentProfileEditArgs(
                     editType: EquipmentProfileEditType.add,
                     profile: EquipmentProfilesProvider.defaultProfile,
                   ),
-                _EquipmentProfileType.pinhole => EquipmentProfileEditArgs(
+                EquipmentProfileType.pinhole => EquipmentProfileEditArgs(
                     editType: EquipmentProfileEditType.add,
                     profile: PinholeEquipmentProfile(
                       id: EquipmentProfilesProvider.defaultProfile.id,

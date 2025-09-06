@@ -6,7 +6,7 @@ import 'package:lightmeter/data/models/ev_source_type.dart';
 import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
-import 'package:lightmeter/screens/equipment_profile_edit/screen_equipment_profile_edit.dart';
+import 'package:lightmeter/screens/equipment_profiles/components/equipment_profile_type_picker/widget_picker_equipment_profile_type.dart';
 import 'package:lightmeter/screens/lightmeter_pro/screen_lightmeter_pro.dart';
 import 'package:lightmeter/screens/logbook_photos/screen_logbook_photos.dart';
 import 'package:lightmeter/screens/settings/screen_settings.dart';
@@ -49,7 +49,7 @@ void testGuardProTap(String description) {
       await tester.navigatorPop(true);
       await tester.pumpAndSettle();
       expect(find.byType(LightmeterProScreen), findsNothing);
-      expect(find.byType(EquipmentProfileEditScreen), findsOneWidget);
+      expect(find.byType(EquipmentProfilesTypePicker), findsOneWidget);
       await tester.navigatorPop();
       await tester.navigatorPop();
 

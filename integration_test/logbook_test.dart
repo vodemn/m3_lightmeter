@@ -104,8 +104,7 @@ void testLogbook(String description) {
       /// Got back and delete the equipment profile used to take the first picture
       await tester.navigatorPop();
       await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.tap(find.byIcon(Icons.edit_outlined).first);
-      await tester.pumpAndSettle();
+      await tester.editEquipmentProfile(mockEquipmentProfiles.first.name);
       await tester.tap(find.byIcon(Icons.delete_outlined));
       await tester.pumpAndSettle(Dimens.durationML);
       expect(find.text(mockEquipmentProfiles[0].name), findsNothing);

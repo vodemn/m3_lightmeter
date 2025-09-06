@@ -123,6 +123,9 @@ const defaultEquipmentProfile = EquipmentProfile(
   isoValues: IsoValue.values,
 );
 
+final mockProfiles = [...mockEquipmentProfiles, ...mockPinholeEquipmentProfiles]
+  ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
 final mockEquipmentProfiles = [
   EquipmentProfile(
     id: '1',

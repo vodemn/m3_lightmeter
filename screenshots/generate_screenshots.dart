@@ -218,14 +218,9 @@ void main() {
   testWidgets(
     'Generate timer screenshot',
     (tester) async {
-      const timerExposurePair = ExposurePair(
-        ApertureValue(16, StopType.full),
-        ShutterSpeedValue(8, false, StopType.full),
-      );
       await mockSharedPrefs(
-        iso: 100,
         nd: 8,
-        calibration: -0.3,
+        calibration: -2.3,
         theme: ThemeType.light,
         color: _lightThemeColor,
       );
@@ -236,13 +231,22 @@ void main() {
       );
 
       await tester.takePhoto();
-      await tester.scrollToExposurePair(
-        ev: 5,
-        exposurePair: timerExposurePair,
+
+      final exposurePairs = MeteringContainerBuidler.buildExposureValues(
+        5,
+        StopType.third,
+        defaultEquipmentProfile,
       );
-      await tester.tap(find.text(_mockFilm.reciprocityFailure(timerExposurePair.shutterSpeed).toString()));
+      final timerExposurePair = exposurePairs.firstWhere((e) => e.aperture == const ApertureValue(16, StopType.full));
+      await tester.scrollToExposurePair(
+        exposurePairs: exposurePairs,
+        exposurePair: exposurePairs.firstWhere((e) => e.aperture == const ApertureValue(16, StopType.full)),
+      );
+
+      final correctedShutterSpeed = _mockFilm.reciprocityFailure(timerExposurePair.shutterSpeed);
+      await tester.tap(find.text(correctedShutterSpeed.toString()));
       await tester.pumpAndSettle();
-      await tester.mockTimerResumedState(timerExposurePair.shutterSpeed);
+      await tester.mockTimerResumedState(correctedShutterSpeed);
       await tester.takeScreenshotLight(binding, 'timer');
     },
   );
@@ -257,32 +261,28 @@ extension on WidgetTester {
       _takeScreenshot(binding, name, _themeDark);
 
   Future<void> _takeScreenshot(IntegrationTestWidgetsFlutterBinding binding, String name, ThemeData theme) async {
-    final Color backgroundColor = theme.colorScheme.surface;
-    await binding.takeScreenshot(
-      ScreenshotArgs(
-        name: name,
-        deviceName: const String.fromEnvironment('deviceName'),
-        platformFolder: _platformFolder,
-        backgroundColor: backgroundColor.toInt().toRadixString(16),
-        isDark: theme.brightness == Brightness.dark,
-      ).toString(),
-    );
-    await pumpAndSettle();
+    const deviceName = String.fromEnvironment('deviceName');
+    if (deviceName.isNotEmpty) {
+      final Color backgroundColor = theme.colorScheme.surface;
+      await binding.takeScreenshot(
+        ScreenshotArgs(
+          name: name,
+          deviceName: deviceName,
+          platformFolder: _platformFolder,
+          backgroundColor: backgroundColor.toInt().toRadixString(16),
+          isDark: theme.brightness == Brightness.dark,
+        ).toString(),
+      );
+      await pumpAndSettle();
+    }
   }
 }
 
 extension on WidgetTester {
   Future<void> scrollToExposurePair({
-    double ev = mockPhotoEv100,
-    EquipmentProfile equipmentProfile = defaultEquipmentProfile,
+    required List<ExposurePair> exposurePairs,
     required ExposurePair exposurePair,
   }) async {
-    final exposurePairs = MeteringContainerBuidler.buildExposureValues(
-      ev,
-      StopType.third,
-      equipmentProfile,
-    );
-
     await scrollUntilVisible(
       find.byWidgetPredicate((widget) => widget is Row && widget.key == ValueKey(exposurePairs.indexOf(exposurePair))),
       56,

@@ -5,6 +5,7 @@ import 'package:lightmeter/application_wrapper.dart';
 import 'package:lightmeter/environment.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/equipment_profiles/components/equipment_profile_type_picker/widget_picker_equipment_profile_type.dart';
 import 'package:lightmeter/screens/metering/components/shared/exposure_pairs_list/widget_list_exposure_pairs.dart';
 import 'package:lightmeter/screens/metering/screen_metering.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
@@ -115,5 +116,26 @@ extension WidgetTesterExposurePairsListActions on WidgetTester {
       56,
       scrollable: find.descendant(of: find.byType(ExposurePairsList), matching: find.byType(Scrollable)),
     );
+  }
+}
+
+extension WidgetTesterEquipmentProfilesActions on WidgetTester {
+  Future<void> addEquipmentProfile(EquipmentProfileType type) async {
+    await tap(find.byIcon(Icons.add_outlined).first);
+    await pumpAndSettle();
+    await tap(
+      find.text(
+        switch (type) {
+          EquipmentProfileType.regular => S.current.camera,
+          EquipmentProfileType.pinhole => S.current.pinholeCamera,
+        },
+      ),
+    );
+    await tapSelectButton();
+  }
+
+  Future<void> editEquipmentProfile(String name) async {
+    await tap(find.byIcon(Icons.edit_outlined).at(mockProfiles.indexWhere((p) => p.name == name)));
+    await pumpAndSettle();
   }
 }
