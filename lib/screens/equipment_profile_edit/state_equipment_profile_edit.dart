@@ -1,52 +1,32 @@
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-class EquipmentProfileEditState {
-  final String name;
-  final List<ApertureValue> apertureValues;
-  final List<NdValue> ndValues;
-  final List<ShutterSpeedValue> shutterSpeedValues;
-  final List<IsoValue> isoValues;
-  final double lensZoom;
-  final double exposureOffset;
-  final bool canSave;
+class EquipmentProfileEditState<T extends IEquipmentProfile> {
+  final T profile;
+  final T? profileToCopy;
+  final bool hasChanges;
+  final bool isValid;
   final bool isLoading;
-  final EquipmentProfile? profileToCopy;
 
   const EquipmentProfileEditState({
-    required this.name,
-    required this.apertureValues,
-    required this.ndValues,
-    required this.shutterSpeedValues,
-    required this.isoValues,
-    required this.lensZoom,
-    required this.exposureOffset,
-    required this.canSave,
+    required this.profile,
+    required this.hasChanges,
+    required this.isValid,
     this.isLoading = false,
     this.profileToCopy,
   });
 
-  EquipmentProfileEditState copyWith({
-    String? name,
-    List<ApertureValue>? apertureValues,
-    List<NdValue>? ndValues,
-    List<ShutterSpeedValue>? shutterSpeedValues,
-    List<IsoValue>? isoValues,
-    double? lensZoom,
-    double? exposureOffset,
-    bool? canSave,
+  EquipmentProfileEditState<T> copyWith({
+    T? profile,
+    T? profileToCopy,
+    bool? isValid,
+    bool? hasChanges,
     bool? isLoading,
-    EquipmentProfile? profileToCopy,
   }) =>
-      EquipmentProfileEditState(
-        name: name ?? this.name,
-        apertureValues: apertureValues ?? this.apertureValues,
-        ndValues: ndValues ?? this.ndValues,
-        shutterSpeedValues: shutterSpeedValues ?? this.shutterSpeedValues,
-        isoValues: isoValues ?? this.isoValues,
-        lensZoom: lensZoom ?? this.lensZoom,
-        exposureOffset: exposureOffset ?? this.exposureOffset,
-        canSave: canSave ?? this.canSave,
-        isLoading: isLoading ?? this.isLoading,
+      EquipmentProfileEditState<T>(
+        profile: profile ?? this.profile,
         profileToCopy: profileToCopy ?? this.profileToCopy,
+        isValid: isValid ?? this.isValid,
+        hasChanges: hasChanges ?? this.hasChanges,
+        isLoading: isLoading ?? this.isLoading,
       );
 }

@@ -7,6 +7,7 @@ import 'package:lightmeter/data/models/metering_screen_layout_config.dart';
 import 'package:lightmeter/data/shared_prefs_service.dart';
 import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/res/dimens.dart';
+import 'package:lightmeter/screens/equipment_profiles/components/equipment_profile_type_picker/widget_picker_equipment_profile_type.dart';
 import 'package:lightmeter/screens/metering/components/bottom_controls/widget_bottom_controls.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/equipment_profile_picker/widget_picker_equipment_profiles.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/film_picker/widget_picker_film.dart';
@@ -56,8 +57,7 @@ void testE2E(String description) {
       /// Create Praktica + Zenitar profile from scratch
       await tester.openSettings();
       await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.tap(find.byIcon(Icons.add_outlined).first);
-      await tester.pumpAndSettle();
+      await tester.addEquipmentProfile(EquipmentProfileType.regular);
       await tester.enterProfileName(mockEquipmentProfiles[0].name);
       await tester.setIsoValues(mockEquipmentProfiles[0].isoValues);
       await tester.setNdValues(mockEquipmentProfiles[0].ndValues);
@@ -70,8 +70,7 @@ void testE2E(String description) {
       await tester.saveEdits();
 
       /// Create Praktica + Jupiter profile from Zenitar profile
-      await tester.tap(find.byIcon(Icons.edit_outlined));
-      await tester.pumpAndSettle();
+      await tester.editEquipmentProfile(mockEquipmentProfiles[1].name);
       await tester.tap(find.byIcon(Icons.copy_outlined).first);
       await tester.pumpAndSettle();
       await tester.enterProfileName(mockEquipmentProfiles[1].name);
@@ -90,7 +89,7 @@ void testE2E(String description) {
 
       /// Select some initial settings according to the selected gear and film
       /// Then take a photo and verify, that exposure pairs range and EV matches the selected settings
-      await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[0].name);
+      await tester.openPickerAndSelect<EquipmentProfilePicker, IEquipmentProfile>(mockEquipmentProfiles[0].name);
       await tester.openPickerAndSelect<FilmPicker, Film>(mockFilms[0].name);
       await tester.openPickerAndSelect<IsoValuePicker, IsoValue>('400');
       expectPickerTitle<EquipmentProfilePicker>(mockEquipmentProfiles[0].name);
@@ -122,7 +121,7 @@ void testE2E(String description) {
       // );
 
       /// Select another lens without ND
-      await tester.openPickerAndSelect<EquipmentProfilePicker, EquipmentProfile>(mockEquipmentProfiles[1].name);
+      await tester.openPickerAndSelect<EquipmentProfilePicker, IEquipmentProfile>(mockEquipmentProfiles[1].name);
       await tester.openPickerAndSelect<NdValuePicker, NdValue>('None');
       await _expectMeteringStateAndMeasure(
         tester,
@@ -152,8 +151,7 @@ void testE2E(String description) {
       /// Delete profile
       await tester.openSettings();
       await tester.tapDescendantTextOf<SettingsScreen>(S.current.equipmentProfiles);
-      await tester.tap(find.byIcon(Icons.edit_outlined).first);
-      await tester.pumpAndSettle();
+      await tester.editEquipmentProfile(mockEquipmentProfiles[0].name);
       await tester.deleteEdits();
       expect(find.text(mockEquipmentProfiles[0].name), findsNothing);
       expect(find.text(mockEquipmentProfiles[1].name), findsOneWidget);

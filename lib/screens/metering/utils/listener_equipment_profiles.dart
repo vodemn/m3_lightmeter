@@ -3,7 +3,7 @@ import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
 class EquipmentProfileListener extends StatefulWidget {
-  final ValueChanged<EquipmentProfile> onDidChangeDependencies;
+  final ValueChanged<IEquipmentProfile> onDidChangeDependencies;
   final Widget child;
 
   const EquipmentProfileListener({

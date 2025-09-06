@@ -861,8 +861,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v4.1.2"
-      resolved-ref: "6bb16eb49232649eca02704b3a40890b0184d8b5"
+      ref: "feature/MLI-48"
+      resolved-ref: "4a169640bff3d3a3206a2c352a75cbcea4871b1c"
       url: "https://github.com/vodemn/m3_lightmeter_iap"
     source: git
     version: "4.1.2+37"
@@ -870,8 +870,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v2.4.0"
-      resolved-ref: cc9ae43a7859398a6ab2ecf7f8713153dbfd99cd
+      ref: "feature/MLR-18"
+      resolved-ref: "61bb3f8a9164d19f6e47c96fbea1cbe3aaf39fc3"
       url: "https://github.com/vodemn/m3_lightmeter_resources"
     source: git
     version: "2.4.0+13"

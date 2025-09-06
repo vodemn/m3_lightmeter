@@ -19,7 +19,10 @@ void main() {
 
   setUpAll(() {
     storageService = _MockEquipmentProfilesStorageService();
-    when(() => storageService.getEquipmentProfiles()).thenAnswer((_) async => _mockEquipmentProfiles.toTogglableMap());
+    when(() => storageService.getEquipmentProfiles())
+        .thenAnswer((_) async => _mockEquipmentProfiles.toList().toTogglableMap());
+    when(() => storageService.getPinholeEquipmentProfiles())
+        .thenAnswer((_) async => _mockPinholeEquipmentProfiles.toList().toTogglableMap());
     when(() => storageService.selectedEquipmentProfileId).thenReturn('');
   });
 
@@ -48,7 +51,7 @@ void main() {
       expectReadingValueContainerText(S.current.equipmentProfile);
       await tester.openAnimatedPicker<EquipmentProfilePicker>();
       expect(find.byIcon(Icons.camera_alt_outlined), findsOneWidget);
-      expectDialogPickerText<EquipmentProfile>(S.current.equipmentProfile);
+      expectDialogPickerText<IEquipmentProfile>(S.current.equipmentProfile);
     },
   );
 
@@ -62,7 +65,7 @@ void main() {
           await pumpApplication(tester);
           expectReadingValueContainerText(S.current.none);
           await tester.openAnimatedPicker<EquipmentProfilePicker>();
-          expectRadioListTile<EquipmentProfile>(S.current.none, isSelected: true);
+          expectRadioListTile<IEquipmentProfile>(S.current.none, isSelected: true);
         },
       );
 
@@ -73,7 +76,18 @@ void main() {
           await pumpApplication(tester);
           expectReadingValueContainerText(_mockEquipmentProfiles.first.name);
           await tester.openAnimatedPicker<EquipmentProfilePicker>();
-          expectRadioListTile<EquipmentProfile>(_mockEquipmentProfiles.first.name, isSelected: true);
+          expectRadioListTile<IEquipmentProfile>(_mockEquipmentProfiles.first.name, isSelected: true);
+        },
+      );
+
+      testWidgets(
+        'Pinhole Camera f/64',
+        (tester) async {
+          when(() => storageService.selectedEquipmentProfileId).thenReturn(_mockPinholeEquipmentProfiles.first.id);
+          await pumpApplication(tester);
+          expectReadingValueContainerText(_mockPinholeEquipmentProfiles.first.name);
+          await tester.openAnimatedPicker<EquipmentProfilePicker>();
+          expectRadioListTile<IEquipmentProfile>(_mockPinholeEquipmentProfiles.first.name, isSelected: true);
         },
       );
     },
@@ -84,10 +98,13 @@ void main() {
     (tester) async {
       when(() => storageService.getEquipmentProfiles())
           .thenAnswer((_) async => _mockEquipmentProfiles.skip(1).toList().toTogglableMap());
+      when(() => storageService.getPinholeEquipmentProfiles())
+          .thenAnswer((_) async => _mockPinholeEquipmentProfiles.skip(1).toList().toTogglableMap());
       await pumpApplication(tester);
       await tester.openAnimatedPicker<EquipmentProfilePicker>();
-      expectRadioListTile<EquipmentProfile>(S.current.none, isSelected: true);
-      expectRadioListTile<EquipmentProfile>(_mockEquipmentProfiles[1].name);
+      expectRadioListTile<IEquipmentProfile>(S.current.none, isSelected: true);
+      expectRadioListTile<IEquipmentProfile>(_mockEquipmentProfiles[1].name);
+      expectRadioListTile<IEquipmentProfile>(_mockPinholeEquipmentProfiles[1].name);
     },
   );
 }
@@ -124,5 +141,44 @@ final _mockEquipmentProfiles = [
     ndValues: NdValue.values,
     shutterSpeedValues: ShutterSpeedValue.values,
     isoValues: IsoValue.values,
+  ),
+];
+
+final _mockPinholeEquipmentProfiles = [
+  const PinholeEquipmentProfile(
+    id: '3',
+    name: 'Pinhole Camera f/64',
+    aperture: 64.0,
+    isoValues: [
+      IsoValue(100, StopType.full),
+      IsoValue(200, StopType.full),
+      IsoValue(400, StopType.full),
+      IsoValue(800, StopType.full),
+    ],
+    ndValues: [
+      NdValue(0),
+      NdValue(2),
+      NdValue(4),
+    ],
+  ),
+  const PinholeEquipmentProfile(
+    id: '4',
+    name: 'Pinhole Camera f/128',
+    aperture: 128.0,
+    isoValues: [
+      IsoValue(50, StopType.full),
+      IsoValue(100, StopType.full),
+      IsoValue(200, StopType.full),
+      IsoValue(400, StopType.full),
+      IsoValue(800, StopType.full),
+      IsoValue(1600, StopType.full),
+    ],
+    ndValues: [
+      NdValue(0),
+      NdValue(1),
+      NdValue(2),
+      NdValue(4),
+      NdValue(8),
+    ],
   ),
 ];

@@ -10,13 +10,13 @@ class EquipmentProfilePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedDialogPicker<EquipmentProfile>(
+    return AnimatedDialogPicker<IEquipmentProfile>(
       icon: Icons.camera_alt_outlined,
       title: S.of(context).equipmentProfile,
       selectedValue: EquipmentProfiles.selectedOf(context),
       values: EquipmentProfiles.inUseOf(context),
       itemTitleBuilder: (_, value) => Text(value.id.isEmpty ? S.of(context).none : value.name),
-      onChanged: EquipmentProfilesProvider.of(context).selectProfile,
+      onChanged: (profile) => EquipmentProfilesProvider.of(context).selectProfile(profile.id),
       closedChild: ReadingValueContainer.singleValue(
         value: ReadingValue(
           label: S.of(context).equipmentProfile,

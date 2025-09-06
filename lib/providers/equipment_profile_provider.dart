@@ -34,11 +34,10 @@ class EquipmentProfilesProvider extends StatefulWidget {
 }
 
 class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
-  final TogglableMap<EquipmentProfile> _customProfiles = {};
+  final TogglableMap<IEquipmentProfile> _profiles = {};
   String _selectedId = '';
 
-  EquipmentProfile get _selectedProfile =>
-      _customProfiles[_selectedId]?.value ?? EquipmentProfilesProvider.defaultProfile;
+  IEquipmentProfile get _selectedProfile => _profiles[_selectedId]?.value ?? EquipmentProfilesProvider.defaultProfile;
 
   @override
   void initState() {
@@ -49,7 +48,7 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
   @override
   Widget build(BuildContext context) {
     return EquipmentProfiles(
-      profiles: context.isPro ? _customProfiles : {},
+      profiles: context.isPro ? _profiles : {},
       selected: context.isPro ? _selectedProfile : EquipmentProfilesProvider.defaultProfile,
       child: widget.child,
     );
@@ -57,61 +56,91 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
 
   Future<void> _init() async {
     _selectedId = widget.storageService.selectedEquipmentProfileId;
-    _customProfiles.addAll(await widget.storageService.getEquipmentProfiles());
+    _profiles
+      ..addAll(await widget.storageService.getEquipmentProfiles())
+      ..addAll(await widget.storageService.getPinholeEquipmentProfiles());
+    _sortProfiles();
     _discardSelectedIfNotIncluded();
     if (mounted) setState(() {});
     widget.onInitialized?.call();
   }
 
-  Future<void> addProfile(EquipmentProfile profile) async {
-    await widget.storageService.addEquipmentProfile(profile);
-    _customProfiles[profile.id] = (value: profile, isUsed: true);
+  Future<void> addProfile(IEquipmentProfile profile) async {
+    switch (profile) {
+      case final PinholeEquipmentProfile profile:
+        await widget.storageService.addPinholeEquipmentProfile(profile);
+      case final EquipmentProfile profile:
+        await widget.storageService.addEquipmentProfile(profile);
+    }
+    _profiles[profile.id] = (value: profile, isUsed: true);
+    _sortProfiles();
     setState(() {});
   }
 
-  Future<void> updateProfile(EquipmentProfile profile) async {
-    final oldProfile = _customProfiles[profile.id]!.value;
-    await widget.storageService.updateEquipmentProfile(
-      id: profile.id,
-      name: oldProfile.name.changedOrNull(profile.name),
-      apertureValues: oldProfile.apertureValues.changedOrNull(profile.apertureValues),
-      shutterSpeedValues: oldProfile.shutterSpeedValues.changedOrNull(profile.shutterSpeedValues),
-      isoValues: oldProfile.isoValues.changedOrNull(profile.isoValues),
-      ndValues: oldProfile.ndValues.changedOrNull(profile.ndValues),
-      lensZoom: oldProfile.lensZoom.changedOrNull(profile.lensZoom),
-      exposureOffset: oldProfile.exposureOffset.changedOrNull(profile.exposureOffset),
-    );
-    _customProfiles[profile.id] = (value: profile, isUsed: _customProfiles[profile.id]!.isUsed);
+  Future<void> updateProfile(IEquipmentProfile profile) async {
+    switch (profile) {
+      case final PinholeEquipmentProfile profile:
+        final oldProfile = _profiles[profile.id]!.value as PinholeEquipmentProfile;
+        await widget.storageService.updatePinholeEquipmentProfile(
+          id: profile.id,
+          name: profile.name,
+          aperture: oldProfile.aperture.changedOrNull(profile.aperture),
+          isoValues: oldProfile.isoValues.changedOrNull(profile.isoValues),
+          ndValues: oldProfile.ndValues.changedOrNull(profile.ndValues),
+          lensZoom: oldProfile.lensZoom.changedOrNull(profile.lensZoom),
+          exposureOffset: oldProfile.exposureOffset.changedOrNull(profile.exposureOffset),
+        );
+      case final EquipmentProfile profile:
+        final oldProfile = _profiles[profile.id]!.value as EquipmentProfile;
+        await widget.storageService.updateEquipmentProfile(
+          id: profile.id,
+          name: oldProfile.name.changedOrNull(profile.name),
+          apertureValues: oldProfile.apertureValues.changedOrNull(profile.apertureValues),
+          shutterSpeedValues: oldProfile.shutterSpeedValues.changedOrNull(profile.shutterSpeedValues),
+          isoValues: oldProfile.isoValues.changedOrNull(profile.isoValues),
+          ndValues: oldProfile.ndValues.changedOrNull(profile.ndValues),
+          lensZoom: oldProfile.lensZoom.changedOrNull(profile.lensZoom),
+          exposureOffset: oldProfile.exposureOffset.changedOrNull(profile.exposureOffset),
+        );
+    }
+    final bool shouldSort = _profiles[profile.id]!.value.name != profile.name;
+    _profiles[profile.id] = (value: profile, isUsed: _profiles[profile.id]!.isUsed);
+    if (shouldSort) _sortProfiles();
     setState(() {});
   }
 
-  Future<void> deleteProfile(EquipmentProfile profile) async {
-    await widget.storageService.deleteEquipmentProfile(profile.id);
+  Future<void> deleteProfile(IEquipmentProfile profile) async {
     if (profile.id == _selectedId) {
       _selectedId = EquipmentProfilesProvider.defaultProfile.id;
       widget.storageService.selectedEquipmentProfileId = EquipmentProfilesProvider.defaultProfile.id;
     }
-    _customProfiles.remove(profile.id);
+    switch (profile) {
+      case final PinholeEquipmentProfile profile:
+        await widget.storageService.deletePinholeEquipmentProfile(profile.id);
+      case final EquipmentProfile profile:
+        await widget.storageService.deleteEquipmentProfile(profile.id);
+    }
+    _profiles.remove(profile.id);
     _discardSelectedIfNotIncluded();
     setState(() {});
   }
 
-  void selectProfile(EquipmentProfile data) {
-    if (_selectedId != data.id) {
+  void selectProfile(String id) {
+    if (_selectedId != id) {
       setState(() {
-        _selectedId = data.id;
+        _selectedId = id;
       });
       widget.storageService.selectedEquipmentProfileId = _selectedProfile.id;
     }
   }
 
-  Future<void> toggleProfile(EquipmentProfile profile, bool enabled) async {
-    if (_customProfiles.containsKey(profile.id)) {
-      _customProfiles[profile.id] = (value: profile, isUsed: enabled);
+  Future<void> toggleProfile(String id, bool enabled) async {
+    if (_profiles.containsKey(id)) {
+      _profiles[id] = (value: _profiles[id]!.value, isUsed: enabled);
+      await widget.storageService.updateEquipmentProfile(id: id, isUsed: enabled);
     } else {
       return;
     }
-    await widget.storageService.updateEquipmentProfile(id: profile.id, isUsed: enabled);
     _discardSelectedIfNotIncluded();
     setState(() {});
   }
@@ -120,11 +149,18 @@ class EquipmentProfilesProviderState extends State<EquipmentProfilesProvider> {
     if (_selectedId == EquipmentProfilesProvider.defaultProfile.id) {
       return;
     }
-    final isSelectedUsed = _customProfiles[_selectedId]?.isUsed ?? false;
+    final isSelectedUsed = _profiles[_selectedId]?.isUsed ?? false;
     if (!isSelectedUsed) {
       _selectedId = EquipmentProfilesProvider.defaultProfile.id;
       widget.storageService.selectedEquipmentProfileId = _selectedId;
     }
+  }
+
+  void _sortProfiles() {
+    final sortedByName = _profiles.values.toList(growable: false)
+      ..sort((a, b) => a.value.name.toLowerCase().compareTo(b.value.name.toLowerCase()));
+    _profiles.clear();
+    _profiles.addEntries(sortedByName.map((e) => MapEntry(e.value.id, e)));
   }
 }
 
@@ -135,8 +171,8 @@ enum _EquipmentProfilesModelAspect {
 }
 
 class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
-  final TogglableMap<EquipmentProfile> profiles;
-  final EquipmentProfile selected;
+  final TogglableMap<IEquipmentProfile> profiles;
+  final IEquipmentProfile selected;
 
   const EquipmentProfiles({
     required this.profiles,
@@ -145,10 +181,10 @@ class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
   });
 
   /// _default + profiles create by the user
-  static List<EquipmentProfile> of(BuildContext context) {
+  static List<IEquipmentProfile> of(BuildContext context) {
     final model =
         InheritedModel.inheritFrom<EquipmentProfiles>(context, aspect: _EquipmentProfilesModelAspect.profiles)!;
-    return List<EquipmentProfile>.from(
+    return List<IEquipmentProfile>.from(
       [
         EquipmentProfilesProvider.defaultProfile,
         ...model.profiles.values.map((p) => p.value),
@@ -156,10 +192,10 @@ class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
     );
   }
 
-  static List<EquipmentProfile> inUseOf(BuildContext context) {
+  static List<IEquipmentProfile> inUseOf(BuildContext context) {
     final model =
         InheritedModel.inheritFrom<EquipmentProfiles>(context, aspect: _EquipmentProfilesModelAspect.profilesInUse)!;
-    return List<EquipmentProfile>.from(
+    return List<IEquipmentProfile>.from(
       [
         EquipmentProfilesProvider.defaultProfile,
         ...model.profiles.values.where((p) => p.isUsed).map((p) => p.value),
@@ -167,7 +203,7 @@ class EquipmentProfiles extends InheritedModel<_EquipmentProfilesModelAspect> {
     );
   }
 
-  static EquipmentProfile selectedOf(BuildContext context) {
+  static IEquipmentProfile selectedOf(BuildContext context) {
     return InheritedModel.inheritFrom<EquipmentProfiles>(context, aspect: _EquipmentProfilesModelAspect.selected)!
         .selected;
   }

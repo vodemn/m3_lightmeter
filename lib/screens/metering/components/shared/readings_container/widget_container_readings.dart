@@ -11,6 +11,7 @@ import 'package:lightmeter/screens/metering/components/shared/readings_container
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/iso_picker/widget_picker_iso.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/lightmeter_pro_badge/widget_badge_lightmeter_pro.dart';
 import 'package:lightmeter/screens/metering/components/shared/readings_container/components/nd_picker/widget_picker_nd.dart';
+import 'package:lightmeter/screens/metering/components/shared/readings_container/components/shutter_speed_container/widget_container_shutter_speed.dart';
 import 'package:lightmeter/utils/context_utils.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
@@ -45,7 +46,10 @@ class ReadingsContainer extends StatelessWidget {
           const EquipmentProfilePicker(),
           const _InnerPadding(),
         ],
-        if (context.meteringFeature(MeteringScreenLayoutFeature.extremeExposurePairs)) ...[
+        if (EquipmentProfiles.selectedOf(context) is PinholeEquipmentProfile) ...[
+          ShutterSpeedContainer(shutterSpeedValue: fastest?.shutterSpeed),
+          const _InnerPadding(),
+        ] else if (context.meteringFeature(MeteringScreenLayoutFeature.extremeExposurePairs)) ...[
           ExtremeExposurePairsContainer(
             fastest: fastest,
             slowest: slowest,

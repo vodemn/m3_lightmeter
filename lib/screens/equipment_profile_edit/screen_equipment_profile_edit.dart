@@ -4,6 +4,7 @@ import 'package:lightmeter/generated/l10n.dart';
 import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/bloc_equipment_profile_edit.dart';
+import 'package:lightmeter/screens/equipment_profile_edit/components/aperture_input/widget_input_aperture_equipment_profile.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/components/filter_list_tile/widget_list_tile_filter.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/components/range_picker_list_tile/widget_list_tile_range_picker.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/components/slider_picker_list_tile/widget_list_tile_slider_picker.dart';
@@ -17,7 +18,7 @@ import 'package:lightmeter/utils/double_to_zoom.dart';
 import 'package:lightmeter/utils/to_string_signed.dart';
 import 'package:m3_lightmeter_resources/m3_lightmeter_resources.dart';
 
-class EquipmentProfileEditScreen extends StatefulWidget {
+class EquipmentProfileEditScreen<T extends IEquipmentProfile> extends StatefulWidget {
   final bool isEdit;
 
   const EquipmentProfileEditScreen({
@@ -26,13 +27,13 @@ class EquipmentProfileEditScreen extends StatefulWidget {
   });
 
   @override
-  State<EquipmentProfileEditScreen> createState() => _EquipmentProfileEditScreenState();
+  State<EquipmentProfileEditScreen<T>> createState() => _EquipmentProfileEditScreenState<T>();
 }
 
-class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen> {
+class _EquipmentProfileEditScreenState<T extends IEquipmentProfile> extends State<EquipmentProfileEditScreen<T>> {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<EquipmentProfileEditBloc, EquipmentProfileEditState>(
+    return BlocConsumer<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
       listenWhen: (previous, current) => previous.isLoading != current.isLoading,
       listener: (context, state) {
         if (state.isLoading) {
@@ -41,9 +42,9 @@ class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen>
           if (state.profileToCopy != null) {
             Navigator.of(context).pushReplacementNamed(
               NavigationRoutes.equipmentProfileEditScreen.name,
-              arguments: EquipmentProfileEditArgs(
+              arguments: EquipmentProfileEditArgs<T>(
                 editType: EquipmentProfileEditType.add,
-                profile: state.profileToCopy,
+                profile: state.profileToCopy!,
               ),
             );
           } else {
@@ -57,33 +58,34 @@ class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen>
         child: SliverScreen(
           title: Text(widget.isEdit ? S.of(context).editEquipmentProfileTitle : S.of(context).addEquipmentProfileTitle),
           appBarActions: [
-            BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
-              buildWhen: (previous, current) => previous.canSave != current.canSave,
+            BlocBuilder<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
+              buildWhen: (previous, current) =>
+                  previous.hasChanges != current.hasChanges || previous.isValid != current.isValid,
               builder: (context, state) => IconButton(
-                onPressed: state.canSave
+                onPressed: state.hasChanges && state.isValid
                     ? () {
-                        context.read<EquipmentProfileEditBloc>().add(const EquipmentProfileSaveEvent());
+                        context.read<IEquipmentProfileEditBloc<T>>().add(const EquipmentProfileSaveEvent());
                       }
                     : null,
                 icon: const Icon(Icons.save_outlined),
               ),
             ),
             if (widget.isEdit)
-              BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
-                buildWhen: (previous, current) => previous.canSave != current.canSave,
+              BlocBuilder<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
+                buildWhen: (previous, current) => previous.isValid != current.isValid,
                 builder: (context, state) => IconButton(
-                  onPressed: state.canSave
-                      ? null
-                      : () {
-                          context.read<EquipmentProfileEditBloc>().add(const EquipmentProfileCopyEvent());
-                        },
+                  onPressed: state.isValid
+                      ? () {
+                          context.read<IEquipmentProfileEditBloc<T>>().add(const EquipmentProfileCopyEvent());
+                        }
+                      : null,
                   icon: const Icon(Icons.copy_outlined),
                 ),
               ),
             if (widget.isEdit)
               IconButton(
                 onPressed: () {
-                  context.read<EquipmentProfileEditBloc>().add(const EquipmentProfileDeleteEvent());
+                  context.read<IEquipmentProfileEditBloc<T>>().add(const EquipmentProfileDeleteEvent());
                 },
                 icon: const Icon(Icons.delete_outlined),
               ),
@@ -102,15 +104,19 @@ class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen>
                     padding: const EdgeInsets.symmetric(vertical: Dimens.paddingM),
                     child: Opacity(
                       opacity: state.isLoading ? Dimens.disabledOpacity : Dimens.enabledOpacity,
-                      child: const Column(
+                      child: Column(
                         children: [
-                          _NameFieldBuilder(),
-                          _IsoValuesListTileBuilder(),
-                          _NdValuesListTileBuilder(),
-                          _ApertureValuesListTileBuilder(),
-                          _ShutterSpeedValuesListTileBuilder(),
-                          _LensZoomListTileBuilder(),
-                          _ExposureOffsetListTileBuilder(),
+                          _NameFieldBuilder<T>(),
+                          if (state.profile is PinholeEquipmentProfile)
+                            const _ApertureValueListTileBuilder()
+                          else ...[
+                            const _ApertureValuesListTileBuilder(),
+                            const _ShutterSpeedValuesListTileBuilder(),
+                          ],
+                          _IsoValuesListTileBuilder<T>(),
+                          _NdValuesListTileBuilder<T>(),
+                          _LensZoomListTileBuilder<T>(),
+                          _ExposureOffsetListTileBuilder<T>(),
                         ],
                       ),
                     ),
@@ -126,12 +132,13 @@ class _EquipmentProfileEditScreenState extends State<EquipmentProfileEditScreen>
   }
 }
 
-class _NameFieldBuilder extends StatelessWidget {
+class _NameFieldBuilder<T extends IEquipmentProfile> extends StatelessWidget {
   const _NameFieldBuilder();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
+    return BlocBuilder<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
+      buildWhen: (previous, current) => previous.profile.name != current.profile.name,
       builder: (context, state) => Padding(
         padding: const EdgeInsets.only(
           left: Dimens.paddingM,
@@ -141,13 +148,13 @@ class _NameFieldBuilder extends StatelessWidget {
         ),
         child: LightmeterTextField(
           autofocus: true,
-          initialValue: state.name,
+          initialValue: state.profile.name,
           maxLength: 48,
           hintText: S.of(context).name,
           style: Theme.of(context).listTileTheme.titleTextStyle,
           leading: const Icon(Icons.edit_outlined),
           onChanged: (value) {
-            context.read<EquipmentProfileEditBloc>().add(EquipmentProfileNameChangedEvent(value));
+            context.read<IEquipmentProfileEditBloc<T>>().add(EquipmentProfileNameChangedEvent<T>(value));
           },
         ),
       ),
@@ -155,40 +162,40 @@ class _NameFieldBuilder extends StatelessWidget {
   }
 }
 
-class _IsoValuesListTileBuilder extends StatelessWidget {
+class _IsoValuesListTileBuilder<T extends IEquipmentProfile> extends StatelessWidget {
   const _IsoValuesListTileBuilder();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
+    return BlocBuilder<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
       builder: (context, state) => FilterListTile<IsoValue>(
         icon: Icons.iso_outlined,
         title: S.of(context).isoValues,
         description: S.of(context).isoValuesFilterDescription,
         values: IsoValue.values,
-        selectedValues: state.isoValues,
+        selectedValues: state.profile.isoValues,
         onChanged: (value) {
-          context.read<EquipmentProfileEditBloc>().add(EquipmentProfileIsoValuesChangedEvent(value));
+          context.read<IEquipmentProfileEditBloc<T>>().add(EquipmentProfileIsoValuesChangedEvent<T>(value));
         },
       ),
     );
   }
 }
 
-class _NdValuesListTileBuilder extends StatelessWidget {
+class _NdValuesListTileBuilder<T extends IEquipmentProfile> extends StatelessWidget {
   const _NdValuesListTileBuilder();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
+    return BlocBuilder<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
       builder: (context, state) => FilterListTile<NdValue>(
         icon: Icons.filter_b_and_w_outlined,
         title: S.of(context).ndFilters,
         description: S.of(context).ndFiltersFilterDescription,
         values: NdValue.values,
-        selectedValues: state.ndValues,
+        selectedValues: state.profile.ndValues,
         onChanged: (value) {
-          context.read<EquipmentProfileEditBloc>().add(EquipmentProfileNdValuesChangedEvent(value));
+          context.read<IEquipmentProfileEditBloc<T>>().add(EquipmentProfileNdValuesChangedEvent<T>(value));
         },
       ),
     );
@@ -200,15 +207,31 @@ class _ApertureValuesListTileBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
+    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState<EquipmentProfile>>(
       builder: (context, state) => RangePickerListTile<ApertureValue>(
         icon: Icons.camera_outlined,
         title: S.of(context).apertureValues,
         description: S.of(context).apertureValuesFilterDescription,
         values: ApertureValue.values,
-        selectedValues: state.apertureValues,
+        selectedValues: state.profile.apertureValues,
         onChanged: (value) {
           context.read<EquipmentProfileEditBloc>().add(EquipmentProfileApertureValuesChangedEvent(value));
+        },
+      ),
+    );
+  }
+}
+
+class _ApertureValueListTileBuilder extends StatelessWidget {
+  const _ApertureValueListTileBuilder();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PinholeEquipmentProfileEditBloc, EquipmentProfileEditState<PinholeEquipmentProfile>>(
+      builder: (context, state) => EquipmentProfileApertureInput(
+        value: state.profile.aperture,
+        onChanged: (value) {
+          context.read<PinholeEquipmentProfileEditBloc>().add(EquipmentProfileApertureValueChangedEvent(value));
         },
       ),
     );
@@ -220,13 +243,13 @@ class _ShutterSpeedValuesListTileBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
+    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState<EquipmentProfile>>(
       builder: (context, state) => RangePickerListTile<ShutterSpeedValue>(
         icon: Icons.shutter_speed_outlined,
         title: S.of(context).shutterSpeedValues,
         description: S.of(context).shutterSpeedValuesFilterDescription,
         values: ShutterSpeedValue.values,
-        selectedValues: state.shutterSpeedValues,
+        selectedValues: state.profile.shutterSpeedValues,
         trailingAdapter: (context, value) =>
             value.value == 1 ? S.of(context).shutterSpeedManualShort : value.toString(),
         dialogValueAdapter: (context, value) => value.value == 1 ? S.of(context).shutterSpeedManual : value.toString(),
@@ -238,42 +261,44 @@ class _ShutterSpeedValuesListTileBuilder extends StatelessWidget {
   }
 }
 
-class _LensZoomListTileBuilder extends StatelessWidget {
+class _LensZoomListTileBuilder<T extends IEquipmentProfile> extends StatelessWidget {
   const _LensZoomListTileBuilder();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
+    return BlocBuilder<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
+      buildWhen: (previous, current) => previous.profile.lensZoom != current.profile.lensZoom,
       builder: (context, state) => SliderPickerListTile(
         icon: Icons.zoom_in_outlined,
         title: S.of(context).lensZoom,
         description: S.of(context).lensZoomDescription,
-        value: state.lensZoom,
+        value: state.profile.lensZoom,
         range: CameraContainerBloc.zoomMaxRange,
         valueAdapter: (context, value) => value.toZoom(context),
         onChanged: (value) {
-          context.read<EquipmentProfileEditBloc>().add(EquipmentProfileLensZoomChangedEvent(value));
+          context.read<IEquipmentProfileEditBloc<T>>().add(EquipmentProfileLensZoomChangedEvent<T>(value));
         },
       ),
     );
   }
 }
 
-class _ExposureOffsetListTileBuilder extends StatelessWidget {
+class _ExposureOffsetListTileBuilder<T extends IEquipmentProfile> extends StatelessWidget {
   const _ExposureOffsetListTileBuilder();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EquipmentProfileEditBloc, EquipmentProfileEditState>(
+    return BlocBuilder<IEquipmentProfileEditBloc<T>, EquipmentProfileEditState<T>>(
+      buildWhen: (previous, current) => previous.profile.exposureOffset != current.profile.exposureOffset,
       builder: (context, state) => SliderPickerListTile(
         icon: Icons.light_mode_outlined,
         title: S.of(context).exposureOffset,
         description: S.of(context).exposureOffsetDescription,
-        value: state.exposureOffset,
+        value: state.profile.exposureOffset,
         range: CameraContainerBloc.exposureMaxRange,
         valueAdapter: (context, value) => S.of(context).evValue(value.toStringSignedAsFixed(1)),
         onChanged: (value) {
-          context.read<EquipmentProfileEditBloc>().add(EquipmentProfileExposureOffsetChangedEvent(value));
+          context.read<IEquipmentProfileEditBloc<T>>().add(EquipmentProfileExposureOffsetChangedEvent<T>(value));
         },
       ),
     );

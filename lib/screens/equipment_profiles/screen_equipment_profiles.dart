@@ -4,6 +4,7 @@ import 'package:lightmeter/navigation/routes.dart';
 import 'package:lightmeter/providers/equipment_profile_provider.dart';
 import 'package:lightmeter/res/dimens.dart';
 import 'package:lightmeter/screens/equipment_profile_edit/flow_equipment_profile_edit.dart';
+import 'package:lightmeter/screens/equipment_profiles/components/equipment_profile_type_picker/widget_picker_equipment_profile_type.dart';
 import 'package:lightmeter/screens/shared/sliver_placeholder/widget_sliver_placeholder.dart';
 import 'package:lightmeter/screens/shared/sliver_screen/screen_sliver.dart';
 import 'package:lightmeter/utils/guard_pro_tap.dart';
@@ -45,15 +46,34 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
     guardProTap(
       context,
       () {
-        Navigator.of(context).pushNamed(
-          NavigationRoutes.equipmentProfileEditScreen.name,
-          arguments: const EquipmentProfileEditArgs(editType: EquipmentProfileEditType.add),
-        );
+        EquipmentProfilesTypePicker.show(context).then((value) {
+          if (value != null && mounted) {
+            Navigator.of(context).pushNamed(
+              NavigationRoutes.equipmentProfileEditScreen.name,
+              arguments: switch (value) {
+                EquipmentProfileType.regular => const EquipmentProfileEditArgs(
+                    editType: EquipmentProfileEditType.add,
+                    profile: EquipmentProfilesProvider.defaultProfile,
+                  ),
+                EquipmentProfileType.pinhole => EquipmentProfileEditArgs(
+                    editType: EquipmentProfileEditType.add,
+                    profile: PinholeEquipmentProfile(
+                      id: EquipmentProfilesProvider.defaultProfile.id,
+                      name: EquipmentProfilesProvider.defaultProfile.name,
+                      aperture: 22,
+                      isoValues: EquipmentProfilesProvider.defaultProfile.isoValues,
+                      ndValues: EquipmentProfilesProvider.defaultProfile.ndValues,
+                    ),
+                  ),
+              },
+            );
+          }
+        });
       },
     );
   }
 
-  void _editProfile(EquipmentProfile profile) {
+  void _editProfile(IEquipmentProfile profile) {
     Navigator.of(context).pushNamed(
       NavigationRoutes.equipmentProfileEditScreen.name,
       arguments: EquipmentProfileEditArgs(
@@ -65,9 +85,9 @@ class _EquipmentProfilesScreenState extends State<EquipmentProfilesScreen> with 
 }
 
 class _EquipmentProfilesListBuilder extends StatelessWidget {
-  final List<EquipmentProfile> values;
-  final void Function(EquipmentProfile profile) onEdit;
-  final void Function(EquipmentProfile profile, bool value) onCheckbox;
+  final List<IEquipmentProfile> values;
+  final void Function(IEquipmentProfile profile) onEdit;
+  final void Function(String id, bool value) onCheckbox;
 
   const _EquipmentProfilesListBuilder({
     required this.values,
@@ -102,7 +122,7 @@ class _EquipmentProfilesListBuilder extends StatelessWidget {
               title: Text(values[index].name),
               controlAffinity: ListTileControlAffinity.leading,
               value: EquipmentProfiles.inUseOf(context).contains(values[index]),
-              onChanged: (value) => onCheckbox(values[index], value ?? false),
+              onChanged: (value) => onCheckbox(values[index].id, value ?? false),
               secondary: IconButton(
                 onPressed: () => onEdit(values[index]),
                 icon: const Icon(Icons.edit_outlined),

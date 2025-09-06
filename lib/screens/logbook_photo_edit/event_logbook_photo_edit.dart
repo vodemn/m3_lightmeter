@@ -23,9 +23,9 @@ class LogbookPhotoNoteChangedEvent extends LogbookPhotoEditEvent {
 }
 
 class LogbookPhotoEquipmentProfileChangedEvent extends LogbookPhotoEditEvent {
-  final EquipmentProfile? equipmentProfile;
+  final String? equipmentProfileId;
 
-  const LogbookPhotoEquipmentProfileChangedEvent(this.equipmentProfile);
+  const LogbookPhotoEquipmentProfileChangedEvent(this.equipmentProfileId);
 }
 
 class LogbookPhotoFilmChangedEvent extends LogbookPhotoEditEvent {

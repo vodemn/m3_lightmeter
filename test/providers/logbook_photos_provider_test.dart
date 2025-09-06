@@ -40,6 +40,7 @@ void main() {
 
     when(() => storageService.selectedEquipmentProfileId).thenReturn('');
     when(() => storageService.getEquipmentProfiles()).thenAnswer((_) => Future.value({}));
+    when(() => storageService.getPinholeEquipmentProfiles()).thenAnswer((_) => Future.value({}));
 
     when(() => storageService.selectedFilmId).thenReturn(const FilmStub().id);
     when(() => storageService.getPredefinedFilms()).thenAnswer((_) => Future.value({}));

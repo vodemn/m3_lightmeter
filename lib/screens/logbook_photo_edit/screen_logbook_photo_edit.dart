@@ -273,7 +273,7 @@ class _EquipmentProfilePickerListTile extends StatelessWidget {
         selectedValue: EquipmentProfiles.of(context).firstWhereOrNull((e) => e.id == state.equipmentProfileId),
         titleAdapter: (value) => value.name,
         onChanged: (value) {
-          context.read<LogbookPhotoEditBloc>().add(LogbookPhotoEquipmentProfileChangedEvent(value.value));
+          context.read<LogbookPhotoEditBloc>().add(LogbookPhotoEquipmentProfileChangedEvent(value.value?.id));
         },
       ),
     );
